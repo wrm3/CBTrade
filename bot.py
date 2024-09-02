@@ -1832,6 +1832,9 @@ class BOT():
 		# upd_dttm                                    timestamp default current_timestamp on update current_timestamp
 		# dlm                                         timestamp default current_timestamp on update current_timestamp
 
+		db_tbl_sell_ords_insupd(so)
+		time.sleep(.33)
+
 		func_end(fnc)
 		return pos
 
