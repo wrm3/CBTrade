@@ -359,7 +359,7 @@ def buy_strats_deny(mkt, trade_strat_perf, buy_yn, wait_yn):
 		buy_deny_yn = 'Y'
 
 	func_end(fnc)
-	return buy_yn, wait_yn
+	return buy_deny_yn
 
 #<=====>#
 

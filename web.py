@@ -157,32 +157,71 @@ def build_topnav():
 				mkt_dd = mkt_dd + "<option value='/market_" + mkt + "'>" + mkt + "</option>"
 	mkt_dd = mkt_dd + "</select>"
 
+
 	s_dt_dd = ""
-	s_dt_dd = s_dt_dd + "<select id='sales_dt_dd' onchange=" + chr(34) + "window.open(this.value,'_self');" + chr(34) + ">"
-	s_dt_dd = s_dt_dd + "<option value='#'>Choose Date</option>"
+	s_dt_dd += "<select id='sales_dt_dd' onchange=" + chr(34) + "window.open(this.value,'_self');" + chr(34) + ">"
+	s_dt_dd += "<option value='#'>Choose Date</option>"
 	if date_data:
 		for cdt in date_data:
 			if cdt is not None:
-				s_dt_dd = s_dt_dd + "<option value='/sales_dt_" + cdt + "'>" + cdt + "</option>"
-	s_dt_dd = s_dt_dd + "</select>"
+				s_dt_dd += f"<option value='/sales_dt_{cdt}'>{cdt}</option>"
+	s_dt_dd += "</select>"
 
 	s_m_dd = ""
-	s_m_dd = s_m_dd + "<select id='sales_m_dd' onchange=" + chr(34) + "window.open(this.value,'_self');" + chr(34) + ">"
-	s_m_dd = s_m_dd + "<option value='#'>Choose Month</option>"
+	s_m_dd += "<select id='sales_m_dd' onchange=" + chr(34) + "window.open(this.value,'_self');" + chr(34) + ">"
+	s_m_dd += "<option value='#'>Choose Month</option>"
 	if month_data:
 		for row in month_data:
 			if row['cy'] is not None:
-				s_m_dd = s_m_dd + "<option value='/sales_month_" + row['cy'] + "_" + row['cm'] + "'>" + row['cy'] + " " + row['mn'] + "</option>"
-	s_m_dd = s_m_dd + "</select>"
+				cy = row['cy']
+				cm = row['cm']
+				s_m_dd += f"<option value='/sales_month_{cy}_{cm}'>{cy} {cm}</option>"
+	s_m_dd += "</select>"
 
 	s_y_dd = ""
-	s_y_dd = s_y_dd + "<select id='sales_y_dd' onchange=" + chr(34) + "window.open(this.value,'_self');" + chr(34) + ">"
-	s_y_dd = s_y_dd + "<option value='#'>Choose Year</option>"
+	s_y_dd += "<select id='sales_y_dd' onchange=" + chr(34) + "window.open(this.value,'_self');" + chr(34) + ">"
+	s_y_dd += "<option value='#'>Choose Year</option>"
 	if year_data:
 		for cy in year_data:
 			if cy is not None:
-				s_y_dd = s_y_dd + "<option value='/sales_year_" + cy + "'>" + cy + "</option>"
-	s_y_dd = s_y_dd + "</select>"
+				s_y_dd += f"<option value='/sales_year_{cy}'>{cy}</option>"
+	s_y_dd += "</select>"
+
+#	st_dt_dd = ""
+#	st_dt_dd += "<select id='salest_dt_dd' onchange=" + chr(34) + "window.open(this.value,'_self');" + chr(34) + ">"
+#	st_dt_dd += "<option value='#'>Choose Date</option>"
+#	if date_data:
+#		for cdt in date_data:
+#			if cdt is not None:
+#				new_str = f"<option value='/sales_dt_test_{cdt}'>{cdt}</option>"
+##				print(f'new_str : {new_str}')
+#				st_dt_dd += new_str
+#	st_dt_dd += "</select>"
+
+#	st_m_dd = ""
+#	st_m_dd += "<select id='salest_m_dd' onchange=" + chr(34) + "window.open(this.value,'_self');" + chr(34) + ">"
+#	st_m_dd += "<option value='#'>Choose Month</option>"
+#	if month_data:
+#		for row in month_data:
+#			if row['cy'] is not None:
+#				cy = row['cy']
+#				cm = row['cm']
+#				new_str = f"<option value='/sales_month_test_{cy}_{cm}'>{cy} {cm}</option>"
+##				print(f'new_str : {new_str}')
+#				st_m_dd += new_str
+#	st_m_dd += "</select>"
+
+#	st_y_dd = ""
+#	st_y_dd += "<select id='salest_y_dd' onchange=" + chr(34) + "window.open(this.value,'_self');" + chr(34) + ">"
+#	st_y_dd += "<option value='#'>Choose Year</option>"
+#	if year_data:
+#		for cy in year_data:
+#			if cy is not None:
+#				new_str = f"<option value='/sales_year_test_{cy}'>{cy}</option>"
+##				print(f'new_str : {new_str}')
+#				st_y_dd += new_str
+#	st_y_dd += "</select>"
+
 
 	html = ""
 	html += "<table class='nav'>"
@@ -193,13 +232,17 @@ def build_topnav():
 
 	# Home
 	html = build_topnav_link( in_str='Home', in_url='home.htm',  in_html=html)
+	html = build_topnav_link( in_str='All Reports Test', in_url='all_reports_test.htm',  in_html=html)
 
 	# Quick Looks
 	html = build_topnav_title(in_str='Quick Looks', in_html=html)
 	html = build_topnav_link( in_str='Balances',    in_url='balances.htm',  in_html=html)
-	html = build_topnav_link( in_str='Open Poss',   in_url='open_poss.htm', in_html=html)
+	html = build_topnav_link( in_str='Open Positions',   in_url='open_positions.htm', in_html=html)
+	html = build_topnav_link( in_str='Closed Positions',   in_url='closed_positions.htm', in_html=html)
 	html = build_topnav_link( in_str='Buys - Recent',   in_url='buys_recent.htm', in_html=html)
 	html = build_topnav_link( in_str='Sells - Recent',   in_url='sells_recent.htm', in_html=html)
+	html = build_topnav_link( in_str='Buy Strats',   in_url='buy_strats.htm', in_html=html)
+	html = build_topnav_link( in_str='Market Buy Strats',   in_url='mkt_buy_strats.htm', in_html=html)
 	html = build_topnav_link( in_str='Markets',     in_url='markets.htm',   in_html=html)
 	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;'>" + mkt_dd + "</td></tr>"
 
@@ -208,9 +251,6 @@ def build_topnav():
 	html = build_topnav_link( in_str='All',    in_url='sales_all.htm',  in_html=html)
 	html = build_topnav_link( in_str='Today',   in_url='sales_today.htm', in_html=html)
 	html = build_topnav_link( in_str='Yesterday',     in_url='sales_yesterday.htm',   in_html=html)
-#	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;' onclick=" + chr(34) + "window.open('/sales_all.htm','_self');" + chr(34) + "><a href='/sales_all.htm'>All</a></td></tr>"
-#	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;' onclick=" + chr(34) + "window.open('/sales_today.htm','_self');" + chr(34) + "><a href='/sales_today.htm'>Today</a></td></tr>"
-#	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;' onclick=" + chr(34) + "window.open('/sales_yesterday.htm','_self');" + chr(34) + "><a href='/sales_yesterday.htm'>Yesterday</a></td></tr>"
 	html += "  <tr>"
 	html += "    <td>"
 	html += "      <table width='100%' border=0 style='background-color:#0000ff;'>"
@@ -231,35 +271,63 @@ def build_topnav():
 	html += "    </td>"
 	html += "  </tr>"
 
-	# Sales By Date
-	html = build_topnav_title(in_str='Sales By Date', in_html=html)
 	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;'>" + s_dt_dd + "</td></tr>"
 	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;'>" + s_m_dd + "</td></tr>"
 	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;'>" + s_y_dd + "</td></tr>"
 
 
-	# Best
-	html = build_topnav_link( in_str='Buy Strats',       in_url='best_strats.htm',        in_html=html)
-	html = build_topnav_link( in_str='Buy Markets',      in_url='best_markets.htm',       in_html=html)
+	# Sales Summary - Test
+	html = build_topnav_title(in_str='Sales Summary - Tests', in_html=html)
+	html = build_topnav_link( in_str='All - Tests',    in_url='sales_all_test.htm',  in_html=html)
+	html = build_topnav_link( in_str='Today - Tests',   in_url='sales_today_test.htm', in_html=html)
+	html = build_topnav_link( in_str='Yesterday - Tests',     in_url='sales_yesterday_test.htm',   in_html=html)
+#	html += "  <tr>"
+#	html += "    <td>"
+#	html += "      <table width='100%' border=0 style='background-color:#0000ff;'>"
+#	html += "        <tr>"
+#	html += "          <td class='dud' style='text-align:left;'>Past</td>"
+#	html += "          <td>"
+#	html += "            <table width='100%' border=0 border=0 style='background-color:#0000ff;'>"
+#	html += "              <tr>"
+#	for x in (3,7,14,30):
+#		html += "            <td class='nav' style='vertical-align:top;text-align:left;' onclick=" + chr(34) + "window.open('/sales_{}d_test.htm','_self');".format(x) + chr(34) + "><a href='/sales_{}d_test.htm'>{}</a></td>".format(x,x)
+#	html += "                <td class='nav' style='vertical-align:top;text-align:left;' onclick=" + chr(34) + "window.open('/sales_all_test.htm','_self');" + chr(34) + "><a href='/sales_all_test.htm'>*</a></td>"
+#	html += "              </tr>"
+#	html += "            </table>"
+#	html += "          </td>"
+#	html += "          <td class='dud' style='text-align:left'>Days</td>"
+#	html += "        </tr>"
+#	html += "      </table>"
+#	html += "    </td>"
+#	html += "  </tr>"
 
-	# Worst
-	html = build_topnav_link( in_str='Worst Strats',       in_url='worst_strats.htm',        in_html=html)
-	html = build_topnav_link( in_str='Worst Markets',      in_url='worst_markets.htm',       in_html=html)
+#	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;'>" + st_dt_dd + "</td></tr>"
+#	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;'>" + st_m_dd + "</td></tr>"
+#	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;'>" + st_y_dd + "</td></tr>"
 
 
-	# Buy Strats
-	html = build_topnav_title(in_str='Buy Strats',             in_html=html)
-	html = build_topnav_link( in_str='Buy Strats Today',       in_url='buy_strats_today.htm',       in_html=html)
-	html = build_topnav_link( in_str='Buy Strats All',         in_url='buy_strats_all.htm',         in_html=html)
-	html = build_topnav_link( in_str='Buy Strats Prods Today', in_url='buy_strats_prods_today.htm', in_html=html)
-	html = build_topnav_link( in_str='Buy Strats Prods All',   in_url='buy_strats_prods_all.htm',   in_html=html)
+	# # Best
+	# html = build_topnav_link( in_str='Buy Strats',       in_url='best_strats.htm',        in_html=html)
+	# html = build_topnav_link( in_str='Buy Markets',      in_url='best_markets.htm',       in_html=html)
 
-	# Sell Strats
-	html = build_topnav_title(in_str='Sell Strats',             in_html=html)
-	html = build_topnav_link( in_str='Sell Strats Today',       in_url='sell_strats_today.htm',       in_html=html)
-	html = build_topnav_link( in_str='Sell Strats All',         in_url='sell_strats_all.htm',         in_html=html)
-	html = build_topnav_link( in_str='Sell Strats Prods Today', in_url='sell_strats_prods_today.htm', in_html=html)
-	html = build_topnav_link( in_str='Sell Strats Prods All',   in_url='sell_strats_prods_all.htm',   in_html=html)
+	# # Worst
+	# html = build_topnav_link( in_str='Worst Strats',       in_url='worst_strats.htm',        in_html=html)
+	# html = build_topnav_link( in_str='Worst Markets',      in_url='worst_markets.htm',       in_html=html)
+
+
+	# # Buy Strats
+	# html = build_topnav_title(in_str='Buy Strats',             in_html=html)
+	# html = build_topnav_link( in_str='Buy Strats Today',       in_url='buy_strats_today.htm',       in_html=html)
+	# html = build_topnav_link( in_str='Buy Strats All',         in_url='buy_strats_all.htm',         in_html=html)
+	# html = build_topnav_link( in_str='Buy Strats Prods Today', in_url='buy_strats_prods_today.htm', in_html=html)
+	# html = build_topnav_link( in_str='Buy Strats Prods All',   in_url='buy_strats_prods_all.htm',   in_html=html)
+
+	# # Sell Strats
+	# html = build_topnav_title(in_str='Sell Strats',             in_html=html)
+	# html = build_topnav_link( in_str='Sell Strats Today',       in_url='sell_strats_today.htm',       in_html=html)
+	# html = build_topnav_link( in_str='Sell Strats All',         in_url='sell_strats_all.htm',         in_html=html)
+	# html = build_topnav_link( in_str='Sell Strats Prods Today', in_url='sell_strats_prods_today.htm', in_html=html)
+	# html = build_topnav_link( in_str='Sell Strats Prods All',   in_url='sell_strats_prods_all.htm',   in_html=html)
 
 	# Misc
 	html = build_topnav_title(in_str='Misc', in_html=html)
@@ -354,7 +422,7 @@ def html_h3_add(t, m=None, u=None, d=None) -> str:
 def html_add(more, m=None, u=None, d=None) -> str:
 	if not u: html_up_add()
 	if not d: html_down_add()
-	if mid:
+	if m:
 		m = '{}{}'.format(m, more)
 	else:
 		m = more
@@ -446,8 +514,9 @@ def build_data_display(data, table_id='first'):
 	html += "<tr>"
 	head_cnt = 0
 	for header in headers:
-		html += "<th class='dt' onclick={}sortTable('{}',{});{}>{}</th>".format('"', table_id, head_cnt, '"', header)
-		head_cnt += 1
+		if header != 'exclude':
+			html += "<th class='dt' style='text-align:center' onclick={}sortTable('{}',{});{}>{}</th>".format('"', table_id, head_cnt, '"', header)
+			head_cnt += 1
 	html += "</tr>"
 	html += "</thead>"
 	html += "<tbody>"
@@ -489,7 +558,16 @@ def build_data_display(data, table_id='first'):
 			try:
 
 				if 0 == 1:
-					print('never going to give you up')
+					print('never going to give you up!')
+
+				elif k in ('exclude'):
+					pass
+
+				elif k in ('prod_id','buy_strat_name','sell_strat_name'):
+					html += build_td_important(v, align='left')
+
+				elif k in ('buy_strat_freq','sell_strat_freq'):
+					html += build_td_important(v, align='center')
 
 				# integer
 				elif isinstance(v, int):
@@ -807,6 +885,18 @@ def build_td_str(v=None) -> str:
 
 #<=====>#
 
+def build_td_important(v=None, align='center') -> str:
+	if not v:
+		return "<td></td>"
+	else:
+		html = ""
+		html += f"<td class='dt' style='text-align:{align};color:#ffffff;background-color:#000000'>"
+		html += "{}".format(v)
+		html += "</td>"
+	return html
+
+#<=====>#
+
 def build_td_bold(v=None) -> str:
 	if not v:
 		return "<td></td>"
@@ -848,7 +938,6 @@ def add_bals_total(t='Total Balance', m=None, u=None, d=None) -> str:
 	print(str(datetime.now()) + " add_bals_total(t, m, u, d, h)")
 #	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
-	t = 'Total Balance'
 	sql = " "
 	sql += "select x.cnt "
 	sql += "  , concat('$',' ', round(x.bal_val_usd,4)) as bal_val_usd "
@@ -868,9 +957,1087 @@ def add_bals_total(t='Total Balance', m=None, u=None, d=None) -> str:
 	sql += "          , sum(b.free_val_usd) as free_val_usd "
 	sql += "          from cbtrade.view_bals b "
 	sql += "       ) x "
+
 	h = build_sql_display(sql,'first')
 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	return m, u, d
+
+#<=====>#
+
+def add_report(
+		t='Sales Summary', 
+		inc_prod_id=False, 
+		inc_pos_id=False, 
+		inc_sd_dt=False, 
+		inc_td_dt=False, 
+		inc_stat=False, 
+		inc_wl=False, 
+		inc_buy_strat_name=False, 
+		inc_buy_strat_freq=False, 
+		inc_sell_strat_name=False, 
+		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+		pos_id=None, 
+		sd_dt1=None, 
+		sd_dt2=None, 
+		td_dt1=None, 
+		td_dt2=None, 
+		stat=None, 
+		wl=None, 
+		buy_strat_name=None, 
+		buy_strat_freq=None, 
+		sell_strat_name=None, 
+		sell_strat_freq=None, 
+		test_tf='ALL',
+		lmt=None, 
+		order_by_sql=None, 
+		m=None, u=None, d=None
+		) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(t={t}, m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	test_tf = str(test_tf)
+	if sd_dt1: sd_dt1_str = sd_dt1.strftime('%Y-%m-%d')
+	if sd_dt2: sd_dt2_str = sd_dt2.strftime('%Y-%m-%d')
+	if td_dt1: td_dt1_str = td_dt1.strftime('%Y-%m-%d')
+	if td_dt2: td_dt2_str = td_dt2.strftime('%Y-%m-%d')
+
+	top_sql = ""
+	mid_sql = ""
+	group_by_sql = ""
+
+	if not order_by_sql:
+		order_by_sql = 'order by x.gain_loss_pct_hr desc'
+
+	if inc_prod_id:
+		top_sql      += " , x.prod_id "
+	if inc_prod_id or prod_id:
+		mid_sql      += " , p.prod_id "
+		group_by_sql += " p.prod_id,"
+
+	if inc_pos_id:
+		top_sql      += " , x.pos_id "
+	if inc_pos_id or pos_id:
+		mid_sql      += " , p.pos_id "
+		group_by_sql += " p.pos_id,"
+
+	if inc_sd_dt:
+		top_sql      += " , x.sd_dt "
+	if inc_sd_dt or sd_dt1 or sd_dt2:
+		mid_sql      += " , date(p.pos_begin_dttm) as sd_dt "
+	if inc_sd_dt:
+		group_by_sql += " date(p.pos_begin_dttm),"
+
+	if inc_td_dt:
+		top_sql      += " , x.td_dt "
+	if inc_td_dt or td_dt1 or td_dt2:
+		mid_sql      += " , date(p.pos_end_dttm) as td_dt "
+	if inc_td_dt:
+		group_by_sql += " date(p.pos_end_dttm),"
+
+	if inc_stat:
+		top_sql      += " , x.pos_stat "
+	if inc_stat or stat:
+		mid_sql      += " , p.pos_stat "
+		group_by_sql += " p.pos_stat,"
+
+	if inc_wl:
+		top_sql      += " , x.wl "
+	if inc_wl or wl:
+		mid_sql      += " , case when p.val_tot > p.tot_out_cnt then 'WIN' else 'LOSE' end as wl "
+		group_by_sql += " case when p.val_tot > p.tot_out_cnt then 'WIN' else 'LOSE' end, "
+
+	if inc_test:
+		top_sql      += " , case when x.test_tf = 1 then 'T' else '' end as test_tf "
+	if inc_test or test_tf:
+		mid_sql      += " , p.test_tf "
+		group_by_sql += " p.test_tf,"
+
+	if inc_buy_strat_name:
+		top_sql      += " , x.buy_strat_name "
+	if inc_buy_strat_name or buy_strat_name:
+		mid_sql      += " , p.buy_strat_name "
+		group_by_sql += " p.buy_strat_name,"
+
+	if inc_buy_strat_freq:
+		top_sql      += " , x.buy_strat_freq "
+	if inc_buy_strat_freq or buy_strat_freq:
+		mid_sql      += " , p.buy_strat_freq "
+		group_by_sql += " p.buy_strat_freq,"
+
+	if inc_sell_strat_name:
+		top_sql      += " , x.sell_strat_name "
+	if inc_sell_strat_name or sell_strat_name:
+		mid_sql      += " , p.sell_strat_name "
+		group_by_sql += " p.sell_strat_name,"
+
+	if inc_sell_strat_freq:
+		top_sql      += " , x.sell_strat_freq "
+	if inc_sell_strat_freq or sell_strat_freq:
+		mid_sql      += " , p.sell_strat_freq "
+		group_by_sql += " p.sell_strat_freq,"
+
+	if group_by_sql != "":
+		group_by_sql = "group by " + group_by_sql
+
+#	print(f'top_sql      : {top_sql}')
+#	print(f'mid_sql      : {mid_sql}')
+#	print(f'group_by_sql : {group_by_sql}')
+
+	# if sql ends with a comma, remove it
+	top_sql = re.sub(r',\s*$', '', top_sql)
+	mid_sql = re.sub(r',\s*$', '', mid_sql)
+	group_by_sql = re.sub(r',\s*$', '', group_by_sql)
+
+#	print(f'top_sql      : {top_sql}')
+#	print(f'mid_sql      : {mid_sql}')
+#	print(f'group_by_sql : {group_by_sql}')
+
+	sql = ""
+	sql += f"select x.exclude "
+	sql += f"  {top_sql} "
+	if not inc_pos_id:
+		sql += "  , x.tot_cnt "
+		sql += "  , x.win_cnt "
+		sql += "  , x.lose_cnt "
+		sql += "  , concat(x.win_pct, ' %') as win_pct "
+		sql += "  , concat(x.lose_pct, ' %') as lose_pct "
+	sql += "  , x.age_hours "
+	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
+	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
+	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
+	sql += "  , concat('$ ', x.val_curr) as val_curr "
+	sql += "  , concat('$ ', x.val_tot) as val_tot "
+	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
+	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
+	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
+	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
+	sql += "  from (select 'x' as exclude  "
+	sql += f"          {mid_sql} "
+	if not inc_pos_id:
+		sql += "          , count(p.pos_id) as tot_cnt  "
+		sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+		sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+		sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
+		sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
+	sql += "          , sum(p.age_mins) as age_mins "
+	sql += "          , sum(p.age_mins) / 60 as age_hours "
+	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
+	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
+	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
+	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
+	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
+	sql += "          , sum(p.buy_cnt) as buy_cnt "
+	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
+	sql += "          , sum(p.hold_cnt) as hold_cnt "
+	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
+	sql += "          , sum(p.clip_cnt) as clip_cnt "
+	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
+	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
+	sql += "          , round(sum(p.val_curr), 2) as val_curr "
+	sql += "          , round(sum(p.val_tot), 2) as val_tot "
+	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
+	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
+	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
+	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
+	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
+	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
+	sql += "          from cbtrade.poss p "
+	sql += "          where ignore_tf = 0 "
+
+	if prod_id:
+		sql += f"     and p.prod_id = '{prod_id}' "
+
+	if pos_id:
+		sql += f"     and p.pos_id = '{pos_id}' "
+
+	if sd_dt1 and not sd_dt2:
+		sql += f"     and date(p.pos_begin_dttm) = str_to_date('{sd_dt1}','%Y-%m-%d') "
+	elif sd_dt2 and not sd_dt1:
+		sql += f"     and date(p.pos_begin_dttm) = str_to_date('{sd_dt2}','%Y-%m-%d') "
+	elif sd_dt1 and sd_dt2:
+		sql += f"     and date(p.pos_begin_dttm) >= str_to_date('{sd_dt1}','%Y-%m-%d') "
+		sql += f"     and date(p.pos_begin_dttm) <= str_to_date('{sd_dt2}','%Y-%m-%d') "
+
+	if td_dt1 and not td_dt2:
+		sql += f"     and date(p.pos_end_dttm) = str_to_date('{td_dt1}','%Y-%m-%d') "
+	elif td_dt2 and not td_dt1:
+		sql += f"     and date(p.pos_end_dttm) = str_to_date('{td_dt2}','%Y-%m-%d') "
+	elif td_dt1 and td_dt2:
+		sql += f"     and date(p.pos_end_dttm) >= str_to_date('{td_dt1}','%Y-%m-%d') "
+		sql += f"     and date(p.pos_end_dttm) <= str_to_date('{td_dt2}','%Y-%m-%d') "
+
+	if stat:
+		sql += f"     and p.pos_stat = '{stat}' "
+
+	if wl:
+		if wl == 'WIN':
+			sql += f" and p.val_tot > p.tot_out_cnt "
+		elif wl == 'LOSE':
+			sql += f" and p.val_tot <= p.tot_out_cnt "
+
+	if buy_strat_name:
+		sql += f"     and p.buy_strat_name = '{buy_strat_name}' "
+
+	if buy_strat_freq:
+		sql += f"     and p.buy_strat_freq = '{buy_strat_freq}' "
+
+	if sell_strat_name:
+		sql += f"     and p.sell_strat_name = '{sell_strat_name}' "
+
+	if sell_strat_freq:
+		sql += f"     and p.sell_strat_freq = '{sell_strat_freq}' "
+
+	if str(test_tf).upper() != 'ALL':
+		if str(test_tf) in ('0', '1'):
+			sql += f"      and test_tf = {test_tf} "
+
+	sql += f"         {group_by_sql} "
+
+	sql += "          ) x "
+	sql += f"  {order_by_sql} "
+
+	if lmt:
+		sql += f"limit {lmt}"
+
+#	db.pretty_print_sql(sql)
+
+	h = build_sql_display(sql,'first')
+	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report_summary(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	m, u, d = add_report(
+		t='Summary - All Time - *', 
+		# inc_prod_id=False, 
+		# inc_pos_id=False, 
+		# inc_sd_dt=False, 
+		# inc_td_dt=False, 
+		# inc_stat=False, 
+		# inc_wl=False, 
+		# inc_buy_strat_name=False, 
+		# inc_buy_strat_freq=False, 
+		# inc_sell_strat_name=False, 
+		# inc_sell_strat_freq=False, 
+		# inc_test=False, 
+		# prod_id=None, 
+		# pos_id=None, 
+		# sd_dt1=None, 
+		# sd_dt2=None, 
+		# td_dt1=None, 
+		# td_dt2=None, 
+		# stat=None, 
+		# wl=None, 
+		# buy_strat_name=None, 
+		# buy_strat_freq=None, 
+		# sell_strat_name=None, 
+		# sell_strat_freq=None, 
+		test_tf=0, 
+		# order_by_sql=None, 
+		# lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary_status(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report_summary_status(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	m, u, d = add_report(
+		t='Summary - By Status - All Time - *', 
+		# inc_prod_id=False, 
+		# inc_pos_id=False, 
+		# inc_sd_dt=False, 
+		# inc_td_dt=False, 
+		inc_stat=True, 
+		# inc_wl=False, 
+		# inc_buy_strat_name=False, 
+		# inc_buy_strat_freq=False, 
+		# inc_sell_strat_name=False, 
+		# inc_sell_strat_freq=False, 
+		# inc_test=False, 
+		# prod_id=None, 
+		# pos_id=None, 
+		# sd_dt1=None, 
+		# sd_dt2=None, 
+		# td_dt1=None, 
+		# td_dt2=None, 
+		# stat=None, 
+		# wl=None, 
+		# buy_strat_name=None, 
+		# buy_strat_freq=None, 
+		# sell_strat_name=None, 
+		# sell_strat_freq=None, 
+		test_tf=0, 
+		# order_by_sql=None, 
+		# lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary_open(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report_summary_open(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	m, u, d = add_report(
+		t='Summary - Open Status - *', 
+		# inc_prod_id=False, 
+		# inc_pos_id=False, 
+		# inc_sd_dt=False, 
+		# inc_td_dt=False, 
+		inc_stat=True, 
+		# inc_wl=False, 
+		# inc_buy_strat_name=False, 
+		# inc_buy_strat_freq=False, 
+		# inc_sell_strat_name=False, 
+		# inc_sell_strat_freq=False, 
+		# inc_test=False, 
+		# prod_id=None, 
+		# pos_id=None, 
+		# sd_dt1=None, 
+		# sd_dt2=None, 
+		# td_dt1=None, 
+		# td_dt2=None, 
+		stat='OPEN', 
+		# wl=None, 
+		# buy_strat_name=None, 
+		# buy_strat_freq=None, 
+		# sell_strat_name=None, 
+		# sell_strat_freq=None, 
+		test_tf=0, 
+#		order_by_sql=None, 
+		# lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary_closed(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report_summary_closed(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	m, u, d = add_report(
+		t='Summary - Closed Status - *', 
+		# inc_prod_id=False, 
+		# inc_pos_id=False, 
+		# inc_sd_dt=False, 
+		# inc_td_dt=False, 
+		inc_stat=True, 
+		# inc_wl=False, 
+		# inc_buy_strat_name=False, 
+		# inc_buy_strat_freq=False, 
+		# inc_sell_strat_name=False, 
+		# inc_sell_strat_freq=False, 
+		# inc_test=False, 
+		# prod_id=None, 
+		# pos_id=None, 
+		# sd_dt1=None, 
+		# sd_dt2=None, 
+		# td_dt1=None, 
+		# td_dt2=None, 
+		stat='CLOSE', 
+		# wl=None, 
+		# buy_strat_name=None, 
+		# buy_strat_freq=None, 
+		# sell_strat_name=None, 
+		# sell_strat_freq=None, 
+		test_tf=0, 
+#		order_by_sql=None, 
+		# lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary_mkt(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report_summary_mkt(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	m, u, d = add_report(
+		t='Markets Summary - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=False, 
+#		inc_sd_dt=False, 
+#		inc_td_dt=False, 
+		inc_stat=True, 
+#		inc_wl=False, 
+#		inc_buy_strat_name=False, 
+#		inc_buy_strat_freq=False, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=True, 
+#		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='ALL', 
+		order_by_sql="Order by x.prod_id, x.pos_stat desc, x.test_tf ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary_mkt_open(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report_summary_mkt_open(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	m, u, d = add_report(
+		t='Markets Summary - Open Positions - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=False, 
+#		inc_sd_dt=False, 
+#		inc_td_dt=False, 
+		inc_stat=True, 
+#		inc_wl=False, 
+#		inc_buy_strat_name=False, 
+#		inc_buy_strat_freq=False, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=True, 
+#		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='ALL', 
+		order_by_sql="Order by x.prod_id, x.pos_stat desc, x.test_tf ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary_mkt_closed(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report_summary_mkt_closed(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	m, u, d = add_report(
+		t='Markets Summary - Closed Positions - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=False, 
+#		inc_sd_dt=False, 
+#		inc_td_dt=False, 
+		inc_stat=True, 
+#		inc_wl=False, 
+#		inc_buy_strat_name=False, 
+#		inc_buy_strat_freq=False, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=True, 
+#		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+		stat='CLOSE', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='ALL', 
+		order_by_sql="Order by x.prod_id, x.pos_stat desc, x.test_tf ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary_mkt_opened_today(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	today = now_utc_get()
+
+	m, u, d = add_report(
+		t='Markets Summary - Opened Today - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=False, 
+#		inc_sd_dt=False, 
+#		inc_td_dt=False, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=False, 
+#		inc_buy_strat_freq=False, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=True, 
+#		prod_id=None, 
+#		pos_id=None, 
+		sd_dt1=today, 
+#		sd_dt2=None, 
+#		td_dt1=today, 
+#		td_dt2=None, 
+#		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='ALL', 
+		order_by_sql="Order by x.prod_id desc, x.test_tf, x.pos_stat desc", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary_mkt_closed_today(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+
+	today = now_utc_get()
+
+	m, u, d = add_report(
+		t='Markets Summary - Opened Today - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=False, 
+#		inc_sd_dt=False, 
+#		inc_td_dt=False, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=False, 
+#		inc_buy_strat_freq=False, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=True, 
+#		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=today, 
+#		td_dt2=None, 
+#		stat='CLOSE', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='ALL', 
+		order_by_sql="Order by x.prod_id desc, x.test_tf, x.pos_stat desc", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary_winlose(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report_summary_winlose(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	m, u, d = add_report(
+		t='Win-Lose Summary - *', 
+#		inc_prod_id=False, 
+#		inc_pos_id=False, 
+#		inc_sd_dt=False, 
+#		inc_td_dt=False, 
+		inc_stat=True, 
+		inc_wl=True, 
+#		inc_buy_strat_name=False, 
+#		inc_buy_strat_freq=False, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+#		inc_test=False, 
+#		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+#		stat=None, 
+		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='ALL', 
+		order_by_sql=None, 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary_winlose_open(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	m, u, d = add_report(
+		t='Win-Lose Summary - Open Positions - *', 
+#		inc_prod_id=False, 
+#		inc_pos_id=False, 
+#		inc_sd_dt=False, 
+#		inc_td_dt=False, 
+		inc_stat=True, 
+		inc_wl=True, 
+#		inc_buy_strat_name=False, 
+#		inc_buy_strat_freq=False, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+#		inc_test=False, 
+#		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+		stat='OPEN', 
+		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='ALL', 
+		order_by_sql=None, 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary_winlose_closed(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+
+	m, u, d = add_report(
+		t='Win-Lose Summary - Closed Positions - *', 
+#		inc_prod_id=False, 
+#		inc_pos_id=False, 
+#		inc_sd_dt=False, 
+#		inc_td_dt=False, 
+		inc_stat=True, 
+		inc_wl=True, 
+#		inc_buy_strat_name=False, 
+#		inc_buy_strat_freq=False, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+#		inc_test=False, 
+#		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+		stat='CLOSE', 
+		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='ALL', 
+		order_by_sql=None, 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary_opened_today(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	today = now_utc_get()
+
+	m, u, d = add_report(
+		t='Summary - Opened Today', 
+		inc_prod_id=False, 
+		inc_pos_id=False, 
+		inc_sd_dt=False, 
+		inc_td_dt=False, 
+		inc_stat=True, 
+		inc_wl=True, 
+		inc_buy_strat_name=False, 
+		inc_buy_strat_freq=False, 
+		inc_sell_strat_name=False, 
+		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+		pos_id=None, 
+		sd_dt1=None, 
+		sd_dt2=None, 
+		td_dt1=today, 
+		td_dt2=None, 
+		stat='CLOSE', 
+		wl=None, 
+		buy_strat_name=None, 
+		buy_strat_freq=None, 
+		sell_strat_name=None, 
+		sell_strat_freq=None, 
+		test_tf=0, 
+		order_by_sql=None, 
+		lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary_closed_today(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	today = now_utc_get()
+
+	m, u, d = add_report(
+		t='Summary - Closed Today', 
+		inc_prod_id=False, 
+		inc_pos_id=False, 
+		inc_sd_dt=False, 
+		inc_td_dt=False, 
+		inc_stat=True, 
+		inc_wl=True, 
+		inc_buy_strat_name=False, 
+		inc_buy_strat_freq=False, 
+		inc_sell_strat_name=False, 
+		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+		pos_id=None, 
+		sd_dt1=None, 
+		sd_dt2=None, 
+		td_dt1=today, 
+		td_dt2=None, 
+		stat='CLOSE', 
+		wl=None, 
+		buy_strat_name=None, 
+		buy_strat_freq=None, 
+		sell_strat_name=None, 
+		sell_strat_freq=None, 
+		test_tf=0, 
+		order_by_sql=None, 
+		lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary_daily_opened(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	m, u, d = add_report(
+		t='Daily Sales Summary - All Time', 
+		inc_prod_id=False, 
+		inc_pos_id=False, 
+		inc_sd_dt=False, 
+		inc_td_dt=True, 
+		inc_stat=False, 
+		inc_wl=False, 
+		inc_buy_strat_name=False, 
+		inc_buy_strat_freq=False, 
+		inc_sell_strat_name=False, 
+		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+		pos_id=None, 
+		sd_dt1=None, 
+		sd_dt2=None, 
+		td_dt1=None, 
+		td_dt2=None, 
+		stat='CLOSE', 
+		wl=None, 
+		buy_strat_name=None, 
+		buy_strat_freq=None, 
+		sell_strat_name=None, 
+		sell_strat_freq=None, 
+		test_tf=0, 
+		order_by_sql="Order by x.td_dt desc", 
+		lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary_daily_closed(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	m, u, d = add_report(
+		t='Daily Sales Summary - All Time', 
+		inc_prod_id=False, 
+		inc_pos_id=False, 
+		inc_sd_dt=False, 
+		inc_td_dt=True, 
+		inc_stat=False, 
+		inc_wl=False, 
+		inc_buy_strat_name=False, 
+		inc_buy_strat_freq=False, 
+		inc_sell_strat_name=False, 
+		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+		pos_id=None, 
+		sd_dt1=None, 
+		sd_dt2=None, 
+		td_dt1=None, 
+		td_dt2=None, 
+		stat='CLOSE', 
+		wl=None, 
+		buy_strat_name=None, 
+		buy_strat_freq=None, 
+		sell_strat_name=None, 
+		sell_strat_freq=None, 
+		test_tf=0, 
+		order_by_sql="Order by x.td_dt desc", 
+		lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_pos_open(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	m, u, d = add_report(
+		t='Markets - Open Positions', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=False, 
+		inc_td_dt=False, 
+		inc_stat=True, 
+		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=False, 
+		inc_sell_strat_freq=False, 
+		inc_test=True, 
+		prod_id=None, 
+		pos_id=None, 
+		sd_dt1=None, 
+		sd_dt2=None, 
+		td_dt1=None, 
+		td_dt2=None, 
+		stat='OPEN', 
+		wl=None, 
+		buy_strat_name=None, 
+		buy_strat_freq=None, 
+		sell_strat_name=None, 
+		sell_strat_freq=None, 
+		test_tf=0, 
+		order_by_sql="Order by x.prod_id, x.pos_id", 
+		lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_pos_closed(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	m, u, d = add_report(
+		t='Markets - Open Positions', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=False, 
+		inc_td_dt=False, 
+		inc_stat=True, 
+		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=False, 
+		inc_sell_strat_freq=False, 
+		inc_test=True, 
+		prod_id=None, 
+		pos_id=None, 
+		sd_dt1=None, 
+		sd_dt2=None, 
+		td_dt1=None, 
+		td_dt2=None, 
+		stat='CLOSE', 
+		wl=None, 
+		buy_strat_name=None, 
+		buy_strat_freq=None, 
+		sell_strat_name=None, 
+		sell_strat_freq=None, 
+		test_tf=0, 
+		order_by_sql="Order by x.prod_id, x.pos_id", 
+		lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_new3(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_new4(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_new5(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_new6(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_new7(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_new8(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_new9(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_new10(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_mkt_pos_open(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	m, u, d = add_report(
+		t='Markets - Open Positions', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=False, 
+		inc_td_dt=False, 
+		inc_stat=True, 
+		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=False, 
+		inc_sell_strat_freq=False, 
+		inc_test=True, 
+		prod_id=None, 
+		pos_id=None, 
+		sd_dt1=None, 
+		sd_dt2=None, 
+		td_dt1=None, 
+		td_dt2=None, 
+		stat='OPEN', 
+		wl=None, 
+		buy_strat_name=None, 
+		buy_strat_freq=None, 
+		sell_strat_name=None, 
+		sell_strat_freq=None, 
+		test_tf=0, 
+		order_by_sql="Order by x.prod_id, x.pos_id", 
+		lmt=None,
+		m=m, u=u, d=d)
 
 	return m, u, d
 
@@ -906,6 +2073,8 @@ def home() -> str:
 	tn = build_topnav()
 #	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
+	today = now_utc_get()
+
 	m     = None
 	u     = None
 	d     = None
@@ -914,658 +2083,72 @@ def home() -> str:
 
 	m, u, d = add_bals_total(t='Total Balance', m=m, u=u, d=d)
 
-	t     = 'Sales Summary - All Time'
-	sql = ""
-	sql += "select x.tot_cnt "
-	sql += "  , x.win_cnt "
-	sql += "  , x.lose_cnt "
-	sql += "  , concat(x.win_pct, ' %') as win_pct "
-	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
-	sql += "  , x.age_hours "
-	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
-	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
-	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
-	sql += "  , concat('$ ', x.val_curr) as val_curr "
-	sql += "  , concat('$ ', x.val_tot) as val_tot "
-	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
-	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
-	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
-	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
-	sql += "  , concat(x.gain_loss_pct_hr * 24 * 30, ' %') as gain_loss_pct_month "
-	sql += "  , concat(x.gain_loss_pct_hr * 24 * 365, ' %') as gain_loss_pct_year "
-	sql += "  from (select count(p.pos_id) as tot_cnt  "
-	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
-	sql += "          , sum(p.age_mins) as age_mins "
-	sql += "          , sum(p.age_mins) / 60 as age_hours "
-	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
-	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
-	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
-	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
-	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
-	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
-	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
-	sql += "          , round(sum(p.val_curr), 2) as val_curr "
-	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
-	sql += "          , round(sum(p.gain_loss_amt),2) as gain_loss_amt "
-	sql += "          , round(sum(p.gain_loss_amt_net),2) as gain_loss_amt_net "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100, 2) as gain_loss_pct "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-	sql += "          from cbtrade.poss p "
-	sql += "          where ignore_tf = 0 "
-	sql += "          and test_tf = 0 "
-	sql += "          order by gain_loss_pct_hr desc "
-	sql += "       ) x "
-	sql += "  "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report_summary(m=m, u=u, d=d)
 
+	m, u, d = add_report_summary_status(m=m, u=u, d=d)
 
-	t     = 'Sales Summary By Status - All Time'
-	sql = ""
-	sql += "select x.pos_stat "
-	sql += "  , x.tot_cnt "
-	sql += "  , x.win_cnt "
-	sql += "  , x.lose_cnt "
-	sql += "  , concat(x.win_pct, ' %') as win_pct "
-	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
-	sql += "  , x.age_hours "
-	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
-	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
-	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
-	sql += "  , concat('$ ', x.val_curr) as val_curr "
-	sql += "  , concat('$ ', x.val_tot) as val_tot "
-	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
-	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
-	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
-	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
-	sql += "  from (select p.pos_stat "
-	sql += "          , count(p.pos_id) as tot_cnt  "
-	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
-	sql += "          , sum(p.age_mins) as age_mins "
-	sql += "          , sum(p.age_mins) / 60 as age_hours "
-	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
-	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
-	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
-	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
-	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
-	sql += "          , sum(p.buy_cnt) as buy_cnt "
-	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
-	sql += "          , sum(p.hold_cnt) as hold_cnt "
-	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
-	sql += "          , sum(p.clip_cnt) as clip_cnt "
-	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
-	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
-	sql += "          , round(sum(p.val_curr), 2) as val_curr "
-	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
-	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
-	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-	sql += "          , p.test_tf "
-	sql += "          from cbtrade.poss p "
-	sql += "          where ignore_tf = 0 "
-	sql += "          and test_tf = 0 "
-	sql += "          group by p.pos_stat "
-	sql += "          ) x "
-	sql += "  order by x.pos_stat desc "
-	h = build_sql_display_old(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report_summary_winlose_closed(m=m, u=u, d=d)
 
+	m, u, d = add_report_summary_open(m=m, u=u, d=d)
 
+	m, u, d = add_report_summary_closed_today(m=m, u=u, d=d)
 
+	m, u, d = add_report_summary_daily_closed(m=m, u=u, d=d)
 
-	t     = 'Daily Sales Summary'
-	sql = ""
-	sql += "select x.dt "
-	sql += "  , x.tot_cnt "
-	sql += "  , x.win_cnt "
-	sql += "  , x.lose_cnt "
-	sql += "  , concat(x.win_pct, ' %') as win_pct "
-	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
-	sql += "  , x.age_hours "
-	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
-	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
-	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
-	sql += "  , concat('$ ', x.val_curr) as val_curr "
-	sql += "  , concat('$ ', x.val_tot) as val_tot "
-	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
-	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
-	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
-	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
-	sql += "  , concat(x.gain_loss_pct_hr * 24 * 30, ' %') as gain_loss_pct_month "
-	sql += "  , concat(x.gain_loss_pct_hr * 24 * 365, ' %') as gain_loss_pct_year "
-	sql += "  from (select date(p.pos_end_dttm) as dt "
-	sql += "          , count(p.pos_id) as tot_cnt  "
-	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
-	sql += "          , sum(p.age_mins) as age_mins "
-	sql += "          , sum(p.age_mins) / 60 as age_hours "
-	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
-	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
-	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
-	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
-	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
-	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
-	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
-	sql += "          , round(sum(p.val_curr), 2) as val_curr "
-	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
-	sql += "          , round(sum(p.gain_loss_amt),2) as gain_loss_amt "
-	sql += "          , round(sum(p.gain_loss_amt_net),2) as gain_loss_amt_net "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100, 2) as gain_loss_pct "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-	sql += "          from cbtrade.poss p "
-	sql += "          where ignore_tf = 0 "
-	sql += "          and test_tf = 0 "
-	sql += "          and pos_stat = 'CLOSE' "
-	sql += "          group by date(p.pos_end_dttm) "
-	sql += "          order by date(p.pos_end_dttm) desc "
-	sql += "       ) x "
-	sql += "  "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report_summary_mkt_closed(m=m, u=u, d=d)
+	m, u, d = add_report_summary_mkt_open(m=m, u=u, d=d)
 
+	m, u, d = add_report_mkt_pos_open(m=m, u=u, d=d)
 
+	sh = html_comb(m=m, u=u, d=d)
 
+	return render_template('web_home.html'
+							, top_nav= tn
+							, page_title = pt
+							, html_disp  = sh
+							)
 
+#<=====>#
 
-#	t     = 'Open Positions Summary - Current'
-#	sql = ""
-#	sql += "select x.pos_stat "
-#	sql += "  , x.tot_cnt "
-#	sql += "  , x.win_cnt "
-#	sql += "  , x.lose_cnt "
-#	sql += "  , concat(x.win_pct, ' %') as win_pct "
-#	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
-#	sql += "  , x.age_hours "
-#	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
-#	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
-#	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
-#	sql += "  , concat('$ ', x.val_curr) as val_curr "
-#	sql += "  , concat('$ ', x.val_tot) as val_tot "
-#	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
-#	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
-#	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
-#	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
-#	sql += "  from (select p.pos_stat "
-#	sql += "          , count(p.pos_id) as tot_cnt  "
-#	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-#	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-#	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-#	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
-#	sql += "          , sum(p.age_mins) as age_mins "
-#	sql += "          , sum(p.age_mins) / 60 as age_hours "
-#	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
-#	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
-#	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
-#	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
-#	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
-#	sql += "          , sum(p.buy_cnt) as buy_cnt "
-#	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
-#	sql += "          , sum(p.hold_cnt) as hold_cnt "
-#	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
-#	sql += "          , sum(p.clip_cnt) as clip_cnt "
-#	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
-#	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
-#	sql += "          , round(sum(p.val_curr), 2) as val_curr "
-#	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-#	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-#	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
-#	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
-#	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
-#	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
-#	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-#	sql += "          , p.test_tf "
-#	sql += "          from cbtrade.poss p "
-#	sql += "          where ignore_tf = 0 "
-#	sql += "          and test_tf = 0 "
-#	sql += "          group by p.pos_stat "
-#	sql += "          ) x "
-#	sql += "  where x.pos_stat = 'OPEN' "
-#	h = build_sql_display(sql,'first')
-#	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-#	m, u, d = html_add(more=h, m=m, u=u, d=d)
+@app.route("/all_reports_test.htm")
+def all_reports_test() -> str:
+	print(str(datetime.now()) + " all_reports_test()")
+	tn = build_topnav()
+#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
+	today = now_utc_get()
 
-	t     = 'Closed Positions Summary - Today'
-	sql = ""
-	sql += "select x.tot_cnt "
-	sql += "  , x.win_cnt "
-	sql += "  , x.lose_cnt "
-	sql += "  , concat(x.win_pct, ' %') as win_pct "
-	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
-	sql += "  , x.age_hours "
-	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
-	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
-	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
-	sql += "  , concat('$ ', x.val_curr) as val_curr "
-	sql += "  , concat('$ ', x.val_tot) as val_tot "
-	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
-	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
-	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
-	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
-	sql += "  from (select p.pos_stat "
-	sql += "          , count(p.pos_id) as tot_cnt  "
-	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
-	sql += "          , sum(p.age_mins) as age_mins "
-	sql += "          , sum(p.age_mins) / 60 as age_hours "
-	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
-	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
-	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
-	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
-	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
-	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
-	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
-	sql += "          , round(sum(p.val_curr), 2) as val_curr "
-	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
-	sql += "          , round(sum(p.gain_loss_amt),2) as gain_loss_amt "
-	sql += "          , round(sum(p.gain_loss_amt_net),2) as gain_loss_amt_net "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100, 2) as gain_loss_pct "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-	sql += "          from cbtrade.poss p "
-	sql += "          where p.ignore_tf = 0 "
-	sql += "          and test_tf = 0 "
-	sql += "          and date(p.pos_end_dttm) = UTC_DATE() "
-	sql += "          group by p.pos_stat "
-	sql += "          ) x "
-	sql += "  where x.pos_stat = 'CLOSE' "
-#	sql += "  order by x.dt desc "
-	h = build_sql_display_old(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m     = None
+	u     = None
+	d     = None
 
+	pt    = 'All Reports For Testing'
 
-	t     = 'Closed Positions Wins & Losses Summary - Today'
-	sql = ""
-	sql += "select x.pos_stat "
-	sql += "  , x.win_loss "
-	sql += "  , x.tot_cnt "
-#	sql += "  , x.win_cnt "
-#	sql += "  , x.lose_cnt "
-#	sql += "  , concat(x.win_pct, ' %') as win_pct "
-#	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
-	sql += "  , x.age_hours "
-	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
-	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
-	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
-	sql += "  , concat('$ ', x.val_curr) as val_curr "
-	sql += "  , concat('$ ', x.val_tot) as val_tot "
-	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
-	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
-	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
-	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
-	sql += "  from (select p.pos_stat "
-	sql += "          , count(p.pos_id) as tot_cnt  "
-	sql += "          , case when p.val_tot > p.tot_out_cnt then 'WIN' else 'LOSS' end as win_loss  "
-#	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-#	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-#	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-#	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
-	sql += "          , sum(p.age_mins) as age_mins "
-	sql += "          , sum(p.age_mins) / 60 as age_hours "
-	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
-	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
-	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
-	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
-	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
-	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
-	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
-	sql += "          , round(sum(p.val_curr), 2) as val_curr "
-	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
-	sql += "          , round(sum(p.gain_loss_amt),2) as gain_loss_amt "
-	sql += "          , round(sum(p.gain_loss_amt_net),2) as gain_loss_amt_net "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100, 2) as gain_loss_pct "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-	sql += "          from cbtrade.poss p "
-	sql += "          where p.ignore_tf = 0 "
-	sql += "          and test_tf = 0 "
-	sql += "          and date(p.pos_end_dttm) = UTC_DATE() "
-	sql += "          group by p.pos_stat "
-	sql += "                 , case when p.val_tot > p.tot_out_cnt then 'WIN' else 'LOSS' end "
-	sql += "          ) x "
-	sql += "  where x.pos_stat = 'CLOSE' "
-	sql += "  order by x.win_loss desc "
-	h = build_sql_display_old(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report_summary(m=m, u=u, d=d)
+	m, u, d = add_report_summary_status(m=m, u=u, d=d)
+	m, u, d = add_report_summary_open(m=m, u=u, d=d)
+	m, u, d = add_report_summary_closed(m=m, u=u, d=d)
 
+	m, u, d = add_report_summary_mkt(m=m, u=u, d=d)
+	m, u, d = add_report_summary_mkt_open(m=m, u=u, d=d)
+	m, u, d = add_report_summary_mkt_closed(m=m, u=u, d=d)
 
-	t     = 'Closed Positions Product Summary - Current'
-	sql = ""
-	sql += "select x.prod_id "
-	sql += "  , x.tot_cnt "
-	sql += "  , x.win_cnt "
-	sql += "  , x.lose_cnt "
-	sql += "  , concat(x.win_pct, ' %') as win_pct "
-	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
-	sql += "  , x.age_hours "
-	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
-	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
-	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
-	sql += "  , concat('$ ', x.val_curr) as val_curr "
-	sql += "  , concat('$ ', x.val_tot) as val_tot "
-	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
-	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
-	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
-	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
-	sql += "  from (select p.prod_id "
-	sql += "          , p.pos_stat "
-	sql += "          , count(p.pos_id) as tot_cnt  "
-	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
-	sql += "          , sum(p.age_mins) as age_mins "
-	sql += "          , sum(p.age_mins) / 60 as age_hours "
-	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
-	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
-	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
-	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
-	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
-	sql += "          , sum(p.buy_cnt) as buy_cnt "
-	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
-	sql += "          , sum(p.hold_cnt) as hold_cnt "
-	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
-	sql += "          , sum(p.clip_cnt) as clip_cnt "
-	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
-	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
-	sql += "          , round(sum(p.val_curr), 2) as val_curr "
-	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
-	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
-	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-	sql += "          , p.test_tf "
-	sql += "          from cbtrade.poss p "
-	sql += "          where p.ignore_tf = 0 "
-	sql += "          and test_tf = 0 "
-	sql += "          and p.pos_stat = 'CLOSE' "
-	sql += "          group by p.prod_id, p.pos_stat "
-	sql += "          ) x "
-	sql += "  order by x.prod_id "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report_summary_winlose(m=m, u=u, d=d)
+	m, u, d = add_report_summary_winlose_open(m=m, u=u, d=d)
+	m, u, d = add_report_summary_winlose_closed(m=m, u=u, d=d)
 
+	m, u, d = add_report_summary_opened_today(m=m, u=u, d=d)
+	m, u, d = add_report_summary_closed_today(m=m, u=u, d=d)
 
-	t     = 'Closed Positions - Today'
-	sql = ""
-	sql += "select x.pos_id"
-	sql += "  , x.prod_id"
-#	sql += "  , x.pos_stat"
-	sql += "  , x.pos_begin_dttm"
-#	sql += "  , x.pos_end_dttm"
-#	sql += "  , x.dt"
-#	sql += "  , x.age_mins"
-	sql += "  , x.age_hours"
-	sql += "  , concat('$ ', x.tot_out_cnt) as spend "
-#	sql += "  , concat('$ ', x.tot_in_cnt) as recvd "
-#	sql += "  , concat('$ ', x.buy_fees_cnt) as buy_fees_cnt "
-#	sql += "  , concat('$ ', x.sell_fees_cnt_tot) as sell_fees_cnt_tot "
-#	sql += "  , concat('$ ', x.fees_cnt_tot) as fees "
-#	sql += "  , x.buy_cnt"
-#	sql += "  , x.sell_cnt_tot"
-#	sql += "  , x.hold_cnt"
-#	sql += "  , x.pocket_cnt"
-#	sql += "  , x.clip_cnt"
-#	sql += "  , concat(x.pocket_pct, ' %') as pocket_pct "
-#	sql += "  , concat(x.clip_pct, ' %') as clip_pct "
-#	sql += "  , x.sell_order_cnt "
-#	sql += "  , x.sell_order_attempt_cnt "
-	sql += "  , concat('$ ', round(x.prc_buy,6)) as prc_buy "
-	sql += "  , concat('$ ', round(x.prc_curr,6)) as prc_curr "
-	sql += "  , concat('$ ', round(x.prc_high,6)) as prc_high "
-#	sql += "  , concat('$ ', round(x.prc_low,6)) as prc_low "
-	sql += "  , concat(round(x.prc_chg_pct,2), ' %') as 'prc chg %' "
-	sql += "  , concat(round(x.prc_chg_pct_high,2), ' %') as 'prc high %' "
-#	sql += "  , concat(round(x.prc_chg_pct_low,2), ' %') as 'prc low %' "
-	sql += "  , concat(round(x.prc_chg_pct_drop,2), ' %') as 'prc drop %' "
-#	sql += "  , concat('$ ', round(x.prc_sell_avg,6)) as prc_sell_avg "
-	sql += "  , concat('$ ', round(x.val_curr,4)) as val_curr "
-	sql += "  , concat('$ ', round(x.val_tot,4)) as val_tot "
-	sql += "  , concat('$ ', round(x.gain_loss_amt_est,4)) as 'gain est' "
-	sql += "  , concat('$ ', round(x.gain_loss_amt_est_high,4)) as 'gain est high' "
-#	sql += "  , concat('$ ', round(x.gain_loss_amt_est_low,4)) 'gain est low' "
-	sql += "  , concat('$ ', round(x.gain_loss_amt,4)) as 'gain' "
-#	sql += "  , concat('$ ', round(x.gain_loss_amt_net,4)) as 'gain net' "
-	sql += "  , concat(round(x.gain_loss_pct_est,3), ' %') as 'gain % est' "
-	sql += "  , concat(round(x.gain_loss_pct_est_high,3), ' %') as 'gain % est high' "
-#	sql += "  , concat(round(x.gain_loss_pct_est_low,3), ' %') as 'gain % est low' "
-	sql += "  , concat(round(x.gain_loss_pct,3), ' %') as 'gain %' "
-	sql += "  , concat(round(x.gain_loss_pct_hr,8), ' %') as 'hourly gain %' "
-	sql += "  , concat(round(x.gain_loss_pct_hr * 24,8), ' %') as 'daily gain %' "
-#	sql += "  , x.buy_strat_type"
-	sql += "  , x.buy_strat_name"
-	sql += "  , x.buy_strat_freq"
-#	sql += "  , x.sell_strat_type"
-	sql += "  , x.sell_strat_name"
-#	sql += "  , x.sell_strat_freq"
-#	sql += "  , x.bo_id"
-#	sql += "  , x.bo_uuid"
-#	sql += "  , x.buy_curr_symb"
-#	sql += "  , x.spend_curr_symb"
-#	sql += "  , x.sell_curr_symb"
-#	sql += "  , x.recv_curr_symb"
-#	sql += "  , x.fees_curr_symb"
-#	sql += "  , x.test_tf"
-	sql += "  from cbtrade.view_pos x "
-	sql += "  where x.pos_stat = 'CLOSE' "
-	sql += "  and x.dt = UTC_DATE() "
-	sql += "  order by x.prod_id, x.pos_id "
-	h = build_sql_display_old(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report_summary_daily_opened(m=m, u=u, d=d)
+	m, u, d = add_report_summary_daily_closed(m=m, u=u, d=d)
 
+	m, u, d = add_report_summary_mkt_opened_today(m=m, u=u, d=d)
+	m, u, d = add_report_summary_mkt_closed_today(m=m, u=u, d=d)
 
-	t     = 'Open Positions Wins & Losses Summary - Today'
-	sql = ""
-	sql += "select x.pos_stat "
-	sql += "  , x.win_loss "
-	sql += "  , x.tot_cnt "
-#	sql += "  , x.win_cnt "
-#	sql += "  , x.lose_cnt "
-#	sql += "  , concat(x.win_pct, ' %') as win_pct "
-#	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
-	sql += "  , x.age_hours "
-	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
-	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
-	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
-	sql += "  , concat('$ ', x.val_curr) as val_curr "
-	sql += "  , concat('$ ', x.val_tot) as val_tot "
-	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
-	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
-	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
-	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
-	sql += "  from (select p.pos_stat "
-	sql += "          , count(p.pos_id) as tot_cnt  "
-	sql += "          , case when p.val_tot > p.tot_out_cnt then 'WIN' else 'LOSS' end as win_loss  "
-#	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-#	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-#	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-#	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
-	sql += "          , sum(p.age_mins) as age_mins "
-	sql += "          , sum(p.age_mins) / 60 as age_hours "
-	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
-	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
-	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
-	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
-	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
-	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
-	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
-	sql += "          , round(sum(p.val_curr), 2) as val_curr "
-	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
-	sql += "          , round(sum(p.gain_loss_amt),2) as gain_loss_amt "
-	sql += "          , round(sum(p.gain_loss_amt_net),2) as gain_loss_amt_net "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100, 2) as gain_loss_pct "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-	sql += "          from cbtrade.poss p "
-	sql += "          where p.ignore_tf = 0 "
-	sql += "          and test_tf = 0 "
-#	sql += "          and date(p.pos_end_dttm) = UTC_DATE() "
-	sql += "          group by p.pos_stat "
-	sql += "                 , case when p.val_tot > p.tot_out_cnt then 'WIN' else 'LOSS' end "
-	sql += "          ) x "
-	sql += "  where x.pos_stat in ('OPEN','SELL') "
-	sql += "  order by x.win_loss desc "
-	h = build_sql_display_old(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report_summary_mkt_open(m=m, u=u, d=d)
 
-
-	t     = 'Open Positions Product Summary - Current'
-	sql = ""
-	sql += "select x.prod_id "
-	sql += "  , x.tot_cnt "
-	sql += "  , x.win_cnt "
-	sql += "  , x.lose_cnt "
-	sql += "  , concat(x.win_pct, ' %') as win_pct "
-	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
-	sql += "  , x.age_hours "
-	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
-	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
-	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
-	sql += "  , concat('$ ', x.val_curr) as val_curr "
-	sql += "  , concat('$ ', x.val_tot) as val_tot "
-	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
-	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
-	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
-	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
-	sql += "  from (select p.prod_id "
-	sql += "          , p.pos_stat "
-	sql += "          , count(p.pos_id) as tot_cnt  "
-	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
-	sql += "          , sum(p.age_mins) as age_mins "
-	sql += "          , sum(p.age_mins) / 60 as age_hours "
-	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
-	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
-	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
-	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
-	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
-	sql += "          , sum(p.buy_cnt) as buy_cnt "
-	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
-	sql += "          , sum(p.hold_cnt) as hold_cnt "
-	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
-	sql += "          , sum(p.clip_cnt) as clip_cnt "
-	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
-	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
-	sql += "          , round(sum(p.val_curr), 2) as val_curr "
-	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
-	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
-	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-	sql += "          , p.test_tf "
-	sql += "          from cbtrade.poss p "
-	sql += "          where p.ignore_tf = 0 "
-	sql += "          and test_tf = 0 "
-	sql += "          group by p.prod_id, p.pos_stat "
-	sql += "          ) x "
-	sql += "  where x.pos_stat = 'OPEN' "
-	sql += "  order by x.prod_id "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-
-	t     = 'Open Positions - Current'
-	sql = ""
-	sql += "select x.pos_id"
-	sql += "  , x.prod_id"
-#	sql += "  , x.pos_stat"
-	sql += "  , x.pos_begin_dttm"
-#	sql += "  , x.pos_end_dttm"
-#	sql += "  , x.dt"
-#	sql += "  , x.age_mins"
-	sql += "  , x.age_hours"
-	sql += "  , concat('$ ', x.tot_out_cnt) as spend "
-#	sql += "  , concat('$ ', x.tot_in_cnt) as recvd "
-#	sql += "  , concat('$ ', x.buy_fees_cnt) as buy_fees_cnt "
-#	sql += "  , concat('$ ', x.sell_fees_cnt_tot) as sell_fees_cnt_tot "
-#	sql += "  , concat('$ ', x.fees_cnt_tot) as fees "
-#	sql += "  , x.buy_cnt"
-#	sql += "  , x.sell_cnt_tot"
-#	sql += "  , x.hold_cnt"
-#	sql += "  , x.pocket_cnt"
-#	sql += "  , x.clip_cnt"
-#	sql += "  , concat(x.pocket_pct, ' %') as pocket_pct "
-#	sql += "  , concat(x.clip_pct, ' %') as clip_pct "
-#	sql += "  , x.sell_order_cnt "
-#	sql += "  , x.sell_order_attempt_cnt "
-	sql += "  , concat('$ ', round(x.prc_buy,6)) as prc_buy "
-	sql += "  , concat('$ ', round(x.prc_curr,6)) as prc_curr "
-	sql += "  , concat('$ ', round(x.prc_high,6)) as prc_high "
-#	sql += "  , concat('$ ', round(x.prc_low,6)) as prc_low "
-	sql += "  , concat(round(x.prc_chg_pct,2), ' %') as 'prc chg %' "
-	sql += "  , concat(round(x.prc_chg_pct_high,2), ' %') as 'prc high %' "
-#	sql += "  , concat(round(x.prc_chg_pct_low,2), ' %') as 'prc low %' "
-	sql += "  , concat(round(x.prc_chg_pct_drop,2), ' %') as 'prc drop %' "
-#	sql += "  , concat('$ ', round(x.prc_sell_avg,6)) as prc_sell_avg "
-	sql += "  , concat('$ ', round(x.val_curr,4)) as val_curr "
-	sql += "  , concat('$ ', round(x.val_tot,4)) as val_tot "
-	sql += "  , concat('$ ', round(x.gain_loss_amt_est,4)) as 'gain est' "
-	sql += "  , concat('$ ', round(x.gain_loss_amt_est_high,4)) as 'gain est high' "
-#	sql += "  , concat('$ ', round(x.gain_loss_amt_est_low,4)) 'gain est low' "
-	sql += "  , concat('$ ', round(x.gain_loss_amt,4)) as 'gain' "
-#	sql += "  , concat('$ ', round(x.gain_loss_amt_net,4)) as 'gain net' "
-	sql += "  , concat(round(x.gain_loss_pct_est,3), ' %') as 'gain % est' "
-	sql += "  , concat(round(x.gain_loss_pct_est_high,3), ' %') as 'gain % est high' "
-#	sql += "  , concat(round(x.gain_loss_pct_est_low,3), ' %') as 'gain % est low' "
-	sql += "  , concat(round(x.gain_loss_pct,3), ' %') as 'gain %' "
-	sql += "  , concat(round(x.gain_loss_pct_hr,8), ' %') as 'hourly gain %' "
-	sql += "  , concat(round(x.gain_loss_pct_hr * 24,8), ' %') as 'daily gain %' "
-#	sql += "  , x.buy_strat_type"
-	sql += "  , x.buy_strat_name"
-	sql += "  , x.buy_strat_freq"
-#	sql += "  , x.sell_strat_type"
-#	sql += "  , x.sell_strat_name"
-#	sql += "  , x.sell_strat_freq"
-#	sql += "  , x.bo_id"
-#	sql += "  , x.bo_uuid"
-#	sql += "  , x.buy_curr_symb"
-#	sql += "  , x.spend_curr_symb"
-#	sql += "  , x.sell_curr_symb"
-#	sql += "  , x.recv_curr_symb"
-#	sql += "  , x.fees_curr_symb"
-#	sql += "  , x.test_tf"
-	sql += "  from cbtrade.view_pos x "
-	sql += "  where x.pos_stat = 'OPEN' "
-	sql += "  order by x.prod_id, x.pos_id "
-	h = build_sql_display_old(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
+	m, u, d = add_report_mkt_pos_open(m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
 
@@ -1776,9 +2359,9 @@ def balances() -> str:
 #<=====>#
 
 @app.route("/open.htm")
-@app.route("/open_poss.htm")
-def open_poss() -> str:
-	print(str(datetime.now()) + " open_poss()")
+@app.route("/open_positions.htm")
+def open_positions() -> str:
+	print(str(datetime.now()) + " open_positions()")
 	tn = build_topnav()
 
 	m     = None
@@ -1787,275 +2370,35 @@ def open_poss() -> str:
 
 	pt    = 'Open Positions'
 
-	t     = 'Open Positions - Summary - New'
-	sql = " "
-	sql += "select (select concat('$',' ', round(bal_avail,6)) from cbtrade.bals b where b.symb = 'USDC') as avail "
-	sql += "  , x.stat "
-	sql += "  , x.tot_cnt "
-	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-	sql += "  , concat('$',' ', x.fees_val_tot) as fees_val_tot "
-	sql += "  , concat('$',' ', x.sell_val_tot) as sell_val_tot "
-	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-	sql += "  , concat('$',' ', x.gain_amt) as gain_loss_amt "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-	sql += "  from ( "
-	sql += "select p.pos_stat as stat "
-	sql += "  , count(p.pos_id) as tot_cnt "
-	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-	sql += "  , sum(p.clip_val) as clip_val_tot "
-	sql += "  , sum(p.sell_val) as sell_val_tot "
-	sql += "  , sum(p.age_mins) as age_mins "
-	sql += "  , sum(p.gain_amt) as gain_amt  "
-	sql += "  from view_pos p "
-	sql += "  where 1=1 "
-	sql += "  and p.pos_stat in ('OPEN','SELL') "
-	sql += "  group by p.pos_stat "
-	sql += "  order by p.pos_stat "
-	sql += "  ) x "
-	sql += "order by 1 desc, 2 desc "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report_summary_open(m=m, u=u, d=d)
+	m, u, d = add_report_summary_mkt_open(m=m, u=u, d=d)
+	m, u, d = add_report_pos_open(m=m, u=u, d=d)
 
+	sh = html_comb(m=m, u=u, d=d)
 
-	t     = 'Open Positions - Market Summaries - Winners - New'
-	sql = " "
-	sql += "select x.prod_id "
-	sql += "  , x.stat "
-	sql += "  , x.tot_cnt "
-	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-	sql += "  , concat('$',' ', x.fees_val_tot) as fees_val_tot "
-	sql += "  , concat('$',' ', x.sell_val_tot) as sell_val_tot "
-	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-	sql += "  from ( "
-	sql += "select p.prod_id "
-	sql += "  , p.pos_stat as stat "
-	sql += "  , count(p.pos_id) as tot_cnt "
-	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-	sql += "  , sum(p.clip_val) as clip_val_tot "
-	sql += "  , sum(p.sell_val) as sell_val_tot "
-	sql += "  , sum(p.age_mins) as age_mins "
-	sql += "  , sum(p.gain_amt) as gain_amt  "
-	sql += "  from view_pos p "
-	sql += "  where 1=1 "
-	sql += "          and ignore_tf = 0 "
-	sql += "          and test_tf = 0 "
-	sql += "  and p.pos_stat in ('OPEN','SELL') "
-	sql += "  and p.sell_val > p.buy_val "
-	sql += "  group by p.prod_id, p.pos_stat "
-	sql += "  order by p.prod_id, p.pos_stat "
-	sql += "  ) x "
-	sql += "order by 16 desc "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	return render_template('web_home.html'
+							, top_nav= tn
+							, page_title = pt
+							, html_disp  = sh
+							)
 
+#<=====>#
 
-	t     = 'Open Positions - Current - Winners - New'
-	sql = ""
-	sql += "select x.pos_id"
-	sql += "  , x.prod_id"
-#	sql += "  , x.pos_stat"
-	sql += "  , x.pos_begin_dttm"
-#	sql += "  , x.pos_end_dttm"
-#	sql += "  , x.dt"
-#	sql += "  , x.age_mins"
-	sql += "  , x.age_hours"
-	sql += "  , concat('$ ', x.tot_out_cnt) as spend "
-#	sql += "  , concat('$ ', x.tot_in_cnt) as recvd "
-#	sql += "  , concat('$ ', x.buy_fees_cnt) as buy_fees_cnt "
-#	sql += "  , concat('$ ', x.sell_fees_cnt_tot) as sell_fees_cnt_tot "
-#	sql += "  , concat('$ ', x.fees_cnt_tot) as fees "
-#	sql += "  , x.buy_cnt"
-#	sql += "  , x.sell_cnt_tot"
-#	sql += "  , x.hold_cnt"
-#	sql += "  , x.pocket_cnt"
-#	sql += "  , x.clip_cnt"
-#	sql += "  , concat(x.pocket_pct, ' %') as pocket_pct "
-#	sql += "  , concat(x.clip_pct, ' %') as clip_pct "
-#	sql += "  , x.sell_order_cnt "
-#	sql += "  , x.sell_order_attempt_cnt "
-	sql += "  , concat('$ ', round(x.prc_buy,6)) as prc_buy "
-	sql += "  , concat('$ ', round(x.prc_curr,6)) as prc_curr "
-	sql += "  , concat('$ ', round(x.prc_high,6)) as prc_high "
-#	sql += "  , concat('$ ', round(x.prc_low,6)) as prc_low "
-	sql += "  , concat(round(x.prc_chg_pct,2), ' %') as 'prc chg %' "
-	sql += "  , concat(round(x.prc_chg_pct_high,2), ' %') as 'prc high %' "
-#	sql += "  , concat(round(x.prc_chg_pct_low,2), ' %') as 'prc low %' "
-	sql += "  , concat(round(x.prc_chg_pct_drop,2), ' %') as 'prc drop %' "
-#	sql += "  , concat('$ ', round(x.prc_sell_avg,6)) as prc_sell_avg "
-	sql += "  , concat('$ ', round(x.val_curr,4)) as val_curr "
-	sql += "  , concat('$ ', round(x.val_tot,4)) as val_tot "
-	sql += "  , concat('$ ', round(x.gain_loss_amt_est,4)) as 'gain est' "
-	sql += "  , concat('$ ', round(x.gain_loss_amt_est_high,4)) as 'gain est high' "
-#	sql += "  , concat('$ ', round(x.gain_loss_amt_est_low,4)) 'gain est low' "
-	sql += "  , concat('$ ', round(x.gain_loss_amt,4)) as 'gain' "
-#	sql += "  , concat('$ ', round(x.gain_loss_amt_net,4)) as 'gain net' "
-	sql += "  , concat(round(x.gain_loss_pct_est,3), ' %') as 'gain % est' "
-	sql += "  , concat(round(x.gain_loss_pct_est_high,3), ' %') as 'gain % est high' "
-#	sql += "  , concat(round(x.gain_loss_pct_est_low,3), ' %') as 'gain % est low' "
-	sql += "  , concat(round(x.gain_loss_pct,3), ' %') as 'gain %' "
-	sql += "  , concat(round(x.gain_loss_pct_hr,8), ' %') as 'hourly gain %' "
-#	sql += "  , x.buy_strat_type"
-	sql += "  , x.buy_strat_name"
-	sql += "  , x.buy_strat_freq"
-#	sql += "  , x.sell_strat_type"
-#	sql += "  , x.sell_strat_name"
-#	sql += "  , x.sell_strat_freq"
-#	sql += "  , x.bo_id"
-#	sql += "  , x.bo_uuid"
-#	sql += "  , x.buy_curr_symb"
-#	sql += "  , x.spend_curr_symb"
-#	sql += "  , x.sell_curr_symb"
-#	sql += "  , x.recv_curr_symb"
-#	sql += "  , x.fees_curr_symb"
-#	sql += "  , x.test_tf"
-	sql += "  from cbtrade.view_pos x "
-	sql += "  where x.pos_stat = 'OPEN' "
-	sql += "  and x.prc_chg_pct > 0 "
-	sql += "  order by x.prod_id, x.pos_id "
-	h = build_sql_display_old(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+@app.route("/closed.htm")
+@app.route("/closed_positions.htm")
+def closed_positions() -> str:
+	print(str(datetime.now()) + " closed_positions()")
+	tn = build_topnav()
 
+	m     = None
+	u     = None
+	d     = None
 
+	pt    = 'Closed Positions'
 
-	t     = 'Open Positions - Current - New'
-	sql = ""
-	sql += "select x.pos_id"
-	sql += "  , x.prod_id"
-#	sql += "  , x.pos_stat"
-	sql += "  , x.pos_begin_dttm"
-#	sql += "  , x.pos_end_dttm"
-#	sql += "  , x.dt"
-#	sql += "  , x.age_mins"
-	sql += "  , x.age_hours"
-	sql += "  , concat('$ ', x.tot_out_cnt) as spend "
-#	sql += "  , concat('$ ', x.tot_in_cnt) as recvd "
-#	sql += "  , concat('$ ', x.buy_fees_cnt) as buy_fees_cnt "
-#	sql += "  , concat('$ ', x.sell_fees_cnt_tot) as sell_fees_cnt_tot "
-#	sql += "  , concat('$ ', x.fees_cnt_tot) as fees "
-#	sql += "  , x.buy_cnt"
-#	sql += "  , x.sell_cnt_tot"
-#	sql += "  , x.hold_cnt"
-#	sql += "  , x.pocket_cnt"
-#	sql += "  , x.clip_cnt"
-#	sql += "  , concat(x.pocket_pct, ' %') as pocket_pct "
-#	sql += "  , concat(x.clip_pct, ' %') as clip_pct "
-#	sql += "  , x.sell_order_cnt "
-#	sql += "  , x.sell_order_attempt_cnt "
-	sql += "  , concat('$ ', round(x.prc_buy,6)) as prc_buy "
-	sql += "  , concat('$ ', round(x.prc_curr,6)) as prc_curr "
-	sql += "  , concat('$ ', round(x.prc_high,6)) as prc_high "
-#	sql += "  , concat('$ ', round(x.prc_low,6)) as prc_low "
-	sql += "  , concat(round(x.prc_chg_pct,2), ' %') as 'prc chg %' "
-	sql += "  , concat(round(x.prc_chg_pct_high,2), ' %') as 'prc high %' "
-#	sql += "  , concat(round(x.prc_chg_pct_low,2), ' %') as 'prc low %' "
-	sql += "  , concat(round(x.prc_chg_pct_drop,2), ' %') as 'prc drop %' "
-#	sql += "  , concat('$ ', round(x.prc_sell_avg,6)) as prc_sell_avg "
-	sql += "  , concat('$ ', round(x.val_curr,4)) as val_curr "
-	sql += "  , concat('$ ', round(x.val_tot,4)) as val_tot "
-	sql += "  , concat('$ ', round(x.gain_loss_amt_est,4)) as 'gain est' "
-	sql += "  , concat('$ ', round(x.gain_loss_amt_est_high,4)) as 'gain est high' "
-#	sql += "  , concat('$ ', round(x.gain_loss_amt_est_low,4)) 'gain est low' "
-	sql += "  , concat('$ ', round(x.gain_loss_amt,4)) as 'gain' "
-#	sql += "  , concat('$ ', round(x.gain_loss_amt_net,4)) as 'gain net' "
-	sql += "  , concat(round(x.gain_loss_pct_est,3), ' %') as 'gain % est' "
-	sql += "  , concat(round(x.gain_loss_pct_est_high,3), ' %') as 'gain % est high' "
-#	sql += "  , concat(round(x.gain_loss_pct_est_low,3), ' %') as 'gain % est low' "
-	sql += "  , concat(round(x.gain_loss_pct,3), ' %') as 'gain %' "
-	sql += "  , concat(round(x.gain_loss_pct_hr,8), ' %') as 'hourly gain %' "
-#	sql += "  , x.buy_strat_type"
-	sql += "  , x.buy_strat_name"
-	sql += "  , x.buy_strat_freq"
-#	sql += "  , x.sell_strat_type"
-#	sql += "  , x.sell_strat_name"
-#	sql += "  , x.sell_strat_freq"
-#	sql += "  , x.bo_id"
-#	sql += "  , x.bo_uuid"
-#	sql += "  , x.buy_curr_symb"
-#	sql += "  , x.spend_curr_symb"
-#	sql += "  , x.sell_curr_symb"
-#	sql += "  , x.recv_curr_symb"
-#	sql += "  , x.fees_curr_symb"
-#	sql += "  , x.test_tf"
-	sql += "  from cbtrade.view_pos x "
-	sql += "  where x.pos_stat = 'OPEN' "
-	sql += "  order by x.prod_id, x.pos_id "
-	h = build_sql_display_old(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-
-
-#	t     = 'Open Positions - Market Summaries - New'
-#	sql = " "
-#	sql += "select x.prod_id "
-#	sql += "  , x.stat "
-#	sql += "  , x.tot_cnt "
-#	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-#	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-#	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-#	sql += "  , concat('$',' ', x.fees_val_tot) as fees_val_tot "
-#	sql += "  , concat('$',' ', x.sell_val_tot) as sell_val_tot "
-#	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-#	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-#	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-#	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-#	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-#	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-#	sql += "  from ( "
-#	sql += "select p.prod_id "
-#	sql += "  , p.pos_stat as stat "
-#	sql += "  , count(p.pos_id) as tot_cnt "
-#	sql += "  , sum(case when p.sell_val > p.buy_val then 1 else 0 end) as win_cnt  "
-#	sql += "  , sum(case when p.sell_val < p.buy_val then 1 else 0 end) as lose_cnt  "
-#	sql += "  , sum(p.fees_tot) as fees_val_tot "
-#	sql += "  , sum(p.buy_val) as buy_val_tot "
-#	sql += "  , sum(p.recv) as recv_tot "
-#	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-#	sql += "  , sum(p.clip_val) as clip_val_tot "
-#	sql += "  , sum(p.sell_val) as sell_val_tot "
-#	sql += "  , sum(p.age_mins) as age_mins "
-#	sql += "  , sum(p.gain_amt) as gain_amt  "
-#	sql += "  from view_pos p "
-#	sql += "  where 1=1 "
-#	sql += "  and p.pos_stat in ('OPEN','SELL') "
-#	sql += "  group by p.prod_id, p.pos_stat "
-#	sql += "  order by p.prod_id, p.pos_stat "
-#	sql += "  ) x "
-#	sql += "order by 1, 2 desc "
-#	h = build_sql_display(sql,'first')
-#	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-#	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report_summary_closed(m=m, u=u, d=d)
+	m, u, d = add_report_summary_mkt_closed(m=m, u=u, d=d)
+	m, u, d = add_report_pos_closed(m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
 
@@ -2079,72 +2422,67 @@ def buys_recent() -> str:
 
 	pt    = 'Buys - Recent'
 
-	t     = 'Recent Buys'
-	sql = ""
-	sql += "select x.pos_id"
-	sql += "  , x.prod_id"
-	sql += "  , x.pos_stat"
-	sql += "  , x.pos_begin_dttm"
-#	sql += "  , x.pos_end_dttm"
-#	sql += "  , x.dt"
-#	sql += "  , x.age_mins"
-	sql += "  , x.age_hours"
-#	sql += "  , x.buy_strat_type"
-	sql += "  , x.buy_strat_name"
-	sql += "  , x.buy_strat_freq"
-	sql += "  , x.sell_strat_type"
-	sql += "  , x.sell_strat_name"
-#	sql += "  , x.sell_strat_freq"
-	sql += "  , concat('$ ', x.tot_out_cnt) as spend "
-#	sql += "  , concat('$ ', x.tot_in_cnt) as recvd "
-#	sql += "  , concat('$ ', x.buy_fees_cnt) as buy_fees_cnt "
-#	sql += "  , concat('$ ', x.sell_fees_cnt_tot) as sell_fees_cnt_tot "
-#	sql += "  , concat('$ ', x.fees_cnt_tot) as fees "
-#	sql += "  , x.buy_cnt"
-#	sql += "  , x.sell_cnt_tot"
-#	sql += "  , x.hold_cnt"
-#	sql += "  , x.pocket_cnt"
-#	sql += "  , x.clip_cnt"
-#	sql += "  , concat(x.pocket_pct, ' %') as pocket_pct "
-#	sql += "  , concat(x.clip_pct, ' %') as clip_pct "
-#	sql += "  , x.sell_order_cnt "
-#	sql += "  , x.sell_order_attempt_cnt "
-	sql += "  , concat('$ ', round(x.prc_buy,6)) as prc_buy "
-	sql += "  , concat('$ ', round(x.prc_curr,6)) as prc_curr "
-	sql += "  , concat('$ ', round(x.prc_high,6)) as prc_high "
-#	sql += "  , concat('$ ', round(x.prc_low,6)) as prc_low "
-	sql += "  , concat(round(x.prc_chg_pct,2), ' %') as 'prc chg %' "
-	sql += "  , concat(round(x.prc_chg_pct_high,2), ' %') as 'prc high %' "
-#	sql += "  , concat(round(x.prc_chg_pct_low,2), ' %') as 'prc low %' "
-	sql += "  , concat(round(x.prc_chg_pct_drop,2), ' %') as 'prc drop %' "
-#	sql += "  , concat('$ ', round(x.prc_sell_avg,6)) as prc_sell_avg "
-	sql += "  , concat('$ ', round(x.val_curr,4)) as val_curr "
-	sql += "  , concat('$ ', round(x.val_tot,4)) as val_tot "
-	sql += "  , concat('$ ', round(x.gain_loss_amt_est,4)) as 'gain est' "
-	sql += "  , concat('$ ', round(x.gain_loss_amt_est_high,4)) as 'gain est high' "
-#	sql += "  , concat('$ ', round(x.gain_loss_amt_est_low,4)) 'gain est low' "
-	sql += "  , concat('$ ', round(x.gain_loss_amt,4)) as 'gain' "
-#	sql += "  , concat('$ ', round(x.gain_loss_amt_net,4)) as 'gain net' "
-	sql += "  , concat(round(x.gain_loss_pct_est,3), ' %') as 'gain % est' "
-	sql += "  , concat(round(x.gain_loss_pct_est_high,3), ' %') as 'gain % est high' "
-#	sql += "  , concat(round(x.gain_loss_pct_est_low,3), ' %') as 'gain % est low' "
-	sql += "  , concat(round(x.gain_loss_pct,3), ' %') as 'gain %' "
-	sql += "  , concat(round(x.gain_loss_pct_hr,8), ' %') as 'hourly gain %' "
-#	sql += "  , x.bo_id"
-#	sql += "  , x.bo_uuid"
-#	sql += "  , x.buy_curr_symb"
-#	sql += "  , x.spend_curr_symb"
-#	sql += "  , x.sell_curr_symb"
-#	sql += "  , x.recv_curr_symb"
-#	sql += "  , x.fees_curr_symb"
-#	sql += "  , x.test_tf"
-	sql += "  from cbtrade.view_pos x "
-	sql += "  where 1=1 "
-	sql += "  order by x.pos_begin_dttm desc "
-	sql += "  limit 50 "
-	h = build_sql_display_old(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	disp_cnt = 100
+	m, u, d = add_report(
+		t=f'Last {disp_cnt} Opened Positions', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=False, 
+		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+		pos_id=None, 
+		sd_dt1=None, 
+		sd_dt2=None, 
+		td_dt1=None, 
+		td_dt2=None, 
+		stat='OPEN', 
+		wl=None, 
+		buy_strat_name=None, 
+		buy_strat_freq=None, 
+		sell_strat_name=None, 
+		sell_strat_freq=None, 
+		test_tf=0, 
+		order_by_sql="Order by x.pos_id desc", 
+		lmt=disp_cnt,
+		m=m, u=u, d=d)
+
+	disp_cnt = 100
+	m, u, d = add_report(
+		t=f'Last {disp_cnt} Opened Positions - Test', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=False, 
+		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+		pos_id=None, 
+		sd_dt1=None, 
+		sd_dt2=None, 
+		td_dt1=None, 
+		td_dt2=None, 
+		stat='OPEN', 
+		wl=None, 
+		buy_strat_name=None, 
+		buy_strat_freq=None, 
+		sell_strat_name=None, 
+		sell_strat_freq=None, 
+		test_tf=1, 
+		order_by_sql="Order by x.pos_id desc", 
+		lmt=disp_cnt,
+		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
 
@@ -2168,72 +2506,169 @@ def sells_recent() -> str:
 
 	pt    = 'Sells - Recent'
 
-	t     = 'Recent Sells'
-	sql = ""
-	sql += "select x.pos_id"
-	sql += "  , x.prod_id"
-	sql += "  , x.pos_stat"
-#	sql += "  , x.pos_begin_dttm"
-	sql += "  , x.pos_end_dttm"
-#	sql += "  , x.dt"
-#	sql += "  , x.age_mins"
-	sql += "  , x.age_hours"
-#	sql += "  , x.buy_strat_type"
-	sql += "  , x.buy_strat_name"
-	sql += "  , x.buy_strat_freq"
-	sql += "  , x.sell_strat_type"
-	sql += "  , x.sell_strat_name"
-#	sql += "  , x.sell_strat_freq"
-	sql += "  , concat('$ ', x.tot_out_cnt) as spend "
-#	sql += "  , concat('$ ', x.tot_in_cnt) as recvd "
-#	sql += "  , concat('$ ', x.buy_fees_cnt) as buy_fees_cnt "
-#	sql += "  , concat('$ ', x.sell_fees_cnt_tot) as sell_fees_cnt_tot "
-#	sql += "  , concat('$ ', x.fees_cnt_tot) as fees "
-#	sql += "  , x.buy_cnt"
-#	sql += "  , x.sell_cnt_tot"
-#	sql += "  , x.hold_cnt"
-#	sql += "  , x.pocket_cnt"
-#	sql += "  , x.clip_cnt"
-#	sql += "  , concat(x.pocket_pct, ' %') as pocket_pct "
-#	sql += "  , concat(x.clip_pct, ' %') as clip_pct "
-#	sql += "  , x.sell_order_cnt "
-#	sql += "  , x.sell_order_attempt_cnt "
-	sql += "  , concat('$ ', round(x.prc_buy,6)) as prc_buy "
-	sql += "  , concat('$ ', round(x.prc_curr,6)) as prc_curr "
-	sql += "  , concat('$ ', round(x.prc_high,6)) as prc_high "
-#	sql += "  , concat('$ ', round(x.prc_low,6)) as prc_low "
-	sql += "  , concat(round(x.prc_chg_pct,2), ' %') as 'prc chg %' "
-	sql += "  , concat(round(x.prc_chg_pct_high,2), ' %') as 'prc high %' "
-#	sql += "  , concat(round(x.prc_chg_pct_low,2), ' %') as 'prc low %' "
-	sql += "  , concat(round(x.prc_chg_pct_drop,2), ' %') as 'prc drop %' "
-#	sql += "  , concat('$ ', round(x.prc_sell_avg,6)) as prc_sell_avg "
-	sql += "  , concat('$ ', round(x.val_curr,4)) as val_curr "
-	sql += "  , concat('$ ', round(x.val_tot,4)) as val_tot "
-	sql += "  , concat('$ ', round(x.gain_loss_amt_est,4)) as 'gain est' "
-	sql += "  , concat('$ ', round(x.gain_loss_amt_est_high,4)) as 'gain est high' "
-#	sql += "  , concat('$ ', round(x.gain_loss_amt_est_low,4)) 'gain est low' "
-	sql += "  , concat('$ ', round(x.gain_loss_amt,4)) as 'gain' "
-#	sql += "  , concat('$ ', round(x.gain_loss_amt_net,4)) as 'gain net' "
-	sql += "  , concat(round(x.gain_loss_pct_est,3), ' %') as 'gain % est' "
-	sql += "  , concat(round(x.gain_loss_pct_est_high,3), ' %') as 'gain % est high' "
-#	sql += "  , concat(round(x.gain_loss_pct_est_low,3), ' %') as 'gain % est low' "
-	sql += "  , concat(round(x.gain_loss_pct,3), ' %') as 'gain %' "
-	sql += "  , concat(round(x.gain_loss_pct_hr,8), ' %') as 'hourly gain %' "
-#	sql += "  , x.bo_id"
-#	sql += "  , x.bo_uuid"
-#	sql += "  , x.buy_curr_symb"
-#	sql += "  , x.spend_curr_symb"
-#	sql += "  , x.sell_curr_symb"
-#	sql += "  , x.recv_curr_symb"
-#	sql += "  , x.fees_curr_symb"
-#	sql += "  , x.test_tf"
-	sql += "  from cbtrade.view_pos x "
-	sql += "  where 1=1 "
-	sql += "  order by x.pos_end_dttm desc "
-	sql += "  limit 50 "
-	h = build_sql_display_old(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	disp_cnt = 100
+	m, u, d = add_report(
+		t=f'Last {disp_cnt} Closed Positions', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=False, 
+		prod_id=None, 
+		pos_id=None, 
+		sd_dt1=None, 
+		sd_dt2=None, 
+		td_dt1=None, 
+		td_dt2=None, 
+		stat='CLOSE', 
+		wl=None, 
+		buy_strat_name=None, 
+		buy_strat_freq=None, 
+		sell_strat_name=None, 
+		sell_strat_freq=None, 
+		test_tf=0, 
+		order_by_sql="Order by x.td_dt desc", 
+		lmt=disp_cnt,
+		m=m, u=u, d=d)
+
+	disp_cnt = 100
+	m, u, d = add_report(
+		t=f'Last {disp_cnt} Closed Positions - Test', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=False, 
+		prod_id=None, 
+		pos_id=None, 
+		sd_dt1=None, 
+		sd_dt2=None, 
+		td_dt1=None, 
+		td_dt2=None, 
+		stat='CLOSE', 
+		wl=None, 
+		buy_strat_name=None, 
+		buy_strat_freq=None, 
+		sell_strat_name=None, 
+		sell_strat_freq=None, 
+		test_tf=1, 
+		order_by_sql="Order by x.td_dt desc", 
+		lmt=disp_cnt,
+		m=m, u=u, d=d)
+
+	sh = html_comb(m=m, u=u, d=d)
+
+	return render_template('web_home.html'
+							, top_nav= tn
+							, page_title = pt
+							, html_disp  = sh
+							)
+
+#<=====>#
+
+@app.route("/buy_strats.htm")
+def buy_strats() -> str:
+	print(str(datetime.now()) + " buy_strats()")
+	tn = build_topnav()
+
+	m     = None
+	u     = None
+	d     = None
+
+	pt    = 'Buys Strats'
+
+	m, u, d = add_report(
+		t=f'Buy Strats Summary - Closed', 
+#		inc_prod_id=False, 
+#		inc_pos_id=False, 
+#		inc_sd_dt=False, 
+#		inc_td_dt=False, 
+#		inc_stat=True, 
+#		inc_wl=False, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+#		inc_test=True, 
+#		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+		stat='CLOSE', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf=0, 
+		order_by_sql="order by x.buy_strat_name, x.buy_strat_freq ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	sh = html_comb(m=m, u=u, d=d)
+
+	return render_template('web_home.html'
+							, top_nav= tn
+							, page_title = pt
+							, html_disp  = sh
+							)
+
+#<=====>#
+
+@app.route("/mkt_buy_strats.htm")
+def mkt_buy_strats() -> str:
+	print(str(datetime.now()) + " mkt_buy_strats()")
+	tn = build_topnav()
+
+	m     = None
+	u     = None
+	d     = None
+
+	pt    = 'Market Buys Strats'
+
+	m, u, d = add_report(
+		t=f'Market Buy Strats Summary - Closed', 
+		inc_prod_id=True, 
+#		inc_pos_id=False, 
+#		inc_sd_dt=False, 
+#		inc_td_dt=False, 
+#		inc_stat=True, 
+#		inc_wl=False, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+#		inc_test=True, 
+#		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+		stat='CLOSE', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf=0, 
+		order_by_sql="order by x.prod_id, x.buy_strat_name, x.buy_strat_freq ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
 
@@ -2256,56 +2691,65 @@ def markets() -> str:
 
 	pt    = 'Markets'
 
-	s = " "
-	s += "select x.prod_id "
-	s += "  , x.tot_cnt as 'tot#' "
-	s += "  , format(floor(x.open_cnt),0) as open "
-	s += "  , format(floor(x.close_cnt),0) as close "
-	s += "  , format(floor(x.win_cnt),0) as wins "
-	s += "  , format(floor(x.lose_cnt),0) as loss "
-	s += "  , concat(win_pct, '%') as 'win%' "
-	s += "  , concat('$',' ', x.prc) as prc "
-	s += "  , concat('$',' ', x.fees_val_tot) as fees_tot "
-	s += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-	s += "  , concat('$',' ', x.recv_tot) as recv_tot "
-	s += "  , concat('$',' ', x.pocket_val_tot) as pocket_tot "
-	s += "  , concat('$',' ', x.clip_val_tot) as clip_tot "
-	s += "  , concat('$',' ', x.sell_val_tot) as sell_tot "
-	s += "  , format(floor(round(x.age_mins / x.tot_cnt)),0) as age_avg "
-	s += "  , concat('$',' ', x.gain_amt) as gain_amt "
-	s += "  , concat(x.gain_pct, ' %') as gain_pct "
-	s += "  , concat(x.gain_pct_hr, ' %') as gain_pct_hr "
-	s += "  , concat(x.prc_pct_chg_24h, ' %') as prc_chg_24h "
-	s += "  , concat(x.vol_pct_chg_24h, ' %') as vol_chg_24h "
-	s += "  , concat('$',' ', x.vol_base_24h) as vol_base_24h "
-	s += "  , concat('$',' ', x.vol_quote_24h) as vol_quote_24h "
-	s += "  from cbtrade.view_mkt_perf x "
-	s += "  where 1=1 "
-	s += "  {} "
+	m, u, d = add_report(
+		t=f'Markets', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+#		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
-	t     = 'Products - Winners - Ordered By gain_pct_hr'
-	sql = s.format('  and x.sell_val_tot > x.buy_val_tot order by x.gain_pct_hr desc')
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t     = 'Products - Winners'
-	sql = s.format('  and x.sell_val_tot > x.buy_val_tot order by x.prod_id')
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t     = 'Products - Losers'
-	sql = s.format('  and x.sell_val_tot < x.buy_val_tot order by x.prod_id')
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t     = 'Products - All Traded'
-	sql = s.format('order by x.prod_id')
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Markets - Test', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+#		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
 
@@ -2330,659 +2774,277 @@ def market(mkt) -> str:
 
 	pt    = f'Market - {mkt}'
 
-#	st    = 'Markets'
-#	m, u, d = html_h2_add(t=st, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Markets Summary', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+#		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+#		inc_test=False, 
+		prod_id=mkt, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
-	s = " "
-	s += "select x.prod_id "
-	s += "  , x.tot_cnt as 'tot#' "
-	s += "  , format(floor(x.open_cnt),0) as open "
-	s += "  , format(floor(x.close_cnt),0) as close "
-	s += "  , format(floor(x.win_cnt),0) as wins "
-	s += "  , format(floor(x.lose_cnt),0) as loss "
-	s += "  , concat(win_pct, '%') as 'win%' "
-	s += "  , concat('$',' ', x.prc) as prc "
-	s += "  , concat('$',' ', x.fees_val_tot) as fees_tot "
-	s += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-	s += "  , concat('$',' ', x.recv_tot) as recv_tot "
-	s += "  , concat('$',' ', x.pocket_val_tot) as pocket_tot "
-	s += "  , concat('$',' ', x.clip_val_tot) as clip_tot "
-	s += "  , concat('$',' ', x.sell_val_tot) as sell_tot "
-	s += "  , format(floor(round(x.age_mins / x.tot_cnt)),0) as age_avg "
-	s += "  , concat('$',' ', x.gain_amt) as gain_amt "
-	s += "  , concat(x.gain_pct, ' %') as gain_pct "
-	s += "  , concat(x.gain_pct_hr, ' %') as gain_pct_hr "
-	s += "  , concat(x.prc_pct_chg_24h, ' %') as prc_chg_24h "
-	s += "  , concat(x.vol_pct_chg_24h, ' %') as vol_chg_24h "
-	s += "  , concat('$',' ', x.vol_base_24h) as vol_base_24h "
-	s += "  , concat('$',' ', x.vol_quote_24h) as vol_quote_24h "
-	s += "  from cbtrade.view_mkt_perf x "
-	s += "  where 1=1 "
-	s += "  and x.prod_id = '{}' ".format(mkt)
-	s += "  {} "
+	m, u, d = add_report(
+		t=f'Markets Summary - Status', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=mkt, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
-	t     = 'Products - Winners - Ordered By gain_pct_hr'
-	sql = s.format('  and x.sell_val_tot > x.buy_val_tot order by x.gain_pct_hr desc')
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Market Buy Strats Summary - Open', 
+		inc_prod_id=True, 
+#		inc_pos_id=False, 
+#		inc_sd_dt=False, 
+#		inc_td_dt=False, 
+		inc_stat=True, 
+#		inc_wl=False, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=True, 
+		prod_id=mkt, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='ALL', 
+		order_by_sql="order by x.prod_id, x.buy_strat_name, x.buy_strat_freq, x.pos_stat ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
-	t     = 'Products - Winners'
-	sql = s.format('  and x.sell_val_tot > x.buy_val_tot order by x.prod_id')
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Market Buy Strats Summary - Closed', 
+		inc_prod_id=True, 
+#		inc_pos_id=False, 
+#		inc_sd_dt=False, 
+#		inc_td_dt=False, 
+		inc_stat=True, 
+#		inc_wl=False, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=True, 
+		prod_id=mkt, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+		stat='CLOSE', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='ALL', 
+		order_by_sql="order by x.prod_id, x.buy_strat_name, x.buy_strat_freq, x.pos_stat ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
-	t     = 'Products - Losers'
-	sql = s.format('  and x.sell_val_tot < x.buy_val_tot order by x.prod_id')
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Market Buy Strats Summary - Test', 
+		inc_prod_id=True, 
+#		inc_pos_id=False, 
+#		inc_sd_dt=False, 
+#		inc_td_dt=False, 
+		inc_stat=True, 
+#		inc_wl=False, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=True, 
+		prod_id=mkt, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="order by x.prod_id, x.buy_strat_name, x.buy_strat_freq, x.pos_stat ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
-	t     = 'Products - All Traded'
-	sql = s.format('order by x.prod_id')
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Markets Positions - Open', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=mkt, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.pos_id desc ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
-	t     = 'Sales Display - All Trades - New'
-	sql = " "
-	sql += "select p.pos_id "
-	sql += "  , p.prod_id "
-	sql += "  , p.pos_stat "
-#	sql += "  , p.buy_strat_type "
-	sql += "  , p.buy_strat_name as buy_strat "
-	sql += "  , p.buy_strat_freq as freq "
-	sql += "  , p.sell_strat_type  as sell_type "
-	sql += "  , p.sell_strat_name as sell_strat "
-#	sql += "  , p.sell_strat_freq "
-	sql += "  , concat('$', ' ', round(p.prc_buy,2))    as buy_prc "
-	sql += "  , concat('$', ' ', round(p.prc_sell,2))   as sell_prc "
-	sql += "  , concat('$', ' ', round(p.prc_now,2))    as curr_prc "
-	sql += "  , concat('$', ' ', round(p.buy_val,2))    as buy_val "
-	sql += "  , concat('$', ' ', round(p.sell_val,2))   as sell_val "
-	sql += "  , concat('$', ' ', round(p.recv,2))       as recv_val "
-	sql += "  , concat('$', ' ', round(p.hold_val,2))   as hold_val "
-	sql += "  , concat('$', ' ', round(p.pocket_val,2)) as pocket_val "
-	sql += "  , concat('$', ' ', round(p.clip_val,2))   as clip_val "
-	sql += "  , concat('$', ' ', round(p.buy_fees,2))   as buy_fees "
-	sql += "  , concat('$', ' ', round(p.sell_fees,2))  as sell_fees "
-	sql += "  , concat('$', ' ', round(p.fees_cnt_tot,2))   as fees_tot "
-	sql += "  , p.pos_begin_dttm "
-	sql += "  , p.pos_end_dttm "
-	sql += "  , p.age_mins "
-	sql += "  , concat('$', ' ', round(p.gain_amt,2))   as gain_amt "
-	sql += "  , concat(p.gain_pct, ' %') as gain_pct "
-	sql += "  , concat(p.gain_pct_hr, ' %') as gain_pct_hr "
-	sql += "  from cbtrade.view_pos p "
-	sql += "  where 1=1 "
-#	sql += "  and p.pos_stat in ('CLOSE') "
-	sql += "  and p.prod_id = '{}' ".format(mkt)
-	sql += "  order by p.pos_end_dttm desc "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Markets Positions - Closed', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=mkt, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+		stat='CLOSE', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.pos_id desc ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Markets - Test - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=mkt, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Markets Positions - Test - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=mkt, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+#		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
-
-	return render_template('web_home.html'
-							, top_nav= tn
-							, page_title = pt
-							, html_disp  = sh
-							)
-
-#<=====>#
-
-@app.route("/best_strats")
-def best_strats() -> str:
-	print(str(datetime.now()) + f" best_strats()")
-	tn = build_topnav()
-
-	m     = None
-	u     = None
-	d     = None
-	pt    = ''
-	sh = html_comb(m=m, u=u, d=d)
-
-	return render_template('web_home.html'
-							, top_nav= tn
-							, page_title = pt
-							, html_disp  = sh
-							)
-
-#<=====>#
-
-@app.route("/best_markets")
-def best_markets() -> str:
-	print(str(datetime.now()) + f" best_markets()")
-	tn = build_topnav()
-
-	m     = None
-	u     = None
-	d     = None
-	pt    = ''
-	sh = html_comb(m=m, u=u, d=d)
-
-	return render_template('web_home.html'
-							, top_nav= tn
-							, page_title = pt
-							, html_disp  = sh
-							)
-
-#<=====>#
-
-@app.route("/worst_strats")
-def worst_strats() -> str:
-	print(str(datetime.now()) + f" worst_strats()")
-	tn = build_topnav()
-
-	m     = None
-	u     = None
-	d     = None
-	pt    = ''
-	sh = html_comb(m=m, u=u, d=d)
-
-	return render_template('web_home.html'
-							, top_nav= tn
-							, page_title = pt
-							, html_disp  = sh
-							)
-
-#<=====>#
-
-@app.route("/worst_markets")
-def worst_markets() -> str:
-	print(str(datetime.now()) + f" worst_markets()")
-	tn = build_topnav()
-
-	m     = None
-	u     = None
-	d     = None
-	pt    = ''
-	sh = html_comb(m=m, u=u, d=d)
-
-	return render_template('web_home.html'
-							, top_nav= tn
-							, page_title = pt
-							, html_disp  = sh
-							)
-
-#<=====>#
-
-def get_dt_clause(dt1='*', dt2='*') -> str:
-	dt_clause = ''
-	if dt1 == '*' and dt2 == '*':
-		dt_clause = " "
-#		print(dt_clause)
-	elif dt1 == '*':
-		dt_clause  = " and x.dt = str_to_date('{}','%Y-%m-%d')".format(dt2)
-#		print(dt_clause)
-	else:
-		dt_clause   =  ""
-		dt_clause   += " and x.dt >= str_to_date('{}','%Y-%m-%d')".format(dt1)
-		dt_clause   += " and x.dt <= str_to_date('{}','%Y-%m-%d')".format(dt2)
-#		print(dt_clause)
-##	print(f'dt_clause : {dt_clause}')
-	return dt_clause
-
-#<=====>#
-
-def get_dt_clause2(dt1='*', dt2='*') -> str:
-	dt_clause = ''
-	if dt1 == '*' and dt2 == '*':
-		dt_clause = " "
-#		print(dt_clause)
-	elif dt1 == '*':
-		dt_clause  = " and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt2)
-#		print(dt_clause)
-	else:
-		dt_clause   =  ""
-		dt_clause   += " and date(p.pos_end_dttm) >= str_to_date('{}','%Y-%m-%d')".format(dt1)
-		dt_clause   += " and date(p.pos_end_dttm) <= str_to_date('{}','%Y-%m-%d')".format(dt2)
-#		print(dt_clause)
-##	print(f'dt_clause : {dt_clause}')
-	return dt_clause
-
-#<=====>#
-
-def sales_disp_summary(prod_id=None, dt1='*', dt2='*') -> str:
-	print('')
-	print('sales_disp_summary(prod_id={}, dt1={}, dt2={})'.format(prod_id, dt1, dt2))
-
-	dt_clause = get_dt_clause2(dt1, dt2) 
-
-	sql = ""
-	sql += "select x.tot_cnt "
-	sql += "  , x.win_cnt "
-	sql += "  , x.lose_cnt "
-	sql += "  , concat(x.win_pct, ' %') as win_pct "
-	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
-	sql += "  , x.age_hours "
-	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
-	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
-	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
-	sql += "  , concat('$ ', x.val_curr) as val_curr "
-	sql += "  , concat('$ ', x.val_tot) as val_tot "
-	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
-	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
-	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
-	sql += "  from (select count(p.pos_id) as tot_cnt  "
-	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
-	sql += "          , sum(p.age_mins) as age_mins "
-	sql += "          , sum(p.age_mins) / 60 as age_hours "
-	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
-	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
-	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
-	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
-	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
-	sql += "          , sum(p.buy_cnt) as buy_cnt "
-	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
-	sql += "          , sum(p.hold_cnt) as hold_cnt "
-	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
-	sql += "          , sum(p.clip_cnt) as clip_cnt "
-	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
-	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
-	sql += "          , round(sum(p.val_curr), 2) as val_curr "
-	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
-	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
-	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-	sql += "          , p.test_tf "
-	sql += "          from cbtrade.poss p "
-	sql += "          where p.ignore_tf = 0 "
-	sql += "          {} ".format(dt_clause)
-	sql += "          ) x "
-	sql += "  where 1=1 "
-#	print(sql)
-	h = build_sql_display(sql,'first')
-
-	return h
-
-#<=====>#
-
-def sales_disp_dt_summary(dt1='*', dt2='*') -> str:
-	print('')
-	print('sales_disp_dt_summary(dt1={}, dt2={})'.format(dt1, dt2))
-
-	dt_clause = get_dt_clause(dt1, dt2) 
-
-	sql = ""
-	sql += "select x.dt "
-	sql += "  , x.tot_cnt "
-	sql += "  , x.win_cnt "
-	sql += "  , x.lose_cnt "
-	sql += "  , concat(x.win_pct, ' %') as win_pct "
-	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
-	sql += "  , x.age_hours "
-	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
-	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
-	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
-	sql += "  , concat('$ ', x.val_curr) as val_curr "
-	sql += "  , concat('$ ', x.val_tot) as val_tot "
-	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
-	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
-	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
-	sql += "  from (select date(p.pos_end_dttm) as dt "
-	sql += "          , count(p.pos_id) as tot_cnt  "
-	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
-	sql += "          , sum(p.age_mins) as age_mins "
-	sql += "          , sum(p.age_mins) / 60 as age_hours "
-	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
-	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
-	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
-	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
-	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
-	sql += "          , sum(p.buy_cnt) as buy_cnt "
-	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
-	sql += "          , sum(p.hold_cnt) as hold_cnt "
-	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
-	sql += "          , sum(p.clip_cnt) as clip_cnt "
-	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
-	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
-	sql += "          , round(sum(p.val_curr), 2) as val_curr "
-	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
-	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
-	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-	sql += "          , p.test_tf "
-	sql += "          from cbtrade.poss p "
-	sql += "          where p.ignore_tf = 0 "
-	sql += "          group by date(p.pos_end_dttm) "
-	sql += "          ) x "
-	sql += "  where 1=1 "
-	sql += "  {} ".format(dt_clause)
-	sql += "  order by x.dt desc "
-#	print(sql)
-	h = build_sql_display(sql,'first')
-
-	return h
-
-#<=====>#
-
-def sales_disp_mkt_summary(prod_id=None, dt1='*', dt2='*') -> str:
-	print('')
-	print('sales_disp_mkt_summary(prod_id={}, dt1={}, dt2={})'.format(prod_id, dt1, dt2))
-
-	dt_clause = get_dt_clause2(dt1, dt2) 
-
-	sql = ""
-	sql += "select x.prod_id "
-	sql += "  , x.tot_cnt "
-	sql += "  , x.win_cnt "
-	sql += "  , x.lose_cnt "
-	sql += "  , concat(x.win_pct, ' %') as win_pct "
-	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
-	sql += "  , x.age_hours "
-	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
-	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
-	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
-	sql += "  , concat('$ ', x.val_curr) as val_curr "
-	sql += "  , concat('$ ', x.val_tot) as val_tot "
-	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
-	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
-	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
-	sql += "  from (select p.prod_id "
-	sql += "          , count(p.pos_id) as tot_cnt  "
-	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
-	sql += "          , sum(p.age_mins) as age_mins "
-	sql += "          , sum(p.age_mins) / 60 as age_hours "
-	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
-	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
-	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
-	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
-	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
-	sql += "          , sum(p.buy_cnt) as buy_cnt "
-	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
-	sql += "          , sum(p.hold_cnt) as hold_cnt "
-	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
-	sql += "          , sum(p.clip_cnt) as clip_cnt "
-	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
-	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
-	sql += "          , round(sum(p.val_curr), 2) as val_curr "
-	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
-	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
-	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-	sql += "          , p.test_tf "
-	sql += "          from cbtrade.poss p "
-	sql += "          where p.ignore_tf = 0 "
-	sql += "          {} ".format(dt_clause)
-	sql += "          group by p.prod_id "
-	sql += "          ) x "
-	sql += "  where 1=1 "
-	sql += "  order by x.prod_id "
-#	print(sql)
-	h = build_sql_display(sql,'first')
-
-	return h
-
-#<=====>#
-
-def sales_disp_mkt_dt_summary(dt1='*', dt2='*') -> str:
-	print('')
-	print('sales_disp_mkt_dt_summary(dt1={}, dt2={})'.format(dt1, dt2))
-
-	dt_clause = get_dt_clause(dt1, dt2) 
-
-	sql = ""
-	sql += "select x.prod_id "
-	sql += "  , x.dt "
-	sql += "  , x.tot_cnt "
-	sql += "  , x.win_cnt "
-	sql += "  , x.lose_cnt "
-	sql += "  , concat(x.win_pct, ' %') as win_pct "
-	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
-	sql += "  , x.age_hours "
-	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
-	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
-	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
-	sql += "  , concat('$ ', x.val_curr) as val_curr "
-	sql += "  , concat('$ ', x.val_tot) as val_tot "
-	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
-	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
-	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
-	sql += "  from (select p.prod_id "
-	sql += "          , date(p.pos_end_dttm) as dt "
-	sql += "          , count(p.pos_id) as tot_cnt  "
-	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
-	sql += "          , sum(p.age_mins) as age_mins "
-	sql += "          , sum(p.age_mins) / 60 as age_hours "
-	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
-	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
-	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
-	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
-	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
-	sql += "          , sum(p.buy_cnt) as buy_cnt "
-	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
-	sql += "          , sum(p.hold_cnt) as hold_cnt "
-	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
-	sql += "          , sum(p.clip_cnt) as clip_cnt "
-	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
-	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
-	sql += "          , round(sum(p.val_curr), 2) as val_curr "
-	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
-	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
-	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-	sql += "          , p.test_tf "
-	sql += "          from cbtrade.poss p "
-	sql += "          where p.ignore_tf = 0 "
-	sql += "          group by p.prod_id, date(p.pos_end_dttm) "
-	sql += "          ) x "
-	sql += "  where 1=1 "
-	sql += "  {} ".format(dt_clause)
-	sql += "  order by x.prod_id, x.dt "
-#	print(sql)
-	h = build_sql_display(sql,'first')
-
-	return h
-
-#<=====>#
-
-def sales_disp_details(prod_id=None, pos_stat=None, dt1='*', dt2='*') -> str:
-	print('')
-	print('sales_disp_details(prod_id={}, dt1={}, dt2={})'.format(prod_id, dt1, dt2))
-
-	dt_clause = get_dt_clause(dt1, dt2) 
-
-	sql = ""
-	sql += "select x.pos_id"
-	sql += "  , x.prod_id"
-	sql += "  , x.pos_stat"
-#	sql += "  , x.pos_begin_dttm"
-	sql += "  , x.pos_end_dttm"
-#	sql += "  , x.dt"
-#	sql += "  , x.age_mins"
-	sql += "  , x.age_hours"
-#	sql += "  , x.buy_strat_type"
-	sql += "  , x.buy_strat_name"
-	sql += "  , x.buy_strat_freq"
-	sql += "  , x.sell_strat_type"
-	sql += "  , x.sell_strat_name"
-#	sql += "  , x.sell_strat_freq"
-	sql += "  , concat('$ ', x.tot_out_cnt) as spend "
-#	sql += "  , concat('$ ', x.tot_in_cnt) as recvd "
-#	sql += "  , concat('$ ', x.buy_fees_cnt) as buy_fees_cnt "
-#	sql += "  , concat('$ ', x.sell_fees_cnt_tot) as sell_fees_cnt_tot "
-#	sql += "  , concat('$ ', x.fees_cnt_tot) as fees "
-#	sql += "  , x.buy_cnt"
-#	sql += "  , x.sell_cnt_tot"
-#	sql += "  , x.hold_cnt"
-#	sql += "  , x.pocket_cnt"
-#	sql += "  , x.clip_cnt"
-#	sql += "  , concat(x.pocket_pct, ' %') as pocket_pct "
-#	sql += "  , concat(x.clip_pct, ' %') as clip_pct "
-#	sql += "  , x.sell_order_cnt "
-#	sql += "  , x.sell_order_attempt_cnt "
-	sql += "  , concat('$ ', round(x.prc_buy,6)) as prc_buy "
-	sql += "  , concat('$ ', round(x.prc_curr,6)) as prc_curr "
-	sql += "  , concat('$ ', round(x.prc_high,6)) as prc_high "
-#	sql += "  , concat('$ ', round(x.prc_low,6)) as prc_low "
-	sql += "  , concat(round(x.prc_chg_pct,2), ' %') as 'prc chg %' "
-	sql += "  , concat(round(x.prc_chg_pct_high,2), ' %') as 'prc high %' "
-#	sql += "  , concat(round(x.prc_chg_pct_low,2), ' %') as 'prc low %' "
-	sql += "  , concat(round(x.prc_chg_pct_drop,2), ' %') as 'prc drop %' "
-#	sql += "  , concat('$ ', round(x.prc_sell_avg,6)) as prc_sell_avg "
-	sql += "  , concat('$ ', round(x.val_curr,4)) as val_curr "
-#	sql += "  , concat('$ ', round(x.val_tot,4)) as val_tot "
-	sql += "  , concat('$ ', round(x.gain_loss_amt_est,4)) as 'gain est' "
-	sql += "  , concat('$ ', round(x.gain_loss_amt_est_high,4)) as 'gain est high' "
-#	sql += "  , concat('$ ', round(x.gain_loss_amt_est_low,4)) 'gain est low' "
-	sql += "  , concat('$ ', round(x.gain_loss_amt,4)) as 'gain' "
-#	sql += "  , concat('$ ', round(x.gain_loss_amt_net,4)) as 'gain net' "
-	sql += "  , concat(round(x.gain_loss_pct_est,3), ' %') as 'gain % est' "
-	sql += "  , concat(round(x.gain_loss_pct_est_high,3), ' %') as 'gain % est high' "
-#	sql += "  , concat(round(x.gain_loss_pct_est_low,3), ' %') as 'gain % est low' "
-	sql += "  , concat(round(x.gain_loss_pct,3), ' %') as 'gain %' "
-	sql += "  , concat(round(x.gain_loss_pct_hr,8), ' %') as 'hourly gain %' "
-#	sql += "  , x.bo_id"
-#	sql += "  , x.bo_uuid"
-#	sql += "  , x.buy_curr_symb"
-#	sql += "  , x.spend_curr_symb"
-#	sql += "  , x.sell_curr_symb"
-#	sql += "  , x.recv_curr_symb"
-#	sql += "  , x.fees_curr_symb"
-#	sql += "  , x.test_tf"
-	sql += "  from cbtrade.view_pos x "
-	sql += "  where 1=1 "
-	if prod_id:
-		sql += "  and x.prod_id = '{}' ".format(prod_id)
-	if pos_stat:
-		sql += "  and x.pos_stat = '{}' ".format(pos_stat)
-	sql += "  {} ".format(dt_clause)
-	sql += dt_clause
-	sql += "  order by x.pos_end_dttm desc "
-#	sql += "  limit 50 "
-	h = build_sql_display_old(sql,'first')
-
-	print(sql)
-	h = build_sql_display(sql,'first')
-
-	return h
-
-#<=====>#
-
-def sales_disp(dt1, dt2, pt, st) -> str:
-	func_str = '{} sales_disp(dt1={}, dt2={}, pt={}, st={})'.format(str(datetime.now()), dt1, dt2, pt, st)
-	print(func_str)
-#	tn = build_topnav()
-
-	m     = None
-	u     = None
-	d     = None
-
-	pt    = 'Sales Display'
-
-#	t     = 'Sales Display - Daily Summary - New'
-#	t     = 'Sales Display - Market Summaries - Dates Combined - New'
-#	t     = 'Sales Display - Market Summaries - Date Detailed - New'
-#	t     = 'Sales - Details - Date Range'
-
-	t     = 'Sales Summary - For Date Range'
-	h = sales_disp_summary(dt1=dt1, dt2=dt2)
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t     = 'Sales Summary - Per Date In Date Range'
-	h = sales_disp_dt_summary(dt1=dt1, dt2=dt2)
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t     = 'Sales Summary - Per Market Dates Combined In Date Range'
-	h = sales_disp_mkt_summary(dt1=dt1, dt2=dt2)
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t     = 'Sales Summary - Per Market Per Date In Date Range'
-	h = sales_disp_mkt_dt_summary(dt1=dt1, dt2=dt2)
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t     = 'Sales - Details - Date Range'
-	h = sales_disp_details(prod_id=None, pos_stat='CLOSE', dt1=dt1, dt2=dt2)
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	sh = html_comb(m=m, u=u, d=d)
-
-	return sh
-
-#<=====>#
-
-@app.route("/sales.htm")
-@app.route("/sales_today.htm")
-def sales_today() -> str:
-	print(str(datetime.now()) + " sales_today()")
-	tn = build_topnav()
-	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-	pt = 'Sales Summary Today {}'.format(dt)
-	st = 'Sales Summary Today {}'.format(dt)
-	sh = sales_disp(dt, dt, pt, st)
-
-	return render_template('web_home.html'
-							, top_nav= tn
-							, page_title = pt
-							, html_disp  = sh
-							)
-
-#<=====>#
-
-@app.route("/sales_yesterday.htm")
-def sales_yesterday() -> str:
-	print(str(datetime.now()) + " sales_yesterday()")
-	tn = build_topnav()
-	today = datetime.now(pytz.utc)
-	one_day = timedelta(days=1)
-	yesterday = today - one_day
-	dt = yesterday.strftime('%Y-%m-%d')
-	pt = 'Sales Summary - Yesterday - {}'.format(dt)
-	st = 'Sales Summary - Yesterday - {}'.format(dt)
-	sh = sales_disp(dt, dt, pt, st)
-
-	return render_template('web_home.html'
-							, top_nav= tn
-							, page_title = pt
-							, html_disp  = sh
-							)
-
-#<=====>#
-
-@app.route("/sales_<day_cnt>d.htm")
-def sales_day_cntd(day_cnt) -> str:
-	print("{} sales_{}d()".format(str(datetime.now()), day_cnt))
-	tn = build_topnav()
-	td = datetime.now(pytz.utc)
-	days = timedelta(days=int(day_cnt)-1)
-	sd = td - days
-	dt1 = sd.strftime('%Y-%m-%d')
-	dt2 = td.strftime('%Y-%m-%d')
-	pt = 'Sales Summary - Last {} Days - {} - {}'.format(day_cnt, dt1, dt2)
-	st = 'Sales Summary - Last {} Days - {} - {}'.format(day_cnt, dt1, dt2)
-	sh = sales_disp(dt1, dt2, pt, st)
 
 	return render_template('web_home.html'
 							, top_nav= tn
@@ -2996,12 +3058,573 @@ def sales_day_cntd(day_cnt) -> str:
 def sales_all() -> str:
 	print("sales_all()")
 	tn = build_topnav()
-	dt1 = '*'
-	dt2 = '*'
-	pt = 'Sales Report - All Time'
-	st = 'Sales Summary - All Time'
-	sh = sales_disp(dt1, dt2, pt, st)
 
+	m     = None
+	u     = None
+	d     = None
+
+	pt    = f'Sales Summary'
+
+	m, u, d = add_report(
+		t=f'Sales Summary', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary Positions', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary - Test - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary - Test - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+#		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	sh = html_comb(m=m, u=u, d=d)
+
+	return render_template('web_home.html'
+							, top_nav= tn
+							, page_title = pt
+							, html_disp  = sh
+							)
+
+#<=====>#
+
+@app.route("/sales.htm")
+@app.route("/sales_today.htm")
+def sales_today() -> str:
+	print(str(datetime.now()) + " sales_today()")
+	tn = build_topnav()
+
+	today = now_utc_get()
+
+	m     = None
+	u     = None
+	d     = None
+
+	pt    = f'Sales Summary - Today'
+
+	m, u, d = add_report(
+		t=f'Sales Summary - Today - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=today, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary - Today - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=today, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary Positions - Today - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=today, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary - Today - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=today, 
+#		td_dt2=None, 
+#		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	sh = html_comb(m=m, u=u, d=d)
+
+	return render_template('web_home.html'
+							, top_nav= tn
+							, page_title = pt
+							, html_disp  = sh
+							)
+
+#<=====>#
+
+@app.route("/sales_yesterday.htm")
+def sales_yesterday() -> str:
+	print(str(datetime.now()) + " sales_yesterday()")
+	tn = build_topnav()
+
+	today = now_utc_get()
+	one_day = timedelta(days=1)
+	yesterday = today - one_day
+
+	m     = None
+	u     = None
+	d     = None
+
+	pt    = f'Sales Summary - Yesterday'
+
+	m, u, d = add_report(
+		t=f'Sales Summary - Yesterday - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=yesterday, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary - Yesterday - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=yesterday, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary Positions - Yesterday - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=yesterday, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary - Yesterday - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=yesterday, 
+#		td_dt2=None, 
+#		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	sh = html_comb(m=m, u=u, d=d)
+
+	return render_template('web_home.html'
+							, top_nav= tn
+							, page_title = pt
+							, html_disp  = sh
+							)
+
+#<=====>#
+
+@app.route("/sales_<day_cnt>d.htm")
+def sales_day_cntd(day_cnt) -> str:
+	print("{} sales_{}d()".format(str(datetime.now()), day_cnt))
+	tn = build_topnav()
+
+	td = now_utc_get()
+	days = timedelta(days=int(day_cnt)-1)
+	sd = td - days
+
+	m     = None
+	u     = None
+	d     = None
+
+	sd_str = sd.strftime('%Y-%m-%d')
+	td_str = td.strftime('%Y-%m-%d')
+
+	dt_str = 'Last {} Days - {} - {}'.format(day_cnt, sd_str, td_str)
+
+	pt    = f'Sales Summary - {dt_str}'
+
+	m, u, d = add_report(
+		t=f'Sales Summary - {dt_str} - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=sd, 
+		td_dt2=td, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary - {dt_str} - Test - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=sd, 
+		td_dt2=td, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary Positions - {dt_str} - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=sd, 
+		td_dt2=td, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary - {dt_str} - Test - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=sd, 
+		td_dt2=td, 
+#		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	sh = html_comb(m=m, u=u, d=d)
 	return render_template('web_home.html'
 							, top_nav= tn
 							, page_title = pt
@@ -3014,9 +3637,138 @@ def sales_all() -> str:
 def sales_dt(dt) -> str:
 	print(str(datetime.now()) + " sales_dt()")
 	tn = build_topnav()
-	pt = 'Sales Report for {}'.format(dt)
-	st = 'Sales Report for {}'.format(dt)
-	sh = sales_disp(dt, dt, pt, st)
+
+	td = datetime.strptime(dt, '%Y-%m-%d')
+	td_str = td.strftime('%Y-%m-%d')
+	dt_str = '{}'.format(td_str)
+
+	m     = None
+	u     = None
+	d     = None
+
+	pt    = f'Sales Summary - {dt_str}'
+
+	m, u, d = add_report(
+		t=f'Sales Summary - {dt_str} - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=td, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary - {dt_str} - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=td, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary Positions - {dt_str} - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=td, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary - {dt_str} - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=td, 
+#		td_dt2=None, 
+#		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	sh = html_comb(m=m, u=u, d=d)
 
 	return render_template('web_home.html'
 							, top_nav= tn
@@ -3030,17 +3782,150 @@ def sales_dt(dt) -> str:
 def sales_month(yr,m) -> str:
 	print(str(datetime.now()) + " sales_month()")
 	tn = build_topnav()
+
 	yr = int(yr)
 	m = int(m)
 	if yr < 2019 or yr > 2049:
 		yr = date.today.year
 	if m < 1 or m > 12:
 		m = date.today.month
-	dt1 = date(yr, m, 1)
-	dt2 = date(yr, m, calendar.monthrange(yr, m)[-1])
-	pt = 'Sales Report for {} - {}'.format(dt1, dt2)
-	st = 'Sales Report for {} - {}'.format(dt1, dt2)
-	sh = sales_disp(dt1, dt2, pt, st)
+
+	td_dt1 = date(yr, m, 1)
+	td_dt2 = date(yr, m, calendar.monthrange(yr, m)[-1])
+
+	print(f'td_dt1 : {td_dt1}, {type(td_dt1)}')
+	print(f'td_dt2 : {td_dt2}, {type(td_dt2)}')
+
+	m     = None
+	u     = None
+	d     = None
+
+	pt    = f'Sales Summary - {td_dt1} - {td_dt2}'
+
+	m, u, d = add_report(
+		t=f'Sales Summary - {td_dt1} - {td_dt2} - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=td_dt1, 
+		td_dt2=td_dt2, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary - {td_dt1} - {td_dt2} - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=td_dt1, 
+		td_dt2=td_dt2, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary Positions - {td_dt1} - {td_dt2} - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=td_dt1, 
+		td_dt2=td_dt2, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Sales Summary - {td_dt1} - {td_dt2} - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=td_dt1, 
+		td_dt2=td_dt2, 
+#		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	sh = html_comb(m=m, u=u, d=d)
+
+
+
 
 	return render_template('web_home.html'
 							, top_nav= tn
@@ -3054,462 +3939,82 @@ def sales_month(yr,m) -> str:
 def sales_yr(yr) -> str:
 	print(str(datetime.now()) + " sales_year()")
 	tn = build_topnav()
+
 	yr = int(yr)
 	if yr < 2019 or yr > 2049:
 		yr = date.today.year
-	dt1 = date(yr, 1, 1)
-	dt2 = date(yr, 12, 31)
-	pt = 'Sales Report for Year {}'.format(yr)
-	st = 'Sales Report for Year {}'.format(yr)
-	sh = sales_disp(dt1, dt2, pt, st)
 
-	return render_template('web_home.html'
-							, top_nav= tn
-							, page_title = pt
-							, html_disp  = sh
-							)
+	td_dt1 = date(yr, 1, 1)
+	td_dt2 = date(yr, 12, 31)
 
-#<=====>#
-
-def sales_disp_strat_summary(dt1='*', dt2='*') -> str:
-	print('')
-	print('sales_disp_strat_summary(dt1={}, dt2={})'.format(dt1, dt2))
-
-	dt_clause = get_dt_clause2(dt1, dt2) 
-	print(f'dt_clause : {dt_clause}')
-
-	sql = ""
-	sql += "select x.buy_strat_type, x.buy_strat_name, x.buy_strat_freq "
-	sql += "  , x.tot_cnt "
-	sql += "  , x.win_cnt "
-	sql += "  , x.lose_cnt "
-	sql += "  , concat(x.win_pct, ' %') as win_pct "
-	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
-	sql += "  , x.age_hours "
-	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
-	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
-	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
-	sql += "  , concat('$ ', x.val_curr) as val_curr "
-	sql += "  , concat('$ ', x.val_tot) as val_tot "
-	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
-	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
-	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
-	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
-	sql += "  from (select p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq "
-	sql += "          , count(p.pos_id) as tot_cnt  "
-	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
-	sql += "          , sum(p.age_mins) as age_mins "
-	sql += "          , sum(p.age_mins) / 60 as age_hours "
-	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
-	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
-	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
-	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
-	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
-	sql += "          , sum(p.buy_cnt) as buy_cnt "
-	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
-	sql += "          , sum(p.hold_cnt) as hold_cnt "
-	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
-	sql += "          , sum(p.clip_cnt) as clip_cnt "
-	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
-	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
-	sql += "          , round(sum(p.val_curr), 2) as val_curr "
-	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
-	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
-	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-	sql += "          , p.test_tf "
-	sql += "          from cbtrade.poss p "
-	sql += "          where p.ignore_tf = 0 "
-	sql += "          {} ".format(dt_clause)
-	sql += "          group by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq "
-	sql += "          ) x "
-	sql += "  where 1=1 "
-	sql += "  order by x.buy_strat_type "
-	sql += "      , x.buy_strat_name "
-	sql += "      , case  "
-	sql += "          when x.buy_strat_freq = '15min' then 1  "
-	sql += "          when x.buy_strat_freq = '30min' then 2 "
-	sql += "          when x.buy_strat_freq = '1h' then 3 "
-	sql += "          when x.buy_strat_freq = '4h' then 4 "
-	sql += "          when x.buy_strat_freq = '1d' then 5 "
-	sql += "        end "
-#	print(sql)
-	h = build_sql_display(sql,'first')
-
-	return h
-
-#<=====>#
-
-def sales_disp_strat_mkt_summary(dt1='*', dt2='*') -> str:
-	print('')
-	print('sales_disp_strat_mkt_summary(dt1={}, dt2={})'.format(dt1, dt2))
-
-	dt_clause = get_dt_clause2(dt1, dt2) 
-	print(f'dt_clause : {dt_clause}')
-
-	sql = ""
-	sql += "select x.buy_strat_name "
-	sql += "  , x.buy_strat_freq "
-	sql += "  , x.prod_id "
-	sql += "  , x.tot_cnt "
-	sql += "  , x.win_cnt "
-	sql += "  , x.lose_cnt "
-	sql += "  , concat(x.win_pct, ' %') as win_pct "
-	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
-	sql += "  , x.age_hours "
-	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
-	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
-	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
-	sql += "  , concat('$ ', x.val_curr) as val_curr "
-	sql += "  , concat('$ ', x.val_tot) as val_tot "
-	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
-	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
-	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
-	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
-	sql += "  from (select p.buy_strat_name "
-	sql += "          , p.buy_strat_freq "
-	sql += "          , p.prod_id "
-	sql += "          , count(p.pos_id) as tot_cnt  "
-	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
-	sql += "          , sum(p.age_mins) as age_mins "
-	sql += "          , sum(p.age_mins) / 60 as age_hours "
-	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
-	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
-	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
-	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
-	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
-	sql += "          , sum(p.buy_cnt) as buy_cnt "
-	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
-	sql += "          , sum(p.hold_cnt) as hold_cnt "
-	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
-	sql += "          , sum(p.clip_cnt) as clip_cnt "
-	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
-	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
-	sql += "          , round(sum(p.val_curr), 2) as val_curr "
-	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
-	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
-	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-	sql += "          , p.test_tf "
-	sql += "          from cbtrade.poss p "
-	sql += "          where p.ignore_tf = 0 "
-	sql += "          {} ".format(dt_clause)
-	sql += "          group by p.prod_id, p.buy_strat_name, p.buy_strat_freq "
-	sql += "          ) x "
-	sql += "  where 1=1 "
-	sql += "  order by x.buy_strat_name "
-	sql += "      , case  "
-	sql += "          when x.buy_strat_freq = '15min' then 1  "
-	sql += "          when x.buy_strat_freq = '30min' then 2 "
-	sql += "          when x.buy_strat_freq = '1h' then 3 "
-	sql += "          when x.buy_strat_freq = '4h' then 4 "
-	sql += "          when x.buy_strat_freq = '1d' then 5 "
-	sql += "        end "
-	sql += "      , x.prod_id "
-	#	print(sql)
-	h = build_sql_display(sql,'first')
-
-	return h
-
-#<=====>#
-
-def sales_disp_mkt_strat_summary(dt1='*', dt2='*') -> str:
-	print('')
-	print('sales_disp_mkt_strat_summary(dt1={}, dt2={})'.format(dt1, dt2))
-
-	dt_clause = get_dt_clause2(dt1, dt2) 
-	print(f'dt_clause : {dt_clause}')
-
-	sql = ""
-	sql += "select x.buy_strat_name "
-	sql += "  , x.buy_strat_freq "
-	sql += "  , x.prod_id "
-	sql += "  , x.tot_cnt "
-	sql += "  , x.win_cnt "
-	sql += "  , x.lose_cnt "
-	sql += "  , concat(x.win_pct, ' %') as win_pct "
-	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
-	sql += "  , x.age_hours "
-	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
-	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
-	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
-	sql += "  , concat('$ ', x.val_curr) as val_curr "
-	sql += "  , concat('$ ', x.val_tot) as val_tot "
-	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
-	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
-	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
-	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
-	sql += "  from (select p.buy_strat_name "
-	sql += "          , p.buy_strat_freq "
-	sql += "          , p.prod_id "
-	sql += "          , count(p.pos_id) as tot_cnt  "
-	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
-	sql += "          , sum(p.age_mins) as age_mins "
-	sql += "          , sum(p.age_mins) / 60 as age_hours "
-	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
-	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
-	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
-	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
-	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
-	sql += "          , sum(p.buy_cnt) as buy_cnt "
-	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
-	sql += "          , sum(p.hold_cnt) as hold_cnt "
-	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
-	sql += "          , sum(p.clip_cnt) as clip_cnt "
-	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
-	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
-	sql += "          , round(sum(p.val_curr), 2) as val_curr "
-	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
-	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
-	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
-	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-	sql += "          , p.test_tf "
-	sql += "          from cbtrade.poss p "
-	sql += "          where p.ignore_tf = 0 "
-	sql += "          {} ".format(dt_clause)
-	sql += "          group by p.prod_id, p.buy_strat_name, p.buy_strat_freq "
-	sql += "          ) x "
-	sql += "  where 1=1 "
-	sql += "  order by x.prod_id "
-	sql += "      , x.buy_strat_name "
-	sql += "      , case  "
-	sql += "          when x.buy_strat_freq = '15min' then 1  "
-	sql += "          when x.buy_strat_freq = '30min' then 2 "
-	sql += "          when x.buy_strat_freq = '1h' then 3 "
-	sql += "          when x.buy_strat_freq = '4h' then 4 "
-	sql += "          when x.buy_strat_freq = '1d' then 5 "
-	sql += "        end "
-#	print(sql)
-	h = build_sql_display(sql,'first')
-
-	return h
-
-#<=====>#
-
-@app.route("/buy_strats_today.htm")
-def buy_strats_today() -> str:
-	print(str(datetime.now()) + " buy_strats_today()")
-	tn = build_topnav()
-	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+	print(f'td_dt1 : {td_dt1}, {type(td_dt1)}')
+	print(f'td_dt2 : {td_dt2}, {type(td_dt2)}')
 
 	m     = None
 	u     = None
 	d     = None
 
-	pt    = 'Buy Strats Performance'
+	pt    = f'Sales Summary - {yr}'
 
-	t     = 'Buy Strats - Summary - Today'
-	h = sales_disp_strat_summary(dt1=dt, dt2=dt)
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Sales Summary - {yr} - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=td_dt1, 
+		td_dt2=td_dt2, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
-	t     = 'Buy Strats - Strat Summary - Today'
-	h = sales_disp_strat_mkt_summary(dt1=dt, dt2=dt)
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t     = 'Buy Strats - Market Summary - Today'
-	h = sales_disp_mkt_strat_summary(dt1=dt, dt2=dt)
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-
-
-#	t     = 'Buy Strats - Today - Type - New'
-#	sql = " "
-#	sql += "select x.buy_strat_type "
-#	sql += "  , x.stat "
-#	sql += "  , x.tot_cnt "
-#	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-#	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-#	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-#	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
-#	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-#	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-#	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-#	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-#	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-#	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-#	sql += "  from ( "
-#	sql += "select p.buy_strat_type "
-#	sql += "  , p.pos_stat as stat "
-#	sql += "  , count(p.pos_id) as tot_cnt "
-#	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-#	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-#	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-#	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-#	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-#	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-#	sql += "  , sum(p.clip_val) as clip_val_tot "
-#	sql += "  , sum(p.sell_val) as sell_val_tot "
-#	sql += "  , sum(p.age_mins) as age_mins "
-#	sql += "  , sum(p.gain_amt) as gain_amt  "
-#	sql += "  from view_pos p "
-#	sql += "  where 1=1 "
-#	sql += "  and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
-#	sql += "  group by p.buy_strat_type, p.pos_stat "
-#	sql += "  order by p.buy_strat_type, p.pos_stat "
-#	sql += "  ) x "
-#	h = build_sql_display(sql,'first')
-#	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-#	m, u, d = html_add(more=h, m=m, u=u, d=d)
-#
-#	t     = 'Buy Strats - Today  - Type & Name - New'
-#	sql = " "
-#	sql += "select x.buy_strat_type "
-#	sql += "  , x.buy_strat_name "
-#	sql += "  , x.stat "
-#	sql += "  , x.tot_cnt "
-#	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-#	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-#	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-#	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
-#	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-#	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-#	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-#	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-#	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-#	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-#	sql += "  from ( "
-#	sql += "select p.buy_strat_type "
-#	sql += "  , p.buy_strat_name "
-#	sql += "  , p.pos_stat as stat "
-#	sql += "  , count(p.pos_id) as tot_cnt "
-#	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-#	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-#	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-#	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-#	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-#	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-#	sql += "  , sum(p.clip_val) as clip_val_tot "
-#	sql += "  , sum(p.sell_val) as sell_val_tot "
-#	sql += "  , sum(p.age_mins) as age_mins "
-#	sql += "  , sum(p.gain_amt) as gain_amt  "
-#	sql += "  from view_pos p "
-#	sql += "  where 1=1 "
-#	sql += "  and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
-#	sql += "  group by p.buy_strat_type, p.buy_strat_name, p.pos_stat "
-#	sql += "  order by p.buy_strat_type, p.buy_strat_name, p.pos_stat "
-#	sql += "  ) x "
-#	h = build_sql_display(sql,'first')
-#	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-#	m, u, d = html_add(more=h, m=m, u=u, d=d)
-#
-#	t     = 'Buy Strats - Today  - Type & Name & Freq - New'
-#	sql = " "
-#	sql += "select x.buy_strat_type "
-#	sql += "  , x.buy_strat_name "
-#	sql += "  , x.buy_strat_freq "
-#	sql += "  , x.stat "
-#	sql += "  , x.tot_cnt "
-#	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-#	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-#	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-#	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
-#	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-#	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-#	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-#	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-#	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-#	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-#	sql += "  from ( "
-#	sql += "select p.buy_strat_type "
-#	sql += "  , p.buy_strat_name "
-#	sql += "  , p.buy_strat_freq "
-#	sql += "  , p.pos_stat as stat "
-#	sql += "  , count(p.pos_id) as tot_cnt "
-#	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-#	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-#	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-#	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-#	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-#	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-#	sql += "  , sum(p.clip_val) as clip_val_tot "
-#	sql += "  , sum(p.sell_val) as sell_val_tot "
-#	sql += "  , sum(p.age_mins) as age_mins "
-#	sql += "  , sum(p.gain_amt) as gain_amt  "
-#	sql += "  from view_pos p "
-#	sql += "  where 1=1 "
-#	sql += "  and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
-#	sql += "  group by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat "
-#	sql += "  order by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat "
-#	sql += "  ) x "
-#	h = build_sql_display(sql,'first')
-#	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-#	m, u, d = html_add(more=h, m=m, u=u, d=d)
-#
-#	t     = 'Buy Strats & Sell Strats - Today  - Type & Name & Freq - New'
-#	sql = " "
-#	sql += "select x.buy_strat_type "
-#	sql += "  , x.buy_strat_name "
-#	sql += "  , x.buy_strat_freq "
-#	sql += "  , x.sell_strat_type "
-#	sql += "  , x.sell_strat_name "
-#	sql += "  , x.stat "
-#	sql += "  , x.tot_cnt "
-#	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-#	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-#	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-#	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
-#	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-#	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-#	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-#	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-#	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-#	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-#	sql += "  from ( "
-#	sql += "select p.buy_strat_type "
-#	sql += "  , p.buy_strat_name "
-#	sql += "  , p.buy_strat_freq "
-#	sql += "  , p.sell_strat_type "
-#	sql += "  , p.sell_strat_name "
-#	sql += "  , p.pos_stat as stat "
-#	sql += "  , count(p.pos_id) as tot_cnt "
-#	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-#	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-#	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-#	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-#	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-#	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-#	sql += "  , sum(p.clip_val) as clip_val_tot "
-#	sql += "  , sum(p.sell_val) as sell_val_tot "
-#	sql += "  , sum(p.age_mins) as age_mins "
-#	sql += "  , sum(p.gain_amt) as gain_amt  "
-#	sql += "  from view_pos p "
-#	sql += "  where 1=1 "
-#	sql += "  and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
-#	sql += "  group by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat, p.sell_strat_type, p.sell_strat_name "
-#	sql += "  order by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat, p.sell_strat_type, p.sell_strat_name "
-#	sql += "  ) x "
-#	h = build_sql_display(sql,'first')
-#	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-#	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Sales Summary - {yr} - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=td_dt1, 
+		td_dt2=td_dt2, 
+#		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
 
@@ -3521,208 +4026,76 @@ def buy_strats_today() -> str:
 
 #<=====>#
 
-@app.route("/buy_strats_all.htm")
-def buy_strats_all() -> str:
-	print(str(datetime.now()) + " buy_strats_all()")
+@app.route("/sales_all_test.htm")
+def sales_all_test() -> str:
+	print("sales_all_test()")
 	tn = build_topnav()
 
 	m     = None
 	u     = None
 	d     = None
 
-	pt    = 'Buy Strats Performance'
+	pt    = f'Sales Summary - Test'
 
-	t     = 'Buy Strats - Summary - All'
-	h = sales_disp_strat_summary(dt1='*', dt2='*')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Sales Summary - Test - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
-	t     = 'Buy Strats - Strat Summary - All'
-	h = sales_disp_strat_mkt_summary(dt1='*', dt2='*')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t     = 'Buy Strats - Market Summary - All'
-	h = sales_disp_mkt_strat_summary(dt1='*', dt2='*')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-
-
-
-#	t     = 'Buy Strats - All - Type - New'
-#	sql = " "
-#	sql += "select x.buy_strat_type "
-#	sql += "  , x.stat "
-#	sql += "  , x.tot_cnt "
-#	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-#	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-#	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-#	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
-#	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-#	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-#	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-#	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-#	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-#	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-#	sql += "  from ( "
-#	sql += "select p.buy_strat_type "
-#	sql += "  , p.pos_stat as stat "
-#	sql += "  , count(p.pos_id) as tot_cnt "
-#	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-#	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-#	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-#	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-#	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-#	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-#	sql += "  , sum(p.clip_val) as clip_val_tot "
-#	sql += "  , sum(p.sell_val) as sell_val_tot "
-#	sql += "  , sum(p.age_mins) as age_mins "
-#	sql += "  , sum(p.gain_amt) as gain_amt  "
-#	sql += "  from view_pos p "
-#	sql += "  where 1=1 "
-#	sql += "  group by p.buy_strat_type, p.pos_stat "
-#	sql += "  order by p.buy_strat_type, p.pos_stat "
-#	sql += "  ) x "
-#	h = build_sql_display(sql,'first')
-#	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-#	m, u, d = html_add(more=h, m=m, u=u, d=d)
-#
-#	t     = 'Buy Strats - All - Type & Name - New'
-#	sql = " "
-#	sql += "select x.buy_strat_type "
-#	sql += "  , x.buy_strat_name "
-#	sql += "  , x.stat "
-#	sql += "  , x.tot_cnt "
-#	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-#	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-#	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-#	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
-#	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-#	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-#	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-#	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-#	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-#	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-#	sql += "  from ( "
-#	sql += "select p.buy_strat_type "
-#	sql += "  , p.buy_strat_name "
-#	sql += "  , p.pos_stat as stat "
-#	sql += "  , count(p.pos_id) as tot_cnt "
-#	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-#	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-#	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-#	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-#	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-#	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-#	sql += "  , sum(p.clip_val) as clip_val_tot "
-#	sql += "  , sum(p.sell_val) as sell_val_tot "
-#	sql += "  , sum(p.age_mins) as age_mins "
-#	sql += "  , sum(p.gain_amt) as gain_amt  "
-#	sql += "  from view_pos p "
-#	sql += "  where 1=1 "
-#	sql += "  group by p.buy_strat_type, p.buy_strat_name, p.pos_stat "
-#	sql += "  order by p.buy_strat_type, p.buy_strat_name, p.pos_stat "
-#	sql += "  ) x "
-#	h = build_sql_display(sql,'first')
-#	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-#	m, u, d = html_add(more=h, m=m, u=u, d=d)
-#
-#	t     = 'Buy Strats - All - Type & Name & Freq - New'
-#	sql = " "
-#	sql += "select x.buy_strat_type "
-#	sql += "  , x.buy_strat_name "
-#	sql += "  , x.buy_strat_freq "
-#	sql += "  , x.stat "
-#	sql += "  , x.tot_cnt "
-#	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-#	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-#	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-#	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
-#	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-#	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-#	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-#	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-#	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-#	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-#	sql += "  from ( "
-#	sql += "select p.buy_strat_type "
-#	sql += "  , p.buy_strat_name "
-#	sql += "  , p.buy_strat_freq "
-#	sql += "  , p.pos_stat as stat "
-#	sql += "  , count(p.pos_id) as tot_cnt "
-#	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-#	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-#	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-#	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-#	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-#	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-#	sql += "  , sum(p.clip_val) as clip_val_tot "
-#	sql += "  , sum(p.sell_val) as sell_val_tot "
-#	sql += "  , sum(p.age_mins) as age_mins "
-#	sql += "  , sum(p.gain_amt) as gain_amt  "
-#	sql += "  from view_pos p "
-#	sql += "  where 1=1 "
-#	sql += "  group by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat "
-#	sql += "  order by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat "
-#	sql += "  ) x "
-#	h = build_sql_display(sql,'first')
-#	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-#	m, u, d = html_add(more=h, m=m, u=u, d=d)
-#
-#	t     = 'Buy Strats & Sell Strats - All - Type & Name & Freq - New'
-#	sql = " "
-#	sql += "select x.buy_strat_type "
-#	sql += "  , x.buy_strat_name "
-#	sql += "  , x.buy_strat_freq "
-#	sql += "  , x.sell_strat_type "
-#	sql += "  , x.sell_strat_name "
-#	sql += "  , x.stat "
-#	sql += "  , x.tot_cnt "
-#	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-#	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-#	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-#	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
-#	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-#	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-#	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-#	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-#	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-#	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-#	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-#	sql += "  from ( "
-#	sql += "select p.buy_strat_type "
-#	sql += "  , p.buy_strat_name "
-#	sql += "  , p.buy_strat_freq "
-#	sql += "  , p.sell_strat_type "
-#	sql += "  , p.sell_strat_name "
-#	sql += "  , p.pos_stat as stat "
-#	sql += "  , count(p.pos_id) as tot_cnt "
-#	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-#	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-#	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-#	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-#	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-#	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-#	sql += "  , sum(p.clip_val) as clip_val_tot "
-#	sql += "  , sum(p.sell_val) as sell_val_tot "
-#	sql += "  , sum(p.age_mins) as age_mins "
-#	sql += "  , sum(p.gain_amt) as gain_amt  "
-#	sql += "  from view_pos p "
-#	sql += "  where 1=1 "
-#	sql += "  group by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat, p.sell_strat_type, p.sell_strat_name "
-#	sql += "  order by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat, p.sell_strat_type, p.sell_strat_name "
-#	sql += "  ) x "
-#	h = build_sql_display(sql,'first')
-#	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-#	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Positions - Test - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+#		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
 
@@ -3734,203 +4107,79 @@ def buy_strats_all() -> str:
 
 #<=====>#
 
-@app.route("/buy_strats_prods_today.htm")
-def buy_strats_prods_today() -> str:
-	print(str(datetime.now()) + " buy_strats_prods_today()")
+@app.route("/sales_test.htm")
+@app.route("/sales_today_test.htm")
+def sales_today_test() -> str:
+	print(str(datetime.now()) + " sales_today_test()")
 	tn = build_topnav()
-	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	today = now_utc_get()
 
 	m     = None
 	u     = None
 	d     = None
 
-	pt    = 'Buy Strats Performance'
+	pt    = f'Sales Summary - Today - Test'
 
-	t     = 'Buy Strats - Today - Type - New'
-	sql = " "
-	sql += "select x.prod_id "
-	sql += "  , x.buy_strat_type "
-	sql += "  , x.stat "
-	sql += "  , x.tot_cnt "
-	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
-	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-	sql += "  from ( "
-	sql += "select p.prod_id "
-	sql += "  , p.buy_strat_type "
-	sql += "  , p.pos_stat as stat "
-	sql += "  , count(p.pos_id) as tot_cnt "
-	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-	sql += "  , sum(p.clip_val) as clip_val_tot "
-	sql += "  , sum(p.sell_val) as sell_val_tot "
-	sql += "  , sum(p.age_mins) as age_mins "
-	sql += "  , sum(p.gain_amt) as gain_amt  "
-	sql += "  from view_pos p "
-	sql += "  where 1=1 "
-	sql += "  and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
-	sql += "  group by p.prod_id, p.buy_strat_type, p.pos_stat "
-	sql += "  order by p.prod_id, p.buy_strat_type, p.pos_stat "
-	sql += "  ) x "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Sales Summary - Today - Test - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=today, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
-	t     = 'Buy Strats - Today  - Type & Name - New'
-	sql = " "
-	sql += "select x.prod_id "
-	sql += "  , x.buy_strat_type "
-	sql += "  , x.buy_strat_name "
-	sql += "  , x.stat "
-	sql += "  , x.tot_cnt "
-	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
-	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-	sql += "  from ( "
-	sql += "select p.prod_id "
-	sql += "  , p.buy_strat_type "
-	sql += "  , p.buy_strat_name "
-	sql += "  , p.pos_stat as stat "
-	sql += "  , count(p.pos_id) as tot_cnt "
-	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-	sql += "  , sum(p.clip_val) as clip_val_tot "
-	sql += "  , sum(p.sell_val) as sell_val_tot "
-	sql += "  , sum(p.age_mins) as age_mins "
-	sql += "  , sum(p.gain_amt) as gain_amt  "
-	sql += "  from view_pos p "
-	sql += "  where 1=1 "
-	sql += "  and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
-	sql += "  group by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.pos_stat "
-	sql += "  order by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.pos_stat "
-	sql += "  ) x "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t     = 'Buy Strats - Today  - Type & Name & Freq - New'
-	sql = " "
-	sql += "select x.prod_id "
-	sql += "  , x.buy_strat_type "
-	sql += "  , x.buy_strat_name "
-	sql += "  , x.buy_strat_freq "
-	sql += "  , x.stat "
-	sql += "  , x.tot_cnt "
-	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
-	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-	sql += "  from ( "
-	sql += "select p.prod_id "
-	sql += "  , p.buy_strat_type "
-	sql += "  , p.buy_strat_name "
-	sql += "  , p.buy_strat_freq "
-	sql += "  , p.pos_stat as stat "
-	sql += "  , count(p.pos_id) as tot_cnt "
-	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-	sql += "  , sum(p.clip_val) as clip_val_tot "
-	sql += "  , sum(p.sell_val) as sell_val_tot "
-	sql += "  , sum(p.age_mins) as age_mins "
-	sql += "  , sum(p.gain_amt) as gain_amt  "
-	sql += "  from view_pos p "
-	sql += "  where 1=1 "
-	sql += "  and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
-	sql += "  group by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat "
-	sql += "  order by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat "
-	sql += "  ) x "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t     = 'Buy Strats & Sell Strats - Today  - Type & Name & Freq - New'
-	sql = " "
-	sql += "select x.prod_id "
-	sql += "  , x.buy_strat_type "
-	sql += "  , x.buy_strat_name "
-	sql += "  , x.buy_strat_freq "
-	sql += "  , x.sell_strat_type "
-	sql += "  , x.sell_strat_name "
-	sql += "  , x.stat "
-	sql += "  , x.tot_cnt "
-	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
-	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-	sql += "  from ( "
-	sql += "select p.prod_id "
-	sql += "  , p.buy_strat_type "
-	sql += "  , p.buy_strat_name "
-	sql += "  , p.buy_strat_freq "
-	sql += "  , p.sell_strat_type "
-	sql += "  , p.sell_strat_name "
-	sql += "  , p.pos_stat as stat "
-	sql += "  , count(p.pos_id) as tot_cnt "
-	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-	sql += "  , sum(p.clip_val) as clip_val_tot "
-	sql += "  , sum(p.sell_val) as sell_val_tot "
-	sql += "  , sum(p.age_mins) as age_mins "
-	sql += "  , sum(p.gain_amt) as gain_amt  "
-	sql += "  from view_pos p "
-	sql += "  where 1=1 "
-	sql += "  and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
-	sql += "  group by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat, p.sell_strat_type, p.sell_strat_name "
-	sql += "  order by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat, p.sell_strat_type, p.sell_strat_name "
-	sql += "  ) x "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Positions - Today - Test - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=today, 
+#		td_dt2=None, 
+#		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
 
@@ -3942,198 +4191,80 @@ def buy_strats_prods_today() -> str:
 
 #<=====>#
 
-@app.route("/buy_strats_prods_all.htm")
-def buy_strats_prods_all() -> str:
-	print(str(datetime.now()) + " buy_strats_prods_all()")
+@app.route("/sales_yesterday_test.htm")
+def sales_yesterday_test() -> str:
+	print(str(datetime.now()) + " sales_yesterday_test()")
 	tn = build_topnav()
+
+	today = now_utc_get()
+	one_day = timedelta(days=1)
+	yesterday = today - one_day
 
 	m     = None
 	u     = None
 	d     = None
 
-	pt    = 'Buy Strats Performance'
+	pt    = f'Sales Summary - Yesterday - Test'
 
-	t     = 'Buy Strats - Today - Type - New'
-	sql = " "
-	sql += "select x.prod_id "
-	sql += "  , x.buy_strat_type "
-	sql += "  , x.stat "
-	sql += "  , x.tot_cnt "
-	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
-	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-	sql += "  from ( "
-	sql += "select p.prod_id "
-	sql += "  , p.buy_strat_type "
-	sql += "  , p.pos_stat as stat "
-	sql += "  , count(p.pos_id) as tot_cnt "
-	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-	sql += "  , sum(p.clip_val) as clip_val_tot "
-	sql += "  , sum(p.sell_val) as sell_val_tot "
-	sql += "  , sum(p.age_mins) as age_mins "
-	sql += "  , sum(p.gain_amt) as gain_amt  "
-	sql += "  from view_pos p "
-	sql += "  where 1=1 "
-	sql += "  group by p.prod_id, p.buy_strat_type, p.pos_stat "
-	sql += "  order by p.prod_id, p.buy_strat_type, p.pos_stat "
-	sql += "  ) x "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Sales Summary - Yesterday - Test - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=yesterday, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
-	t     = 'Buy Strats - Today  - Type & Name - New'
-	sql = " "
-	sql += "select x.prod_id "
-	sql += "  , x.buy_strat_type "
-	sql += "  , x.buy_strat_name "
-	sql += "  , x.stat "
-	sql += "  , x.tot_cnt "
-	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
-	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-	sql += "  from ( "
-	sql += "select p.prod_id "
-	sql += "  , p.buy_strat_type "
-	sql += "  , p.buy_strat_name "
-	sql += "  , p.pos_stat as stat "
-	sql += "  , count(p.pos_id) as tot_cnt "
-	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-	sql += "  , sum(p.clip_val) as clip_val_tot "
-	sql += "  , sum(p.sell_val) as sell_val_tot "
-	sql += "  , sum(p.age_mins) as age_mins "
-	sql += "  , sum(p.gain_amt) as gain_amt  "
-	sql += "  from view_pos p "
-	sql += "  where 1=1 "
-	sql += "  group by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.pos_stat "
-	sql += "  order by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.pos_stat "
-	sql += "  ) x "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t     = 'Buy Strats - Today  - Type & Name & Freq - New'
-	sql = " "
-	sql += "select x.prod_id "
-	sql += "  , x.buy_strat_type "
-	sql += "  , x.buy_strat_name "
-	sql += "  , x.buy_strat_freq "
-	sql += "  , x.stat "
-	sql += "  , x.tot_cnt "
-	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
-	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-	sql += "  from ( "
-	sql += "select p.prod_id "
-	sql += "  , p.buy_strat_type "
-	sql += "  , p.buy_strat_name "
-	sql += "  , p.buy_strat_freq "
-	sql += "  , p.pos_stat as stat "
-	sql += "  , count(p.pos_id) as tot_cnt "
-	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-	sql += "  , sum(p.clip_val) as clip_val_tot "
-	sql += "  , sum(p.sell_val) as sell_val_tot "
-	sql += "  , sum(p.age_mins) as age_mins "
-	sql += "  , sum(p.gain_amt) as gain_amt  "
-	sql += "  from view_pos p "
-	sql += "  where 1=1 "
-	sql += "  group by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat "
-	sql += "  order by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat "
-	sql += "  ) x "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t     = 'Buy Strats & Sell Strats - Today  - Type & Name & Freq - New'
-	sql = " "
-	sql += "select x.prod_id "
-	sql += "  , x.buy_strat_type "
-	sql += "  , x.buy_strat_name "
-	sql += "  , x.buy_strat_freq "
-	sql += "  , x.sell_strat_type "
-	sql += "  , x.sell_strat_name "
-	sql += "  , x.stat "
-	sql += "  , x.tot_cnt "
-	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
-	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
-	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
-	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
-	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
-	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
-	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
-	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
-	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
-	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
-	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
-	sql += "  from ( "
-	sql += "select p.prod_id "
-	sql += "  , p.buy_strat_type "
-	sql += "  , p.buy_strat_name "
-	sql += "  , p.buy_strat_freq "
-	sql += "  , p.sell_strat_type "
-	sql += "  , p.sell_strat_name "
-	sql += "  , p.pos_stat as stat "
-	sql += "  , count(p.pos_id) as tot_cnt "
-	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
-	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
-	sql += "  , sum(p.tot_in_cnt) as recv_tot "
-	sql += "  , sum(p.pocket_val) as pocket_val_tot "
-	sql += "  , sum(p.clip_val) as clip_val_tot "
-	sql += "  , sum(p.sell_val) as sell_val_tot "
-	sql += "  , sum(p.age_mins) as age_mins "
-	sql += "  , sum(p.gain_amt) as gain_amt  "
-	sql += "  from view_pos p "
-	sql += "  where 1=1 "
-	sql += "  group by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat, p.sell_strat_type, p.sell_strat_name "
-	sql += "  order by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat, p.sell_strat_type, p.sell_strat_name "
-	sql += "  ) x "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Positions - Yesterday - Test - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=yesterday, 
+#		td_dt2=None, 
+#		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
 
@@ -4145,126 +4276,169 @@ def buy_strats_prods_all() -> str:
 
 #<=====>#
 
-@app.route("/sell_strats_today.htm")
-def sell_strats_today() -> str:
-	print(str(datetime.now()) + " sell_strats_today()")
+@app.route("/sales_<day_cnt>d_test.htm")
+def sales_day_cntd_test(day_cnt) -> str:
+	print("{} sales_{}d_test()".format(str(datetime.now()), day_cnt))
 	tn = build_topnav()
-	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	td = now_utc_get()
+	days = timedelta(days=int(day_cnt)-1)
+	sd = td - days
 
 	m     = None
 	u     = None
 	d     = None
 
-	pt    = 'Sell Strats Performance'
+	sd_str = sd.strftime('%Y-%m-%d')
+	td_str = td.strftime('%Y-%m-%d')
 
-	t     = 'Sell Strats By Type'
-	sql = ""
-	sql += "select x.strat "
-	sql += "   , x.cnt "
-	sql += "   , concat('$',' ', x.spent) as spent "
-	sql += "   , concat('$',' ', x.recv) as recv "
-	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
-	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
-	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
-	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
-	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
-	sql += "from ( "
-	sql += "  select p.sell_strat_type  as strat "
-	sql += "    , count(p.pos_id) as cnt "
-	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
-	sql += "    , round(sum(p.val_tot),4) as recv "
-#	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
-	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
-#	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
-	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
-	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
-	sql += "    from cbtrade.poss p "
-	sql += "    where p.ignore_tf = 0 "
-	sql += "    and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
-	sql += "    group by p.sell_strat_type "
-	sql += "    order by p.sell_strat_type "
-	sql += "    ) x "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	dt_str = 'Last {} Days - {} - {}'.format(day_cnt, sd_str, td_str)
 
-	t     = 'Sell Strats By Name'
-	sql = ""
-	sql += "select x.strat "
-	sql += "   , x.strat_name "
-	sql += "   , x.cnt "
-	sql += "   , concat('$',' ', x.spent) as spent "
-	sql += "   , concat('$',' ', x.recv) as recv "
-	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
-	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
-	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
-	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
-	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
-	sql += "from ( "
-	sql += "  select p.sell_strat_type  as strat "
-	sql += "    , p.sell_strat_name as strat_name "
-	sql += "    , count(p.pos_id) as cnt "
-	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
-	sql += "    , round(sum(p.val_tot),4) as recv "
-#	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
-	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
-#	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
-	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
-	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
-	sql += "    from cbtrade.poss p "
-	sql += "    where p.ignore_tf = 0 "
-	sql += "    and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
-	sql += "    group by p.sell_strat_type, p.sell_strat_name "
-	sql += "    order by p.sell_strat_type, p.sell_strat_name "
-	sql += "    ) x "
-	h = build_sql_display(sql,100)
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	pt    = f'Sales Summary - Test - {dt_str}'
 
-	t     = 'Sell Strats vs Buy Strats By Name'
-	sql = ""
-	sql += "select x.sell_strat "
-	sql += "   , x.sell_strat_name "
-	sql += "   , x.buy_strat "
-	sql += "   , x.buy_strat_name "
-	sql += "   , x.stat "
-	sql += "   , x.cnt "
-	sql += "   , concat('$',' ', x.spent) as spent "
-	sql += "   , concat('$',' ', x.recv) as recv "
-	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
-	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
-	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
-	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
-	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
-	sql += "from ( "
-	sql += "  select p.sell_strat_type  as sell_strat "
-	sql += "    , p.sell_strat_name as sell_strat_name "
-	sql += "    , p.buy_strat_type  as buy_strat "
-	sql += "    , p.buy_strat_name as buy_strat_name "
-	sql += "    , p.pos_stat as stat "
-	sql += "    , count(p.pos_id) as cnt "
-	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
-	sql += "    , round(sum(p.val_tot),4) as recv "
-#	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
-	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
-#	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
-	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
-	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
-	sql += "    from cbtrade.poss p "
-	sql += "    where p.ignore_tf = 0 "
-	sql += "    and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
-	sql += "    group by p.buy_strat_type, p.buy_strat_name, p.sell_strat_type, p.sell_strat_name, p.pos_stat "
-	sql += "    order by p.pos_stat, p.sell_strat_type, p.sell_strat_name, p.buy_strat_type, p.buy_strat_name "
-	sql += "    ) x "
-	h = build_sql_display(sql,'third')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Sales Summary - Test - {dt_str} - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=sd, 
+		td_dt2=td, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Positions - Test - {dt_str} - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=sd, 
+		td_dt2=td, 
+#		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	sh = html_comb(m=m, u=u, d=d)
+	return render_template('web_home.html'
+							, top_nav= tn
+							, page_title = pt
+							, html_disp  = sh
+							)
+
+#<=====>#
+
+@app.route("/sales_dt_test_<dt>")
+def sales_dt_test(dt) -> str:
+	print(str(datetime.now()) + " sales_dt_test()")
+	tn = build_topnav()
+
+	td = datetime.strptime(dt, '%Y-%m-%d')
+	td_str = td.strftime('%Y-%m-%d')
+	dt_str = '{}'.format(td_str)
+
+	m     = None
+	u     = None
+	d     = None
+
+	pt    = f'Sales Summary - Test - {dt_str}'
+
+	m, u, d = add_report(
+		t=f'Sales Summary - Test - {dt_str} - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=td, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Positions - Test - {dt_str} - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=td, 
+#		td_dt2=None, 
+#		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
 
@@ -4276,126 +4450,89 @@ def sell_strats_today() -> str:
 
 #<=====>#
 
-@app.route("/sell_strats_prods_today.htm")
-def sell_strats_prods_today() -> str:
-	print(str(datetime.now()) + " sell_strats_prods_today()")
+@app.route("/sales_month_test_<yr>_<m>")
+def sales_month_test(yr,m) -> str:
+	print(str(datetime.now()) + " sales_month_test()")
 	tn = build_topnav()
-	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+	yr = int(yr)
+	m = int(m)
+	if yr < 2019 or yr > 2049:
+		yr = date.today.year
+	if m < 1 or m > 12:
+		m = date.today.month
+
+	td_dt1 = date(yr, m, 1)
+	td_dt2 = date(yr, m, calendar.monthrange(yr, m)[-1])
+
+	print(f'td_dt1 : {td_dt1}, {type(td_dt1)}')
+	print(f'td_dt2 : {td_dt2}, {type(td_dt2)}')
 
 	m     = None
 	u     = None
 	d     = None
 
-	pt    = 'Sell Strats Performance'
+	pt    = f'Sales Summary - Test - {td_dt1} - {td_dt2}'
 
-	t     = 'Sell Strats By Type'
-	sql = ""
-	sql += "select x.strat "
-	sql += "   , x.cnt "
-	sql += "   , concat('$',' ', x.spent) as spent "
-	sql += "   , concat('$',' ', x.recv) as recv "
-	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
-	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
-	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
-	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
-	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
-	sql += "from ( "
-	sql += "  select p.sell_strat_type  as strat "
-	sql += "    , count(p.pos_id) as cnt "
-	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
-	sql += "    , round(sum(p.val_tot),4) as recv "
-#	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
-	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
-#	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
-	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
-	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
-	sql += "    from cbtrade.poss p "
-	sql += "    where p.ignore_tf = 0 "
-	sql += "    and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
-	sql += "    group by p.sell_strat_type "
-	sql += "    order by p.sell_strat_type "
-	sql += "    ) x "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Sales Summary - Test - {td_dt1} - {td_dt2} - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=td_dt1, 
+		td_dt2=td_dt2, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
-	t     = 'Sell Strats By Name'
-	sql = ""
-	sql += "select x.strat "
-	sql += "   , x.strat_name "
-	sql += "   , x.cnt "
-	sql += "   , concat('$',' ', x.spent) as spent "
-	sql += "   , concat('$',' ', x.recv) as recv "
-	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
-	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
-	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
-	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
-	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
-	sql += "from ( "
-	sql += "  select p.sell_strat_type  as strat "
-	sql += "    , p.sell_strat_name as strat_name "
-	sql += "    , count(p.pos_id) as cnt "
-	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
-	sql += "    , round(sum(p.val_tot),4) as recv "
-#	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
-	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
-#	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
-	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
-	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
-	sql += "    from cbtrade.poss p "
-	sql += "    where p.ignore_tf = 0 "
-	sql += "    and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
-	sql += "    group by p.sell_strat_type, p.sell_strat_name "
-	sql += "    order by p.sell_strat_type, p.sell_strat_name "
-	sql += "    ) x "
-	h = build_sql_display(sql,100)
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t     = 'Sell Strats vs Buy Strats By Name'
-	sql = ""
-	sql += "select x.sell_strat "
-	sql += "   , x.sell_strat_name "
-	sql += "   , x.buy_strat "
-	sql += "   , x.buy_strat_name "
-	sql += "   , x.stat "
-	sql += "   , x.cnt "
-	sql += "   , concat('$',' ', x.spent) as spent "
-	sql += "   , concat('$',' ', x.recv) as recv "
-	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
-	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
-	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
-	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
-	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
-	sql += "from ( "
-	sql += "  select p.sell_strat_type  as sell_strat "
-	sql += "    , p.sell_strat_name as sell_strat_name "
-	sql += "    , p.buy_strat_type  as buy_strat "
-	sql += "    , p.buy_strat_name as buy_strat_name "
-	sql += "    , p.pos_stat as stat "
-	sql += "    , count(p.pos_id) as cnt "
-	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
-	sql += "    , round(sum(p.val_tot),4) as recv "
-#	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
-	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
-#	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
-	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
-	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
-	sql += "    from cbtrade.poss p "
-	sql += "    where p.ignore_tf = 0 "
-	sql += "    and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
-	sql += "    group by p.buy_strat_type, p.buy_strat_name, p.sell_strat_type, p.sell_strat_name, p.pos_stat "
-	sql += "    order by p.pos_stat, p.sell_strat_type, p.sell_strat_name, p.buy_strat_type, p.buy_strat_name "
-	sql += "    ) x "
-	h = build_sql_display(sql,'third')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Positions - Test - {td_dt1} - {td_dt2} - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=td_dt1, 
+		td_dt2=td_dt2, 
+#		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
 
@@ -4407,125 +4544,86 @@ def sell_strats_prods_today() -> str:
 
 #<=====>#
 
-@app.route("/sell_strats_all.htm")
-def sell_strats_all() -> str:
-	print(str(datetime.now()) + " sell_strats_all()")
+@app.route("/sales_year_test_<yr>")
+def sales_yr_test(yr) -> str:
+	print(str(datetime.now()) + " sales_year_test()")
 	tn = build_topnav()
+
+	yr = int(yr)
+	if yr < 2019 or yr > 2049:
+		yr = date.today.year
+
+	td_dt1 = date(yr, 1, 1)
+	td_dt2 = date(yr, 12, 31)
+
+	print(f'td_dt1 : {td_dt1}, {type(td_dt1)}')
+	print(f'td_dt2 : {td_dt2}, {type(td_dt2)}')
 
 	m     = None
 	u     = None
 	d     = None
 
-	pt    = 'Sell Strats Performance'
+	pt    = f'Sales Summary - Test - {yr}'
 
-	t     = 'Sell Strats By Type'
-	sql = ""
-	sql += "select x.strat "
-	sql += "   , x.cnt "
-	sql += "   , concat('$',' ', x.spent) as spent "
-	sql += "   , concat('$',' ', x.recv) as recv "
-	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
-	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
-	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
-	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
-	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
-	sql += "from ( "
-	sql += "  select p.sell_strat_type  as strat "
-	sql += "    , count(p.pos_id) as cnt "
-	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
-	sql += "    , round(sum(p.val_tot),4) as recv "
-#	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
-	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
-#	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
-	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
-	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
-	sql += "    from cbtrade.poss p "
-	sql += "    where p.ignore_tf = 0 "
-#	sql += "    where p.pos_stat = 'CLOSE' "
-	sql += "    group by p.sell_strat_type "
-	sql += "    order by p.sell_strat_type "
-	sql += "    ) x "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Sales Summary - Test - {yr} - *', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=td_dt1, 
+		td_dt2=td_dt2, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
-	t     = 'Sell Strats By Name'
-	sql = ""
-	sql += "select x.strat "
-	sql += "   , x.strat_name "
-	sql += "   , x.cnt "
-	sql += "   , concat('$',' ', x.spent) as spent "
-	sql += "   , concat('$',' ', x.recv) as recv "
-	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
-	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
-	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
-	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
-	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
-	sql += "from ( "
-	sql += "  select p.sell_strat_type  as strat "
-	sql += "    , p.sell_strat_name as strat_name "
-	sql += "    , count(p.pos_id) as cnt "
-	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
-	sql += "    , round(sum(p.val_tot),4) as recv "
-#	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
-	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
-#	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
-	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
-	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
-	sql += "    from cbtrade.poss p "
-	sql += "    where p.ignore_tf = 0 "
-#	sql += "    where p.pos_stat = 'CLOSE' "
-	sql += "    group by p.sell_strat_type, p.sell_strat_name "
-	sql += "    order by p.sell_strat_type, p.sell_strat_name "
-	sql += "    ) x "
-	h = build_sql_display(sql,100)
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t     = 'Sell Strats vs Buy Strats By Name'
-	sql = ""
-	sql += "select x.sell_strat "
-	sql += "   , x.sell_strat_name "
-	sql += "   , x.buy_strat "
-	sql += "   , x.buy_strat_name "
-	sql += "   , x.stat "
-	sql += "   , x.cnt "
-	sql += "   , concat('$',' ', x.spent) as spent "
-	sql += "   , concat('$',' ', x.recv) as recv "
-	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
-	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
-	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
-	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
-	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
-	sql += "from ( "
-	sql += "  select p.sell_strat_type  as sell_strat "
-	sql += "    , p.sell_strat_name as sell_strat_name "
-	sql += "    , p.buy_strat_type  as buy_strat "
-	sql += "    , p.buy_strat_name as buy_strat_name "
-	sql += "    , p.pos_stat as stat "
-	sql += "    , count(p.pos_id) as cnt "
-	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
-	sql += "    , round(sum(p.val_tot),4) as recv "
-#	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
-	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
-#	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
-	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
-	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
-	sql += "    from cbtrade.poss p "
-	sql += "    where p.ignore_tf = 0 "
-#	sql += "    where p.pos_stat = 'CLOSE' "
-	sql += "    group by p.buy_strat_type, p.buy_strat_name, p.sell_strat_type, p.sell_strat_name, p.pos_stat "
-	sql += "    order by p.pos_stat, p.sell_strat_type, p.sell_strat_name, p.buy_strat_type, p.buy_strat_name "
-	sql += "    ) x "
-	h = build_sql_display(sql,'third')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+	m, u, d = add_report(
+		t=f'Positions - Test - {yr} - *', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_sd_dt=True, 
+		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_sell_strat_name=True, 
+		inc_sell_strat_freq=True, 
+		inc_test=True, 
+		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+		td_dt1=td_dt1, 
+		td_dt2=td_dt2, 
+#		stat=None, 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.prod_id ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
 
@@ -4537,133 +4635,2052 @@ def sell_strats_all() -> str:
 
 #<=====>#
 
-@app.route("/sell_strats_prods_all.htm")
-def sell_strats_prods_all() -> str:
-	print(str(datetime.now()) + " sell_strats_prods_all()")
-	tn = build_topnav()
+# @app.route("/best_strats")
+# def best_strats() -> str:
+# 	print(str(datetime.now()) + f" best_strats()")
+# 	tn = build_topnav()
 
-	m     = None
-	u     = None
-	d     = None
+# 	m     = None
+# 	u     = None
+# 	d     = None
+# 	pt    = ''
+# 	sh = html_comb(m=m, u=u, d=d)
 
-	pt    = 'Sell Strats Performance'
+# 	return render_template('web_home.html'
+# 							, top_nav= tn
+# 							, page_title = pt
+# 							, html_disp  = sh
+# 							)
 
-	t     = 'Sell Strats By Type'
-	sql = ""
-	sql += "select x.strat "
-	sql += "   , x.cnt "
-	sql += "   , concat('$',' ', x.spent) as spent "
-	sql += "   , concat('$',' ', x.recv) as recv "
-	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
-	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
-	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
-	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
-	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
-	sql += "from ( "
-	sql += "  select p.sell_strat_type  as strat "
-	sql += "    , count(p.pos_id) as cnt "
-	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
-	sql += "    , round(sum(p.val_tot),4) as recv "
-#	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
-	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
-#	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
-	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
-	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
-	sql += "    from cbtrade.poss p "
-	sql += "    where p.ignore_tf = 0 "
-#	sql += "    where p.pos_stat = 'CLOSE' "
-	sql += "    group by p.sell_strat_type "
-	sql += "    order by p.sell_strat_type "
-	sql += "    ) x "
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+# #<=====>#
 
-	t     = 'Sell Strats By Name'
-	sql = ""
-	sql += "select x.strat "
-	sql += "   , x.strat_name "
-	sql += "   , x.cnt "
-	sql += "   , concat('$',' ', x.spent) as spent "
-	sql += "   , concat('$',' ', x.recv) as recv "
-	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
-	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
-	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
-	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
-	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
-	sql += "from ( "
-	sql += "  select p.sell_strat_type  as strat "
-	sql += "    , p.sell_strat_name as strat_name "
-	sql += "    , count(p.pos_id) as cnt "
-	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
-	sql += "    , round(sum(p.val_tot),4) as recv "
-#	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
-	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
-#	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
-	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
-	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
-	sql += "    from cbtrade.poss p "
-	sql += "    where p.ignore_tf = 0 "
-#	sql += "    where p.pos_stat = 'CLOSE' "
-	sql += "    group by p.sell_strat_type, p.sell_strat_name "
-	sql += "    order by p.sell_strat_type, p.sell_strat_name "
-	sql += "    ) x "
-	h = build_sql_display(sql,100)
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+# @app.route("/best_markets")
+# def best_markets() -> str:
+# 	print(str(datetime.now()) + f" best_markets()")
+# 	tn = build_topnav()
 
-	t     = 'Sell Strats vs Buy Strats By Name'
-	sql = ""
-	sql += "select x.sell_strat "
-	sql += "   , x.sell_strat_name "
-	sql += "   , x.buy_strat "
-	sql += "   , x.buy_strat_name "
-	sql += "   , x.stat "
-	sql += "   , x.cnt "
-	sql += "   , concat('$',' ', x.spent) as spent "
-	sql += "   , concat('$',' ', x.recv) as recv "
-	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
-	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
-	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
-	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
-	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
-	sql += "from ( "
-	sql += "  select p.sell_strat_type  as sell_strat "
-	sql += "    , p.sell_strat_name as sell_strat_name "
-	sql += "    , p.buy_strat_type  as buy_strat "
-	sql += "    , p.buy_strat_name as buy_strat_name "
-	sql += "    , p.pos_stat as stat "
-	sql += "    , count(p.pos_id) as cnt "
-	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
-	sql += "    , round(sum(p.val_tot),4) as recv "
-#	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
-	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
-#	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
-	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
-	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
-	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
-	sql += "    from cbtrade.poss p "
-	sql += "    where p.ignore_tf = 0 "
-#	sql += "    where p.pos_stat = 'CLOSE' "
-	sql += "    group by p.buy_strat_type, p.buy_strat_name, p.sell_strat_type, p.sell_strat_name, p.pos_stat "
-	sql += "    order by p.pos_stat, p.sell_strat_type, p.sell_strat_name, p.buy_strat_type, p.buy_strat_name "
-	sql += "    ) x "
-	h = build_sql_display(sql,'third')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
+# 	m     = None
+# 	u     = None
+# 	d     = None
+# 	pt    = ''
+# 	sh = html_comb(m=m, u=u, d=d)
 
-	sh = html_comb(m=m, u=u, d=d)
+# 	return render_template('web_home.html'
+# 							, top_nav= tn
+# 							, page_title = pt
+# 							, html_disp  = sh
+# 							)
 
-	return render_template('web_home.html'
-							, top_nav= tn
-							, page_title = pt
-							, html_disp  = sh
-							)
+# #<=====>#
+
+# @app.route("/worst_strats")
+# def worst_strats() -> str:
+# 	print(str(datetime.now()) + f" worst_strats()")
+# 	tn = build_topnav()
+
+# 	m     = None
+# 	u     = None
+# 	d     = None
+# 	pt    = ''
+# 	sh = html_comb(m=m, u=u, d=d)
+
+# 	return render_template('web_home.html'
+# 							, top_nav= tn
+# 							, page_title = pt
+# 							, html_disp  = sh
+# 							)
+
+# #<=====>#
+
+# @app.route("/worst_markets")
+# def worst_markets() -> str:
+# 	print(str(datetime.now()) + f" worst_markets()")
+# 	tn = build_topnav()
+
+# 	m     = None
+# 	u     = None
+# 	d     = None
+# 	pt    = ''
+# 	sh = html_comb(m=m, u=u, d=d)
+
+# 	return render_template('web_home.html'
+# 							, top_nav= tn
+# 							, page_title = pt
+# 							, html_disp  = sh
+# 							)
+
+# #<=====>#
+
+# def get_dt_clause(dt1='*', dt2='*') -> str:
+# 	dt_clause = ''
+# 	if dt1 == '*' and dt2 == '*':
+# 		dt_clause = " "
+# #		print(dt_clause)
+# 	elif dt1 == '*':
+# 		dt_clause  = " and x.dt = str_to_date('{}','%Y-%m-%d')".format(dt2)
+# #		print(dt_clause)
+# 	else:
+# 		dt_clause   =  ""
+# 		dt_clause   += " and x.dt >= str_to_date('{}','%Y-%m-%d')".format(dt1)
+# 		dt_clause   += " and x.dt <= str_to_date('{}','%Y-%m-%d')".format(dt2)
+# #		print(dt_clause)
+# ##	print(f'dt_clause : {dt_clause}')
+# 	return dt_clause
+
+# #<=====>#
+
+# def get_dt_clause2(dt1='*', dt2='*') -> str:
+# 	dt_clause = ''
+# 	if dt1 == '*' and dt2 == '*':
+# 		dt_clause = " "
+# #		print(dt_clause)
+# 	elif dt1 == '*':
+# 		dt_clause  = " and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt2)
+# #		print(dt_clause)
+# 	else:
+# 		dt_clause   =  ""
+# 		dt_clause   += " and date(p.pos_end_dttm) >= str_to_date('{}','%Y-%m-%d')".format(dt1)
+# 		dt_clause   += " and date(p.pos_end_dttm) <= str_to_date('{}','%Y-%m-%d')".format(dt2)
+# #		print(dt_clause)
+# ##	print(f'dt_clause : {dt_clause}')
+# 	return dt_clause
+
+# #<=====>#
+
+# def sales_disp_summary(prod_id=None, dt1='*', dt2='*') -> str:
+# 	print('')
+# 	print('sales_disp_summary(prod_id={}, dt1={}, dt2={})'.format(prod_id, dt1, dt2))
+
+# 	dt_clause = get_dt_clause2(dt1, dt2) 
+
+# 	sql = ""
+# 	sql += "select x.tot_cnt "
+# 	sql += "  , x.win_cnt "
+# 	sql += "  , x.lose_cnt "
+# 	sql += "  , concat(x.win_pct, ' %') as win_pct "
+# 	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
+# 	sql += "  , x.age_hours "
+# 	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
+# 	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
+# 	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
+# 	sql += "  , concat('$ ', x.val_curr) as val_curr "
+# 	sql += "  , concat('$ ', x.val_tot) as val_tot "
+# 	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
+# 	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
+# 	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
+# 	sql += "  from (select count(p.pos_id) as tot_cnt  "
+# 	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# 	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# 	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
+# 	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
+# 	sql += "          , sum(p.age_mins) as age_mins "
+# 	sql += "          , sum(p.age_mins) / 60 as age_hours "
+# 	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
+# 	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
+# 	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
+# 	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
+# 	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
+# 	sql += "          , sum(p.buy_cnt) as buy_cnt "
+# 	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
+# 	sql += "          , sum(p.hold_cnt) as hold_cnt "
+# 	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
+# 	sql += "          , sum(p.clip_cnt) as clip_cnt "
+# 	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
+# 	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
+# 	sql += "          , round(sum(p.val_curr), 2) as val_curr "
+# 	sql += "          , round(sum(p.val_tot), 2) as val_tot "
+# 	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
+# 	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
+# 	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
+# 	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
+# 	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
+# 	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
+# 	sql += "          , p.test_tf "
+# 	sql += "          from cbtrade.poss p "
+# 	sql += "          where p.ignore_tf = 0 "
+# 	sql += "          {} ".format(dt_clause)
+# 	sql += "          ) x "
+# 	sql += "  where 1=1 "
+# #	print(sql)
+# 	h = build_sql_display(sql,'first')
+
+# 	return h
+
+# #<=====>#
+
+# def sales_disp_dt_summary(dt1='*', dt2='*') -> str:
+# 	print('')
+# 	print('sales_disp_dt_summary(dt1={}, dt2={})'.format(dt1, dt2))
+
+# 	dt_clause = get_dt_clause(dt1, dt2) 
+
+# 	sql = ""
+# 	sql += "select x.dt "
+# 	sql += "  , x.tot_cnt "
+# 	sql += "  , x.win_cnt "
+# 	sql += "  , x.lose_cnt "
+# 	sql += "  , concat(x.win_pct, ' %') as win_pct "
+# 	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
+# 	sql += "  , x.age_hours "
+# 	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
+# 	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
+# 	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
+# 	sql += "  , concat('$ ', x.val_curr) as val_curr "
+# 	sql += "  , concat('$ ', x.val_tot) as val_tot "
+# 	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
+# 	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
+# 	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
+# 	sql += "  from (select date(p.pos_end_dttm) as dt "
+# 	sql += "          , count(p.pos_id) as tot_cnt  "
+# 	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# 	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# 	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
+# 	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
+# 	sql += "          , sum(p.age_mins) as age_mins "
+# 	sql += "          , sum(p.age_mins) / 60 as age_hours "
+# 	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
+# 	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
+# 	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
+# 	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
+# 	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
+# 	sql += "          , sum(p.buy_cnt) as buy_cnt "
+# 	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
+# 	sql += "          , sum(p.hold_cnt) as hold_cnt "
+# 	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
+# 	sql += "          , sum(p.clip_cnt) as clip_cnt "
+# 	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
+# 	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
+# 	sql += "          , round(sum(p.val_curr), 2) as val_curr "
+# 	sql += "          , round(sum(p.val_tot), 2) as val_tot "
+# 	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
+# 	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
+# 	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
+# 	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
+# 	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
+# 	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
+# 	sql += "          , p.test_tf "
+# 	sql += "          from cbtrade.poss p "
+# 	sql += "          where p.ignore_tf = 0 "
+# 	sql += "          group by date(p.pos_end_dttm) "
+# 	sql += "          ) x "
+# 	sql += "  where 1=1 "
+# 	sql += "  {} ".format(dt_clause)
+# 	sql += "  order by x.dt desc "
+# #	print(sql)
+# 	h = build_sql_display(sql,'first')
+
+# 	return h
+
+# #<=====>#
+
+# def sales_disp_mkt_summary(prod_id=None, dt1='*', dt2='*') -> str:
+# 	print('')
+# 	print('sales_disp_mkt_summary(prod_id={}, dt1={}, dt2={})'.format(prod_id, dt1, dt2))
+
+# 	dt_clause = get_dt_clause2(dt1, dt2) 
+
+# 	sql = ""
+# 	sql += "select x.prod_id "
+# 	sql += "  , x.tot_cnt "
+# 	sql += "  , x.win_cnt "
+# 	sql += "  , x.lose_cnt "
+# 	sql += "  , concat(x.win_pct, ' %') as win_pct "
+# 	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
+# 	sql += "  , x.age_hours "
+# 	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
+# 	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
+# 	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
+# 	sql += "  , concat('$ ', x.val_curr) as val_curr "
+# 	sql += "  , concat('$ ', x.val_tot) as val_tot "
+# 	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
+# 	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
+# 	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
+# 	sql += "  from (select p.prod_id "
+# 	sql += "          , count(p.pos_id) as tot_cnt  "
+# 	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# 	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# 	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
+# 	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
+# 	sql += "          , sum(p.age_mins) as age_mins "
+# 	sql += "          , sum(p.age_mins) / 60 as age_hours "
+# 	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
+# 	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
+# 	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
+# 	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
+# 	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
+# 	sql += "          , sum(p.buy_cnt) as buy_cnt "
+# 	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
+# 	sql += "          , sum(p.hold_cnt) as hold_cnt "
+# 	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
+# 	sql += "          , sum(p.clip_cnt) as clip_cnt "
+# 	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
+# 	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
+# 	sql += "          , round(sum(p.val_curr), 2) as val_curr "
+# 	sql += "          , round(sum(p.val_tot), 2) as val_tot "
+# 	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
+# 	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
+# 	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
+# 	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
+# 	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
+# 	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
+# 	sql += "          , p.test_tf "
+# 	sql += "          from cbtrade.poss p "
+# 	sql += "          where p.ignore_tf = 0 "
+# 	sql += "          {} ".format(dt_clause)
+# 	sql += "          group by p.prod_id "
+# 	sql += "          ) x "
+# 	sql += "  where 1=1 "
+# 	sql += "  order by x.prod_id "
+# #	print(sql)
+# 	h = build_sql_display(sql,'first')
+
+# 	return h
+
+# #<=====>#
+
+# def sales_disp_mkt_dt_summary(dt1='*', dt2='*') -> str:
+# 	print('')
+# 	print('sales_disp_mkt_dt_summary(dt1={}, dt2={})'.format(dt1, dt2))
+
+# 	dt_clause = get_dt_clause(dt1, dt2) 
+
+# 	sql = ""
+# 	sql += "select x.prod_id "
+# 	sql += "  , x.dt "
+# 	sql += "  , x.tot_cnt "
+# 	sql += "  , x.win_cnt "
+# 	sql += "  , x.lose_cnt "
+# 	sql += "  , concat(x.win_pct, ' %') as win_pct "
+# 	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
+# 	sql += "  , x.age_hours "
+# 	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
+# 	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
+# 	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
+# 	sql += "  , concat('$ ', x.val_curr) as val_curr "
+# 	sql += "  , concat('$ ', x.val_tot) as val_tot "
+# 	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
+# 	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
+# 	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
+# 	sql += "  from (select p.prod_id "
+# 	sql += "          , date(p.pos_end_dttm) as dt "
+# 	sql += "          , count(p.pos_id) as tot_cnt  "
+# 	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# 	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# 	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
+# 	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
+# 	sql += "          , sum(p.age_mins) as age_mins "
+# 	sql += "          , sum(p.age_mins) / 60 as age_hours "
+# 	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
+# 	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
+# 	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
+# 	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
+# 	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
+# 	sql += "          , sum(p.buy_cnt) as buy_cnt "
+# 	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
+# 	sql += "          , sum(p.hold_cnt) as hold_cnt "
+# 	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
+# 	sql += "          , sum(p.clip_cnt) as clip_cnt "
+# 	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
+# 	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
+# 	sql += "          , round(sum(p.val_curr), 2) as val_curr "
+# 	sql += "          , round(sum(p.val_tot), 2) as val_tot "
+# 	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
+# 	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
+# 	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
+# 	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
+# 	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
+# 	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
+# 	sql += "          , p.test_tf "
+# 	sql += "          from cbtrade.poss p "
+# 	sql += "          where p.ignore_tf = 0 "
+# 	sql += "          group by p.prod_id, date(p.pos_end_dttm) "
+# 	sql += "          ) x "
+# 	sql += "  where 1=1 "
+# 	sql += "  {} ".format(dt_clause)
+# 	sql += "  order by x.prod_id, x.dt "
+# #	print(sql)
+# 	h = build_sql_display(sql,'first')
+
+# 	return h
+
+# #<=====>#
+
+# def sales_disp_details(prod_id=None, pos_stat=None, dt1='*', dt2='*') -> str:
+# 	print('')
+# 	print('sales_disp_details(prod_id={}, dt1={}, dt2={})'.format(prod_id, dt1, dt2))
+
+# 	dt_clause = get_dt_clause(dt1, dt2) 
+
+# 	sql = ""
+# 	sql += "select x.pos_id"
+# 	sql += "  , x.prod_id"
+# 	sql += "  , x.pos_stat"
+# #	sql += "  , x.pos_begin_dttm"
+# 	sql += "  , x.pos_end_dttm"
+# #	sql += "  , x.dt"
+# #	sql += "  , x.age_mins"
+# 	sql += "  , x.age_hours"
+# #	sql += "  , x.buy_strat_type"
+# 	sql += "  , x.buy_strat_name"
+# 	sql += "  , x.buy_strat_freq"
+# 	sql += "  , x.sell_strat_type"
+# 	sql += "  , x.sell_strat_name"
+# #	sql += "  , x.sell_strat_freq"
+# 	sql += "  , concat('$ ', x.tot_out_cnt) as spend "
+# #	sql += "  , concat('$ ', x.tot_in_cnt) as recvd "
+# #	sql += "  , concat('$ ', x.buy_fees_cnt) as buy_fees_cnt "
+# #	sql += "  , concat('$ ', x.sell_fees_cnt_tot) as sell_fees_cnt_tot "
+# #	sql += "  , concat('$ ', x.fees_cnt_tot) as fees "
+# #	sql += "  , x.buy_cnt"
+# #	sql += "  , x.sell_cnt_tot"
+# #	sql += "  , x.hold_cnt"
+# #	sql += "  , x.pocket_cnt"
+# #	sql += "  , x.clip_cnt"
+# #	sql += "  , concat(x.pocket_pct, ' %') as pocket_pct "
+# #	sql += "  , concat(x.clip_pct, ' %') as clip_pct "
+# #	sql += "  , x.sell_order_cnt "
+# #	sql += "  , x.sell_order_attempt_cnt "
+# 	sql += "  , concat('$ ', round(x.prc_buy,6)) as prc_buy "
+# 	sql += "  , concat('$ ', round(x.prc_curr,6)) as prc_curr "
+# 	sql += "  , concat('$ ', round(x.prc_high,6)) as prc_high "
+# #	sql += "  , concat('$ ', round(x.prc_low,6)) as prc_low "
+# 	sql += "  , concat(round(x.prc_chg_pct,2), ' %') as 'prc chg %' "
+# 	sql += "  , concat(round(x.prc_chg_pct_high,2), ' %') as 'prc high %' "
+# #	sql += "  , concat(round(x.prc_chg_pct_low,2), ' %') as 'prc low %' "
+# 	sql += "  , concat(round(x.prc_chg_pct_drop,2), ' %') as 'prc drop %' "
+# #	sql += "  , concat('$ ', round(x.prc_sell_avg,6)) as prc_sell_avg "
+# 	sql += "  , concat('$ ', round(x.val_curr,4)) as val_curr "
+# #	sql += "  , concat('$ ', round(x.val_tot,4)) as val_tot "
+# 	sql += "  , concat('$ ', round(x.gain_loss_amt_est,4)) as 'gain est' "
+# 	sql += "  , concat('$ ', round(x.gain_loss_amt_est_high,4)) as 'gain est high' "
+# #	sql += "  , concat('$ ', round(x.gain_loss_amt_est_low,4)) 'gain est low' "
+# 	sql += "  , concat('$ ', round(x.gain_loss_amt,4)) as 'gain' "
+# #	sql += "  , concat('$ ', round(x.gain_loss_amt_net,4)) as 'gain net' "
+# 	sql += "  , concat(round(x.gain_loss_pct_est,3), ' %') as 'gain % est' "
+# 	sql += "  , concat(round(x.gain_loss_pct_est_high,3), ' %') as 'gain % est high' "
+# #	sql += "  , concat(round(x.gain_loss_pct_est_low,3), ' %') as 'gain % est low' "
+# 	sql += "  , concat(round(x.gain_loss_pct,3), ' %') as 'gain %' "
+# 	sql += "  , concat(round(x.gain_loss_pct_hr,8), ' %') as 'hourly gain %' "
+# #	sql += "  , x.bo_id"
+# #	sql += "  , x.bo_uuid"
+# #	sql += "  , x.buy_curr_symb"
+# #	sql += "  , x.spend_curr_symb"
+# #	sql += "  , x.sell_curr_symb"
+# #	sql += "  , x.recv_curr_symb"
+# #	sql += "  , x.fees_curr_symb"
+# #	sql += "  , x.test_tf"
+# 	sql += "  from cbtrade.view_pos x "
+# 	sql += "  where 1=1 "
+# 	if prod_id:
+# 		sql += "  and x.prod_id = '{}' ".format(prod_id)
+# 	if pos_stat:
+# 		sql += "  and x.pos_stat = '{}' ".format(pos_stat)
+# 	sql += "  {} ".format(dt_clause)
+# 	sql += dt_clause
+# 	sql += "  order by x.pos_end_dttm desc "
+# #	sql += "  limit 50 "
+# 	h = build_sql_display_old(sql,'first')
+
+# 	print(sql)
+# 	h = build_sql_display(sql,'first')
+
+# 	return h
+
+# #<=====>#
+
+# def sales_disp_strat_summary(dt1='*', dt2='*') -> str:
+# 	print('')
+# 	print('sales_disp_strat_summary(dt1={}, dt2={})'.format(dt1, dt2))
+
+# 	dt_clause = get_dt_clause2(dt1, dt2) 
+# 	print(f'dt_clause : {dt_clause}')
+
+# 	sql = ""
+# 	sql += "select x.buy_strat_type, x.buy_strat_name, x.buy_strat_freq "
+# 	sql += "  , x.tot_cnt "
+# 	sql += "  , x.win_cnt "
+# 	sql += "  , x.lose_cnt "
+# 	sql += "  , concat(x.win_pct, ' %') as win_pct "
+# 	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
+# 	sql += "  , x.age_hours "
+# 	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
+# 	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
+# 	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
+# 	sql += "  , concat('$ ', x.val_curr) as val_curr "
+# 	sql += "  , concat('$ ', x.val_tot) as val_tot "
+# 	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
+# 	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
+# 	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
+# 	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
+# 	sql += "  from (select p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq "
+# 	sql += "          , count(p.pos_id) as tot_cnt  "
+# 	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# 	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# 	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
+# 	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
+# 	sql += "          , sum(p.age_mins) as age_mins "
+# 	sql += "          , sum(p.age_mins) / 60 as age_hours "
+# 	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
+# 	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
+# 	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
+# 	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
+# 	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
+# 	sql += "          , sum(p.buy_cnt) as buy_cnt "
+# 	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
+# 	sql += "          , sum(p.hold_cnt) as hold_cnt "
+# 	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
+# 	sql += "          , sum(p.clip_cnt) as clip_cnt "
+# 	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
+# 	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
+# 	sql += "          , round(sum(p.val_curr), 2) as val_curr "
+# 	sql += "          , round(sum(p.val_tot), 2) as val_tot "
+# 	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
+# 	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
+# 	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
+# 	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
+# 	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
+# 	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
+# 	sql += "          , p.test_tf "
+# 	sql += "          from cbtrade.poss p "
+# 	sql += "          where p.ignore_tf = 0 "
+# 	sql += "          {} ".format(dt_clause)
+# 	sql += "          group by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq "
+# 	sql += "          ) x "
+# 	sql += "  where 1=1 "
+# 	sql += "  order by x.buy_strat_type "
+# 	sql += "      , x.buy_strat_name "
+# 	sql += "      , case  "
+# 	sql += "          when x.buy_strat_freq = '15min' then 1  "
+# 	sql += "          when x.buy_strat_freq = '30min' then 2 "
+# 	sql += "          when x.buy_strat_freq = '1h' then 3 "
+# 	sql += "          when x.buy_strat_freq = '4h' then 4 "
+# 	sql += "          when x.buy_strat_freq = '1d' then 5 "
+# 	sql += "        end "
+# #	print(sql)
+# 	h = build_sql_display(sql,'first')
+
+# 	return h
+
+# #<=====>#
+
+# def sales_disp_strat_mkt_summary(dt1='*', dt2='*') -> str:
+# 	print('')
+# 	print('sales_disp_strat_mkt_summary(dt1={}, dt2={})'.format(dt1, dt2))
+
+# 	dt_clause = get_dt_clause2(dt1, dt2) 
+# 	print(f'dt_clause : {dt_clause}')
+
+# 	sql = ""
+# 	sql += "select x.buy_strat_name "
+# 	sql += "  , x.buy_strat_freq "
+# 	sql += "  , x.prod_id "
+# 	sql += "  , x.tot_cnt "
+# 	sql += "  , x.win_cnt "
+# 	sql += "  , x.lose_cnt "
+# 	sql += "  , concat(x.win_pct, ' %') as win_pct "
+# 	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
+# 	sql += "  , x.age_hours "
+# 	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
+# 	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
+# 	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
+# 	sql += "  , concat('$ ', x.val_curr) as val_curr "
+# 	sql += "  , concat('$ ', x.val_tot) as val_tot "
+# 	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
+# 	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
+# 	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
+# 	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
+# 	sql += "  from (select p.buy_strat_name "
+# 	sql += "          , p.buy_strat_freq "
+# 	sql += "          , p.prod_id "
+# 	sql += "          , count(p.pos_id) as tot_cnt  "
+# 	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# 	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# 	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
+# 	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
+# 	sql += "          , sum(p.age_mins) as age_mins "
+# 	sql += "          , sum(p.age_mins) / 60 as age_hours "
+# 	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
+# 	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
+# 	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
+# 	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
+# 	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
+# 	sql += "          , sum(p.buy_cnt) as buy_cnt "
+# 	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
+# 	sql += "          , sum(p.hold_cnt) as hold_cnt "
+# 	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
+# 	sql += "          , sum(p.clip_cnt) as clip_cnt "
+# 	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
+# 	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
+# 	sql += "          , round(sum(p.val_curr), 2) as val_curr "
+# 	sql += "          , round(sum(p.val_tot), 2) as val_tot "
+# 	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
+# 	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
+# 	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
+# 	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
+# 	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
+# 	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
+# 	sql += "          , p.test_tf "
+# 	sql += "          from cbtrade.poss p "
+# 	sql += "          where p.ignore_tf = 0 "
+# 	sql += "          {} ".format(dt_clause)
+# 	sql += "          group by p.prod_id, p.buy_strat_name, p.buy_strat_freq "
+# 	sql += "          ) x "
+# 	sql += "  where 1=1 "
+# 	sql += "  order by x.buy_strat_name "
+# 	sql += "      , case  "
+# 	sql += "          when x.buy_strat_freq = '15min' then 1  "
+# 	sql += "          when x.buy_strat_freq = '30min' then 2 "
+# 	sql += "          when x.buy_strat_freq = '1h' then 3 "
+# 	sql += "          when x.buy_strat_freq = '4h' then 4 "
+# 	sql += "          when x.buy_strat_freq = '1d' then 5 "
+# 	sql += "        end "
+# 	sql += "      , x.prod_id "
+# 	#	print(sql)
+# 	h = build_sql_display(sql,'first')
+
+# 	return h
+
+# #<=====>#
+
+# def sales_disp_mkt_strat_summary(dt1='*', dt2='*') -> str:
+# 	print('')
+# 	print('sales_disp_mkt_strat_summary(dt1={}, dt2={})'.format(dt1, dt2))
+
+# 	dt_clause = get_dt_clause2(dt1, dt2) 
+# 	print(f'dt_clause : {dt_clause}')
+
+# 	sql = ""
+# 	sql += "select x.buy_strat_name "
+# 	sql += "  , x.buy_strat_freq "
+# 	sql += "  , x.prod_id "
+# 	sql += "  , x.tot_cnt "
+# 	sql += "  , x.win_cnt "
+# 	sql += "  , x.lose_cnt "
+# 	sql += "  , concat(x.win_pct, ' %') as win_pct "
+# 	sql += "  , concat(x.lose_pct, ' %') as lose_pct "
+# 	sql += "  , x.age_hours "
+# 	sql += "  , concat('$ ', x.tot_out_cnt) as tot_out_cnt "
+# 	sql += "  , concat('$ ', x.tot_in_cnt) as tot_in_cnt "
+# 	sql += "  , concat('$ ', x.fees_cnt_tot) as fees_cnt_tot "
+# 	sql += "  , concat('$ ', x.val_curr) as val_curr "
+# 	sql += "  , concat('$ ', x.val_tot) as val_tot "
+# 	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
+# 	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
+# 	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
+# 	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
+# 	sql += "  from (select p.buy_strat_name "
+# 	sql += "          , p.buy_strat_freq "
+# 	sql += "          , p.prod_id "
+# 	sql += "          , count(p.pos_id) as tot_cnt  "
+# 	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# 	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# 	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
+# 	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
+# 	sql += "          , sum(p.age_mins) as age_mins "
+# 	sql += "          , sum(p.age_mins) / 60 as age_hours "
+# 	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
+# 	sql += "          , round(sum(p.tot_in_cnt), 2) as tot_in_cnt "
+# 	sql += "          , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt "
+# 	sql += "          , round(sum(p.sell_fees_cnt_tot), 2) as sell_fees_cnt_tot "
+# 	sql += "          , round(sum(p.fees_cnt_tot), 2) as fees_cnt_tot "
+# 	sql += "          , sum(p.buy_cnt) as buy_cnt "
+# 	sql += "          , sum(p.sell_cnt_tot) as sell_cnt_tot "
+# 	sql += "          , sum(p.hold_cnt) as hold_cnt "
+# 	sql += "          , sum(p.pocket_cnt) as pocket_cnt "
+# 	sql += "          , sum(p.clip_cnt) as clip_cnt "
+# 	sql += "          , sum(p.sell_order_cnt) as sell_order_cnt "
+# 	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
+# 	sql += "          , round(sum(p.val_curr), 2) as val_curr "
+# 	sql += "          , round(sum(p.val_tot), 2) as val_tot "
+# 	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
+# 	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
+# 	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
+# 	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
+# 	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
+# 	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
+# 	sql += "          , p.test_tf "
+# 	sql += "          from cbtrade.poss p "
+# 	sql += "          where p.ignore_tf = 0 "
+# 	sql += "          {} ".format(dt_clause)
+# 	sql += "          group by p.prod_id, p.buy_strat_name, p.buy_strat_freq "
+# 	sql += "          ) x "
+# 	sql += "  where 1=1 "
+# 	sql += "  order by x.prod_id "
+# 	sql += "      , x.buy_strat_name "
+# 	sql += "      , case  "
+# 	sql += "          when x.buy_strat_freq = '15min' then 1  "
+# 	sql += "          when x.buy_strat_freq = '30min' then 2 "
+# 	sql += "          when x.buy_strat_freq = '1h' then 3 "
+# 	sql += "          when x.buy_strat_freq = '4h' then 4 "
+# 	sql += "          when x.buy_strat_freq = '1d' then 5 "
+# 	sql += "        end "
+# #	print(sql)
+# 	h = build_sql_display(sql,'first')
+
+# 	return h
+
+# #<=====>#
+
+# @app.route("/buy_strats_today.htm")
+# def buy_strats_today() -> str:
+# 	print(str(datetime.now()) + " buy_strats_today()")
+# 	tn = build_topnav()
+# 	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+# 	m     = None
+# 	u     = None
+# 	d     = None
+
+# 	pt    = 'Buy Strats Performance'
+
+# 	t     = 'Buy Strats - Summary - Today'
+# 	h = sales_disp_strat_summary(dt1=dt, dt2=dt)
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Buy Strats - Strat Summary - Today'
+# 	h = sales_disp_strat_mkt_summary(dt1=dt, dt2=dt)
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Buy Strats - Market Summary - Today'
+# 	h = sales_disp_mkt_strat_summary(dt1=dt, dt2=dt)
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+
+
+# #	t     = 'Buy Strats - Today - Type - New'
+# #	sql = " "
+# #	sql += "select x.buy_strat_type "
+# #	sql += "  , x.stat "
+# #	sql += "  , x.tot_cnt "
+# #	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
+# #	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
+# #	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
+# #	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
+# #	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
+# #	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
+# #	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
+# #	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
+# #	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
+# #	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
+# #	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
+# #	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
+# #	sql += "  from ( "
+# #	sql += "select p.buy_strat_type "
+# #	sql += "  , p.pos_stat as stat "
+# #	sql += "  , count(p.pos_id) as tot_cnt "
+# #	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# #	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# #	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
+# #	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
+# #	sql += "  , sum(p.tot_in_cnt) as recv_tot "
+# #	sql += "  , sum(p.pocket_val) as pocket_val_tot "
+# #	sql += "  , sum(p.clip_val) as clip_val_tot "
+# #	sql += "  , sum(p.sell_val) as sell_val_tot "
+# #	sql += "  , sum(p.age_mins) as age_mins "
+# #	sql += "  , sum(p.gain_amt) as gain_amt  "
+# #	sql += "  from view_pos p "
+# #	sql += "  where 1=1 "
+# #	sql += "  and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
+# #	sql += "  group by p.buy_strat_type, p.pos_stat "
+# #	sql += "  order by p.buy_strat_type, p.pos_stat "
+# #	sql += "  ) x "
+# #	h = build_sql_display(sql,'first')
+# #	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# #	m, u, d = html_add(more=h, m=m, u=u, d=d)
+# #
+# #	t     = 'Buy Strats - Today  - Type & Name - New'
+# #	sql = " "
+# #	sql += "select x.buy_strat_type "
+# #	sql += "  , x.buy_strat_name "
+# #	sql += "  , x.stat "
+# #	sql += "  , x.tot_cnt "
+# #	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
+# #	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
+# #	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
+# #	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
+# #	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
+# #	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
+# #	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
+# #	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
+# #	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
+# #	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
+# #	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
+# #	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
+# #	sql += "  from ( "
+# #	sql += "select p.buy_strat_type "
+# #	sql += "  , p.buy_strat_name "
+# #	sql += "  , p.pos_stat as stat "
+# #	sql += "  , count(p.pos_id) as tot_cnt "
+# #	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# #	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# #	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
+# #	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
+# #	sql += "  , sum(p.tot_in_cnt) as recv_tot "
+# #	sql += "  , sum(p.pocket_val) as pocket_val_tot "
+# #	sql += "  , sum(p.clip_val) as clip_val_tot "
+# #	sql += "  , sum(p.sell_val) as sell_val_tot "
+# #	sql += "  , sum(p.age_mins) as age_mins "
+# #	sql += "  , sum(p.gain_amt) as gain_amt  "
+# #	sql += "  from view_pos p "
+# #	sql += "  where 1=1 "
+# #	sql += "  and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
+# #	sql += "  group by p.buy_strat_type, p.buy_strat_name, p.pos_stat "
+# #	sql += "  order by p.buy_strat_type, p.buy_strat_name, p.pos_stat "
+# #	sql += "  ) x "
+# #	h = build_sql_display(sql,'first')
+# #	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# #	m, u, d = html_add(more=h, m=m, u=u, d=d)
+# #
+# #	t     = 'Buy Strats - Today  - Type & Name & Freq - New'
+# #	sql = " "
+# #	sql += "select x.buy_strat_type "
+# #	sql += "  , x.buy_strat_name "
+# #	sql += "  , x.buy_strat_freq "
+# #	sql += "  , x.stat "
+# #	sql += "  , x.tot_cnt "
+# #	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
+# #	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
+# #	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
+# #	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
+# #	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
+# #	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
+# #	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
+# #	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
+# #	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
+# #	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
+# #	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
+# #	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
+# #	sql += "  from ( "
+# #	sql += "select p.buy_strat_type "
+# #	sql += "  , p.buy_strat_name "
+# #	sql += "  , p.buy_strat_freq "
+# #	sql += "  , p.pos_stat as stat "
+# #	sql += "  , count(p.pos_id) as tot_cnt "
+# #	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# #	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# #	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
+# #	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
+# #	sql += "  , sum(p.tot_in_cnt) as recv_tot "
+# #	sql += "  , sum(p.pocket_val) as pocket_val_tot "
+# #	sql += "  , sum(p.clip_val) as clip_val_tot "
+# #	sql += "  , sum(p.sell_val) as sell_val_tot "
+# #	sql += "  , sum(p.age_mins) as age_mins "
+# #	sql += "  , sum(p.gain_amt) as gain_amt  "
+# #	sql += "  from view_pos p "
+# #	sql += "  where 1=1 "
+# #	sql += "  and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
+# #	sql += "  group by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat "
+# #	sql += "  order by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat "
+# #	sql += "  ) x "
+# #	h = build_sql_display(sql,'first')
+# #	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# #	m, u, d = html_add(more=h, m=m, u=u, d=d)
+# #
+# #	t     = 'Buy Strats & Sell Strats - Today  - Type & Name & Freq - New'
+# #	sql = " "
+# #	sql += "select x.buy_strat_type "
+# #	sql += "  , x.buy_strat_name "
+# #	sql += "  , x.buy_strat_freq "
+# #	sql += "  , x.sell_strat_type "
+# #	sql += "  , x.sell_strat_name "
+# #	sql += "  , x.stat "
+# #	sql += "  , x.tot_cnt "
+# #	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
+# #	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
+# #	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
+# #	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
+# #	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
+# #	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
+# #	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
+# #	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
+# #	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
+# #	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
+# #	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
+# #	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
+# #	sql += "  from ( "
+# #	sql += "select p.buy_strat_type "
+# #	sql += "  , p.buy_strat_name "
+# #	sql += "  , p.buy_strat_freq "
+# #	sql += "  , p.sell_strat_type "
+# #	sql += "  , p.sell_strat_name "
+# #	sql += "  , p.pos_stat as stat "
+# #	sql += "  , count(p.pos_id) as tot_cnt "
+# #	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# #	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# #	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
+# #	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
+# #	sql += "  , sum(p.tot_in_cnt) as recv_tot "
+# #	sql += "  , sum(p.pocket_val) as pocket_val_tot "
+# #	sql += "  , sum(p.clip_val) as clip_val_tot "
+# #	sql += "  , sum(p.sell_val) as sell_val_tot "
+# #	sql += "  , sum(p.age_mins) as age_mins "
+# #	sql += "  , sum(p.gain_amt) as gain_amt  "
+# #	sql += "  from view_pos p "
+# #	sql += "  where 1=1 "
+# #	sql += "  and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
+# #	sql += "  group by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat, p.sell_strat_type, p.sell_strat_name "
+# #	sql += "  order by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat, p.sell_strat_type, p.sell_strat_name "
+# #	sql += "  ) x "
+# #	h = build_sql_display(sql,'first')
+# #	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# #	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	sh = html_comb(m=m, u=u, d=d)
+
+# 	return render_template('web_home.html'
+# 							, top_nav= tn
+# 							, page_title = pt
+# 							, html_disp  = sh
+# 							)
+
+# #<=====>#
+
+# @app.route("/buy_strats_all.htm")
+# def buy_strats_all() -> str:
+# 	print(str(datetime.now()) + " buy_strats_all()")
+# 	tn = build_topnav()
+
+# 	m     = None
+# 	u     = None
+# 	d     = None
+
+# 	pt    = 'Buy Strats Performance'
+
+# 	t     = 'Buy Strats - Summary - All'
+# 	h = sales_disp_strat_summary(dt1='*', dt2='*')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Buy Strats - Strat Summary - All'
+# 	h = sales_disp_strat_mkt_summary(dt1='*', dt2='*')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Buy Strats - Market Summary - All'
+# 	h = sales_disp_mkt_strat_summary(dt1='*', dt2='*')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+
+
+
+# #	t     = 'Buy Strats - All - Type - New'
+# #	sql = " "
+# #	sql += "select x.buy_strat_type "
+# #	sql += "  , x.stat "
+# #	sql += "  , x.tot_cnt "
+# #	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
+# #	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
+# #	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
+# #	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
+# #	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
+# #	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
+# #	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
+# #	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
+# #	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
+# #	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
+# #	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
+# #	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
+# #	sql += "  from ( "
+# #	sql += "select p.buy_strat_type "
+# #	sql += "  , p.pos_stat as stat "
+# #	sql += "  , count(p.pos_id) as tot_cnt "
+# #	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# #	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# #	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
+# #	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
+# #	sql += "  , sum(p.tot_in_cnt) as recv_tot "
+# #	sql += "  , sum(p.pocket_val) as pocket_val_tot "
+# #	sql += "  , sum(p.clip_val) as clip_val_tot "
+# #	sql += "  , sum(p.sell_val) as sell_val_tot "
+# #	sql += "  , sum(p.age_mins) as age_mins "
+# #	sql += "  , sum(p.gain_amt) as gain_amt  "
+# #	sql += "  from view_pos p "
+# #	sql += "  where 1=1 "
+# #	sql += "  group by p.buy_strat_type, p.pos_stat "
+# #	sql += "  order by p.buy_strat_type, p.pos_stat "
+# #	sql += "  ) x "
+# #	h = build_sql_display(sql,'first')
+# #	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# #	m, u, d = html_add(more=h, m=m, u=u, d=d)
+# #
+# #	t     = 'Buy Strats - All - Type & Name - New'
+# #	sql = " "
+# #	sql += "select x.buy_strat_type "
+# #	sql += "  , x.buy_strat_name "
+# #	sql += "  , x.stat "
+# #	sql += "  , x.tot_cnt "
+# #	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
+# #	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
+# #	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
+# #	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
+# #	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
+# #	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
+# #	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
+# #	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
+# #	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
+# #	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
+# #	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
+# #	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
+# #	sql += "  from ( "
+# #	sql += "select p.buy_strat_type "
+# #	sql += "  , p.buy_strat_name "
+# #	sql += "  , p.pos_stat as stat "
+# #	sql += "  , count(p.pos_id) as tot_cnt "
+# #	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# #	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# #	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
+# #	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
+# #	sql += "  , sum(p.tot_in_cnt) as recv_tot "
+# #	sql += "  , sum(p.pocket_val) as pocket_val_tot "
+# #	sql += "  , sum(p.clip_val) as clip_val_tot "
+# #	sql += "  , sum(p.sell_val) as sell_val_tot "
+# #	sql += "  , sum(p.age_mins) as age_mins "
+# #	sql += "  , sum(p.gain_amt) as gain_amt  "
+# #	sql += "  from view_pos p "
+# #	sql += "  where 1=1 "
+# #	sql += "  group by p.buy_strat_type, p.buy_strat_name, p.pos_stat "
+# #	sql += "  order by p.buy_strat_type, p.buy_strat_name, p.pos_stat "
+# #	sql += "  ) x "
+# #	h = build_sql_display(sql,'first')
+# #	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# #	m, u, d = html_add(more=h, m=m, u=u, d=d)
+# #
+# #	t     = 'Buy Strats - All - Type & Name & Freq - New'
+# #	sql = " "
+# #	sql += "select x.buy_strat_type "
+# #	sql += "  , x.buy_strat_name "
+# #	sql += "  , x.buy_strat_freq "
+# #	sql += "  , x.stat "
+# #	sql += "  , x.tot_cnt "
+# #	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
+# #	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
+# #	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
+# #	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
+# #	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
+# #	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
+# #	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
+# #	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
+# #	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
+# #	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
+# #	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
+# #	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
+# #	sql += "  from ( "
+# #	sql += "select p.buy_strat_type "
+# #	sql += "  , p.buy_strat_name "
+# #	sql += "  , p.buy_strat_freq "
+# #	sql += "  , p.pos_stat as stat "
+# #	sql += "  , count(p.pos_id) as tot_cnt "
+# #	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# #	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# #	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
+# #	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
+# #	sql += "  , sum(p.tot_in_cnt) as recv_tot "
+# #	sql += "  , sum(p.pocket_val) as pocket_val_tot "
+# #	sql += "  , sum(p.clip_val) as clip_val_tot "
+# #	sql += "  , sum(p.sell_val) as sell_val_tot "
+# #	sql += "  , sum(p.age_mins) as age_mins "
+# #	sql += "  , sum(p.gain_amt) as gain_amt  "
+# #	sql += "  from view_pos p "
+# #	sql += "  where 1=1 "
+# #	sql += "  group by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat "
+# #	sql += "  order by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat "
+# #	sql += "  ) x "
+# #	h = build_sql_display(sql,'first')
+# #	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# #	m, u, d = html_add(more=h, m=m, u=u, d=d)
+# #
+# #	t     = 'Buy Strats & Sell Strats - All - Type & Name & Freq - New'
+# #	sql = " "
+# #	sql += "select x.buy_strat_type "
+# #	sql += "  , x.buy_strat_name "
+# #	sql += "  , x.buy_strat_freq "
+# #	sql += "  , x.sell_strat_type "
+# #	sql += "  , x.sell_strat_name "
+# #	sql += "  , x.stat "
+# #	sql += "  , x.tot_cnt "
+# #	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
+# #	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
+# #	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
+# #	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
+# #	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
+# #	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
+# #	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
+# #	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
+# #	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
+# #	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
+# #	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
+# #	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
+# #	sql += "  from ( "
+# #	sql += "select p.buy_strat_type "
+# #	sql += "  , p.buy_strat_name "
+# #	sql += "  , p.buy_strat_freq "
+# #	sql += "  , p.sell_strat_type "
+# #	sql += "  , p.sell_strat_name "
+# #	sql += "  , p.pos_stat as stat "
+# #	sql += "  , count(p.pos_id) as tot_cnt "
+# #	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# #	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# #	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
+# #	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
+# #	sql += "  , sum(p.tot_in_cnt) as recv_tot "
+# #	sql += "  , sum(p.pocket_val) as pocket_val_tot "
+# #	sql += "  , sum(p.clip_val) as clip_val_tot "
+# #	sql += "  , sum(p.sell_val) as sell_val_tot "
+# #	sql += "  , sum(p.age_mins) as age_mins "
+# #	sql += "  , sum(p.gain_amt) as gain_amt  "
+# #	sql += "  from view_pos p "
+# #	sql += "  where 1=1 "
+# #	sql += "  group by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat, p.sell_strat_type, p.sell_strat_name "
+# #	sql += "  order by p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat, p.sell_strat_type, p.sell_strat_name "
+# #	sql += "  ) x "
+# #	h = build_sql_display(sql,'first')
+# #	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# #	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	sh = html_comb(m=m, u=u, d=d)
+
+# 	return render_template('web_home.html'
+# 							, top_nav= tn
+# 							, page_title = pt
+# 							, html_disp  = sh
+# 							)
+
+# #<=====>#
+
+# @app.route("/buy_strats_prods_today.htm")
+# def buy_strats_prods_today() -> str:
+# 	print(str(datetime.now()) + " buy_strats_prods_today()")
+# 	tn = build_topnav()
+# 	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+# 	m     = None
+# 	u     = None
+# 	d     = None
+
+# 	pt    = 'Buy Strats Performance'
+
+# 	t     = 'Buy Strats - Today - Type - New'
+# 	sql = " "
+# 	sql += "select x.prod_id "
+# 	sql += "  , x.buy_strat_type "
+# 	sql += "  , x.stat "
+# 	sql += "  , x.tot_cnt "
+# 	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
+# 	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
+# 	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
+# 	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
+# 	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
+# 	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
+# 	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
+# 	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
+# 	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
+# 	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
+# 	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
+# 	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
+# 	sql += "  from ( "
+# 	sql += "select p.prod_id "
+# 	sql += "  , p.buy_strat_type "
+# 	sql += "  , p.pos_stat as stat "
+# 	sql += "  , count(p.pos_id) as tot_cnt "
+# 	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# 	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# 	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
+# 	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
+# 	sql += "  , sum(p.tot_in_cnt) as recv_tot "
+# 	sql += "  , sum(p.pocket_val) as pocket_val_tot "
+# 	sql += "  , sum(p.clip_val) as clip_val_tot "
+# 	sql += "  , sum(p.sell_val) as sell_val_tot "
+# 	sql += "  , sum(p.age_mins) as age_mins "
+# 	sql += "  , sum(p.gain_amt) as gain_amt  "
+# 	sql += "  from view_pos p "
+# 	sql += "  where 1=1 "
+# 	sql += "  and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
+# 	sql += "  group by p.prod_id, p.buy_strat_type, p.pos_stat "
+# 	sql += "  order by p.prod_id, p.buy_strat_type, p.pos_stat "
+# 	sql += "  ) x "
+# 	h = build_sql_display(sql,'first')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Buy Strats - Today  - Type & Name - New'
+# 	sql = " "
+# 	sql += "select x.prod_id "
+# 	sql += "  , x.buy_strat_type "
+# 	sql += "  , x.buy_strat_name "
+# 	sql += "  , x.stat "
+# 	sql += "  , x.tot_cnt "
+# 	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
+# 	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
+# 	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
+# 	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
+# 	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
+# 	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
+# 	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
+# 	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
+# 	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
+# 	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
+# 	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
+# 	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
+# 	sql += "  from ( "
+# 	sql += "select p.prod_id "
+# 	sql += "  , p.buy_strat_type "
+# 	sql += "  , p.buy_strat_name "
+# 	sql += "  , p.pos_stat as stat "
+# 	sql += "  , count(p.pos_id) as tot_cnt "
+# 	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# 	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# 	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
+# 	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
+# 	sql += "  , sum(p.tot_in_cnt) as recv_tot "
+# 	sql += "  , sum(p.pocket_val) as pocket_val_tot "
+# 	sql += "  , sum(p.clip_val) as clip_val_tot "
+# 	sql += "  , sum(p.sell_val) as sell_val_tot "
+# 	sql += "  , sum(p.age_mins) as age_mins "
+# 	sql += "  , sum(p.gain_amt) as gain_amt  "
+# 	sql += "  from view_pos p "
+# 	sql += "  where 1=1 "
+# 	sql += "  and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
+# 	sql += "  group by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.pos_stat "
+# 	sql += "  order by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.pos_stat "
+# 	sql += "  ) x "
+# 	h = build_sql_display(sql,'first')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Buy Strats - Today  - Type & Name & Freq - New'
+# 	sql = " "
+# 	sql += "select x.prod_id "
+# 	sql += "  , x.buy_strat_type "
+# 	sql += "  , x.buy_strat_name "
+# 	sql += "  , x.buy_strat_freq "
+# 	sql += "  , x.stat "
+# 	sql += "  , x.tot_cnt "
+# 	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
+# 	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
+# 	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
+# 	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
+# 	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
+# 	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
+# 	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
+# 	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
+# 	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
+# 	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
+# 	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
+# 	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
+# 	sql += "  from ( "
+# 	sql += "select p.prod_id "
+# 	sql += "  , p.buy_strat_type "
+# 	sql += "  , p.buy_strat_name "
+# 	sql += "  , p.buy_strat_freq "
+# 	sql += "  , p.pos_stat as stat "
+# 	sql += "  , count(p.pos_id) as tot_cnt "
+# 	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# 	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# 	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
+# 	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
+# 	sql += "  , sum(p.tot_in_cnt) as recv_tot "
+# 	sql += "  , sum(p.pocket_val) as pocket_val_tot "
+# 	sql += "  , sum(p.clip_val) as clip_val_tot "
+# 	sql += "  , sum(p.sell_val) as sell_val_tot "
+# 	sql += "  , sum(p.age_mins) as age_mins "
+# 	sql += "  , sum(p.gain_amt) as gain_amt  "
+# 	sql += "  from view_pos p "
+# 	sql += "  where 1=1 "
+# 	sql += "  and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
+# 	sql += "  group by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat "
+# 	sql += "  order by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat "
+# 	sql += "  ) x "
+# 	h = build_sql_display(sql,'first')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Buy Strats & Sell Strats - Today  - Type & Name & Freq - New'
+# 	sql = " "
+# 	sql += "select x.prod_id "
+# 	sql += "  , x.buy_strat_type "
+# 	sql += "  , x.buy_strat_name "
+# 	sql += "  , x.buy_strat_freq "
+# 	sql += "  , x.sell_strat_type "
+# 	sql += "  , x.sell_strat_name "
+# 	sql += "  , x.stat "
+# 	sql += "  , x.tot_cnt "
+# 	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
+# 	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
+# 	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
+# 	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
+# 	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
+# 	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
+# 	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
+# 	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
+# 	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
+# 	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
+# 	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
+# 	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
+# 	sql += "  from ( "
+# 	sql += "select p.prod_id "
+# 	sql += "  , p.buy_strat_type "
+# 	sql += "  , p.buy_strat_name "
+# 	sql += "  , p.buy_strat_freq "
+# 	sql += "  , p.sell_strat_type "
+# 	sql += "  , p.sell_strat_name "
+# 	sql += "  , p.pos_stat as stat "
+# 	sql += "  , count(p.pos_id) as tot_cnt "
+# 	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# 	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# 	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
+# 	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
+# 	sql += "  , sum(p.tot_in_cnt) as recv_tot "
+# 	sql += "  , sum(p.pocket_val) as pocket_val_tot "
+# 	sql += "  , sum(p.clip_val) as clip_val_tot "
+# 	sql += "  , sum(p.sell_val) as sell_val_tot "
+# 	sql += "  , sum(p.age_mins) as age_mins "
+# 	sql += "  , sum(p.gain_amt) as gain_amt  "
+# 	sql += "  from view_pos p "
+# 	sql += "  where 1=1 "
+# 	sql += "  and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
+# 	sql += "  group by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat, p.sell_strat_type, p.sell_strat_name "
+# 	sql += "  order by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat, p.sell_strat_type, p.sell_strat_name "
+# 	sql += "  ) x "
+# 	h = build_sql_display(sql,'first')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	sh = html_comb(m=m, u=u, d=d)
+
+# 	return render_template('web_home.html'
+# 							, top_nav= tn
+# 							, page_title = pt
+# 							, html_disp  = sh
+# 							)
+
+# #<=====>#
+
+# @app.route("/buy_strats_prods_all.htm")
+# def buy_strats_prods_all() -> str:
+# 	print(str(datetime.now()) + " buy_strats_prods_all()")
+# 	tn = build_topnav()
+
+# 	m     = None
+# 	u     = None
+# 	d     = None
+
+# 	pt    = 'Buy Strats Performance'
+
+# 	t     = 'Buy Strats - Today - Type - New'
+# 	sql = " "
+# 	sql += "select x.prod_id "
+# 	sql += "  , x.buy_strat_type "
+# 	sql += "  , x.stat "
+# 	sql += "  , x.tot_cnt "
+# 	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
+# 	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
+# 	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
+# 	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
+# 	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
+# 	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
+# 	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
+# 	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
+# 	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
+# 	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
+# 	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
+# 	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
+# 	sql += "  from ( "
+# 	sql += "select p.prod_id "
+# 	sql += "  , p.buy_strat_type "
+# 	sql += "  , p.pos_stat as stat "
+# 	sql += "  , count(p.pos_id) as tot_cnt "
+# 	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# 	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# 	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
+# 	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
+# 	sql += "  , sum(p.tot_in_cnt) as recv_tot "
+# 	sql += "  , sum(p.pocket_val) as pocket_val_tot "
+# 	sql += "  , sum(p.clip_val) as clip_val_tot "
+# 	sql += "  , sum(p.sell_val) as sell_val_tot "
+# 	sql += "  , sum(p.age_mins) as age_mins "
+# 	sql += "  , sum(p.gain_amt) as gain_amt  "
+# 	sql += "  from view_pos p "
+# 	sql += "  where 1=1 "
+# 	sql += "  group by p.prod_id, p.buy_strat_type, p.pos_stat "
+# 	sql += "  order by p.prod_id, p.buy_strat_type, p.pos_stat "
+# 	sql += "  ) x "
+# 	h = build_sql_display(sql,'first')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Buy Strats - Today  - Type & Name - New'
+# 	sql = " "
+# 	sql += "select x.prod_id "
+# 	sql += "  , x.buy_strat_type "
+# 	sql += "  , x.buy_strat_name "
+# 	sql += "  , x.stat "
+# 	sql += "  , x.tot_cnt "
+# 	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
+# 	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
+# 	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
+# 	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
+# 	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
+# 	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
+# 	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
+# 	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
+# 	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
+# 	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
+# 	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
+# 	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
+# 	sql += "  from ( "
+# 	sql += "select p.prod_id "
+# 	sql += "  , p.buy_strat_type "
+# 	sql += "  , p.buy_strat_name "
+# 	sql += "  , p.pos_stat as stat "
+# 	sql += "  , count(p.pos_id) as tot_cnt "
+# 	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# 	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# 	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
+# 	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
+# 	sql += "  , sum(p.tot_in_cnt) as recv_tot "
+# 	sql += "  , sum(p.pocket_val) as pocket_val_tot "
+# 	sql += "  , sum(p.clip_val) as clip_val_tot "
+# 	sql += "  , sum(p.sell_val) as sell_val_tot "
+# 	sql += "  , sum(p.age_mins) as age_mins "
+# 	sql += "  , sum(p.gain_amt) as gain_amt  "
+# 	sql += "  from view_pos p "
+# 	sql += "  where 1=1 "
+# 	sql += "  group by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.pos_stat "
+# 	sql += "  order by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.pos_stat "
+# 	sql += "  ) x "
+# 	h = build_sql_display(sql,'first')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Buy Strats - Today  - Type & Name & Freq - New'
+# 	sql = " "
+# 	sql += "select x.prod_id "
+# 	sql += "  , x.buy_strat_type "
+# 	sql += "  , x.buy_strat_name "
+# 	sql += "  , x.buy_strat_freq "
+# 	sql += "  , x.stat "
+# 	sql += "  , x.tot_cnt "
+# 	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
+# 	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
+# 	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
+# 	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
+# 	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
+# 	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
+# 	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
+# 	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
+# 	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
+# 	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
+# 	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
+# 	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
+# 	sql += "  from ( "
+# 	sql += "select p.prod_id "
+# 	sql += "  , p.buy_strat_type "
+# 	sql += "  , p.buy_strat_name "
+# 	sql += "  , p.buy_strat_freq "
+# 	sql += "  , p.pos_stat as stat "
+# 	sql += "  , count(p.pos_id) as tot_cnt "
+# 	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# 	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# 	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
+# 	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
+# 	sql += "  , sum(p.tot_in_cnt) as recv_tot "
+# 	sql += "  , sum(p.pocket_val) as pocket_val_tot "
+# 	sql += "  , sum(p.clip_val) as clip_val_tot "
+# 	sql += "  , sum(p.sell_val) as sell_val_tot "
+# 	sql += "  , sum(p.age_mins) as age_mins "
+# 	sql += "  , sum(p.gain_amt) as gain_amt  "
+# 	sql += "  from view_pos p "
+# 	sql += "  where 1=1 "
+# 	sql += "  group by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat "
+# 	sql += "  order by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat "
+# 	sql += "  ) x "
+# 	h = build_sql_display(sql,'first')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Buy Strats & Sell Strats - Today  - Type & Name & Freq - New'
+# 	sql = " "
+# 	sql += "select x.prod_id "
+# 	sql += "  , x.buy_strat_type "
+# 	sql += "  , x.buy_strat_name "
+# 	sql += "  , x.buy_strat_freq "
+# 	sql += "  , x.sell_strat_type "
+# 	sql += "  , x.sell_strat_name "
+# 	sql += "  , x.stat "
+# 	sql += "  , x.tot_cnt "
+# 	sql += "  , format(floor(x.win_cnt),0) as win_cnt "
+# 	sql += "  , format(floor(x.lose_cnt),0) as lose_cnt "
+# 	sql += "  , concat(round(((win_cnt / tot_cnt) * 100), 2), '%') as win_pct "
+# 	sql += "  , concat('$',' ', x.fees_val_tot) as sell_val_tot "
+# 	sql += "  , concat('$',' ', x.buy_val_tot) as buy_val_tot "
+# 	sql += "  , concat('$',' ', x.recv_tot) as recv_tot "
+# 	sql += "  , concat('$',' ', x.pocket_val_tot) as pocket_val_tot "
+# 	sql += "  , concat('$',' ', x.clip_val_tot) as clip_val_tot "
+# 	sql += "  , format(floor(x.age_mins / x.tot_cnt),0) as age_mins_avg "
+# 	sql += "  , concat('$',' ', x.gain_amt) as gain_amt "
+# 	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100), 2), ' %') as gain_pct "
+# 	sql += "  , concat(round((((sell_val_tot - buy_val_tot) / buy_val_tot) * 100) / (x.age_mins / 60), 8), ' %') as gain_pct_hr "
+# 	sql += "  from ( "
+# 	sql += "select p.prod_id "
+# 	sql += "  , p.buy_strat_type "
+# 	sql += "  , p.buy_strat_name "
+# 	sql += "  , p.buy_strat_freq "
+# 	sql += "  , p.sell_strat_type "
+# 	sql += "  , p.sell_strat_name "
+# 	sql += "  , p.pos_stat as stat "
+# 	sql += "  , count(p.pos_id) as tot_cnt "
+# 	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+# 	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+# 	sql += "  , sum(p.fees_cnt_tot) as fees_val_tot "
+# 	sql += "  , sum(p.tot_out_cnt) as buy_val_tot "
+# 	sql += "  , sum(p.tot_in_cnt) as recv_tot "
+# 	sql += "  , sum(p.pocket_val) as pocket_val_tot "
+# 	sql += "  , sum(p.clip_val) as clip_val_tot "
+# 	sql += "  , sum(p.sell_val) as sell_val_tot "
+# 	sql += "  , sum(p.age_mins) as age_mins "
+# 	sql += "  , sum(p.gain_amt) as gain_amt  "
+# 	sql += "  from view_pos p "
+# 	sql += "  where 1=1 "
+# 	sql += "  group by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat, p.sell_strat_type, p.sell_strat_name "
+# 	sql += "  order by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq, p.pos_stat, p.sell_strat_type, p.sell_strat_name "
+# 	sql += "  ) x "
+# 	h = build_sql_display(sql,'first')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	sh = html_comb(m=m, u=u, d=d)
+
+# 	return render_template('web_home.html'
+# 							, top_nav= tn
+# 							, page_title = pt
+# 							, html_disp  = sh
+# 							)
+
+# #<=====>#
+
+# @app.route("/sell_strats_today.htm")
+# def sell_strats_today() -> str:
+# 	print(str(datetime.now()) + " sell_strats_today()")
+# 	tn = build_topnav()
+# 	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+# 	m     = None
+# 	u     = None
+# 	d     = None
+
+# 	pt    = 'Sell Strats Performance'
+
+# 	t     = 'Sell Strats By Type'
+# 	sql = ""
+# 	sql += "select x.strat "
+# 	sql += "   , x.cnt "
+# 	sql += "   , concat('$',' ', x.spent) as spent "
+# 	sql += "   , concat('$',' ', x.recv) as recv "
+# 	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
+# 	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
+# 	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
+# 	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
+# 	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
+# 	sql += "from ( "
+# 	sql += "  select p.sell_strat_type  as strat "
+# 	sql += "    , count(p.pos_id) as cnt "
+# 	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
+# 	sql += "    , round(sum(p.val_tot),4) as recv "
+# #	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
+# 	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
+# #	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
+# 	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
+# 	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
+# 	sql += "    from cbtrade.poss p "
+# 	sql += "    where p.ignore_tf = 0 "
+# 	sql += "    and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
+# 	sql += "    group by p.sell_strat_type "
+# 	sql += "    order by p.sell_strat_type "
+# 	sql += "    ) x "
+# 	h = build_sql_display(sql,'first')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Sell Strats By Name'
+# 	sql = ""
+# 	sql += "select x.strat "
+# 	sql += "   , x.strat_name "
+# 	sql += "   , x.cnt "
+# 	sql += "   , concat('$',' ', x.spent) as spent "
+# 	sql += "   , concat('$',' ', x.recv) as recv "
+# 	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
+# 	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
+# 	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
+# 	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
+# 	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
+# 	sql += "from ( "
+# 	sql += "  select p.sell_strat_type  as strat "
+# 	sql += "    , p.sell_strat_name as strat_name "
+# 	sql += "    , count(p.pos_id) as cnt "
+# 	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
+# 	sql += "    , round(sum(p.val_tot),4) as recv "
+# #	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
+# 	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
+# #	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
+# 	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
+# 	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
+# 	sql += "    from cbtrade.poss p "
+# 	sql += "    where p.ignore_tf = 0 "
+# 	sql += "    and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
+# 	sql += "    group by p.sell_strat_type, p.sell_strat_name "
+# 	sql += "    order by p.sell_strat_type, p.sell_strat_name "
+# 	sql += "    ) x "
+# 	h = build_sql_display(sql,100)
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Sell Strats vs Buy Strats By Name'
+# 	sql = ""
+# 	sql += "select x.sell_strat "
+# 	sql += "   , x.sell_strat_name "
+# 	sql += "   , x.buy_strat "
+# 	sql += "   , x.buy_strat_name "
+# 	sql += "   , x.stat "
+# 	sql += "   , x.cnt "
+# 	sql += "   , concat('$',' ', x.spent) as spent "
+# 	sql += "   , concat('$',' ', x.recv) as recv "
+# 	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
+# 	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
+# 	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
+# 	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
+# 	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
+# 	sql += "from ( "
+# 	sql += "  select p.sell_strat_type  as sell_strat "
+# 	sql += "    , p.sell_strat_name as sell_strat_name "
+# 	sql += "    , p.buy_strat_type  as buy_strat "
+# 	sql += "    , p.buy_strat_name as buy_strat_name "
+# 	sql += "    , p.pos_stat as stat "
+# 	sql += "    , count(p.pos_id) as cnt "
+# 	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
+# 	sql += "    , round(sum(p.val_tot),4) as recv "
+# #	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
+# 	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
+# #	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
+# 	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
+# 	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
+# 	sql += "    from cbtrade.poss p "
+# 	sql += "    where p.ignore_tf = 0 "
+# 	sql += "    and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
+# 	sql += "    group by p.buy_strat_type, p.buy_strat_name, p.sell_strat_type, p.sell_strat_name, p.pos_stat "
+# 	sql += "    order by p.pos_stat, p.sell_strat_type, p.sell_strat_name, p.buy_strat_type, p.buy_strat_name "
+# 	sql += "    ) x "
+# 	h = build_sql_display(sql,'third')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	sh = html_comb(m=m, u=u, d=d)
+
+# 	return render_template('web_home.html'
+# 							, top_nav= tn
+# 							, page_title = pt
+# 							, html_disp  = sh
+# 							)
+
+# #<=====>#
+
+# @app.route("/sell_strats_prods_today.htm")
+# def sell_strats_prods_today() -> str:
+# 	print(str(datetime.now()) + " sell_strats_prods_today()")
+# 	tn = build_topnav()
+# 	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
+
+# 	m     = None
+# 	u     = None
+# 	d     = None
+
+# 	pt    = 'Sell Strats Performance'
+
+# 	t     = 'Sell Strats By Type'
+# 	sql = ""
+# 	sql += "select x.strat "
+# 	sql += "   , x.cnt "
+# 	sql += "   , concat('$',' ', x.spent) as spent "
+# 	sql += "   , concat('$',' ', x.recv) as recv "
+# 	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
+# 	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
+# 	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
+# 	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
+# 	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
+# 	sql += "from ( "
+# 	sql += "  select p.sell_strat_type  as strat "
+# 	sql += "    , count(p.pos_id) as cnt "
+# 	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
+# 	sql += "    , round(sum(p.val_tot),4) as recv "
+# #	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
+# 	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
+# #	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
+# 	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
+# 	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
+# 	sql += "    from cbtrade.poss p "
+# 	sql += "    where p.ignore_tf = 0 "
+# 	sql += "    and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
+# 	sql += "    group by p.sell_strat_type "
+# 	sql += "    order by p.sell_strat_type "
+# 	sql += "    ) x "
+# 	h = build_sql_display(sql,'first')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Sell Strats By Name'
+# 	sql = ""
+# 	sql += "select x.strat "
+# 	sql += "   , x.strat_name "
+# 	sql += "   , x.cnt "
+# 	sql += "   , concat('$',' ', x.spent) as spent "
+# 	sql += "   , concat('$',' ', x.recv) as recv "
+# 	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
+# 	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
+# 	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
+# 	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
+# 	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
+# 	sql += "from ( "
+# 	sql += "  select p.sell_strat_type  as strat "
+# 	sql += "    , p.sell_strat_name as strat_name "
+# 	sql += "    , count(p.pos_id) as cnt "
+# 	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
+# 	sql += "    , round(sum(p.val_tot),4) as recv "
+# #	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
+# 	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
+# #	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
+# 	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
+# 	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
+# 	sql += "    from cbtrade.poss p "
+# 	sql += "    where p.ignore_tf = 0 "
+# 	sql += "    and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
+# 	sql += "    group by p.sell_strat_type, p.sell_strat_name "
+# 	sql += "    order by p.sell_strat_type, p.sell_strat_name "
+# 	sql += "    ) x "
+# 	h = build_sql_display(sql,100)
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Sell Strats vs Buy Strats By Name'
+# 	sql = ""
+# 	sql += "select x.sell_strat "
+# 	sql += "   , x.sell_strat_name "
+# 	sql += "   , x.buy_strat "
+# 	sql += "   , x.buy_strat_name "
+# 	sql += "   , x.stat "
+# 	sql += "   , x.cnt "
+# 	sql += "   , concat('$',' ', x.spent) as spent "
+# 	sql += "   , concat('$',' ', x.recv) as recv "
+# 	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
+# 	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
+# 	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
+# 	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
+# 	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
+# 	sql += "from ( "
+# 	sql += "  select p.sell_strat_type  as sell_strat "
+# 	sql += "    , p.sell_strat_name as sell_strat_name "
+# 	sql += "    , p.buy_strat_type  as buy_strat "
+# 	sql += "    , p.buy_strat_name as buy_strat_name "
+# 	sql += "    , p.pos_stat as stat "
+# 	sql += "    , count(p.pos_id) as cnt "
+# 	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
+# 	sql += "    , round(sum(p.val_tot),4) as recv "
+# #	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
+# 	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
+# #	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
+# 	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
+# 	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
+# 	sql += "    from cbtrade.poss p "
+# 	sql += "    where p.ignore_tf = 0 "
+# 	sql += "    and date(p.pos_end_dttm) = str_to_date('{}','%Y-%m-%d')".format(dt)
+# 	sql += "    group by p.buy_strat_type, p.buy_strat_name, p.sell_strat_type, p.sell_strat_name, p.pos_stat "
+# 	sql += "    order by p.pos_stat, p.sell_strat_type, p.sell_strat_name, p.buy_strat_type, p.buy_strat_name "
+# 	sql += "    ) x "
+# 	h = build_sql_display(sql,'third')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	sh = html_comb(m=m, u=u, d=d)
+
+# 	return render_template('web_home.html'
+# 							, top_nav= tn
+# 							, page_title = pt
+# 							, html_disp  = sh
+# 							)
+
+# #<=====>#
+
+# @app.route("/sell_strats_all.htm")
+# def sell_strats_all() -> str:
+# 	print(str(datetime.now()) + " sell_strats_all()")
+# 	tn = build_topnav()
+
+# 	m     = None
+# 	u     = None
+# 	d     = None
+
+# 	pt    = 'Sell Strats Performance'
+
+# 	t     = 'Sell Strats By Type'
+# 	sql = ""
+# 	sql += "select x.strat "
+# 	sql += "   , x.cnt "
+# 	sql += "   , concat('$',' ', x.spent) as spent "
+# 	sql += "   , concat('$',' ', x.recv) as recv "
+# 	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
+# 	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
+# 	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
+# 	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
+# 	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
+# 	sql += "from ( "
+# 	sql += "  select p.sell_strat_type  as strat "
+# 	sql += "    , count(p.pos_id) as cnt "
+# 	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
+# 	sql += "    , round(sum(p.val_tot),4) as recv "
+# #	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
+# 	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
+# #	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
+# 	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
+# 	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
+# 	sql += "    from cbtrade.poss p "
+# 	sql += "    where p.ignore_tf = 0 "
+# #	sql += "    where p.pos_stat = 'CLOSE' "
+# 	sql += "    group by p.sell_strat_type "
+# 	sql += "    order by p.sell_strat_type "
+# 	sql += "    ) x "
+# 	h = build_sql_display(sql,'first')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Sell Strats By Name'
+# 	sql = ""
+# 	sql += "select x.strat "
+# 	sql += "   , x.strat_name "
+# 	sql += "   , x.cnt "
+# 	sql += "   , concat('$',' ', x.spent) as spent "
+# 	sql += "   , concat('$',' ', x.recv) as recv "
+# 	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
+# 	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
+# 	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
+# 	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
+# 	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
+# 	sql += "from ( "
+# 	sql += "  select p.sell_strat_type  as strat "
+# 	sql += "    , p.sell_strat_name as strat_name "
+# 	sql += "    , count(p.pos_id) as cnt "
+# 	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
+# 	sql += "    , round(sum(p.val_tot),4) as recv "
+# #	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
+# 	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
+# #	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
+# 	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
+# 	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
+# 	sql += "    from cbtrade.poss p "
+# 	sql += "    where p.ignore_tf = 0 "
+# #	sql += "    where p.pos_stat = 'CLOSE' "
+# 	sql += "    group by p.sell_strat_type, p.sell_strat_name "
+# 	sql += "    order by p.sell_strat_type, p.sell_strat_name "
+# 	sql += "    ) x "
+# 	h = build_sql_display(sql,100)
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Sell Strats vs Buy Strats By Name'
+# 	sql = ""
+# 	sql += "select x.sell_strat "
+# 	sql += "   , x.sell_strat_name "
+# 	sql += "   , x.buy_strat "
+# 	sql += "   , x.buy_strat_name "
+# 	sql += "   , x.stat "
+# 	sql += "   , x.cnt "
+# 	sql += "   , concat('$',' ', x.spent) as spent "
+# 	sql += "   , concat('$',' ', x.recv) as recv "
+# 	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
+# 	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
+# 	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
+# 	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
+# 	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
+# 	sql += "from ( "
+# 	sql += "  select p.sell_strat_type  as sell_strat "
+# 	sql += "    , p.sell_strat_name as sell_strat_name "
+# 	sql += "    , p.buy_strat_type  as buy_strat "
+# 	sql += "    , p.buy_strat_name as buy_strat_name "
+# 	sql += "    , p.pos_stat as stat "
+# 	sql += "    , count(p.pos_id) as cnt "
+# 	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
+# 	sql += "    , round(sum(p.val_tot),4) as recv "
+# #	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
+# 	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
+# #	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
+# 	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
+# 	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
+# 	sql += "    from cbtrade.poss p "
+# 	sql += "    where p.ignore_tf = 0 "
+# #	sql += "    where p.pos_stat = 'CLOSE' "
+# 	sql += "    group by p.buy_strat_type, p.buy_strat_name, p.sell_strat_type, p.sell_strat_name, p.pos_stat "
+# 	sql += "    order by p.pos_stat, p.sell_strat_type, p.sell_strat_name, p.buy_strat_type, p.buy_strat_name "
+# 	sql += "    ) x "
+# 	h = build_sql_display(sql,'third')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	sh = html_comb(m=m, u=u, d=d)
+
+# 	return render_template('web_home.html'
+# 							, top_nav= tn
+# 							, page_title = pt
+# 							, html_disp  = sh
+# 							)
+
+# #<=====>#
+
+# @app.route("/sell_strats_prods_all.htm")
+# def sell_strats_prods_all() -> str:
+# 	print(str(datetime.now()) + " sell_strats_prods_all()")
+# 	tn = build_topnav()
+
+# 	m     = None
+# 	u     = None
+# 	d     = None
+
+# 	pt    = 'Sell Strats Performance'
+
+# 	t     = 'Sell Strats By Type'
+# 	sql = ""
+# 	sql += "select x.strat "
+# 	sql += "   , x.cnt "
+# 	sql += "   , concat('$',' ', x.spent) as spent "
+# 	sql += "   , concat('$',' ', x.recv) as recv "
+# 	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
+# 	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
+# 	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
+# 	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
+# 	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
+# 	sql += "from ( "
+# 	sql += "  select p.sell_strat_type  as strat "
+# 	sql += "    , count(p.pos_id) as cnt "
+# 	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
+# 	sql += "    , round(sum(p.val_tot),4) as recv "
+# #	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
+# 	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
+# #	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
+# 	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
+# 	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
+# 	sql += "    from cbtrade.poss p "
+# 	sql += "    where p.ignore_tf = 0 "
+# #	sql += "    where p.pos_stat = 'CLOSE' "
+# 	sql += "    group by p.sell_strat_type "
+# 	sql += "    order by p.sell_strat_type "
+# 	sql += "    ) x "
+# 	h = build_sql_display(sql,'first')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Sell Strats By Name'
+# 	sql = ""
+# 	sql += "select x.strat "
+# 	sql += "   , x.strat_name "
+# 	sql += "   , x.cnt "
+# 	sql += "   , concat('$',' ', x.spent) as spent "
+# 	sql += "   , concat('$',' ', x.recv) as recv "
+# 	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
+# 	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
+# 	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
+# 	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
+# 	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
+# 	sql += "from ( "
+# 	sql += "  select p.sell_strat_type  as strat "
+# 	sql += "    , p.sell_strat_name as strat_name "
+# 	sql += "    , count(p.pos_id) as cnt "
+# 	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
+# 	sql += "    , round(sum(p.val_tot),4) as recv "
+# #	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
+# 	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
+# #	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
+# 	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
+# 	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
+# 	sql += "    from cbtrade.poss p "
+# 	sql += "    where p.ignore_tf = 0 "
+# #	sql += "    where p.pos_stat = 'CLOSE' "
+# 	sql += "    group by p.sell_strat_type, p.sell_strat_name "
+# 	sql += "    order by p.sell_strat_type, p.sell_strat_name "
+# 	sql += "    ) x "
+# 	h = build_sql_display(sql,100)
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	t     = 'Sell Strats vs Buy Strats By Name'
+# 	sql = ""
+# 	sql += "select x.sell_strat "
+# 	sql += "   , x.sell_strat_name "
+# 	sql += "   , x.buy_strat "
+# 	sql += "   , x.buy_strat_name "
+# 	sql += "   , x.stat "
+# 	sql += "   , x.cnt "
+# 	sql += "   , concat('$',' ', x.spent) as spent "
+# 	sql += "   , concat('$',' ', x.recv) as recv "
+# 	sql += "   , concat('$',' ', x.gain_loss_val_amt) as gain_loss_val_amt "
+# 	sql += "   , concat('$',' ', x.spent_amt_avg) as spent_amt_avg "
+# 	sql += "   , concat('$',' ', x.gain_loss_amt_avg) as gain_loss_amt_avg "
+# 	sql += "   , concat(x.gain_loss_pct_avg, '%') as gain_loss_pct_avg "
+# 	sql += "   , concat(gain_loss_pct, '%') as gain_loss_pct "
+# 	sql += "from ( "
+# 	sql += "  select p.sell_strat_type  as sell_strat "
+# 	sql += "    , p.sell_strat_name as sell_strat_name "
+# 	sql += "    , p.buy_strat_type  as buy_strat "
+# 	sql += "    , p.buy_strat_name as buy_strat_name "
+# 	sql += "    , p.pos_stat as stat "
+# 	sql += "    , count(p.pos_id) as cnt "
+# 	sql += "    , round(sum(p.tot_out_cnt),4) as spent "
+# 	sql += "    , round(sum(p.val_tot),4) as recv "
+# #	sql += "    , round(sum(p.gain_loss_amt),4) as gain_loss_amt "
+# 	sql += "    , round(sum(p.val_tot) - sum(p.tot_out_cnt),4) as gain_loss_val_amt "
+# #	sql += "    , round(avg(p.tot_out_cnt),4) as spend_amt_avg "
+# 	sql += "    , round(avg(p.val_tot - p.tot_out_cnt),4) as spent_amt_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id),4) as gain_loss_amt_avg "
+# 	sql += "    , round(((sum(p.val_tot) - sum(p.tot_out_cnt)) / count(p.pos_id) / avg(p.tot_out_cnt)),4) * 100 as gain_loss_pct_avg "
+# 	sql += "    , round((sum(p.val_tot) - sum(p.tot_out_cnt)) / sum(p.tot_out_cnt),4) * 100 as gain_loss_pct "
+# 	sql += "    from cbtrade.poss p "
+# 	sql += "    where p.ignore_tf = 0 "
+# #	sql += "    where p.pos_stat = 'CLOSE' "
+# 	sql += "    group by p.buy_strat_type, p.buy_strat_name, p.sell_strat_type, p.sell_strat_name, p.pos_stat "
+# 	sql += "    order by p.pos_stat, p.sell_strat_type, p.sell_strat_name, p.buy_strat_type, p.buy_strat_name "
+# 	sql += "    ) x "
+# 	h = build_sql_display(sql,'third')
+# 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+# 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
+# 	sh = html_comb(m=m, u=u, d=d)
+
+# 	return render_template('web_home.html'
+# 							, top_nav= tn
+# 							, page_title = pt
+# 							, html_disp  = sh
+# 							)
 
 #<=====>#
 

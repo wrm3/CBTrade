@@ -12,6 +12,7 @@ import pymysql as mysql
 # import ssl
 import sys
 import traceback
+import sqlparse
 
 
 #<=====>#
@@ -103,6 +104,12 @@ class db_mysql(object):
 
 #<=====>#
 
+	def pretty_print_sql(self, sql: str) -> None:
+		formatted_sql = sqlparse.format(sql, reindent=True, keyword_case='upper')
+		print(formatted_sql)
+
+#<=====>#
+
 	def curs(self, sql):
 		data = None
 		self.__open()
@@ -140,7 +147,7 @@ class db_mysql(object):
 			traceback.print_exc()
 			print(type(e))
 			print(e)
-			print(sql)
+			self.pretty_print_sql(sql)
 			raise
 		return cols
 
@@ -219,7 +226,7 @@ class db_mysql(object):
 			traceback.print_exc()
 			print(type(e))
 			print(e)
-			print(sql)
+			self.pretty_print_sql(sql)
 		return result
 
 #<=====>#
@@ -267,7 +274,7 @@ class db_mysql(object):
 			traceback.print_exc()
 			print(type(e))
 			print(e)
-			print(sql)
+			self.pretty_print_sql(sql)
 		return result
 
 #<=====>#
@@ -286,7 +293,7 @@ class db_mysql(object):
 			traceback.print_exc()
 			print(type(e))
 			print(e)
-			print(sql)
+			self.pretty_print_sql(sql)
 			print(vals)
 			sys.exit()
 		return self.__session.lastrowid
@@ -304,7 +311,7 @@ class db_mysql(object):
 			traceback.print_exc()
 			print(type(e))
 			print(e)
-			print(sql)
+			self.pretty_print_sql(sql)
 			print(vals)
 			sys.exit()
 		return self.__session.rowcount
@@ -327,7 +334,7 @@ class db_mysql(object):
 			traceback.print_exc()
 			print(type(e))
 			print(e)
-			print(sql)
+			self.pretty_print_sql(sql)
 			print(vals)
 			sys.exit()
 		return update_rows
@@ -347,7 +354,7 @@ class db_mysql(object):
 			traceback.print_exc()
 			print(type(e))
 			print(e)
-			print(sql)
+			self.pretty_print_sql(sql)
 		return delete_rows
 
 #<=====>#
@@ -362,7 +369,7 @@ class db_mysql(object):
 			traceback.print_exc()
 			print(type(e))
 			print(e)
-			print(sql)
+			self.pretty_print_sql(sql)
 		return self.__session.lastrowid
 
 #<=====>#
@@ -466,7 +473,7 @@ class db_mysql(object):
 			if self.HasVal(sql2) and self.HasVal(sql4) and self.HasVal(sql6):
 				sql = sql1 + " " + sql2 + " " + sql3 + " " + sql4 + " " + sql5 + " " + sql6
 				x = self.ins_one(sql)
-#			print(sql)
+#			self.pretty_print_sql(sql)
 		except Exception as e:
 			print('insupd_ez()')
 			traceback.print_exc()
@@ -481,7 +488,7 @@ class db_mysql(object):
 			print(sql4)
 			print(sql5)
 			print(sql6)
-			print(sql)
+			self.pretty_print_sql(sql)
 			if exit_on_error: sys.exit()
 		return x
 
@@ -633,7 +640,7 @@ class db_mysql(object):
 			traceback.print_exc()
 			print(type(e))
 			print(e)
-			print(sql)
+			self.pretty_print_sql(sql)
 		return result
 
 #<=====>#

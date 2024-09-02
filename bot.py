@@ -1077,6 +1077,7 @@ class BOT():
 
 			# display
 			self.buy_disp(mkt, trade_strat_perf)
+#			print(f'buy_yn : {buy_yn}, wait_yn : {wait_yn}')
 
 			# these will have been checked before hand unless we forced the tests anyways
 			if buy_yn == 'Y':
@@ -1086,17 +1087,25 @@ class BOT():
 				# bot deny
 				if buy_deny_yn == 'N':
 					buy_deny_yn = self.buy_logic_deny(mkt, trade_perf, trade_size)
+				print(f"{'buy_logic_deny':<30} - buy_deny_yn : {buy_deny_yn}, buy_yn : {buy_yn}, wait_yn : {wait_yn}")
 
 				# mkt deny
 				if buy_deny_yn == 'N':
 					buy_deny_yn, open_poss_cnt_max = self.buy_logic_mkt_deny(mkt, trade_perf)
+					# I think open_poss_cnt_max is getting dropped, check this later
+					# fixme
+				print(f"{'buy_logic_mkt_deny':<30} - buy_deny_yn : {buy_deny_yn}, buy_yn : {buy_yn}, wait_yn : {wait_yn}")
 
 				# strat deny
 				if buy_deny_yn == 'N':
-					buy_deny_yn = self.buy_logic_strat_deny(mkt, trade_strat_perf)
+					buy_deny_yn, strat_open_cnt_max = self.buy_logic_strat_deny(mkt, trade_strat_perf)
+					# I think strat_open_cnt_max is getting dropped, check this later
+					# fixme
+				print(f"{'buy_logic_strat_deny':<30} - buy_deny_yn : {buy_deny_yn}, buy_yn : {buy_yn}, wait_yn : {wait_yn}")
 
 				if buy_deny_yn == 'N':
-					buy_deny_yn = buy_strats_deny(mkt, trade_strat_perf)
+					buy_deny_yn = buy_strats_deny(mkt, trade_strat_perf, buy_yn, wait_yn)
+				print(f"{'buy_strats_deny':<30} - buy_deny_yn : {buy_deny_yn}, buy_yn : {buy_yn}, wait_yn : {wait_yn}")
 
 			mkt.buy_yn       = buy_yn
 			mkt.buy_deny_yn  = buy_deny_yn
@@ -1378,7 +1387,7 @@ class BOT():
 			pos.buy_strat_type          = bo.buy_strat_type
 			pos.buy_strat_name          = bo.buy_strat_name
 			pos.buy_strat_freq          = bo.buy_strat_freq
-			pos.buy_asset_type          = bo.buy_asset_type
+#			pos.buy_asset_type          = bo.buy_asset_type
 			pos.buy_curr_symb           = bo.buy_curr_symb
 			pos.buy_cnt                 = bo.buy_cnt_act
 			pos.spend_curr_symb         = bo.spend_curr_symb
@@ -1787,7 +1796,7 @@ class BOT():
 		# sell_strat_freq                             varchar(64)
 		so.sell_strat_freq             = pos.sell_strat_freq
 		# sell_asset_type                             varchar(64)
-		so.sell_asset_type             = pos.sell_asset_type
+#		so.sell_asset_type             = pos.sell_asset_type
 		# sell_begin_dttm                             timestamp default current_timestamp
 		so.sell_begin_dttm             = dt.now()	
 		# sell_end_dttm                               timestamp
@@ -1797,20 +1806,22 @@ class BOT():
 		so.recv_curr_symb              = pos.recv_curr_symb	
 		# fees_curr_symb                              varchar(64)
 		so.fees_curr_symb              = pos.fees_curr_symb
+
 		# sell_cnt_est                                decimal(36,12) default 0
-		so.sell_cnt_est                = pos.sell_cnt_est
+		so.sell_cnt_est                = pos.hold_cnt
 		# sell_cnt_act                                decimal(36,12) default 0
-		so.sell_cnt_act                = pos.sell_cnt_act
+		so.sell_cnt_act                = pos.hold_cnt
 		# fees_cnt_act                                decimal(36,12) default 0
-		so.fees_cnt_act                = pos.fees_cnt_act
+		so.fees_cnt_act                = (pos.hold_cnt * mkt.prc_sell) * 0.004
 		# tot_in_cnt                                  decimal(36,12) default 0
-		so.tot_in_cnt                  = pos.tot_in_cnt
+		so.tot_in_cnt                  = (pos.hold_cnt * mkt.prc_sell) * 0.996
 		# prc_sell_est                                decimal(36,12) default 0
-		so.prc_sell_est                = pos.prc_sell
+		so.prc_sell_est                = mkt.prc_sell
 		# prc_sell_act                                decimal(36,12) default 0
-		so.prc_sell_act                = pos.prc_sell
+		so.prc_sell_act                = mkt.prc_sell
 		# tot_prc_buy                                 decimal(36,12) default 0
-		so.tot_prc_buy                 = pos.prc_sell
+		so.tot_prc_buy                 = mkt.prc_sell
+
 		# prc_sell_slip_pct                           decimal(36,12) default 0
 		so.prc_sell_slip_pct           = 0
 		# ignore_tf                                   tinyint default 0
@@ -2545,7 +2556,6 @@ class BOT():
 			buy_deny_yn = 'Y'
 			beep(3)
 
-
 		func_end(fnc)
 		return buy_deny_yn, open_poss_cnt_max
 
@@ -2996,7 +3006,6 @@ class BOT():
 		hodl_yn     = 'Y'
 		show_tests_yn         = self.st.spot.sell.show_tests_yn
 
-
 		# Trailing Stop Loss Logic
 		trailing_stop_loss_pct     = abs(self.st.spot.sell.stop_loss.trailing_stop_loss_pct)
 		prc_chg_pct                = pos.prc_chg_pct
@@ -3313,7 +3322,7 @@ class BOT():
 		ss["sell_strat_type"]      = pos.sell_strat_type
 		ss["sell_strat_name"]      = pos.sell_strat_name
 		ss["sell_strat_freq"]      = pos.sell_strat_freq
-		ss["sell_asset_type"]      = pos.sell_asset_type
+#		ss["sell_asset_type"]      = pos.sell_asset_type
 		ss["buy_yn"]               = pos.buy_yn
 		ss["wait_yn"]              = pos.wait_yn
 		ss["sell_curr_symb"]       = pos.sell_curr_symb

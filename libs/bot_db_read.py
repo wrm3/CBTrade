@@ -1076,7 +1076,7 @@ def db_pos_get_by_pos_id(pos_id):
 
 #<=====>#
 
-def db_poss_close_recent_get(lmt=None):
+def db_poss_close_recent_get(lmt=None, include_test_yn='N'):
 	func_name = 'db_poss_close_recent_get'
 	func_str = f'{lib_name}.{func_name}()'
 #	G(func_str)
@@ -1088,6 +1088,8 @@ def db_poss_close_recent_get(lmt=None):
 	sql += "  from poss p "
 	sql += "  where 1=1 "
 	sql += "  and ignore_tf = 0 "
+	if include_test_yn == 'N':
+		sql += "  and test_tf = 0 "
 	sql += "  and pos_stat = 'CLOSE' "
 	sql += "  order by p.pos_end_dttm desc "
 	poss = db.seld(sql)
@@ -1193,7 +1195,7 @@ def db_mkts_open_cnt_get():
 
 #<=====>#
 
-def db_poss_open_get(prod_id=None):
+def db_poss_open_get(prod_id=None, include_test_yn='N'):
 	func_name = 'db_poss_open_get'
 	func_str = f'{lib_name}.{func_name}()'
 #	G(func_str)
@@ -1205,7 +1207,8 @@ def db_poss_open_get(prod_id=None):
 	sql += "  from poss p "
 	sql += "  where 1=1 "
 	sql += "  and p.ignore_tf = 0 "
-	sql += "  and p.test_tf = 0 "
+	if include_test_yn == 'N':
+		sql += "  and p.test_tf = 0 "
 	if prod_id:
 		sql += f"  and prod_id = '{prod_id}' "
 	sql += "  and pos_stat in ('OPEN','SELL') "
@@ -1220,7 +1223,7 @@ def db_poss_open_get(prod_id=None):
 
 #<=====>#
 
-def db_poss_open_recent_get(lmt=None):
+def db_poss_open_recent_get(lmt=None, include_test_yn='N'):
 	func_name = 'db_poss_open_recent_get'
 	func_str = f'{lib_name}.{func_name}()'
 #	G(func_str)
@@ -1232,7 +1235,8 @@ def db_poss_open_recent_get(lmt=None):
 	sql += "  from poss p "
 	sql += "  where 1=1 "
 	sql += "  and p.ignore_tf = 0 "
-	sql += "  and p.test_tf = 0 "
+	if include_test_yn == 'N':	
+		sql += "  and p.test_tf = 0 "
 	sql += "  and pos_stat = 'OPEN' "
 	sql += "  order by p.pos_begin_dttm desc "
 	poss = db.seld(sql)

@@ -150,7 +150,7 @@ def report_open():
 
 	chart_title = f'Open Positions'
 
-	poss = db_poss_open_get()
+	poss = db_poss_open_get(include_test_yn='Y')
 	show_pos_open_header_yn = 'Y'
 	if poss:
 		poss_sorted = sorted(poss, key=lambda x: x["age_mins"], reverse=True)
@@ -169,7 +169,7 @@ def report_open():
 
 #<=====>#
 
-def report_buys_recent(cnt=10):
+def report_buys_recent(cnt=15):
 	func_name = 'report_buys_recent'
 	func_str = f'{lib_name}.{func_name}()'
 #	G(func_str)
@@ -180,7 +180,7 @@ def report_buys_recent(cnt=10):
 
 	chart_title = f'Last {cnt} Opened Positions'
 
-	poss = db_poss_open_recent_get(lmt=cnt)
+	poss = db_poss_open_recent_get(lmt=cnt, include_test_yn='Y')
 #	poss = db_poss_close_recent_get(lmt=cnt)
 	show_pos_open_header_yn = 'Y'
 	if poss:
@@ -196,9 +196,9 @@ def report_buys_recent(cnt=10):
 
 	func_end(fnc)
 
-	#<=====>#
+#<=====>#
 
-def report_sells_recent(cnt=10):
+def report_sells_recent(cnt=15):
 	func_name = 'report_sells_recent'
 	func_str = f'{lib_name}.{func_name}()'
 #	G(func_str)
@@ -209,7 +209,7 @@ def report_sells_recent(cnt=10):
 
 	chart_title = f'Last {cnt} Closed Positions'
 
-	poss = db_poss_close_recent_get(lmt=cnt)
+	poss = db_poss_close_recent_get(lmt=cnt, include_test_yn='Y')
 	show_pos_close_header_yn = 'Y'
 	if poss:
 #		poss_sorted = sorted(poss, key=lambda x: x["age_mins"], reverse=True)
@@ -304,7 +304,8 @@ def report_pos_open(chart_title, pos, show_pos_open_header_yn='Y'):
 #	chart_title('Currently Open Positions - By Market', len(hmsg))
 
 	hmsg = ''
-	hmsg += f"{'mkt':^16} | "
+	hmsg += f"{'mkt':^12} | "
+	hmsg += f"{'T':^1} | "
 	hmsg += f"{'pos_id':^6} | "
 	hmsg += f"{'strat':^10} | "
 	hmsg += f"{'freq':^10} | "
@@ -327,8 +328,14 @@ def report_pos_open(chart_title, pos, show_pos_open_header_yn='Y'):
 		report_chart_headers(hmsg, len(hmsg))
 		show_pos_open_header_yn = 'N'
 
+	if pos.test_tf == 1:
+		test_tf = '*'
+	else:
+		test_tf = ''
+
 	msg = ''
-	msg += f'{pos.prod_id:<16} | '
+	msg += f'{pos.prod_id:<12} | '
+	msg += f'{test_tf:^1} | '
 	msg += f'{pos.pos_id:^6} | '
 	msg += f'{pos.buy_strat_name:>10} | '
 	msg += f'{pos.buy_strat_freq:>10} | '
@@ -360,7 +367,8 @@ def report_pos_close(chart_title, pos, show_pos_close_header_yn='Y'):
 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
 	hmsg = ""
-	hmsg += f"{'mkt':^16} | "
+	hmsg += f"{'mkt':^12} | "
+	hmsg += f"{'T':^1} | "
 	hmsg += f"{'pos_id':^6} | "
 	hmsg += f"{'strat':^10} | "
 	hmsg += f"{'freq':^5} | "
@@ -396,10 +404,15 @@ def report_pos_close(chart_title, pos, show_pos_close_header_yn='Y'):
 	pos.pos_end_dttm = pos.pos_end_dttm.astimezone(local_timezone)
 	pos.pos_end_dttm = datetime.strftime(pos.pos_end_dttm, "%m-%d-%Y %H:%M")
 
+	if pos.test_tf == 1:
+		test_tf = '*'
+	else:
+		test_tf = ''
 
 	msg = ''
-	msg += f'{pos.prod_id:<16} | '
-	msg += f'{pos.pos_id:^6} | '
+	msg += f'{pos.prod_id:<12} | '
+	msg += f'{test_tf:^1} | '
+	msg += f'{pos.pos_id:<6} | '
 	msg += f'{pos.buy_strat_name:>10} | '
 	msg += f'{pos.buy_strat_freq:>5} | '
 	msg += f'{pos.sell_strat_name:>14} | '
