@@ -49,14 +49,12 @@ warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 #<=====>#
 
 
-
 #<=====>#
 # Imports - Shared Library
 #<=====>#
 #shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
 #if shared_libs_path not in sys.path:
 #	sys.path.append(shared_libs_path)
-
 
 #<=====>#
 # Imports - Local Library
@@ -65,11 +63,12 @@ local_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '', 'l
 if local_libs_path not in sys.path:
 	sys.path.append(local_libs_path)
 
-from libs.lib_common                        import *
+from libs.lib_charts                   import *
+from libs.lib_common                   import *
+from libs.lib_colors                   import *
 
 from libs.bot_common                        import *
 from libs.bot_db_read                       import db
-
 
 #<=====>#
 # Variables
@@ -79,7 +78,6 @@ log_name      = 'web'
 lib_verbosity = 1
 lib_debug_lvl = 1
 lib_secs_max  = 0
-
 
 #<=====>#
 # Assignments Pre
@@ -157,7 +155,6 @@ def build_topnav():
 				mkt_dd = mkt_dd + "<option value='/market_" + mkt + "'>" + mkt + "</option>"
 	mkt_dd = mkt_dd + "</select>"
 
-
 	s_dt_dd = ""
 	s_dt_dd += "<select id='sales_dt_dd' onchange=" + chr(34) + "window.open(this.value,'_self');" + chr(34) + ">"
 	s_dt_dd += "<option value='#'>Choose Date</option>"
@@ -222,7 +219,6 @@ def build_topnav():
 #				st_y_dd += new_str
 #	st_y_dd += "</select>"
 
-
 	html = ""
 	html += "<table class='nav'>"
 	html += "<thead>"
@@ -275,7 +271,6 @@ def build_topnav():
 	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;'>" + s_m_dd + "</td></tr>"
 	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;'>" + s_y_dd + "</td></tr>"
 
-
 	# Sales Summary - Test
 	html = build_topnav_title(in_str='Sales Summary - Tests', in_html=html)
 	html = build_topnav_link( in_str='All - Tests',    in_url='sales_all_test.htm',  in_html=html)
@@ -305,7 +300,6 @@ def build_topnav():
 #	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;'>" + st_m_dd + "</td></tr>"
 #	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;'>" + st_y_dd + "</td></tr>"
 
-
 	# # Best
 	# html = build_topnav_link( in_str='Buy Strats',       in_url='best_strats.htm',        in_html=html)
 	# html = build_topnav_link( in_str='Buy Markets',      in_url='best_markets.htm',       in_html=html)
@@ -313,7 +307,6 @@ def build_topnav():
 	# # Worst
 	# html = build_topnav_link( in_str='Worst Strats',       in_url='worst_strats.htm',        in_html=html)
 	# html = build_topnav_link( in_str='Worst Markets',      in_url='worst_markets.htm',       in_html=html)
-
 
 	# # Buy Strats
 	# html = build_topnav_title(in_str='Buy Strats',             in_html=html)
@@ -1027,16 +1020,28 @@ def add_report(
 	if inc_sd_dt:
 		top_sql      += " , x.sd_dt "
 	if inc_sd_dt or sd_dt1 or sd_dt2:
-		mid_sql      += " , date(p.pos_begin_dttm) as sd_dt "
+		if inc_pos_id:
+			mid_sql      += " , p.pos_begin_dttm as sd_dt "
+		else:
+			mid_sql      += " , date(p.pos_begin_dttm) as sd_dt "
 	if inc_sd_dt:
-		group_by_sql += " date(p.pos_begin_dttm),"
+		if inc_pos_id:
+			group_by_sql      += " p.pos_begin_dttm, "
+		else:
+			group_by_sql      += " date(p.pos_begin_dttm),"
 
 	if inc_td_dt:
 		top_sql      += " , x.td_dt "
 	if inc_td_dt or td_dt1 or td_dt2:
-		mid_sql      += " , date(p.pos_end_dttm) as td_dt "
+		if inc_pos_id:
+			mid_sql      += " , p.pos_end_dttm as td_dt "
+		else:
+			mid_sql      += " , date(p.pos_end_dttm) as td_dt "
 	if inc_td_dt:
-		group_by_sql += " date(p.pos_end_dttm),"
+		if inc_pos_id:
+			group_by_sql      += " p.pos_end_dttm, "
+		else:
+			group_by_sql      += " date(p.pos_end_dttm),"
 
 	if inc_stat:
 		top_sql      += " , x.pos_stat "
@@ -1531,7 +1536,6 @@ def add_report_summary_mkt_closed_today(m, u, d) -> str:
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
 #	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
-
 	today = now_utc_get()
 
 	m, u, d = add_report(
@@ -1650,7 +1654,6 @@ def add_report_summary_winlose_closed(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
 #	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
 
 	m, u, d = add_report(
 		t='Win-Lose Summary - Closed Positions - *', 
@@ -1929,7 +1932,6 @@ def add_report_new3(m, u, d) -> str:
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
 #	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
-
 	return m, u, d
 
 #<=====>#
@@ -1938,7 +1940,6 @@ def add_report_new4(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
 #	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
 
 	return m, u, d
 
@@ -1949,7 +1950,6 @@ def add_report_new5(m, u, d) -> str:
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
 #	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
-
 	return m, u, d
 
 #<=====>#
@@ -1958,7 +1958,6 @@ def add_report_new6(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
 #	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
 
 	return m, u, d
 
@@ -1969,7 +1968,6 @@ def add_report_new7(m, u, d) -> str:
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
 #	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
-
 	return m, u, d
 
 #<=====>#
@@ -1978,7 +1976,6 @@ def add_report_new8(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
 #	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
 
 	return m, u, d
 
@@ -1989,7 +1986,6 @@ def add_report_new9(m, u, d) -> str:
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
 #	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
-
 	return m, u, d
 
 #<=====>#
@@ -1998,7 +1994,6 @@ def add_report_new10(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
 #	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
 
 	return m, u, d
 
@@ -2056,7 +2051,7 @@ def add_report_mkt_pos_open(m, u, d) -> str:
 #template_dir = os.path.join(template_dir, 'flask')
 #template_dir = os.path.join(template_dir, 'templates')
 ## hard coded absolute path for testing purposes
-#working = 'C:\Python34\pro\\frontend\\templates'
+#working = 'C:\Python34\pro\\frontend\    emplates'
 #print(working == template_dir)
 #app = Flask(__name__, template_folder=template_dir)
 
@@ -2173,7 +2168,6 @@ def balances() -> str:
 
 	m, u, d = add_bals_total(t='Total Balance', m=m, u=u, d=d)
 
-
 	t = 'Current Balances - Order by Balance'
 	sql = "  "
 	sql += "select b.symb "
@@ -2230,7 +2224,6 @@ def balances() -> str:
 	h = build_sql_display(sql,'first')
 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
 	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
 
 	t = 'Current Balance - Order by Symbol'
 	sql = "  "
@@ -2289,7 +2282,6 @@ def balances() -> str:
 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
 	m, u, d = html_add(more=h, m=m, u=u, d=d)
 
-
 	t = 'Current Balances - Order by Free Balance'
 	sql = "  "
 	sql += "select b.symb "
@@ -2346,7 +2338,6 @@ def balances() -> str:
 	h = build_sql_display(sql,'first')
 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
 	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
 
 	sh = html_comb(m=m, u=u, d=d)
 
@@ -2442,7 +2433,7 @@ def buys_recent() -> str:
 		sd_dt2=None, 
 		td_dt1=None, 
 		td_dt2=None, 
-		stat='OPEN', 
+		stat=None, 
 		wl=None, 
 		buy_strat_name=None, 
 		buy_strat_freq=None, 
@@ -2473,7 +2464,7 @@ def buys_recent() -> str:
 		sd_dt2=None, 
 		td_dt1=None, 
 		td_dt2=None, 
-		stat='OPEN', 
+		stat=None, 
 		wl=None, 
 		buy_strat_name=None, 
 		buy_strat_freq=None, 
@@ -2615,6 +2606,36 @@ def buy_strats() -> str:
 #		sell_strat_name=None, 
 #		sell_strat_freq=None, 
 		test_tf=0, 
+		order_by_sql="order by x.gain_loss_pct_hr desc ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Buy Strats Summary - Closed', 
+#		inc_prod_id=False, 
+#		inc_pos_id=False, 
+#		inc_sd_dt=False, 
+#		inc_td_dt=False, 
+#		inc_stat=True, 
+#		inc_wl=False, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+#		inc_test=True, 
+#		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+		stat='CLOSE', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf=0, 
 		order_by_sql="order by x.buy_strat_name, x.buy_strat_freq ", 
 #		lmt=None,
 		m=m, u=u, d=d)
@@ -2639,6 +2660,36 @@ def mkt_buy_strats() -> str:
 	d     = None
 
 	pt    = 'Market Buys Strats'
+
+	m, u, d = add_report(
+		t=f'Market Buy Strats Summary - Closed', 
+		inc_prod_id=True, 
+#		inc_pos_id=False, 
+#		inc_sd_dt=False, 
+#		inc_td_dt=False, 
+#		inc_stat=True, 
+#		inc_wl=False, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+#		inc_test=True, 
+#		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+		stat='CLOSE', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf=0, 
+		order_by_sql="order by x.gain_loss_pct_hr desc ", 
+#		lmt=None,
+		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Market Buy Strats Summary - Closed', 
@@ -2692,7 +2743,37 @@ def markets() -> str:
 	pt    = 'Markets'
 
 	m, u, d = add_report(
-		t=f'Markets', 
+		t=f'Markets - By Gain Rate', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+#		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='0', 
+		order_by_sql="Order by x.gain_loss_pct_hr desc ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Markets - By Product', 
 		inc_prod_id=True, 
 #		inc_pos_id=True, 
 #		inc_sd_dt=True, 
@@ -2722,7 +2803,37 @@ def markets() -> str:
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
-		t=f'Markets - Test', 
+		t=f'Markets - Test - By Gain Rate', 
+		inc_prod_id=True, 
+#		inc_pos_id=True, 
+#		inc_sd_dt=True, 
+#		inc_td_dt=True, 
+		inc_stat=True, 
+#		inc_wl=True, 
+#		inc_buy_strat_name=True, 
+#		inc_buy_strat_freq=True, 
+#		inc_sell_strat_name=False, 
+#		inc_sell_strat_freq=False, 
+		inc_test=False, 
+#		prod_id=None, 
+#		pos_id=None, 
+#		sd_dt1=None, 
+#		sd_dt2=None, 
+#		td_dt1=None, 
+#		td_dt2=None, 
+#		stat='OPEN', 
+#		wl=None, 
+#		buy_strat_name=None, 
+#		buy_strat_freq=None, 
+#		sell_strat_name=None, 
+#		sell_strat_freq=None, 
+		test_tf='1', 
+		order_by_sql="Order by x.gain_loss_pct_hr desc ", 
+#		lmt=None,
+		m=m, u=u, d=d)
+
+	m, u, d = add_report(
+		t=f'Markets - Test - By Product', 
 		inc_prod_id=True, 
 #		inc_pos_id=True, 
 #		inc_sd_dt=True, 
@@ -3923,7 +4034,6 @@ def sales_month(yr,m) -> str:
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
-
 
 
 
@@ -5349,7 +5459,6 @@ def sales_yr_test(yr) -> str:
 # 	m, u, d = html_add(more=h, m=m, u=u, d=d)
 
 
-
 # #	t     = 'Buy Strats - Today - Type - New'
 # #	sql = " "
 # #	sql += "select x.buy_strat_type "
@@ -5563,7 +5672,6 @@ def sales_yr_test(yr) -> str:
 # 	h = sales_disp_mkt_strat_summary(dt1='*', dt2='*')
 # 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
 # 	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
 
 
 

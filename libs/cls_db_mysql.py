@@ -14,11 +14,9 @@ import sys
 import traceback
 import sqlparse
 
-
 #<=====>#
 # Imports - Download Modules
 #<=====>#
-
 
 
 #<=====>#
@@ -26,17 +24,14 @@ import sqlparse
 #<=====>#
 
 
-
 #<=====>#
 # Imports - Recently Removed
 #<=====>#
 
 
-
 #<=====>#
 # Imports - Local Library
 #<=====>#
-
 
 
 #<=====>#
@@ -45,14 +40,11 @@ import sqlparse
 lib_display_lvl = 0
 lib_debug_lvl = 1
 
-
 #<=====>#
-
 
 #<=====>#
 # Assignments Pre
 #<=====>#
-
 
 
 #<=====>#
@@ -833,15 +825,12 @@ class db_mysql(object):
 # Functions
 #<=====>#
 
-
 def test_main():
 	pass
-
 
 #<=====>#
 # Assignments Post
 #<=====>#
-
 
 
 #<=====>#
@@ -851,8 +840,6 @@ def test_main():
 if __name__ == '__main__':
 	test_main()
 
-
 #<=====>#
-
 
 

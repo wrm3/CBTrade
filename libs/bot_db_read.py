@@ -3,7 +3,6 @@
 #<=====>#
 
 
-
 #<=====>#
 # Import All
 #<=====>#
@@ -48,11 +47,9 @@ import_all_func_list.append("db_strats_w_stats_get_all")
 import_all_func_list.append("db_view_trade_perf_get_by_prod_id")
 __all__ = import_all_func_list
 
-
 #<=====>#
 # Known To Do List
 #<=====>#
-
 
 
 #<=====>#
@@ -64,11 +61,9 @@ import os
 import re
 import time
 
-
 #<=====>#
 # Imports - Download Modules
 #<=====>#
-
 
 
 #<=====>#
@@ -77,7 +72,6 @@ import time
 # shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
 # if shared_libs_path not in sys.path:
 # 	sys.path.append(shared_libs_path)
-
 
 
 #<=====>#
@@ -93,7 +87,6 @@ from lib_common                    import *
 #from bot_common                    import *
 from bot_secrets                   import secrets
 
-
 #<=====>#
 # Variables
 #<=====>#
@@ -106,7 +99,6 @@ debug_lvl     = 1
 lib_secs_max  = 0.33
 lib_secs_max  = 10
 
-
 #<=====>#
 # Assignments Pre
 #<=====>#
@@ -114,11 +106,9 @@ lib_secs_max  = 10
 sc = secrets.settings_load()
 db = db_mysql(sc.mysql.host, sc.mysql.port, sc.mysql.db, sc.mysql.user, sc.mysql.pw)
 
-
 #<=====>#
 # Classes
 #<=====>#
-
 
 
 #<=====>#
@@ -1023,7 +1013,6 @@ def db_perf_summaries_get(prod_id=None, pos_stat=None, pos_id=None):
 
 
 
-
 	sql += "  from cbtrade.poss p "
 #	sql += "  join cbtrade.mkts m on m.prod_id = p.prod_id "
 	sql += "  where 1=1 "
@@ -1038,7 +1027,6 @@ def db_perf_summaries_get(prod_id=None, pos_stat=None, pos_id=None):
 	if pos_id:
 		sql += f"  and p.pos_id = '{pos_id}' "
 
-
 	sql += "  group by p.prod_id, p.pos_stat  "
 	if pos_id:
 		sql += f"  ,p.pos_id "
@@ -1049,7 +1037,6 @@ def db_perf_summaries_get(prod_id=None, pos_stat=None, pos_id=None):
 
 	func_end(fnc)
 	return mkts
-
 
 
 #<=====>#
@@ -1076,7 +1063,35 @@ def db_pos_get_by_pos_id(pos_id):
 
 #<=====>#
 
-def db_poss_close_recent_get(lmt=None, include_test_yn='N'):
+def db_poss_open_recent_get(lmt=None, test_yn='N'):
+	func_name = 'db_poss_open_recent_get'
+	func_str = f'{lib_name}.{func_name}()'
+#	G(func_str)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+	if verbosity >= 2: print_func_name(func_str, adv=2)
+
+	sql = ""
+	sql += "select p.* "
+	sql += "  from poss p "
+	sql += "  where 1=1 "
+	sql += "  and p.ignore_tf = 0 "
+	if test_yn == 'Y':
+		sql += "  and test_tf = 1 "
+	elif test_yn == 'N':
+		sql += "  and test_tf = 0 "
+	sql += "  and pos_stat = 'OPEN' "
+	sql += "  order by p.pos_begin_dttm desc "
+	poss = db.seld(sql)
+	if lmt:
+		sql += "limit {}".format(lmt)
+	poss = db.seld(sql)
+
+	func_end(fnc)
+	return poss
+
+#<=====>#
+
+def db_poss_close_recent_get(lmt=None, test_yn='N'):
 	func_name = 'db_poss_close_recent_get'
 	func_str = f'{lib_name}.{func_name}()'
 #	G(func_str)
@@ -1088,7 +1103,9 @@ def db_poss_close_recent_get(lmt=None, include_test_yn='N'):
 	sql += "  from poss p "
 	sql += "  where 1=1 "
 	sql += "  and ignore_tf = 0 "
-	if include_test_yn == 'N':
+	if test_yn == 'Y':
+		sql += "  and test_tf = 1 "
+	elif test_yn == 'N':
 		sql += "  and test_tf = 0 "
 	sql += "  and pos_stat = 'CLOSE' "
 	sql += "  order by p.pos_end_dttm desc "
@@ -1186,6 +1203,7 @@ def db_mkts_open_cnt_get():
 	sql += "select count(distinct p.prod_id) "
 	sql += "  from poss p "
 	sql += "  where 1=1 "
+	sql += "  and p.pos_stat in ('OPEN','SELL') "
 	sql += "  and p.ignore_tf = 0 "
 	sql += "  and p.test_tf = 0 "
 	mkt_open_cnt = db.sel(sql)
@@ -1216,32 +1234,6 @@ def db_poss_open_get(prod_id=None, include_test_yn='N'):
 		sql += "  order by p.prod_id, p.pos_id "
 	else:
 		sql += "  order by p.pos_begin_dttm desc "
-	poss = db.seld(sql)
-
-	func_end(fnc)
-	return poss
-
-#<=====>#
-
-def db_poss_open_recent_get(lmt=None, include_test_yn='N'):
-	func_name = 'db_poss_open_recent_get'
-	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
-
-	sql = ""
-	sql += "select p.* "
-	sql += "  from poss p "
-	sql += "  where 1=1 "
-	sql += "  and p.ignore_tf = 0 "
-	if include_test_yn == 'N':	
-		sql += "  and p.test_tf = 0 "
-	sql += "  and pos_stat = 'OPEN' "
-	sql += "  order by p.pos_begin_dttm desc "
-	poss = db.seld(sql)
-	if lmt:
-		sql += "limit {}".format(lmt)
 	poss = db.seld(sql)
 
 	func_end(fnc)
@@ -1388,11 +1380,9 @@ def db_view_trade_perf_get_by_prod_id(prod_id):
 #<=====>#
 
 
-
 #<=====>#
 # Default Run
 #<=====>#
-
 
 
 #<=====>#

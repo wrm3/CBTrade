@@ -20,11 +20,9 @@ import_all_func_list.append("cb_ords_refresh")
 import_all_func_list.append("cb_wallet_refresh")
 __all__ = import_all_func_list
 
-
 #<=====>#
 # Description
 #<=====>#
-
 
 
 #<=====>#
@@ -32,13 +30,11 @@ __all__ = import_all_func_list
 #<=====>#
 
 
-
 #<=====>#
 # Imports - Common Modules
 #<=====>#
 #from coinbase.rest import RESTClient as cbclient
 from coinbase_advanced_trader.enhanced_rest_client import EnhancedRESTClient as cbclient
-
 
 # from datetime import date
 from datetime import datetime
@@ -68,11 +64,9 @@ import time
 #import warnings
 #warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
-
 #<=====>#
 # Imports - Download Modules
 #<=====>#
-
 
 
 #<=====>#
@@ -81,7 +75,6 @@ import time
 # shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
 # if shared_libs_path not in sys.path:
 # 	sys.path.append(shared_libs_path)
-
 
 
 #<=====>#
@@ -98,7 +91,6 @@ from bot_db_read                   import *
 from bot_db_write                  import *
 from bot_secrets                   import secrets
 
-
 #<=====>#
 # Variables
 #<=====>#
@@ -109,7 +101,6 @@ lib_debug_lvl = 1
 lib_secs_max  = 1
 lib_secs_max  = 10
 
-
 #<=====>#
 # Assignments Pre
 #<=====>#
@@ -119,11 +110,9 @@ sc = secrets.settings_load()
 
 cb = cbclient(api_key=sc.coinbase.api_key, api_secret=sc.coinbase.api_secret)
 
-
 #<=====>#
 # Classes
 #<=====>#
-
 
 
 #<=====>#
@@ -302,7 +291,6 @@ def cb_candles_get(product_id, start = None, end = None, rfreq = None, granulari
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
-
 	secs = 0
 	now = int(round(datetime.now().timestamp()))
 
@@ -396,7 +384,6 @@ def cb_candles_get(product_id, start = None, end = None, rfreq = None, granulari
 		# rfreq_secs    = req_secs * rfreq_mult
 		req_span     = req_rows_max * req_secs
 
-
 	mode = None
 	if start and end and min_rows:
 		mode = 'both'
@@ -405,16 +392,13 @@ def cb_candles_get(product_id, start = None, end = None, rfreq = None, granulari
 	elif min_rows:
 		mode = 'rows'
 
-
 	temp_end = now
 	if end: temp_end = end
-
 
 	# dropping seconds from time
 #	print('temp_end     2A : {}'.format(datetime.fromtimestamp(temp_end)))
 	temp_end = temp_end - temp_end % 60 + req_secs
 #	print('temp_end     2B : {}'.format(datetime.fromtimestamp(temp_end)))
-
 
 #	# aligning?
 #	print('temp_end   3A : {}'.format(datetime.fromtimestamp(temp_end)))
@@ -423,7 +407,6 @@ def cb_candles_get(product_id, start = None, end = None, rfreq = None, granulari
 #	temp_start        = temp_end - req_span + secs
 #	est_rows = (temp_end - temp_start) / secs
 #	print('est_rows   3C : {}'.format(est_rows))
-
 
 	ohlcv            = []
 	row_cnt          = 0
@@ -957,14 +940,12 @@ def cb_ord_shaper(in_ord):
 
 #	print(in_ord)
 
-
 	# fix
 	# column : ord_limit_prc not defined in table ords...
 	# column : ord_stop_dir not defined in table ords...
 	# column : ord_stop_price not defined in table ords...
 	# column : ord_stop_trigger_price not defined in table ords...
 	# column : sell_fees_curr_symb not defined in table poss...
-
 
 	out_ord = AttrDict()
 
@@ -1163,13 +1144,11 @@ def test_main():
 #<=====>#
 
 
-
 #<=====>#
 # Default Run
 #<=====>#
 
 if __name__ == "__main__":
 	test_main()
-
 
 #<=====>#

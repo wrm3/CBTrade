@@ -3,11 +3,9 @@
 #<=====>#
 import_all_func_list = []
 
-
 import_all_func_list.append("AttrDict")
 import_all_func_list.append("AttrDictConv")
 import_all_func_list.append("AttrDictUpd")
-
 
 
 import_all_func_list.append("format_disp_age")
@@ -19,6 +17,9 @@ import_all_func_list.append("short_link")
 import_all_func_list.append("clear_screen")
 
 # strings
+import_all_func_list.append("lpad")
+import_all_func_list.append("rpad")
+import_all_func_list.append("cpad")
 import_all_func_list.append("left")
 import_all_func_list.append("right")
 import_all_func_list.append("mid")
@@ -56,6 +57,8 @@ import_all_func_list.append("int2tf")
 import_all_func_list.append("tf2int")
 import_all_func_list.append("dec")
 import_all_func_list.append("dec_prec")
+import_all_func_list.append("is_odd")
+import_all_func_list.append("is_even")
 import_all_func_list.append("tf")
 import_all_func_list.append("AllHaveVal")
 import_all_func_list.append("HasVal")
@@ -80,299 +83,6 @@ import_all_func_list.append("print_line")
 import_all_func_list.append("print_obj")
 import_all_func_list.append("prt_dttm_get")
 
-
-import_all_func_list.append("K")
-import_all_func_list.append("R")
-import_all_func_list.append("G")
-import_all_func_list.append("Y")
-import_all_func_list.append("B")
-import_all_func_list.append("M")
-import_all_func_list.append("C")
-import_all_func_list.append("W")
-
-import_all_func_list.append("LGy")
-import_all_func_list.append("DGy")
-import_all_func_list.append("LR")
-import_all_func_list.append("LG")
-import_all_func_list.append("LY")
-import_all_func_list.append("LB")
-import_all_func_list.append("LM")
-import_all_func_list.append("LC")
-
-import_all_func_list.append("BoB")
-import_all_func_list.append("BoC")
-import_all_func_list.append("BoDGy")
-import_all_func_list.append("BoG")
-import_all_func_list.append("BoK")
-import_all_func_list.append("BoLB")
-import_all_func_list.append("BoLC")
-import_all_func_list.append("BoLG")
-import_all_func_list.append("BoLGy")
-import_all_func_list.append("BoLM")
-import_all_func_list.append("BoLR")
-import_all_func_list.append("BoLY")
-import_all_func_list.append("BoM")
-import_all_func_list.append("BoR")
-import_all_func_list.append("BoW")
-import_all_func_list.append("BoY")
-
-import_all_func_list.append("CoB")
-import_all_func_list.append("CoC")
-import_all_func_list.append("CoDGy")
-import_all_func_list.append("CoG")
-import_all_func_list.append("CoK")
-import_all_func_list.append("CoLB")
-import_all_func_list.append("CoLC")
-import_all_func_list.append("CoLG")
-import_all_func_list.append("CoLGy")
-import_all_func_list.append("CoLM")
-import_all_func_list.append("CoLR")
-import_all_func_list.append("CoLY")
-import_all_func_list.append("CoM")
-import_all_func_list.append("CoR")
-import_all_func_list.append("CoW")
-import_all_func_list.append("CoY")
-
-import_all_func_list.append("DGyoB")
-import_all_func_list.append("DGyoC")
-import_all_func_list.append("DGyoDGy")
-import_all_func_list.append("DGyoG")
-import_all_func_list.append("DGyoK")
-import_all_func_list.append("DGyoLB")
-import_all_func_list.append("DGyoLC")
-import_all_func_list.append("DGyoLG")
-import_all_func_list.append("DGyoLGy")
-import_all_func_list.append("DGyoLM")
-import_all_func_list.append("DGyoLR")
-import_all_func_list.append("DGyoLY")
-import_all_func_list.append("DGyoM")
-import_all_func_list.append("DGyoR")
-import_all_func_list.append("DGyoW")
-import_all_func_list.append("DGyoY")
-
-import_all_func_list.append("GoB")
-import_all_func_list.append("GoC")
-import_all_func_list.append("GoDGy")
-import_all_func_list.append("GoG")
-import_all_func_list.append("GoK")
-import_all_func_list.append("GoLB")
-import_all_func_list.append("GoLC")
-import_all_func_list.append("GoLG")
-import_all_func_list.append("GoLGy")
-import_all_func_list.append("GoLM")
-import_all_func_list.append("GoLR")
-import_all_func_list.append("GoLY")
-import_all_func_list.append("GoM")
-import_all_func_list.append("GoR")
-import_all_func_list.append("GoW")
-import_all_func_list.append("GoY")
-
-import_all_func_list.append("KoB")
-import_all_func_list.append("KoC")
-import_all_func_list.append("KoDGy")
-import_all_func_list.append("KoG")
-import_all_func_list.append("KoK")
-import_all_func_list.append("KoLB")
-import_all_func_list.append("KoLC")
-import_all_func_list.append("KoLG")
-import_all_func_list.append("KoLGy")
-import_all_func_list.append("KoLM")
-import_all_func_list.append("KoLR")
-import_all_func_list.append("KoLY")
-import_all_func_list.append("KoM")
-import_all_func_list.append("KoR")
-import_all_func_list.append("KoW")
-import_all_func_list.append("KoY")
-
-import_all_func_list.append("LBoB")
-import_all_func_list.append("LBoC")
-import_all_func_list.append("LBoDGy")
-import_all_func_list.append("LBoG")
-import_all_func_list.append("LBoK")
-import_all_func_list.append("LBoLB")
-import_all_func_list.append("LBoLC")
-import_all_func_list.append("LBoLG")
-import_all_func_list.append("LBoLGy")
-import_all_func_list.append("LBoLM")
-import_all_func_list.append("LBoLR")
-import_all_func_list.append("LBoLY")
-import_all_func_list.append("LBoM")
-import_all_func_list.append("LBoR")
-import_all_func_list.append("LBoW")
-import_all_func_list.append("LBoY")
-
-import_all_func_list.append("LCoB")
-import_all_func_list.append("LCoC")
-import_all_func_list.append("LCoDGy")
-import_all_func_list.append("LCoG")
-import_all_func_list.append("LCoK")
-import_all_func_list.append("LCoLB")
-import_all_func_list.append("LCoLC")
-import_all_func_list.append("LCoLG")
-import_all_func_list.append("LCoLGy")
-import_all_func_list.append("LCoLM")
-import_all_func_list.append("LCoLR")
-import_all_func_list.append("LCoLY")
-import_all_func_list.append("LCoM")
-import_all_func_list.append("LCoR")
-import_all_func_list.append("LCoW")
-import_all_func_list.append("LCoY")
-
-import_all_func_list.append("LGoB")
-import_all_func_list.append("LGoC")
-import_all_func_list.append("LGoDGy")
-import_all_func_list.append("LGoG")
-import_all_func_list.append("LGoK")
-import_all_func_list.append("LGoLB")
-import_all_func_list.append("LGoLC")
-import_all_func_list.append("LGoLG")
-import_all_func_list.append("LGoLGy")
-import_all_func_list.append("LGoLM")
-import_all_func_list.append("LGoLR")
-import_all_func_list.append("LGoLY")
-import_all_func_list.append("LGoM")
-import_all_func_list.append("LGoR")
-import_all_func_list.append("LGoW")
-import_all_func_list.append("LGoY")
-
-import_all_func_list.append("LGyoB")
-import_all_func_list.append("LGyoC")
-import_all_func_list.append("LGyoDGy")
-import_all_func_list.append("LGyoG")
-import_all_func_list.append("LGyoK")
-import_all_func_list.append("LGyoLB")
-import_all_func_list.append("LGyoLC")
-import_all_func_list.append("LGyoLG")
-import_all_func_list.append("LGyoLGy")
-import_all_func_list.append("LGyoLM")
-import_all_func_list.append("LGyoLR")
-import_all_func_list.append("LGyoLY")
-import_all_func_list.append("LGyoM")
-import_all_func_list.append("LGyoR")
-import_all_func_list.append("LGyoW")
-import_all_func_list.append("LGyoY")
-
-import_all_func_list.append("LMoB")
-import_all_func_list.append("LMoC")
-import_all_func_list.append("LMoDGy")
-import_all_func_list.append("LMoG")
-import_all_func_list.append("LMoK")
-import_all_func_list.append("LMoLB")
-import_all_func_list.append("LMoLC")
-import_all_func_list.append("LMoLG")
-import_all_func_list.append("LMoLGy")
-import_all_func_list.append("LMoLM")
-import_all_func_list.append("LMoLR")
-import_all_func_list.append("LMoLY")
-import_all_func_list.append("LMoM")
-import_all_func_list.append("LMoR")
-import_all_func_list.append("LMoW")
-import_all_func_list.append("LMoY")
-
-import_all_func_list.append("LRoB")
-import_all_func_list.append("LRoC")
-import_all_func_list.append("LRoDGy")
-import_all_func_list.append("LRoG")
-import_all_func_list.append("LRoK")
-import_all_func_list.append("LRoLB")
-import_all_func_list.append("LRoLC")
-import_all_func_list.append("LRoLG")
-import_all_func_list.append("LRoLGy")
-import_all_func_list.append("LRoLM")
-import_all_func_list.append("LRoLR")
-import_all_func_list.append("LRoLY")
-import_all_func_list.append("LRoM")
-import_all_func_list.append("LRoR")
-import_all_func_list.append("LRoW")
-import_all_func_list.append("LRoY")
-
-import_all_func_list.append("LYoB")
-import_all_func_list.append("LYoC")
-import_all_func_list.append("LYoDGy")
-import_all_func_list.append("LYoG")
-import_all_func_list.append("LYoK")
-import_all_func_list.append("LYoLB")
-import_all_func_list.append("LYoLC")
-import_all_func_list.append("LYoLG")
-import_all_func_list.append("LYoLGy")
-import_all_func_list.append("LYoLM")
-import_all_func_list.append("LYoLR")
-import_all_func_list.append("LYoLY")
-import_all_func_list.append("LYoM")
-import_all_func_list.append("LYoR")
-import_all_func_list.append("LYoW")
-import_all_func_list.append("LYoY")
-
-import_all_func_list.append("MoB")
-import_all_func_list.append("MoC")
-import_all_func_list.append("MoDGy")
-import_all_func_list.append("MoG")
-import_all_func_list.append("MoK")
-import_all_func_list.append("MoLB")
-import_all_func_list.append("MoLC")
-import_all_func_list.append("MoLG")
-import_all_func_list.append("MoLGy")
-import_all_func_list.append("MoLM")
-import_all_func_list.append("MoLR")
-import_all_func_list.append("MoLY")
-import_all_func_list.append("MoM")
-import_all_func_list.append("MoR")
-import_all_func_list.append("MoW")
-import_all_func_list.append("MoY")
-
-import_all_func_list.append("RoB")
-import_all_func_list.append("RoC")
-import_all_func_list.append("RoDGy")
-import_all_func_list.append("RoG")
-import_all_func_list.append("RoK")
-import_all_func_list.append("RoLB")
-import_all_func_list.append("RoLC")
-import_all_func_list.append("RoLG")
-import_all_func_list.append("RoLGy")
-import_all_func_list.append("RoLM")
-import_all_func_list.append("RoLR")
-import_all_func_list.append("RoLY")
-import_all_func_list.append("RoM")
-import_all_func_list.append("RoR")
-import_all_func_list.append("RoW")
-import_all_func_list.append("RoY")
-
-import_all_func_list.append("WoB")
-import_all_func_list.append("WoC")
-import_all_func_list.append("WoDGy")
-import_all_func_list.append("WoG")
-import_all_func_list.append("WoK")
-import_all_func_list.append("WoLB")
-import_all_func_list.append("WoLC")
-import_all_func_list.append("WoLG")
-import_all_func_list.append("WoLGy")
-import_all_func_list.append("WoLM")
-import_all_func_list.append("WoLR")
-import_all_func_list.append("WoLY")
-import_all_func_list.append("WoM")
-import_all_func_list.append("WoR")
-import_all_func_list.append("WoW")
-import_all_func_list.append("WoY")
-
-import_all_func_list.append("YoB")
-import_all_func_list.append("YoC")
-import_all_func_list.append("YoDGy")
-import_all_func_list.append("YoG")
-import_all_func_list.append("YoK")
-import_all_func_list.append("YoLB")
-import_all_func_list.append("YoLC")
-import_all_func_list.append("YoLG")
-import_all_func_list.append("YoLGy")
-import_all_func_list.append("YoLM")
-import_all_func_list.append("YoLR")
-import_all_func_list.append("YoLY")
-import_all_func_list.append("YoM")
-import_all_func_list.append("YoR")
-import_all_func_list.append("YoW")
-import_all_func_list.append("YoY")
-
-
-
 # json tools
 import_all_func_list.append("json_safe")
 import_all_func_list.append("json_file_read")
@@ -385,7 +95,6 @@ import_all_func_list.append("logit")
 import_all_func_list.append("dttm_get")
 
 __all__ = import_all_func_list
-
 
 #<=====>#
 # Imports - Common Modules
@@ -444,16 +153,13 @@ import concurrent.futures
 # Imports - Download Modules
 #<=====>#
 
-
 #<=====>#
 # Imports - Unsure if used/needed
 #<=====>#
 
-
 #<=====>#
 # Imports - Recently Removed
 #<=====>#
-
 
 #<=====>#
 # Imports - Shared Library
@@ -463,11 +169,9 @@ import concurrent.futures
 # 	sys.path.append(shared_libs_path)
 
 
-
 #<=====>#
 # Imports - Local Library
 #<=====>#
-
 
 
 #<=====>#
@@ -479,11 +183,9 @@ verbosity           = 1
 lib_debug_lvl       = 1
 lib_display_lvl     = 1
 
-
 #<=====>#
 # Assignments Pre
 #<=====>#
-
 
 
 #<=====>#
@@ -509,11 +211,9 @@ class EmptyObject:
 #	def __setattr__(self, key, value):
 #		self[key] = value
 
-
 #<=====>#
 # Functions
 #<=====>#
-
 
 class AttrDict(dict):
 	def __getattr__(self, item):
@@ -591,7 +291,6 @@ def AttrDictUpd(in_attr_dict=None, in_dict=None):
 
 #<=====>#
 
-
 # helpful regexp replace for converting sections of code 
 # find: tkn\['(\w+)'\]
 # repl: tkn.\1
@@ -622,9 +321,7 @@ def AttrDictUpd(in_attr_dict=None, in_dict=None):
 #		sys.exit()
 #	return out_attr_dict
 
-
 #<=====>#
-
 
 #def AttrDictUpd(in_attr_dict=None, in_dict=None):
 #	if in_attr_dict and isinstance(in_attr_dict, AttrDict):
@@ -656,9 +353,7 @@ def AttrDictUpd(in_attr_dict=None, in_dict=None):
 #		sys.exit()
 #	return out_attr_dict
 
-
 #<=====>#
-
 
 def dict_of_dicts_sort(d:dict, k:str, typ='float', rev=False):
 	# m = 'dict_of_dicts_sort(d=d, k={}, rev={})'
@@ -691,7 +386,6 @@ def dict_of_dicts_sort(d:dict, k:str, typ='float', rev=False):
 	for pk in pks_list:
 		sorted_d[pk] = d[pk]
 	return sorted_d
-
 
 	#<=====>#
 
@@ -746,6 +440,15 @@ def format_disp_age2(in_age_secs):
 
 #<=====>#
 
+def is_even(number: int) -> bool:
+	return number % 2 == 0
+
+#<=====>#
+
+def is_odd(number: int) -> bool:
+	return number % 2 != 0
+
+#<=====>#
 
 def dec_2_float(in_data):
 	func_name = 'dec_2_float'
@@ -771,9 +474,7 @@ def dec_2_float(in_data):
 		pprint(in_data)
 		sys.exit()
 
-
 #<=====>#
-
 
 def DictKeyValIfElse(in_dict, k, d):
 	func_name = 'DictKeyValIfElse'
@@ -801,9 +502,7 @@ def DictKeyValIfElse(in_dict, k, d):
 		sys.exit()
 	return v
 
-
 #<=====>#
-
 
 def DictKeyValFill(in_dict, k, v):
 	func_name = 'DictKeyValFill'
@@ -830,9 +529,7 @@ def DictKeyValFill(in_dict, k, v):
 		sys.exit()
 	return in_dict[k]
 
-
 #<=====>#
-
 
 def DictKeyVal(in_dict, k):
 	func_name = 'DictKeyVal'
@@ -861,9 +558,7 @@ def DictKeyVal(in_dict, k):
 		sys.exit()
 	return resp
 
-
 #<=====>#
-
 
 def DictKeyDel(in_dict, k):
 	func_name = 'DictKeyDel'
@@ -885,9 +580,7 @@ def DictKeyDel(in_dict, k):
 		sys.exit()
 	return in_dict
 
-
 #<=====>#
-
 
 def DictKeyValMult(in_dict, ks):
 	'''
@@ -903,9 +596,7 @@ def DictKeyValMult(in_dict, ks):
 			break
 	return resp
 
-
 #<=====>#
-
 
 def DictContainsKeys(in_dict={}, ks=[]):
 	'''
@@ -920,9 +611,7 @@ def DictContainsKeys(in_dict={}, ks=[]):
 	resp = s.issubset(in_dict.keys())
 	return resp
 
-
 #<=====>#
-
 
 def DictValCheck(in_dict={}, ks=[], show_yn='N'):
 	'''
@@ -955,9 +644,7 @@ def DictValCheck(in_dict={}, ks=[], show_yn='N'):
 				return resp
 	return resp
 
-
 #<=====>#
-
 
 def AllHaveVal(vals=None, itemize_yn='N'):
 	'''
@@ -976,9 +663,7 @@ def AllHaveVal(vals=None, itemize_yn='N'):
 		resp = HasVal(vals)
 	return resp
 
-
 #<=====>#
-
 
 def HasVal(val=None):
 	'''
@@ -1002,7 +687,6 @@ def HasVal(val=None):
 	else:
 		return False
 
-
 #<=====>#
 
 def IsEnglish(s):
@@ -1015,7 +699,6 @@ def IsEnglish(s):
 
 #<=====>#
 
-
 def int2tf(val):
 	if val == 1:
 		val = True
@@ -1023,9 +706,7 @@ def int2tf(val):
 		val = 0
 	return val
 
-
 #<=====>#
-
 
 def tf2int(val):
 	if val:
@@ -1034,9 +715,7 @@ def tf2int(val):
 		val = int(0)
 	return val
 
-
 #<=====>#
-
 
 def dec(val):
 	if val is None:
@@ -1045,9 +724,7 @@ def dec(val):
 		val = decimal.Decimal(str(val))
 	return val
 
-
 #<=====>#
-
 
 #def dec_prec(val, prec=28):
 #	# Save the current precision
@@ -1067,9 +744,7 @@ def dec_prec(number, prec=28):
 		pprint(d)
 		return d
 
-
 #<=====>#
-
 
 #def dec_round(val, digs=0):
 #	try:
@@ -1105,6 +780,23 @@ def tf(val):
 		tf = False
 	return tf
 
+#<=====>#
+
+def lpad(in_str, length, pad_char):
+	out_str = in_str.rjust(length, pad_char)
+	return out_str
+
+#<=====>#
+
+def rpad(in_str, length, pad_char):
+	out_str = in_str.ljust(length, pad_char)
+	return out_str
+
+#<=====>#
+
+def cpad(in_str, length, pad_char):
+	out_str = in_str.center(length, pad_char)
+	return out_str
 
 #<=====>#
 
@@ -1142,7 +834,6 @@ def dir_val(directory_string):
 
 #<=====>#
 
-
 def file_write(fullfilename, msg):
 	# func_name = 'file_write'
 	dir_val(fullfilename)
@@ -1160,9 +851,7 @@ def file_write(fullfilename, msg):
 		FileWriter.close()
 	return
 
-
 #<=====>#
-
 
 def logit(logname, msg):
 	dttm_now = dt.now().strftime('%Y_%m_%d')
@@ -1181,7 +870,6 @@ def logit(logname, msg):
 		LogWriter.close()
 
 	return
-
 
 #<=====>#
 
@@ -1276,9 +964,7 @@ def ObjAttrGet(in_obj={}, attr='', default=None):
 			resp = v
 	return resp
 
-
 #<=====>#
-
 
 def temp_timing_begin(func_name, logname='', log_yn='Y', min_yn='N'):
 	f = {}
@@ -1295,9 +981,7 @@ def temp_timing_begin(func_name, logname='', log_yn='Y', min_yn='N'):
 	if min_yn == 'N': print(msg)
 	return f
 
-
 #<=====>#
-
 
 def temp_timing_end(f):
 	t1 = time.perf_counter()
@@ -1317,7 +1001,6 @@ def temp_timing_end(f):
 	if min_yn != 'Y': print(msg)
 	return f
 
-
 #<=====>#
 
 def temp_timer_begin(nm):
@@ -1331,9 +1014,7 @@ def temp_timer_begin(nm):
 	print(msg)
 	return t
 
-
 #<=====>#
-
 
 def temp_timer_end(t):
 
@@ -1355,14 +1036,12 @@ def temp_timer_end(t):
 
 	return t
 
-
 #<=====>#
 
 def utc_now():
 	import datetime
 	utc_now = datetime.datetime.now(datetime.UTC)
 	return utc_now
-
 
 #<=====>#
 
@@ -1390,7 +1069,6 @@ def now_utc_ts_get():
 
 #<=====>#
 
-
 def calc_elapsed(dttm_new, dttm_old, interval='seconds'):
 #	print('dttm_new : {} ({})'.format(dttm_new, type(dttm_new)))
 #	print('dttm_old : {} ({})'.format(dttm_old, type(dttm_old)))
@@ -1404,7 +1082,6 @@ def calc_elapsed(dttm_new, dttm_old, interval='seconds'):
 		elapsed = (dttm_new - dttm_old).total_seconds() / (60 * 60 * 24)
 	return elapsed
 
-
 #<=====>#
 
 def getRaw(nbr, dec):
@@ -1413,7 +1090,6 @@ def getRaw(nbr, dec):
 
 #<=====>#
 
-
 def get_now():
 
 #	now = dt.fromtimestamp(time.time())
@@ -1421,9 +1097,7 @@ def get_now():
 
 	return now
 
-
 #<=====>#
-
 
 def dict_upd(d, e, k, v):
 	func_name = 'dict_upd'
@@ -1435,17 +1109,13 @@ def dict_upd(d, e, k, v):
 
 	return d
 
-
 #<=====>#
-
 
 def prt_dttm_get():
 	prt_dttm    = dt.now().strftime('%Y-%m-%d %H:%M:%S')
 	return prt_dttm
 
-
 #<=====>#
-
 
 def plogit(logname, epoch, msg=None, printyn='Y', logyn='Y'):
 
@@ -1477,9 +1147,7 @@ def plogit(logname, epoch, msg=None, printyn='Y', logyn='Y'):
 
 	return
 
-
 #<=====>#
-
 
 def file_write(fullfilename, msg):
 	# func_name = 'file_write'
@@ -1498,9 +1166,7 @@ def file_write(fullfilename, msg):
 		FileWriter.close()
 	return
 
-
 #<=====>#
-
 
 def sleep_until(dttm):
 	func_name = 'sleep_until'
@@ -1516,9 +1182,7 @@ def sleep_until(dttm):
 		time.sleep(1)
 #		print(cnt)
 
-
 #<=====>#
-
 
 def sleep(sec):
 	func_name = 'sleep_until'
@@ -1527,9 +1191,7 @@ def sleep(sec):
 
 	time.sleep(sec)
 
-
 #<=====>#
-
 
 def print_dict(d, debug_lvl=lib_debug_lvl):
 	func_name = 'print_dict'
@@ -1549,9 +1211,7 @@ def print_dict(d, debug_lvl=lib_debug_lvl):
 	return
 
 
-
 #<=====>#
-
 
 def print_obj(obj):
 	obj_list = {}
@@ -1559,9 +1219,7 @@ def print_obj(obj):
 		obj_list[attr] = value
 	print(obj_list)
 
-
 #<=====>#
-
 
 def beep_old():
 	frequency = 2500  # Set Frequency To 2500 Hertz
@@ -1570,19 +1228,18 @@ def beep_old():
 
 #<=====>#
 
-
 def beep(reps=1):
 	for _ in range(0, reps-1, 1):
-		WoR('beep()!!!')
+		cprint('beep()!!!', 'white', 'on_red')
+		cprint('beep()!!!', 'white', 'on_red')
+		cprint('beep()!!!', 'white', 'on_red')
 #		print('\a', end='', flush=True)
 		play_beep(frequency=2500,duration=1000, reps=reps)
 
 #<=====>#
 
-
 def beep_error():
 	beepy.beep(sound='error')
-
 
 #<=====>#
 
@@ -1599,7 +1256,6 @@ def play_beep(frequency=1000, duration=1000, reps=1):
 		return
 	for _ in range(0, reps-1, 1):
 		winsound.Beep(frequency, duration)
-
 
 #<=====>#
 
@@ -1632,7 +1288,6 @@ def play_sw_theme():
 
 #<=====>#
 
-
 def play_sw_imperial_march():
 	"""
 	Used to play the Star Wars Imperial March song
@@ -1660,32 +1315,24 @@ def play_sw_imperial_march():
 	play_beep(523, 150)
 	play_beep(440, 1000)
 
-
 #<=====>#
-
 
 def play_file(f):
 	winsound.PlaySound(f, winsound.SND_FILENAME)
 
-
 #<=====>#
-
 
 def play_cash():
 	print('play_cash()')
 	play_file('sounds/cashreg.wav')
 
-
 #<=====>#
-
 
 def play_doh():
 	print('play_doh()')
 	play_file('sounds/DOH!.WAV')
 
-
 #<=====>#
-
 
 def play_thunder():
 	print('play_thunder()')
@@ -1770,27 +1417,23 @@ def func_end(fnc):
 
 	if secs > secs_max:
 		msg = f"{func_name:<35} began at {strt_dttm} completed at {end_dttm}, taking {secs} seconds... max : {secs_max} * {func_str}"
-		KoY(msg)
+		cprint(msg, 'black', 'on_yellow')
 
 	return fnc
 
 #<=====>#
-
 
 def short_link(url, display_text):
 	# Use the OSC 8 escape sequence to start the hyperlink
 	# Then use the ST escape to stop it.
 	return(f'\033]8;;{url}\033\\{display_text}\033]8;;\033\\')
 
-
 #<=====>#
-
 
 def print_clickable_link(url, display_text):
 	# Use the OSC 8 escape sequence to start the hyperlink
 	# Then use the ST escape to stop it.
 	print(f'\033]8;;{url}\033\\{display_text}\033]8;;\033\\')
-
 
 #<=====>#
 
@@ -1822,7 +1465,6 @@ def print_obj(in_obj):
 
 
 
-
 #<=====>#
 
 
@@ -1830,11 +1472,7 @@ def print_obj(in_obj):
 
 
 
-
-
-
 #<=====>#
-
 
 def debug_display_func_name(func_name, debug_show_lvl=0, debug_lvl=lib_debug_lvl):
 
@@ -1846,12 +1484,9 @@ def debug_display_func_name(func_name, debug_show_lvl=0, debug_lvl=lib_debug_lvl
 
 	return
 
-
 #<=====>#
 
-
 def banner_display(e, msg):
-
 
 	plogit('pcp', e, '')
 	plogit('pcp', e, '')
@@ -1861,9 +1496,7 @@ def banner_display(e, msg):
 
 	return
 
-
 #<=====>#
-
 
 def clear_screen():
 	if os.name == 'nt':
@@ -1872,7 +1505,6 @@ def clear_screen():
 #		os.system('clear')
 
 #<=====>#
-
 
 def section_header(
 	txt
@@ -1915,9 +1547,7 @@ def section_header(
 
 	return
 
-
 #<=====>#
-
 
 def pa(r=1):
 	cnt = 0
@@ -1926,9 +1556,7 @@ def pa(r=1):
 		cnt += 1
 	return
 
-
 #<=====>#
-
 
 def pb(c='*', l=235, fgclr='', bgclr=''):
 	txt = c*l
@@ -1942,2143 +1570,9 @@ def pb(c='*', l=235, fgclr='', bgclr=''):
 		print(txt)
 	return
 
-
-#<=====>#
-
-def K(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black')
-	else:
-		return colored(in_str, 'black')
-def R(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red')
-	else:
-		return colored(in_str, 'red')
-def G(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green')
-	else:
-		return colored(in_str, 'green')
-def Y(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow')
-	else:
-		return colored(in_str, 'yellow')
-def B(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue')
-	else:
-		return colored(in_str, 'blue')
-def M(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta')
-	else:
-		return colored(in_str, 'magenta')
-def C(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan')
-	else:
-		return colored(in_str, 'cyan')
-def W(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white')
-	else:
-		return colored(in_str, 'white')
-
-def LGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey')
-	else:
-		return colored(in_str, 'light_grey')
-def DGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey')
-	else:
-		return colored(in_str, 'dark_grey')
-def LR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red')
-	else:
-		return colored(in_str, 'light_red')
-def LG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green')
-	else:
-		return colored(in_str, 'light_green')
-def LY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow')
-	else:
-		return colored(in_str, 'light_yellow')
-def LB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue')
-	else:
-		return colored(in_str, 'light_blue')
-def LM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta')
-	else:
-		return colored(in_str, 'light_magenta')
-def LC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan')
-	else:
-		return colored(in_str, 'light_cyan')
-
-#<=====>#
-
-def KoK(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black', 'on_black')
-	else:
-		return colored(in_str, 'black', 'on_black')
-
-#<=====>#
-		
-def RoK(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red', 'on_black')
-	else:
-		return colored(in_str, 'red', 'on_black')
-
-#<=====>#
-
-def GoK(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green', 'on_black')
-	else:
-		return colored(in_str, 'green', 'on_black')
-
-#<=====>#
-
-def YoK(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow', 'on_black')
-	else:
-		return colored(in_str, 'yellow', 'on_black')
-
-#<=====>#
-
-def BoK(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue', 'on_black')
-	else:
-		return colored(in_str, 'blue', 'on_black')
-
-#<=====>#
-
-def MoK(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta', 'on_black')
-	else:
-		return colored(in_str, 'magenta', 'on_black')
-
-#<=====>#
-
-def CoK(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan', 'on_black')
-	else:
-		return colored(in_str, 'cyan', 'on_black')
-
-#<=====>#
-
-def WoK(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white', 'on_black')
-	else:
-		return colored(in_str, 'white', 'on_black')
-
-#<=====>#
-
-def LGyoK(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey', 'on_black')
-	else:
-		return colored(in_str, 'light_grey', 'on_black')
-
-#<=====>#
-
-def DGyoK(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey', 'on_black')
-	else:
-		return colored(in_str, 'dark_grey', 'on_black')
-
-#<=====>#
-
-def LRoK(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red', 'on_black')
-	else:
-		return colored(in_str, 'light_red', 'on_black')
-
-#<=====>#
-
-def LGoK(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green', 'on_black')
-	else:
-		return colored(in_str, 'light_green', 'on_black')
-
-#<=====>#
-
-def LYoK(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow', 'on_black')
-	else:
-		return colored(in_str, 'light_yellow', 'on_black')
-
-#<=====>#
-
-def LBoK(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue', 'on_black')
-	else:
-		return colored(in_str, 'light_blue', 'on_black')
-
-#<=====>#
-
-def LMoK(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta', 'on_black')
-	else:
-		return colored(in_str, 'light_magenta', 'on_black')
-
-#<=====>#
-
-def LCoK(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan', 'on_black')
-	else:
-		return colored(in_str, 'light_cyan', 'on_black')
-
-#<=====>#
-
-def KoR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black', 'on_red')
-	else:
-		return colored(in_str, 'black', 'on_red')
-
-#<=====>#
-
-def RoR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red', 'on_red')
-	else:
-		return colored(in_str, 'red', 'on_red')
-
-#<=====>#
-
-def GoR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green', 'on_red')
-	else:
-		return colored(in_str, 'green', 'on_red')
-
-#<=====>#
-
-def YoR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow', 'on_red')
-	else:
-		return colored(in_str, 'yellow', 'on_red')
-
-#<=====>#
-
-def BoR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue', 'on_red')
-	else:
-		return colored(in_str, 'blue', 'on_red')
-
-#<=====>#
-
-def MoR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta', 'on_red')
-	else:
-		return colored(in_str, 'magenta', 'on_red')
-
-#<=====>#
-
-def CoR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan', 'on_red')
-	else:
-		return colored(in_str, 'cyan', 'on_red')
-
-#<=====>#
-
-def WoR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white', 'on_red')
-	else:
-		return colored(in_str, 'white', 'on_red')
-
-#<=====>#
-
-def LGyoR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey', 'on_red')
-	else:
-		return colored(in_str, 'light_grey', 'on_red')
-
-#<=====>#
-
-def DGyoR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey', 'on_red')
-	else:
-		return colored(in_str, 'dark_grey', 'on_red')
-
-#<=====>#
-
-def LRoR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red', 'on_red')
-	else:
-		return colored(in_str, 'light_red', 'on_red')
-
-#<=====>#
-
-def LGoR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green', 'on_red')
-	else:
-		return colored(in_str, 'light_green', 'on_red')
-
-#<=====>#
-
-def LYoR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow', 'on_red')
-	else:
-		return colored(in_str, 'light_yellow', 'on_red')
-
-#<=====>#
-
-def LBoR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue', 'on_red')
-	else:
-		return colored(in_str, 'light_blue', 'on_red')
-
-#<=====>#
-
-def LMoR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta', 'on_red')
-	else:
-		return colored(in_str, 'light_magenta', 'on_red')
-
-#<=====>#
-
-def LCoR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan', 'on_red')
-	else:
-		return colored(in_str, 'light_cyan', 'on_red')
-
-#<=====>#
-
-def KoG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black', 'on_green')
-	else:
-		return colored(in_str, 'black', 'on_green')
-
-#<=====>#
-
-def RoG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red', 'on_green')
-	else:
-		return colored(in_str, 'red', 'on_green')
-
-#<=====>#
-
-def GoG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green', 'on_green')
-	else:
-		return colored(in_str, 'green', 'on_green')
-
-#<=====>#
-
-def YoG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow', 'on_green')
-	else:
-		return colored(in_str, 'yellow', 'on_green')
-
-#<=====>#
-
-def BoG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue', 'on_green')
-	else:
-		return colored(in_str, 'blue', 'on_green')
-
-#<=====>#
-
-def MoG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta', 'on_green')
-	else:
-		return colored(in_str, 'magenta', 'on_green')
-
-#<=====>#
-
-def CoG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan', 'on_green')
-	else:
-		return colored(in_str, 'cyan', 'on_green')
-
-#<=====>#
-
-def WoG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white', 'on_green')
-	else:
-		return colored(in_str, 'white', 'on_green')
-
-#<=====>#
-
-def LGyoG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey', 'on_green')
-	else:
-		return colored(in_str, 'light_grey', 'on_green')
-
-#<=====>#
-
-def DGyoG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey', 'on_green')
-	else:
-		return colored(in_str, 'dark_grey', 'on_green')
-
-#<=====>#
-
-def LRoG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red', 'on_green')
-	else:
-		return colored(in_str, 'light_red', 'on_green')
-
-#<=====>#
-
-def LGoG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green', 'on_green')
-	else:
-		return colored(in_str, 'light_green', 'on_green')
-
-#<=====>#
-
-def LYoG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow', 'on_green')
-	else:
-		return colored(in_str, 'light_yellow', 'on_green')
-
-#<=====>#
-
-def LBoG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue', 'on_green')
-	else:
-		return colored(in_str, 'light_blue', 'on_green')
-
-#<=====>#
-
-def LMoG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta', 'on_green')
-	else:
-		return colored(in_str, 'light_magenta', 'on_green')
-
-#<=====>#
-
-def LCoG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan', 'on_green')
-	else:
-		return colored(in_str, 'light_cyan', 'on_green')
-
-#<=====>#
-
-def KoY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black', 'on_yellow')
-	else:
-		return colored(in_str, 'black', 'on_yellow')
-
-#<=====>#
-
-def RoY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red', 'on_yellow')
-	else:
-		return colored(in_str, 'red', 'on_yellow')
-
-#<=====>#
-
-def GoY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green', 'on_yellow')
-	else:
-		return colored(in_str, 'green', 'on_yellow')
-
-#<=====>#
-
-def YoY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow', 'on_yellow')
-	else:
-		return colored(in_str, 'yellow', 'on_yellow')
-
-#<=====>#
-
-def BoY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue', 'on_yellow')
-	else:
-		return colored(in_str, 'blue', 'on_yellow')
-
-#<=====>#
-
-def MoY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta', 'on_yellow')
-	else:
-		return colored(in_str, 'magenta', 'on_yellow')
-
-#<=====>#
-
-def CoY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan', 'on_yellow')
-	else:
-		return colored(in_str, 'cyan', 'on_yellow')
-
-#<=====>#
-
-def WoY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white', 'on_yellow')
-	else:
-		return colored(in_str, 'white', 'on_yellow')
-
-#<=====>#
-
-def LGyoY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey', 'on_yellow')
-	else:
-		return colored(in_str, 'light_grey', 'on_yellow')
-
-#<=====>#
-
-def DGyoY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey', 'on_yellow')
-	else:
-		return colored(in_str, 'dark_grey', 'on_yellow')
-
-#<=====>#
-
-def LRoY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red', 'on_yellow')
-	else:
-		return colored(in_str, 'light_red', 'on_yellow')
-
-#<=====>#
-
-def LGoY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green', 'on_yellow')
-	else:
-		return colored(in_str, 'light_green', 'on_yellow')
-
-#<=====>#
-
-def LYoY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow', 'on_yellow')
-	else:
-		return colored(in_str, 'light_yellow', 'on_yellow')
-
-#<=====>#
-
-def LBoY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue', 'on_yellow')
-	else:
-		return colored(in_str, 'light_blue', 'on_yellow')
-
-#<=====>#
-
-def LMoY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta', 'on_yellow')
-	else:
-		return colored(in_str, 'light_magenta', 'on_yellow')
-
-#<=====>#
-
-def LCoY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan', 'on_yellow')
-	else:
-		return colored(in_str, 'light_cyan', 'on_yellow')
-
-#<=====>#
-
-def KoB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black', 'on_blue')
-	else:
-		return colored(in_str, 'black', 'on_blue')
-
-#<=====>#
-
-def RoB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red', 'on_blue')
-	else:
-		return colored(in_str, 'red', 'on_blue')
-
-#<=====>#
-
-def GoB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green', 'on_blue')
-	else:
-		return colored(in_str, 'green', 'on_blue')
-
-#<=====>#
-
-def YoB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow', 'on_blue')
-	else:
-		return colored(in_str, 'yellow', 'on_blue')
-
-#<=====>#
-
-def BoB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue', 'on_blue')
-	else:
-		return colored(in_str, 'blue', 'on_blue')
-
-#<=====>#
-
-def MoB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta', 'on_blue')
-	else:
-		return colored(in_str, 'magenta', 'on_blue')
-
-#<=====>#
-
-def CoB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan', 'on_blue')
-	else:
-		return colored(in_str, 'cyan', 'on_blue')
-
-#<=====>#
-
-def WoB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white', 'on_blue')
-	else:
-		return colored(in_str, 'white', 'on_blue')
-
-#<=====>#
-
-def LGyoB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey', 'on_blue')
-	else:
-		return colored(in_str, 'light_grey', 'on_blue')
-
-#<=====>#
-
-def DGyoB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey', 'on_blue')
-	else:
-		return colored(in_str, 'dark_grey', 'on_blue')
-
-#<=====>#
-
-def LRoB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red', 'on_blue')
-	else:
-		return colored(in_str, 'light_red', 'on_blue')
-
-#<=====>#
-
-def LGoB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green', 'on_blue')
-	else:
-		return colored(in_str, 'light_green', 'on_blue')
-
-#<=====>#
-
-def LYoB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow', 'on_blue')
-	else:
-		return colored(in_str, 'light_yellow', 'on_blue')
-
-#<=====>#
-
-def LBoB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue', 'on_blue')
-	else:
-		return colored(in_str, 'light_blue', 'on_blue')
-
-#<=====>#
-
-def LMoB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta', 'on_blue')
-	else:
-		return colored(in_str, 'light_magenta', 'on_blue')
-
-#<=====>#
-
-def LCoB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan', 'on_blue')
-	else:
-		return colored(in_str, 'light_cyan', 'on_blue')
-
-#<=====>#
-
-def KoM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black', 'on_magenta')
-	else:
-		return colored(in_str, 'black', 'on_magenta')
-
-#<=====>#
-
-def RoM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red', 'on_magenta')
-	else:
-		return colored(in_str, 'red', 'on_magenta')
-
-#<=====>#
-
-def GoM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green', 'on_magenta')
-	else:
-		return colored(in_str, 'green', 'on_magenta')
-
-#<=====>#
-
-def YoM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow', 'on_magenta')
-	else:
-		return colored(in_str, 'yellow', 'on_magenta')
-
-#<=====>#
-
-def BoM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue', 'on_magenta')
-	else:
-		return colored(in_str, 'blue', 'on_magenta')
-
-#<=====>#
-
-def MoM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta', 'on_magenta')
-	else:
-		return colored(in_str, 'magenta', 'on_magenta')
-
-#<=====>#
-
-def CoM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan', 'on_magenta')
-	else:
-		return colored(in_str, 'cyan', 'on_magenta')
-
-#<=====>#
-
-def WoM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white', 'on_magenta')
-	else:
-		return colored(in_str, 'white', 'on_magenta')
-
-#<=====>#
-
-def LGyoM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey', 'on_magenta')
-	else:
-		return colored(in_str, 'light_grey', 'on_magenta')
-
-#<=====>#
-
-def DGyoM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey', 'on_magenta')
-	else:
-		return colored(in_str, 'dark_grey', 'on_magenta')
-
-#<=====>#
-
-def LRoM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red', 'on_magenta')
-	else:
-		return colored(in_str, 'light_red', 'on_magenta')
-
-#<=====>#
-
-def LGoM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green', 'on_magenta')
-	else:
-		return colored(in_str, 'light_green', 'on_magenta')
-
-#<=====>#
-
-def LYoM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow', 'on_magenta')
-	else:
-		return colored(in_str, 'light_yellow', 'on_magenta')
-
-#<=====>#
-
-def LBoM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue', 'on_magenta')
-	else:
-		return colored(in_str, 'light_blue', 'on_magenta')
-
-#<=====>#
-
-def LMoM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta', 'on_magenta')
-	else:
-		return colored(in_str, 'light_magenta', 'on_magenta')
-
-#<=====>#
-
-def LCoM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan', 'on_magenta')
-	else:
-		return colored(in_str, 'light_cyan', 'on_magenta')
-
-#<=====>#
-
-def KoC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black', 'on_cyan')
-	else:
-		return colored(in_str, 'black', 'on_cyan')
-
-#<=====>#
-
-def RoC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red', 'on_cyan')
-	else:
-		return colored(in_str, 'red', 'on_cyan')
-
-#<=====>#
-
-def GoC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green', 'on_cyan')
-	else:
-		return colored(in_str, 'green', 'on_cyan')
-
-#<=====>#
-
-def YoC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow', 'on_cyan')
-	else:
-		return colored(in_str, 'yellow', 'on_cyan')
-
-#<=====>#
-
-def BoC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue', 'on_cyan')
-	else:
-		return colored(in_str, 'blue', 'on_cyan')
-
-#<=====>#
-
-def MoC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta', 'on_cyan')
-	else:
-		return colored(in_str, 'magenta', 'on_cyan')
-
-#<=====>#
-
-def CoC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan', 'on_cyan')
-	else:
-		return colored(in_str, 'cyan', 'on_cyan')
-
-#<=====>#
-
-def WoC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white', 'on_cyan')
-	else:
-		return colored(in_str, 'white', 'on_cyan')
-
-#<=====>#
-
-def LGyoC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey', 'on_cyan')
-	else:
-		return colored(in_str, 'light_grey', 'on_cyan')
-
-#<=====>#
-
-def DGyoC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey', 'on_cyan')
-	else:
-		return colored(in_str, 'dark_grey', 'on_cyan')
-
-#<=====>#
-
-def LRoC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red', 'on_cyan')
-	else:
-		return colored(in_str, 'light_red', 'on_cyan')
-
-#<=====>#
-
-def LGoC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green', 'on_cyan')
-	else:
-		return colored(in_str, 'light_green', 'on_cyan')
-
-#<=====>#
-
-def LYoC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow', 'on_cyan')
-	else:
-		return colored(in_str, 'light_yellow', 'on_cyan')
-
-#<=====>#
-
-def LBoC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue', 'on_cyan')
-	else:
-		return colored(in_str, 'light_blue', 'on_cyan')
-
-#<=====>#
-
-def LMoC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta', 'on_cyan')
-	else:
-		return colored(in_str, 'light_magenta', 'on_cyan')
-
-#<=====>#
-
-def LCoC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan', 'on_cyan')
-	else:
-		return colored(in_str, 'light_cyan', 'on_cyan')
-
-#<=====>#
-
-def KoW(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black', 'on_white')
-	else:
-		return colored(in_str, 'black', 'on_white')
-
-#<=====>#
-
-def RoW(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red', 'on_white')
-	else:
-		return colored(in_str, 'red', 'on_white')
-
-#<=====>#
-
-def GoW(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green', 'on_white')
-	else:
-		return colored(in_str, 'green', 'on_white')
-
-#<=====>#
-
-def YoW(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow', 'on_white')
-	else:
-		return colored(in_str, 'yellow', 'on_white')
-
-#<=====>#
-
-def BoW(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue', 'on_white')
-	else:
-		return colored(in_str, 'blue', 'on_white')
-
-#<=====>#
-
-def MoW(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta', 'on_white')
-	else:
-		return colored(in_str, 'magenta', 'on_white')
-
-#<=====>#
-
-def CoW(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan', 'on_white')
-	else:
-		return colored(in_str, 'cyan', 'on_white')
-
-#<=====>#
-
-def WoW(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white', 'on_white')
-	else:
-		return colored(in_str, 'white', 'on_white')
-
-#<=====>#
-
-def LGyoW(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey', 'on_white')
-	else:
-		return colored(in_str, 'light_grey', 'on_white')
-
-#<=====>#
-
-def DGyoW(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey', 'on_white')
-	else:
-		return colored(in_str, 'dark_grey', 'on_white')
-
-#<=====>#
-
-def LRoW(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red', 'on_white')
-	else:
-		return colored(in_str, 'light_red', 'on_white')
-
-#<=====>#
-
-def LGoW(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green', 'on_white')
-	else:
-		return colored(in_str, 'light_green', 'on_white')
-
-#<=====>#
-
-def LYoW(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow', 'on_white')
-	else:
-		return colored(in_str, 'light_yellow', 'on_white')
-
-#<=====>#
-
-def LBoW(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue', 'on_white')
-	else:
-		return colored(in_str, 'light_blue', 'on_white')
-
-#<=====>#
-
-def LMoW(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta', 'on_white')
-	else:
-		return colored(in_str, 'light_magenta', 'on_white')
-
-#<=====>#
-
-def LCoW(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan', 'on_white')
-	else:
-		return colored(in_str, 'light_cyan', 'on_white')
-
-#<=====>#
-
-def KoLGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black', 'on_light_grey')
-	else:
-		return colored(in_str, 'black', 'on_light_grey')
-
-#<=====>#
-
-def RoLGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red', 'on_light_grey')
-	else:
-		return colored(in_str, 'red', 'on_light_grey')
-
-#<=====>#
-
-def GoLGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green', 'on_light_grey')
-	else:
-		return colored(in_str, 'green', 'on_light_grey')
-
-#<=====>#
-
-def YoLGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow', 'on_light_grey')
-	else:
-		return colored(in_str, 'yellow', 'on_light_grey')
-
-#<=====>#
-
-def BoLGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue', 'on_light_grey')
-	else:
-		return colored(in_str, 'blue', 'on_light_grey')
-
-#<=====>#
-
-def MoLGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta', 'on_light_grey')
-	else:
-		return colored(in_str, 'magenta', 'on_light_grey')
-
-#<=====>#
-
-def CoLGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan', 'on_light_grey')
-	else:
-		return colored(in_str, 'cyan', 'on_light_grey')
-
-#<=====>#
-
-def WoLGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white', 'on_light_grey')
-	else:
-		return colored(in_str, 'white', 'on_light_grey')
-
-#<=====>#
-
-def LGyoLGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey', 'on_light_grey')
-	else:
-		return colored(in_str, 'light_grey', 'on_light_grey')
-
-#<=====>#
-
-def DGyoLGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey', 'on_light_grey')
-	else:
-		return colored(in_str, 'dark_grey', 'on_light_grey')
-
-#<=====>#
-
-def LRoLGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red', 'on_light_grey')
-	else:
-		return colored(in_str, 'light_red', 'on_light_grey')
-
-#<=====>#
-
-def LGoLGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green', 'on_light_grey')
-	else:
-		return colored(in_str, 'light_green', 'on_light_grey')
-
-#<=====>#
-
-def LYoLGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow', 'on_light_grey')
-	else:
-		return colored(in_str, 'light_yellow', 'on_light_grey')
-
-#<=====>#
-
-def LBoLGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue', 'on_light_grey')
-	else:
-		return colored(in_str, 'light_blue', 'on_light_grey')
-
-#<=====>#
-
-def LMoLGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta', 'on_light_grey')
-	else:
-		return colored(in_str, 'light_magenta', 'on_light_grey')
-
-#<=====>#
-
-def LCoLGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan', 'on_light_grey')
-	else:
-		return colored(in_str, 'light_cyan', 'on_light_grey')
-
-#<=====>#
-
-def KoDGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black', 'on_dark_grey')
-	else:
-		return colored(in_str, 'black', 'on_dark_grey')
-
-#<=====>#
-
-def RoDGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red', 'on_dark_grey')
-	else:
-		return colored(in_str, 'red', 'on_dark_grey')
-
-#<=====>#
-
-def GoDGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green', 'on_dark_grey')
-	else:
-		return colored(in_str, 'green', 'on_dark_grey')
-
-#<=====>#
-
-def YoDGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow', 'on_dark_grey')
-	else:
-		return colored(in_str, 'yellow', 'on_dark_grey')
-
-#<=====>#
-
-def BoDGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue', 'on_dark_grey')
-	else:
-		return colored(in_str, 'blue', 'on_dark_grey')
-
-#<=====>#
-
-def MoDGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta', 'on_dark_grey')
-	else:
-		return colored(in_str, 'magenta', 'on_dark_grey')
-
-#<=====>#
-
-def CoDGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan', 'on_dark_grey')
-	else:
-		return colored(in_str, 'cyan', 'on_dark_grey')
-
-#<=====>#
-
-def WoDGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white', 'on_dark_grey')
-	else:
-		return colored(in_str, 'white', 'on_dark_grey')
-
-#<=====>#
-
-def LGyoDGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey', 'on_dark_grey')
-	else:
-		return colored(in_str, 'light_grey', 'on_dark_grey')
-
-#<=====>#
-
-def DGyoDGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey', 'on_dark_grey')
-	else:
-		return colored(in_str, 'dark_grey', 'on_dark_grey')
-
-#<=====>#
-
-def LRoDGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red', 'on_dark_grey')
-	else:
-		return colored(in_str, 'light_red', 'on_dark_grey')
-
-#<=====>#
-
-def LGoDGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green', 'on_dark_grey')
-	else:
-		return colored(in_str, 'light_green', 'on_dark_grey')
-
-#<=====>#
-
-def LYoDGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow', 'on_dark_grey')
-	else:
-		return colored(in_str, 'light_yellow', 'on_dark_grey')
-
-#<=====>#
-
-def LBoDGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue', 'on_dark_grey')
-	else:
-		return colored(in_str, 'light_blue', 'on_dark_grey')
-
-#<=====>#
-
-def LMoDGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta', 'on_dark_grey')
-	else:
-		return colored(in_str, 'light_magenta', 'on_dark_grey')
-
-#<=====>#
-
-def LCoDGy(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan', 'on_dark_grey')
-	else:
-		return colored(in_str, 'light_cyan', 'on_dark_grey')
-
-#<=====>#
-
-def KoLR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black', 'on_light_red')
-	else:
-		return colored(in_str, 'black', 'on_light_red')
-
-#<=====>#
-
-def RoLR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red', 'on_light_red')
-	else:
-		return colored(in_str, 'red', 'on_light_red')
-
-#<=====>#
-
-def GoLR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green', 'on_light_red')
-	else:
-		return colored(in_str, 'green', 'on_light_red')
-
-#<=====>#
-
-def YoLR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow', 'on_light_red')
-	else:
-		return colored(in_str, 'yellow', 'on_light_red')
-
-#<=====>#
-
-def BoLR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue', 'on_light_red')
-	else:
-		return colored(in_str, 'blue', 'on_light_red')
-
-#<=====>#
-
-def MoLR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta', 'on_light_red')
-	else:
-		return colored(in_str, 'magenta', 'on_light_red')
-
-#<=====>#
-
-def CoLR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan', 'on_light_red')
-	else:
-		return colored(in_str, 'cyan', 'on_light_red')
-
-#<=====>#
-
-def WoLR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white', 'on_light_red')
-	else:
-		return colored(in_str, 'white', 'on_light_red')
-
-#<=====>#
-
-def LGyoLR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey', 'on_light_red')
-	else:
-		return colored(in_str, 'light_grey', 'on_light_red')
-
-#<=====>#
-
-def DGyoLR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey', 'on_light_red')
-	else:
-		return colored(in_str, 'dark_grey', 'on_light_red')
-
-#<=====>#
-
-def LRoLR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red', 'on_light_red')
-	else:
-		return colored(in_str, 'light_red', 'on_light_red')
-
-#<=====>#
-
-def LGoLR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green', 'on_light_red')
-	else:
-		return colored(in_str, 'light_green', 'on_light_red')
-
-#<=====>#
-
-def LYoLR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow', 'on_light_red')
-	else:
-		return colored(in_str, 'light_yellow', 'on_light_red')
-
-#<=====>#
-
-def LBoLR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue', 'on_light_red')
-	else:
-		return colored(in_str, 'light_blue', 'on_light_red')
-
-#<=====>#
-
-def LMoLR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta', 'on_light_red')
-	else:
-		return colored(in_str, 'light_magenta', 'on_light_red')
-
-#<=====>#
-
-def LCoLR(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan', 'on_light_red')
-	else:
-		return colored(in_str, 'light_cyan', 'on_light_red')
-
-#<=====>#
-
-def KoLG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black', 'on_light_green')
-	else:
-		return colored(in_str, 'black', 'on_light_green')
-
-#<=====>#
-
-def RoLG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red', 'on_light_green')
-	else:
-		return colored(in_str, 'red', 'on_light_green')
-
-#<=====>#
-
-def GoLG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green', 'on_light_green')
-	else:
-		return colored(in_str, 'green', 'on_light_green')
-
-#<=====>#
-
-def YoLG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow', 'on_light_green')
-	else:
-		return colored(in_str, 'yellow', 'on_light_green')
-
-#<=====>#
-
-def BoLG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue', 'on_light_green')
-	else:
-		return colored(in_str, 'blue', 'on_light_green')
-
-#<=====>#
-
-def MoLG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta', 'on_light_green')
-	else:
-		return colored(in_str, 'magenta', 'on_light_green')
-
-#<=====>#
-
-def CoLG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan', 'on_light_green')
-	else:
-		return colored(in_str, 'cyan', 'on_light_green')
-
-#<=====>#
-
-def WoLG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white', 'on_light_green')
-	else:
-		return colored(in_str, 'white', 'on_light_green')
-
-#<=====>#
-
-def LGyoLG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey', 'on_light_green')
-	else:
-		return colored(in_str, 'light_grey', 'on_light_green')
-
-#<=====>#
-
-def DGyoLG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey', 'on_light_green')
-	else:
-		return colored(in_str, 'dark_grey', 'on_light_green')
-
-#<=====>#
-
-def LRoLG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red', 'on_light_green')
-	else:
-		return colored(in_str, 'light_red', 'on_light_green')
-
-#<=====>#
-
-def LGoLG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green', 'on_light_green')
-	else:
-		return colored(in_str, 'light_green', 'on_light_green')
-
-#<=====>#
-
-def LYoLG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow', 'on_light_green')
-	else:
-		return colored(in_str, 'light_yellow', 'on_light_green')
-
-#<=====>#
-
-def LBoLG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue', 'on_light_green')
-	else:
-		return colored(in_str, 'light_blue', 'on_light_green')
-
-#<=====>#
-
-def LMoLG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta', 'on_light_green')
-	else:
-		return colored(in_str, 'light_magenta', 'on_light_green')
-
-#<=====>#
-
-def LCoLG(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan', 'on_light_green')
-	else:
-		return colored(in_str, 'light_cyan', 'on_light_green')
-
-#<=====>#
-
-def KoLY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black', 'on_light_yellow')
-	else:
-		return colored(in_str, 'black', 'on_light_yellow')
-
-#<=====>#
-
-def RoLY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red', 'on_light_yellow')
-	else:
-		return colored(in_str, 'red', 'on_light_yellow')
-
-#<=====>#
-
-def GoLY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green', 'on_light_yellow')
-	else:
-		return colored(in_str, 'green', 'on_light_yellow')
-
-#<=====>#
-
-def YoLY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow', 'on_light_yellow')
-	else:
-		return colored(in_str, 'yellow', 'on_light_yellow')
-
-#<=====>#
-
-def BoLY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue', 'on_light_yellow')
-	else:
-		return colored(in_str, 'blue', 'on_light_yellow')
-
-#<=====>#
-
-def MoLY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta', 'on_light_yellow')
-	else:
-		return colored(in_str, 'magenta', 'on_light_yellow')
-
-#<=====>#
-
-def CoLY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan', 'on_light_yellow')
-	else:
-		return colored(in_str, 'cyan', 'on_light_yellow')
-
-#<=====>#
-
-def WoLY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white', 'on_light_yellow')
-	else:
-		return colored(in_str, 'white', 'on_light_yellow')
-
-#<=====>#
-
-def LGyoLY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey', 'on_light_yellow')
-	else:
-		return colored(in_str, 'light_grey', 'on_light_yellow')
-
-#<=====>#
-
-def DGyoLY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey', 'on_light_yellow')
-	else:
-		return colored(in_str, 'dark_grey', 'on_light_yellow')
-
-#<=====>#
-
-def LRoLY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red', 'on_light_yellow')
-	else:
-		return colored(in_str, 'light_red', 'on_light_yellow')
-
-#<=====>#
-
-def LGoLY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green', 'on_light_yellow')
-	else:
-		return colored(in_str, 'light_green', 'on_light_yellow')
-
-#<=====>#
-
-def LYoLY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow', 'on_light_yellow')
-	else:
-		return colored(in_str, 'light_yellow', 'on_light_yellow')
-
-#<=====>#
-
-def LBoLY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue', 'on_light_yellow')
-	else:
-		return colored(in_str, 'light_blue', 'on_light_yellow')
-
-#<=====>#
-
-def LMoLY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta', 'on_light_yellow')
-	else:
-		return colored(in_str, 'light_magenta', 'on_light_yellow')
-
-#<=====>#
-
-def LCoLY(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan', 'on_light_yellow')
-	else:
-		return colored(in_str, 'light_cyan', 'on_light_yellow')
-
-#<=====>#
-
-def KoLB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black', 'on_light_blue')
-	else:
-		return colored(in_str, 'black', 'on_light_blue')
-
-#<=====>#
-
-def RoLB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red', 'on_light_blue')
-	else:
-		return colored(in_str, 'red', 'on_light_blue')
-
-#<=====>#
-
-def GoLB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green', 'on_light_blue')
-	else:
-		return colored(in_str, 'green', 'on_light_blue')
-
-#<=====>#
-
-def YoLB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow', 'on_light_blue')
-	else:
-		return colored(in_str, 'yellow', 'on_light_blue')
-
-#<=====>#
-
-def BoLB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue', 'on_light_blue')
-	else:
-		return colored(in_str, 'blue', 'on_light_blue')
-
-#<=====>#
-
-def MoLB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta', 'on_light_blue')
-	else:
-		return colored(in_str, 'magenta', 'on_light_blue')
-
-#<=====>#
-
-def CoLB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan', 'on_light_blue')
-	else:
-		return colored(in_str, 'cyan', 'on_light_blue')
-
-#<=====>#
-
-def WoLB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white', 'on_light_blue')
-	else:
-		return colored(in_str, 'white', 'on_light_blue')
-
-#<=====>#
-
-def LGyoLB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey', 'on_light_blue')
-	else:
-		return colored(in_str, 'light_grey', 'on_light_blue')
-
-#<=====>#
-
-def DGyoLB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey', 'on_light_blue')
-	else:
-		return colored(in_str, 'dark_grey', 'on_light_blue')
-
-#<=====>#
-
-def LRoLB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red', 'on_light_blue')
-	else:
-		return colored(in_str, 'light_red', 'on_light_blue')
-
-#<=====>#
-
-def LGoLB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green', 'on_light_blue')
-	else:
-		return colored(in_str, 'light_green', 'on_light_blue')
-
-#<=====>#
-
-def LYoLB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow', 'on_light_blue')
-	else:
-		return colored(in_str, 'light_yellow', 'on_light_blue')
-
-#<=====>#
-
-def LBoLB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue', 'on_light_blue')
-	else:
-		return colored(in_str, 'light_blue', 'on_light_blue')
-
-#<=====>#
-
-def LMoLB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta', 'on_light_blue')
-	else:
-		return colored(in_str, 'light_magenta', 'on_light_blue')
-
-#<=====>#
-
-def LCoLB(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan', 'on_light_blue')
-	else:
-		return colored(in_str, 'light_cyan', 'on_light_blue')
-
-#<=====>#
-
-def KoLM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black', 'on_light_magenta')
-	else:
-		return colored(in_str, 'black', 'on_light_magenta')
-
-#<=====>#
-
-def RoLM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red', 'on_light_magenta')
-	else:
-		return colored(in_str, 'red', 'on_light_magenta')
-
-#<=====>#
-
-def GoLM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green', 'on_light_magenta')
-	else:
-		return colored(in_str, 'green', 'on_light_magenta')
-
-#<=====>#
-
-def YoLM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow', 'on_light_magenta')
-	else:
-		return colored(in_str, 'yellow', 'on_light_magenta')
-
-#<=====>#
-
-def BoLM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue', 'on_light_magenta')
-	else:
-		return colored(in_str, 'blue', 'on_light_magenta')
-
-#<=====>#
-
-def MoLM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta', 'on_light_magenta')
-	else:
-		return colored(in_str, 'magenta', 'on_light_magenta')
-
-#<=====>#
-
-def CoLM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan', 'on_light_magenta')
-	else:
-		return colored(in_str, 'cyan', 'on_light_magenta')
-
-#<=====>#
-
-def WoLM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white', 'on_light_magenta')
-	else:
-		return colored(in_str, 'white', 'on_light_magenta')
-
-#<=====>#
-
-def LGyoLM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey', 'on_light_magenta')
-	else:
-		return colored(in_str, 'light_grey', 'on_light_magenta')
-
-#<=====>#
-
-def DGyoLM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey', 'on_light_magenta')
-	else:
-		return colored(in_str, 'dark_grey', 'on_light_magenta')
-
-#<=====>#
-
-def LRoLM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red', 'on_light_magenta')
-	else:
-		return colored(in_str, 'light_red', 'on_light_magenta')
-
-#<=====>#
-
-def LGoLM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green', 'on_light_magenta')
-	else:
-		return colored(in_str, 'light_green', 'on_light_magenta')
-
-#<=====>#
-
-def LYoLM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow', 'on_light_magenta')
-	else:
-		return colored(in_str, 'light_yellow', 'on_light_magenta')
-
-#<=====>#
-
-def LBoLM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue', 'on_light_magenta')
-	else:
-		return colored(in_str, 'light_blue', 'on_light_magenta')
-
-#<=====>#
-
-def LMoLM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta', 'on_light_magenta')
-	else:
-		return colored(in_str, 'light_magenta', 'on_light_magenta')
-
-#<=====>#
-
-def LCoLM(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan', 'on_light_magenta')
-	else:
-		return colored(in_str, 'light_cyan', 'on_light_magenta')
-
-#<=====>#
-
-def KoLC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'black', 'on_light_cyan')
-	else:
-		return colored(in_str, 'black', 'on_light_cyan')
-
-#<=====>#
-
-def RoLC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'red', 'on_light_cyan')
-	else:
-		return colored(in_str, 'red', 'on_light_cyan')
-
-#<=====>#
-
-def GoLC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'green', 'on_light_cyan')
-	else:
-		return colored(in_str, 'green', 'on_light_cyan')
-
-#<=====>#
-
-def YoLC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'yellow', 'on_light_cyan')
-	else:
-		return colored(in_str, 'yellow', 'on_light_cyan')
-
-#<=====>#
-
-def BoLC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'blue', 'on_light_cyan')
-	else:
-		return colored(in_str, 'blue', 'on_light_cyan')
-
-#<=====>#
-
-def MoLC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'magenta', 'on_light_cyan')
-	else:
-		return colored(in_str, 'magenta', 'on_light_cyan')
-
-#<=====>#
-
-def CoLC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'cyan', 'on_light_cyan')
-	else:
-		return colored(in_str, 'cyan', 'on_light_cyan')
-
-#<=====>#
-
-def WoLC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'white', 'on_light_cyan')
-	else:
-		return colored(in_str, 'white', 'on_light_cyan')
-
-#<=====>#
-
-def LGyoLC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_grey', 'on_light_cyan')
-	else:
-		return colored(in_str, 'light_grey', 'on_light_cyan')
-
-#<=====>#
-
-def DGyoLC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'dark_grey', 'on_light_cyan')
-	else:
-		return colored(in_str, 'dark_grey', 'on_light_cyan')
-
-#<=====>#
-
-def LRoLC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_red', 'on_light_cyan')
-	else:
-		return colored(in_str, 'light_red', 'on_light_cyan')
-
-#<=====>#
-
-def LGoLC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_green', 'on_light_cyan')
-	else:
-		return colored(in_str, 'light_green', 'on_light_cyan')
-
-#<=====>#
-
-def LYoLC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_yellow', 'on_light_cyan')
-	else:
-		return colored(in_str, 'light_yellow', 'on_light_cyan')
-
-#<=====>#
-
-def LBoLC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_blue', 'on_light_cyan')
-	else:
-		return colored(in_str, 'light_blue', 'on_light_cyan')
-
-#<=====>#
-
-def LMoLC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_magenta', 'on_light_cyan')
-	else:
-		return colored(in_str, 'light_magenta', 'on_light_cyan')
-
-#<=====>#
-
-def LCoLC(in_str, print_tf=True):
-	if print_tf:
-		cprint(in_str, 'light_cyan', 'on_light_cyan')
-	else:
-		return colored(in_str, 'light_cyan', 'on_light_cyan')
-
 #<=====>#
 # Assignments Post
 #<=====>#
-
 
 
 #<=====>#
@@ -4086,8 +1580,6 @@ def LCoLC(in_str, print_tf=True):
 #<=====>#
 
 
-
 #<=====>#
-
 
 

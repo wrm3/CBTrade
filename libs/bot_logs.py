@@ -7,23 +7,19 @@ import_all_func_list.append("buy_log")
 import_all_func_list.append("sell_log")
 __all__ = import_all_func_list
 
-
 #<=====>#
 # Description
 #<=====>#
 
 
-
 #<=====>#
 # Description
 #<=====>#
-
 
 
 #<=====>#
 # Known To Do List
 #<=====>#
-
 
 
 #<=====>#
@@ -37,11 +33,9 @@ import warnings
 
 warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
-
 #<=====>#
 # Imports - Download Modules
 #<=====>#
-
 
 
 #<=====>#
@@ -50,7 +44,6 @@ warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 # shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
 # if shared_libs_path not in sys.path:
 # 	sys.path.append(shared_libs_path)
-
 
 
 #<=====>#
@@ -64,7 +57,6 @@ from lib_common                    import *
 
 from bot_common                    import *
 
-
 #<=====>#
 # Variables
 #<=====>#
@@ -75,17 +67,14 @@ lib_debug_lvl = 0
 lib_secs_max  = 0.33
 lib_secs_max  = 10
 
-
 #<=====>#
 # Assignments Pre
 #<=====>#
 
 
-
 #<=====>#
 # Classes
 #<=====>#
-
 
 
 #<=====>#
@@ -123,17 +112,14 @@ def sell_log(msg):
 	func_end(fnc)
 
 
-
 #<=====>#
 # Post Variables
 #<=====>#
 
 
-
 #<=====>#
 # Default Run
 #<=====>#
-
 
 
 #<=====>#

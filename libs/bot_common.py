@@ -3,32 +3,25 @@
 #<=====>#
 import_all_func_list = []
 import_all_func_list.append("calc_chg_pct")
-import_all_func_list.append("calc_reserve_amt")
-#import_all_func_list.append("calc_trade_size")
 import_all_func_list.append("cb_buy_base_size_calc")
 import_all_func_list.append("cb_sell_base_size_calc")
 import_all_func_list.append("trade_perf_get")
 import_all_func_list.append("trade_strat_perf_get")
 import_all_func_list.append("freqs_get")
-import_all_func_list.append("report_chart_title")
-import_all_func_list.append("report_chart_headers")
 import_all_func_list.append("prt_cols")
 import_all_func_list.append("writeit")
 import_all_func_list.append("json_load")
 import_all_func_list.append("json_write")
 __all__ = import_all_func_list
 
-
 #<=====>#
 # Description
 #<=====>#
 
 
-
 #<=====>#
 # Known To Do List
 #<=====>#
-
 
 
 #<=====>#
@@ -43,11 +36,9 @@ import time
 import warnings
 warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
-
 #<=====>#
 # Imports - Download Modules
 #<=====>#
-
 
 
 #<=====>#
@@ -56,7 +47,6 @@ warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 # shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
 # if shared_libs_path not in sys.path:
 # 	sys.path.append(shared_libs_path)
-
 
 
 #<=====>#
@@ -77,8 +67,7 @@ from lib_colors                        import cs, cp
 
 from bot_db_read                       import *
 from bot_settings                      import settings
-from bot_theme                         import *
-
+#from bot_theme                         import *
 
 #<=====>#
 # Variables
@@ -90,11 +79,9 @@ lib_debug_lvl = 0
 lib_secs_max  = 0.33
 lib_secs_max  = 10
 
-
 #<=====>#
 # Assignments Pre
 #<=====>#
-
 
 
 #<=====>#
@@ -102,43 +89,9 @@ lib_secs_max  = 10
 #<=====>#
 
 
-
 #<=====>#
 # Functions
 #<=====>#
-
-#<=====>#
-
-def report_chart_title(in_str, len_cnt, align='center'):
-	func_name = 'report_chart_title'
-	func_str = f'{lib_name}.{func_name}(in_str={in_str}, len_cnt={len_cnt})'
-#	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
-
-	if align == 'left':
-		msg = f"{in_str:<{len_cnt}}"
-	elif align == 'right':
-		msg = f"{in_str:>{len_cnt}}"
-	else:
-		msg = f"{in_str:^{len_cnt}}"
-	WoM(msg)
-
-	func_end(fnc)
-
-#<=====>#
-
-def report_chart_headers(in_str, len_cnt):
-	func_name = 'report_chart_headers'
-	func_str = f'{lib_name}.{func_name}(in_str={in_str}, len_cnt={len_cnt})'
-#	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
-
-	msg = f"{in_str:^{len_cnt}}"
-	WoB(msg)
-
-	func_end(fnc)
 
 #<=====>#
 
@@ -153,29 +106,6 @@ def calc_chg_pct(old_val, new_val, dec_prec=2):
 
 	func_end(fnc)
 	return chg_pct
-
-#<=====>#
-
-def calc_reserve_amt(st, reserve_release_tf, trade_curr):
-	func_name = 'calc_reserve_amt'
-	func_str = f'{lib_name}.{func_name}(st, reserve_release_tf={reserve_release_tf}, trade_curr={trade_curr})'
-#	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
-
-	day = dt.now().day
-	min_reserve_amt                = settings.get_ovrd(in_dict=st.spot.buy.reserve_amt, in_key=trade_curr)
-	daily_reserve_amt              = settings.get_ovrd(in_dict=st.spot.buy.reserve_daily_amt, in_key=trade_curr)
-	progressive_daily_reserve_amt  = day * daily_reserve_amt
-	reserve_amt                    = max(progressive_daily_reserve_amt, min_reserve_amt)
-
-	if reserve_release_tf:
-		reserve_amt = 0
-
-#	print(f'{func_name} - {trade_curr} - min_reserve_amt : {min_reserve_amt}, daily_reserve_amt : {daily_reserve_amt}, progressive_daily_reserve_amt : {progressive_daily_reserve_amt}, reserve_amt : {reserve_amt}')
-
-	func_end(fnc)
-	return reserve_amt
 
 #<=====>#
 
@@ -198,7 +128,6 @@ def cb_buy_base_size_calc(buy_prc, spend_amt, base_size_incr, base_size_min, bas
 		func_end(fnc)
 		return str(0)
 	print(f'trade_size : {trade_size:>.8f} after base_size_min {base_size_min:>.8f} check...')
-
 
 	sell_blocks = int(dec(trade_size) / dec(base_size_incr))
 	trade_size = sell_blocks * dec(base_size_incr)
@@ -539,17 +468,14 @@ def json_write(data, fname):
 
 	func_end(fnc)
 
-
 #<=====>#
 # Post Variables
 #<=====>#
 
 
-
 #<=====>#
 # Default Run
 #<=====>#
-
 
 
 #<=====>#

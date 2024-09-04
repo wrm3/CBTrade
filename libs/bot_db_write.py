@@ -3,7 +3,6 @@
 #<=====>#
 
 
-
 #<=====>#
 # Import All
 #<=====>#
@@ -32,11 +31,9 @@ import_all_func_list.append("db_tbl_sell_ords_insupd")
 import_all_func_list.append("db_table_csvs_dump")
 __all__ = import_all_func_list
 
-
 #<=====>#
 # Known To Do List
 #<=====>#
-
 
 
 #<=====>#
@@ -48,11 +45,9 @@ import os
 import re
 import time
 
-
 #<=====>#
 # Imports - Download Modules
 #<=====>#
-
 
 
 #<=====>#
@@ -61,7 +56,6 @@ import time
 # shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
 # if shared_libs_path not in sys.path:
 # 	sys.path.append(shared_libs_path)
-
 
 
 #<=====>#
@@ -77,7 +71,6 @@ from lib_common                    import *
 #from bot_common                    import *
 from bot_secrets                   import secrets
 
-
 #<=====>#
 # Variables
 #<=====>#
@@ -90,7 +83,6 @@ debug_lvl     = 1
 lib_secs_max  = 0.5
 lib_secs_max  = 10
 
-
 #<=====>#
 # Assignments Pre
 #<=====>#
@@ -101,7 +93,6 @@ db = db_mysql(sc.mysql.host, sc.mysql.port, sc.mysql.db, sc.mysql.user, sc.mysql
 #<=====>#
 # Classes
 #<=====>#
-
 
 
 #<=====>#
@@ -245,7 +236,7 @@ def db_tbl_del(table_name):
 
 #<=====>#
 
-def db_tbl_insupd(table_name, in_data):
+def db_tbl_insupd(table_name, in_data, rat_on_extra_cols_yn='N'):
 	func_name = 'db_tbl_insupd'
 	func_str = '{}.{}(table_name={}, in_data)'.format(lib_name, func_name, table_name)
 #	G(func_str)
@@ -272,7 +263,8 @@ def db_tbl_insupd(table_name, in_data):
 				if k in tbl_cols:
 					ins_data.append(in_data[k])
 				else:
-					print('column : {} not defined in table {}...'.format(k, table_name))
+					if rat_on_extra_cols_yn == 'Y':
+						print('column : {} not defined in table {}...'.format(k, table_name))
 
 	# received a list of dictionaries
 	elif isinstance(in_data, list):
@@ -294,7 +286,8 @@ def db_tbl_insupd(table_name, in_data):
 								data_cols.append(k)
 							else:
 								if table_name not in ('currs'):
-									print('column : {} not defined in table {}...'.format(k, table_name))
+									if rat_on_extra_cols_yn == 'Y':
+										print('column : {} not defined in table {}...'.format(k, table_name))
 #				print('table : {}, tbl_cols  : {}'.format(table_name, tbl_cols))
 #				print('table : {}, data_cols : {}'.format(table_name, data_cols))
 				# looping through data to standardize for inserts
@@ -423,6 +416,101 @@ def db_tbl_mkts_insupd(in_data):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 	if verbosity >= 2: print_func_name(func_str, adv=2)
 
+# 	rem_cols = []
+# 	rem_cols.append('buy_yn')
+# 	rem_cols.append('buy_deny_yn')
+# 	rem_cols.append('wait_yn')
+# 	rem_cols.append('age_hours')
+# 	rem_cols.append('age_mins')
+# 	rem_cols.append('buy_cnt')
+# 	rem_cols.append('buy_delay_minutes')
+# 	rem_cols.append('buy_diff_pct')
+# 	rem_cols.append('buy_fees_cnt')
+# 	rem_cols.append('trade_size')
+# 	rem_cols.append('buy_strat_delay_minutes')
+# 	rem_cols.append('buy_strat_freq')
+# 	rem_cols.append('buy_strat_name')
+# 	rem_cols.append('buy_strat_type')
+# 	rem_cols.append('clip_cnt')
+# 	rem_cols.append('dfs')
+# 	rem_cols.append('bal_avail')
+# 	rem_cols.append('reserve_amt')
+# 	rem_cols.append('spendable_amt')
+# 	rem_cols.append('buy_strat_freq')
+# 	rem_cols.append('buy_strat_name')
+# 	rem_cols.append('buy_strat_type')
+# 	rem_cols.append('cnt')
+# 	rem_cols.append('dfs')
+# 	rem_cols.append('mkt_strat')
+# 	rem_cols.append('mkts_tot')
+# 	rem_cols.append('pricing')
+# 	rem_cols.append('restricts')
+# 	rem_cols.append('strats_available')
+# 	rem_cols.append('test_tf')
+# 	rem_cols.append('trade_perf')
+# 	rem_cols.append('trade_strat_perf')
+# 	rem_cols.append('trade_strat_perfs')
+# 	rem_cols.append('trade_size')
+# 	rem_cols.append('age_hours')
+# 	rem_cols.append('age_mins')
+# 	rem_cols.append('buy_cnt')
+# 	rem_cols.append('buy_delay_minutes')
+# 	rem_cols.append('buy_diff_pct')
+# 	rem_cols.append('buy_fees_cnt')
+# 	rem_cols.append('trade_size')
+# 	rem_cols.append('buy_strat_delay_minutes')
+# 	rem_cols.append('clip_cnt')
+# 	rem_cols.append('dfs')
+# 	rem_cols.append('fees_cnt_tot')
+# 	rem_cols.append('gain_loss_amt')
+# 	rem_cols.append('gain_loss_amt_net')
+# 	rem_cols.append('gain_loss_pct')
+# 	rem_cols.append('gain_loss_pct_hr')
+# 	rem_cols.append('hold_cnt')
+# 	rem_cols.append('lose_amt')
+# 	rem_cols.append('lose_cnt')
+# 	rem_cols.append('lose_pct')
+# 	rem_cols.append('open_poss_cnt')
+# 	rem_cols.append('open_poss_cnt_max')
+# 	rem_cols.append('pocket_cnt')
+# 	rem_cols.append('prc_dec')
+# 	rem_cols.append('prc_range_pct')
+# 	rem_cols.append('sell_cnt_tot')
+# 	rem_cols.append('sell_diff_pct')
+# 	rem_cols.append('sell_fees_cnt_tot')
+# 	rem_cols.append('sell_order_attempt_cnt')
+# 	rem_cols.append('sell_order_cnt')
+# 	rem_cols.append('strat_open_cnt_max')
+# 	rem_cols.append('strat_sha_yn')
+# 	rem_cols.append('strat_imp_macd_yn')
+# 	rem_cols.append('strat_emax_yn')
+# 	rem_cols.append('strat_drop_yn')
+# 	rem_cols.append('strat_bb_bo_yn')
+# 	rem_cols.append('strat_bb_yn')
+# 	rem_cols.append('test_tf')
+# 	rem_cols.append('tot_cnt')
+# 	rem_cols.append('tot_in_cnt')
+# 	rem_cols.append('tot_out_cnt')
+# 	rem_cols.append('val_curr')
+# 	rem_cols.append('val_tot')
+# 	rem_cols.append('win_amt')
+# 	rem_cols.append('win_cnt')
+# 	rem_cols.append('win_pct')
+# 	rem_cols.append('cnt')
+# 	rem_cols.append('mkts_tot')
+# 	rem_cols.append('prc_mkt')
+# 	rem_cols.append('prc_buy_diff_pct')
+# 	rem_cols.append('prc_sell_diff_pct')
+# 	rem_cols.append('restricts_open_poss_cnt_max')
+# 	rem_cols.append('restricts_strat_open_cnt_max')
+# 	rem_cols.append('restricts_buy_delay_minutes')
+# 	rem_cols.append('restricts_buy_strat_delay_minutes')
+
+# 	for k in rem_cols:
+# 		if k in mkt:
+# #			print('removing column : {}'.format(k))	
+# 			del mkt[k]
+
 	table_name = 'mkts'
 	# I like deleting this just in case old products have been dropped
 	# however I need to leave add_dttm as is, since coinbase does not 
@@ -539,11 +627,9 @@ def db_table_csvs_dump():
 #<=====>#
 
 
-
 #<=====>#
 # Default Run
 #<=====>#
-
 
 
 #<=====>#

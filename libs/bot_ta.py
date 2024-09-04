@@ -18,17 +18,14 @@ import_all_func_list.append("mkt_ta_main")
 #
 __all__ = import_all_func_list
 
-
 #<=====>#
 # Description
 #<=====>#
 
 
-
 #<=====>#
 # Known To Do List
 #<=====>#
-
 
 
 #<=====>#
@@ -61,11 +58,9 @@ import warnings
 
 warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
-
 #<=====>#
 # Imports - Download Modules
 #<=====>#
-
 
 
 #<=====>#
@@ -74,7 +69,6 @@ warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 # shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
 # if shared_libs_path not in sys.path:
 # 	sys.path.append(shared_libs_path)
-
 
 
 #<=====>#
@@ -89,7 +83,6 @@ from lib_common                    import *
 from bot_common                    import *
 from bot_coinbase                  import *
 
-
 #<=====>#
 # Variables
 #<=====>#
@@ -100,17 +93,14 @@ lib_debug_lvl = 1
 lib_secs_max  = 0.33
 lib_secs_max  = 10
 
-
 #<=====>#
 # Assignments Pre
 #<=====>#
 
 
-
 #<=====>#
 # Classes
 #<=====>#
-
 
 
 
@@ -129,13 +119,11 @@ def mkt_ta_main(mkt, st):
 	ta          = AttrDict()
 	prc_mkt    = mkt.prc_mkt
 
-
 	dfs = {}
 	rfreqs = ['1min', '3min', '5min', '15min', '30min', '1h', '4h', '1d']
 	for rfreq in rfreqs:
 		dfs[rfreq] = ta_df_get(prod_id=prod_id, rfreq=rfreq)
 	mkt.dfs = dfs
-
 
 	rfreqs = ['1min', '3min', '5min', '15min', '30min', '1h', '4h', '1d']
 
@@ -173,7 +161,6 @@ def mkt_ta_main(mkt, st):
 
 #	for rfreq in rfreqs:
 #			print(f"Debug Info Initial => {dfs[rfreq].df.tail(5)}")  # Add this line for more debug info
-
 
 	# populate the data for forming current candles
 	for rfreq in rfreqs:
@@ -304,7 +291,6 @@ def ta_add_indicators(df: pd.DataFrame, st, prc_mkt, rfreq) -> pd.DataFrame:
 		print('error gettings candles...')
 		func_end(fnc)
 		return 'N','Y'
-
 
 	# Candle Color
 	df = ta_add_color(df)
@@ -722,7 +708,6 @@ def ta_add_bb(df: pd.DataFrame, per=20, sd=2, tag='') -> pd.DataFrame:
 	df[f'bb{tag}_upwards']   = (df[f'bb_upper_roc{tag}'] > 0) & (df[f'bb_lower_roc{tag}'] > 0)
 	df[f'bb{tag}_downwards'] = (df[f'bb_upper_roc{tag}'] < 0) & (df[f'bb_lower_roc{tag}'] < 0)
 
-
 	func_end(fnc)
 	return df
 
@@ -762,7 +747,6 @@ def ta_add_bb(df: pd.DataFrame, per=20, sd=2, tag='') -> pd.DataFrame:
 # 	ta_ad.prc_mkt_vs_highest_close_pct = round((prc_mkt - ta.close_max) / ta.close_max * 100, 2)
 # 	ta_ad.prc_mkt_vs_lowest_close_pct  = round((prc_mkt - ta.close_min) / ta.close_min * 100, 2)
 # 	return df, ta_ad
-
 
 #<=====>#
 
@@ -945,11 +929,9 @@ def ta_add_bb(df: pd.DataFrame, per=20, sd=2, tag='') -> pd.DataFrame:
 #<=====>#
 
 
-
 #<=====>#
 # Default Run
 #<=====>#
-
 
 
 #<=====>#

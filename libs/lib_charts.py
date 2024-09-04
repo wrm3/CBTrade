@@ -3,12 +3,12 @@
 #<=====>#
 
 import_all_func_list =  []
-import_all_func_list.append("cp_pct_color")
-import_all_func_list.append("cs_pct_color")
-import_all_func_list.append("cp_pct_color_50")
-import_all_func_list.append("cs_pct_color_50")
-import_all_func_list.append("cp_pct_color_100")
-import_all_func_list.append("cs_pct_color_100")
+import_all_func_list.append("chart_top")
+import_all_func_list.append("chart_title")
+import_all_func_list.append("chart_headers")
+import_all_func_list.append("chart_row")
+import_all_func_list.append("chart_mid")
+import_all_func_list.append("chart_bottom")
 __all__ = import_all_func_list
 
 #<=====>#
@@ -55,8 +55,8 @@ from lib_colors                    import cs, cp
 #<=====>#
 # Variables
 #<=====>#
-lib_name      = 'bot_theme'
-log_name      = 'bot_theme'
+lib_name      = 'lib_charts'
+log_name      = 'lib_charts'
 lib_verbosity = 1
 lib_debug_lvl = 1
 lib_secs_max  = 0.33
@@ -248,316 +248,332 @@ lib_secs_max  = 10
 #	#pallette["darkslategrey"]         = "#2F4F4F"      # darkslategrey                         #2F4F4F   47   79   79  205
 #	pallette["black"]                 = "#000000"      # black                                 #000000    0    0    0    0
 
-#<=====>#
+'''
+Single-Line Box Drawing Characters:
+┬ (U+252C) — Top T-junction
+┴ (U+2534) — Bottom T-junction
 
-def cp_pct_color(pct, msg):
-	# func_name = 'cp_pct_color'
-	# func_str = f'{lib_name}.{func_name}(pct={pct}, msg)'
-#	G(func_str)
+Double-Line Box Drawing Characters:
+╦ (U+2566) — Top T-junction (double)
+╩ (U+2569) — Bottom T-junction (double)
 
-	print(cs_pct_color(pct,msg))
+Single-Line Box Drawing Characters:
+┼ (U+253C) — Intersection
 
-#<=====>#
+Double-Line Box Drawing Characters:
+╬ (U+256C) — Intersection (double)
 
-def cs_pct_color(pct, msg):
-	# func_name = 'cs_pct_color'
-	# func_str = f'{lib_name}.{func_name}(pct={pct}, msg)'
-#	G(func_str)
-
-	if pct >= 22:       # >= 8
-		r = WoG6(msg, print_yn='N')
-	elif pct >= 16 and  pct < 22:
-		r = WoG5(msg, print_yn='N')
-	elif pct >= 11 and  pct < 16:
-		r = WoG4(msg, print_yn='N')
-	elif pct >= 7 and  pct < 11:
-		r = WoG3(msg, print_yn='N')
-	elif pct >= 4 and  pct < 7:
-		r = WoG2(msg, print_yn='N')
-	elif pct >= 2 and  pct < 4:
-		r = WoG1(msg, print_yn='N')
-
-	elif pct > -2 and pct < 2:
-		r = msg
-
-	elif pct <= -2 and pct > -4:
-		r = WoR1(msg, print_yn='N')
-	elif pct <= -4 and pct > -7:
-		r = WoR2(msg, print_yn='N')
-	elif pct <= -7 and pct > -11:
-		r = WoR3(msg, print_yn='N')
-	elif pct <= -11 and pct > -16:
-		r = WoR4(msg, print_yn='N')
-	elif pct <= -16 and pct > -22:
-		r = WoR5(msg, print_yn='N')
-	elif pct <= -22:
-		r = WoR6(msg, print_yn='N')
-
-	return r
-
-	#<=====>#
-
-def cp_pct_color_50(pct, msg):
-	# func_name = 'cp_pct_color_50'
-	# func_str = f'{lib_name}.{func_name}(pct={pct}, msg)'
-#	G(func_str)
-
-	print(cs_pct_color_50(pct,msg))
+╔ ========== ========== ========== ╦ ========== ========== ========== ╗
+║                                  ║                                  ║
+╠ ========== ========== ========== ╬ ========== ========== ========== ╣
+║                                  ║                                  ║
+║                                  ║                                  ║
+║                                  ║                                  ║
+║                                  ║                                  ║
+╚ ========== ========== ========== ╩ ========== ========== ========== ╝
+'''
 
 #<=====>#
 
-def cs_pct_color_50(pct, msg):
-	# func_name = 'cs_pct_color_50'
-	# func_str = f'{lib_name}.{func_name}(pct={pct}, msg)'
-#	G(func_str)
+def chart_shapes(part, style):
+	func_name = 'chart_embed'
 
-#	print(f'msg: {msg}')
+	'''
+	Other Vertical and Horizontal Line Variations:
+	╶ (U+2576) — Light horizontal line, starting right
+	╴ (U+2574) — Light horizontal line, starting left
+	╵ (U+2575) — Light vertical line, starting top
+	╷ (U+2577) — Light vertical line, starting bottom
+	'''
 
-	if pct >= 90:
-		r = WoG6(msg, print_yn='N')
-	elif pct >= 82.5:
-		r = WoG5(msg, print_yn='N')
-	elif pct >= 75:
-		r = WoG4(msg, print_yn='N')
-	elif pct >= 67.5:
-		r = WoG3(msg, print_yn='N')
-	elif pct >= 60:
-		r = WoG2(msg, print_yn='N')
-	elif pct >= 52.5:
-		r = WoG1(msg, print_yn='N')
-	elif pct >= 45:
-		r = msg
-	elif pct >= 37.5:
-		r = WoR1(msg, print_yn='N')
-	elif pct >= 30:
-		r = WoR2(msg, print_yn='N')
-	elif pct >= 22.5:
-		r = WoR3(msg, print_yn='N')
-	elif pct >= 15:
-		r = WoR4(msg, print_yn='N')
-	elif pct >= 7.5:
-		r = WoR5(msg, print_yn='N')
-	else:
-		r = WoR6(msg, print_yn='N')
+	'''
+	Junctions and Intersections
+	┬ (U+252C) — Top T-junction
+	┼ (U+253C) — Intersection
+	┴ (U+2534) — Bottom T-junction
+	╦ (U+2566) — Top T-junction (double)
+	╬ (U+256C) — Intersection (double)
+	╩ (U+2569) — Bottom T-junction (double)
+	'''
 
-	return r
+	if style == 1:
+		'''
+		Style 1 - Single-Line Box Drawing Characters:
+		┌ (U+250C) — Upper left corner
+		├ (U+251C) — Left T-junction
+		└ (U+2514) — Lower left corner
+		┐ (U+2510) — Upper right corner
+		┤ (U+2524) — Right T-junction
+		┘ (U+2518) — Lower right corner
+		│ (U+2502) — Vertical line
+		─ (U+2500) — Horizontal line
+		┌──────────┐
+		├──────────┤
+		│          │
+		└──────────┘
+		'''
+		if part == 'top':
+			l = '┌'
+			s = '─'
+			r = '┐'
+		elif part == 'mid':
+			l = '├'
+			s = '─'
+			r = '┤'
+		elif part == 'row':
+			l = '│'
+			s = ' '
+			r = '│'
+		elif part == 'bottom':
+			l = '└'
+			s = '─'
+			r = '┘'
+
+	elif style == 2:
+		'''
+		Style 2 - Vertical and Horizontal Line Variations:
+		╭ (U+256D) — Rounded upper left corner
+		├ (U+251C) — Left T-junction
+		╰ (U+2570) — Rounded lower left corner
+		╮ (U+256E) — Rounded upper right corner
+		┤ (U+2524) — Right T-junction
+		╯ (U+256F) — Rounded lower right corner
+		│ (U+2502) — Vertical line
+		─ (U+2500) — Horizontal line
+		╭──────────╮
+		├──────────┤
+		│          │
+		╰──────────╯
+		'''
+		if part == 'top':
+			l = '╭'
+			s = '─'
+			r = '╮'
+		elif part == 'mid':
+			l = '├'
+			s = '─'
+			r = '┤'
+		elif part == 'row':
+			l = '│'
+			s = ' '
+			r = '│'
+		elif part == 'bottom':
+			l = '╰'
+			s = '─'
+			r = '╯'
+	elif style == 3:
+		'''
+		Style 3 - Mixed Single/Double Line Characters:
+		╓ (U+2553) — Upper left corner (single horizontal, double vertical)
+		╠ (U+2560) — Left T-junction (double)
+		╙ (U+2559) — Lower left corner (single horizontal, double vertical)
+		╖ (U+2556) — Upper right corner (single horizontal, double vertical)
+		╣ (U+2563) — Right T-junction (double)
+		╜ (U+255C) — Lower right corner (single horizontal, double vertical)
+		║ (U+2551) — Vertical line (double)
+		─ (U+2500) — Horizontal line
+		╓──────────╖
+		╠──────────╣
+		║          ║
+		╙──────────╜
+		'''
+		if part == 'top':
+			l = '╓'
+			s = '─'
+			r = '╖'
+		elif part == 'mid':
+			l = '╠'
+			s = '═'
+			r = '╣'
+		elif part == 'row':
+			l = '║'
+			s = ' '
+			r = '║'
+		elif part == 'bottom':
+			l = '╙'
+			s = '─'
+			r = '╜'
+	elif style == 4:
+
+		'''
+		Style 4 - Mixed Single/Double Line Characters:
+		╒ (U+2552) — Upper left corner (double horizontal, single vertical)
+		├ (U+251C) — Left T-junction
+		╘ (U+2558) — Lower left corner (double horizontal, single vertical)
+		╕ (U+2555) — Upper right corner (double horizontal, single vertical)
+		┤ (U+2524) — Right T-junction
+		╛ (U+255B) — Lower right corner (double horizontal, single vertical)
+		│ (U+2502) — Vertical line
+		═ (U+2550) — Horizontal line (double)
+		╒══════════╕
+		├──────────┤
+		│          │
+		╘══════════╛
+		'''
+		if part == 'top':
+			l = '╒'
+			s = '═'
+			r = '╗'
+		elif part == 'mid':
+			l = '├'
+			s = '─'
+			r = '┤'
+		elif part == 'row':
+			l = '│'
+			s = ' '
+			r = '│'
+		elif part == 'bottom':
+			l = '╘'
+			s = '═'
+			r = '╛'
+		if part == 'top':
+			pass
+		elif part == 'mid':
+			pass
+		elif part == 'row':
+			pass
+		elif part == 'bottom':
+			pass
+	elif style == 5:
+		'''
+		Style 5 - Double-Line Box Drawing Characters:
+		╔ (U+2554) — Upper left corner (double)
+		╠ (U+2560) — Left T-junction (double)
+		╚ (U+255A) — Lower left corner (double)
+		╗ (U+2557) — Upper right corner (double)
+		╣ (U+2563) — Right T-junction (double)
+		╝ (U+255D) — Lower right corner (double)
+		║ (U+2551) — Vertical line (double)
+		═ (U+2550) — Horizontal line (double)
+		╔══════════╗
+		╠══════════╣
+		║          ║
+		╚══════════╝
+		'''
+		if part == 'top':
+			l = '╔'
+			s = '═'
+			r = '╗'
+		elif part == 'mid':
+			l = '╠'
+			s = '═'
+			r = '╣'
+		elif part == 'row':
+			l = '║'
+			s = ' '
+			r = '║'
+		elif part == 'bottom':
+			l = '╚'
+			s = '═'
+			r = '╝'
+	return l, s, r
 
 #<=====>#
 
-def cp_pct_color_100(pct, msg):
-	# func_name = 'cp_pct_color_100'
-	# func_str = f'{lib_name}.{func_name}(pct={pct}, msg)'
-#	G(func_str)
+def chart_rep_str(s, border_font_color, border_bg_color, in_str=''):
+	func_name = 'chart_embed'
 
-	print(cs_pct_color_100(pct,msg))
+	front_match = re.match(r'^(' + re.escape(s) + r'+)', in_str)
+	rear_match  = re.search(r'(' + re.escape(s) + r'+)$', in_str)
 
-#<=====>#
+	front_str = front_match.group(1) if front_match else ''
+	rear_str  = rear_match.group(1) if rear_match else ''
 
-def cs_pct_color_100(pct, msg):
-	# func_name = 'cs_pct_color_100'
-	# func_str = f'{lib_name}.{func_name}(pct={pct}, msg)'
-#	G(func_str)
-
-#	print(f'msg: {msg}')
-
-	if pct >= 90:
-		r = WoG6(msg, print_yn='N')
-	elif pct >= 82.5:
-		r = WoG5(msg, print_yn='N')
-	elif pct >= 75:
-		r = WoG4(msg, print_yn='N')
-	elif pct >= 67.5:
-		r = WoG3(msg, print_yn='N')
-	elif pct >= 60:
-		r = WoG2(msg, print_yn='N')
-	elif pct >= 52.5:
-		r = WoG1(msg, print_yn='N')
-	elif pct >= 45:
-		r = msg
-	elif pct >= 37.5:
-		r = WoR1(msg, print_yn='N')
-	elif pct >= 30:
-		r = WoR2(msg, print_yn='N')
-	elif pct >= 22.5:
-		r = WoR3(msg, print_yn='N')
-	elif pct >= 15:
-		r = WoR4(msg, print_yn='N')
-	elif pct >= 7.5:
-		r = WoR5(msg, print_yn='N')
-	else:
-		r = WoR6(msg, print_yn='N')
-
-	return r
+	return front_str, rear_str
 
 #<=====>#
 
-def bh1(text, font_color='#FFFFFF', bg_color='#FFFFFF', bold=True, italic=True, length=200, align='center'):
-	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-def bh2(text, font_color='#FFFFFF', bg_color='#FFFFFF', bold=True, italic=True, length=200, align='center'):
-	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-def bh3(text, font_color='#FFFFFF', bg_color='#FFFFFF', bold=True, italic=True, length=200, align='center'):
-	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
+def chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=''):
+	func_name = 'chart_embed'
+
+	fore = cs(l, font_color=border_font_color, bg_color=border_bg_color)
+	aft  = cs(r, font_color=border_font_color, bg_color=border_bg_color)
+
+	if in_str == '':
+		in_str = s * len_cnt
+		disp_str = cs(text=in_str, font_color=border_font_color, bg_color=border_bg_color)
+		disp_str = f"{fore}{disp_str}{aft}"
+	else:
+		in_str = f' {in_str} '
+		if align == 'left':
+			temp_str = f'{s*2}{in_str}'
+			temp_str = rpad(temp_str, len_cnt, s)
+		if align == 'right':
+			temp_str = f'{in_str} {s*2}'
+			temp_str = lpad(temp_str, len_cnt, s)
+		if align == 'center':
+			temp_str = f'{in_str}'
+			temp_str = cpad(temp_str, len_cnt, s)
+
+		front_str, rear_str = chart_rep_str(s, border_font_color, border_bg_color, in_str=temp_str)
+		front_str = cs(text=front_str, font_color=border_font_color, bg_color=border_bg_color)
+		rear_str  = cs(text=rear_str,  font_color=border_font_color, bg_color=border_bg_color)
+		disp_str  = cs(text=in_str, font_color=font_color, bg_color=bg_color)
+
+		disp_str = f"{fore}{front_str}{disp_str}{rear_str}{aft}"
+
+	print(disp_str) 
 
 #<=====>#
 
-def sh1(text, font_color='#FFFFFF', bg_color='#800080', bold=True, italic=True, length=200, align='center'):
-	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-def sh2(text, font_color='#FFFFFF', bg_color='#FFFFFF', bold=True, italic=True, length=200, align='center'):
-	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-def sh3(text, font_color='#FFFFFF', bg_color='#FFFFFF', bold=True, italic=True, length=200, align='center'):
-	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
+def chart_string(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=''):
+	func_name = 'chart_embed'
+
+	fore = cs(l, font_color=border_font_color, bg_color=border_bg_color)
+	aft  = cs(r, font_color=border_font_color, bg_color=border_bg_color)
+
+	if in_str == '':
+		in_str = s * len_cnt
+		disp_str = cs(text=in_str, font_color=border_font_color, bg_color=border_bg_color)
+		disp_str = f"{fore}{disp_str}{aft}"
+	else:
+		if align == 'left':
+			in_str = rpad(in_str, len_cnt, s)
+		if align == 'right':
+			in_str = lpad(in_str, len_cnt, s)
+		if align == 'center':
+			in_str = cpad(in_str, len_cnt, s)
+
+		disp_str  = cs(text=in_str, font_color=font_color, bg_color=bg_color)
+		disp_str = f"{fore}{disp_str}{aft}"
+
+	print(disp_str) 
 
 #<=====>#
 
-def bad0(text, font_color='#FFFFFF', bg_color='#FF0000', bold=True, italic=True, length=200, align='center'):
-	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-def bad1(text, font_color='#FFFFFF', bg_color='#FF0000', bold=True, italic=True, length=200, align='center'):
-	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-def bad2(text, font_color='#FFFFFF', bg_color='#FF0000', bold=True, italic=True, length=200, align='center'):
-	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-def bad3(text, font_color='#FFFFFF', bg_color='#FF0000', bold=True, italic=True, length=200, align='center'):
-	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
+def chart_top(in_str='', len_cnt=250, align='left', font_color='white', bg_color='darkblue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+	l, s, r = chart_shapes(part='top', style=style)
+	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
 #<=====>#
 
-def good0(text, font_color='#FFFFFF', bg_color='#008000', bold=True, italic=True, length=200, align='center'):
-	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-def good1(text, font_color='#FFFFFF', bg_color='#008000', bold=True, italic=True, length=200, align='center'):
-	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-def good2(text, font_color='#FFFFFF', bg_color='#008000', bold=True, italic=True, length=200, align='center'):
-	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-def good3(text, font_color='#FFFFFF', bg_color='#008000', bold=True, italic=True, length=200, align='center'):
-	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
+def chart_title(in_str='', len_cnt=250, align='left', font_color='white', bg_color='darkblue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+	l, s, r = chart_shapes(part='row', style=style)
+	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
 #<=====>#
 
-#def WoR4(text, font_color='#FFFFFF', bg_color='#FF1100', bold=False, italic=False, length=200, align='center'):
-#	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-#def WoR3(text, font_color='#FFFFFF', bg_color='#DD3300', bold=False, italic=False, length=200, align='center'):
-#	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-#def WoR2(text, font_color='#FFFFFF', bg_color='#BB5500', bold=False, italic=False, length=200, align='center'):
-#	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-#def WoR1(text, font_color='#FFFFFF', bg_color='#997700', bold=False, italic=False, length=200, align='center'):
-#	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-
-def WoR6(text, font_color='#FFFFFF', bg_color='#FF0000', bold=False, italic=False, length=0, align='left', print_yn='Y'):
-	if print_yn == 'Y':
-		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-	else:
-		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-
-def WoR5(text, font_color='#FFFFFF', bg_color='#FF4500', bold=False, italic=False, length=0, align='left', print_yn='Y'):
-	if print_yn == 'Y':
-		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-	else:
-		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-
-def WoR4(text, font_color='#FFFFFF', bg_color='#FFA500', bold=False, italic=False, length=0, align='left', print_yn='Y'):
-	if print_yn == 'Y':
-		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-	else:
-		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-
-def WoR3(text, font_color='#FF0000', bg_color='#000000', bold=False, italic=False, length=0, align='left', print_yn='Y'):
-	if print_yn == 'Y':
-		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-	else:
-		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-
-def WoR2(text, font_color='#FF4500', bg_color='#000000', bold=False, italic=False, length=0, align='left', print_yn='Y'):
-	if print_yn == 'Y':
-		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-	else:
-		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-
-def WoR1(text, font_color='#FFA500', bg_color='#000000', bold=False, italic=False, length=0, align='left', print_yn='Y'):
-	if print_yn == 'Y':
-		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-	else:
-		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-
-#	# Reds
-#	pallette["indianred"]             = "#CD5C5C"      # indianred                             #CD5C5C  205   92   92  389
-#	pallette["lightcoral"]            = "#F08080"      # lightcoral                            #F08080  240  128  128  496
-#	pallette["salmon"]                = "#FA8072"      # salmon                                #FA8072  250  128  114  492
-#	pallette["darksalmon"]            = "#E9967A"      # darksalmon                            #E9967A  233  150  122  505
-#	pallette["lightsalmon"]           = "#FFA07A"      # lightsalmon                           #FFA07A  255  160  122  537
-#	pallette["crimson"]               = "#DC143C"      # crimson                               #DC143C  220   20   60  300
-#	pallette["red"]                   = "#FF0000"      # red                                   #FF0000  255    0    0  255
-#	pallette["firebrick"]             = "#B22222"      # firebrick                             #B22222  178   34   34  246
-#	pallette["darkred"]               = "#8B0000"      # darkred                               #8B0000  139    0    0  139
+def chart_headers(in_str='', len_cnt=250, align='left', font_color='white', bg_color='blue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+	l, s, r = chart_shapes(part='row', style=style)
+	disp_str = chart_string(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
 #<=====>#
 
-#def WoG1(text, font_color='#FFFFFF', bg_color='#779900', bold=False, italic=False, length=200, align='center'):
-#	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-#def WoG2(text, font_color='#FFFFFF', bg_color='#55BB00', bold=False, italic=False, length=200, align='center'):
-#	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-#def WoG3(text, font_color='#FFFFFF', bg_color='#33DD00', bold=False, italic=False, length=200, align='center'):
-#	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-#def WoG4(text, font_color='#FFFFFF', bg_color='#11FF00', bold=False, italic=False, length=200, align='center'):
-#	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
+def chart_mid(in_str='', len_cnt=250, align='left', font_color='white', bg_color='darkblue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+	l, s, r = chart_shapes(part='mid', style=style)
+	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
-def WoG1(text, font_color='#9ACD32', bg_color='#000000', bold=False, italic=False, length=0, align='left', print_yn='Y'):
-	if print_yn == 'Y':
-		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-	else:
-		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
+#<=====>#
 
-def WoG2(text, font_color='#228B22', bg_color='#000000', bold=False, italic=False, length=0, align='left', print_yn='Y'):
-	if print_yn == 'Y':
-		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-	else:
-		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
+def chart_row(in_str='', len_cnt=250, align='left', font_color='white', bg_color='black', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+	l, s, r = chart_shapes(part='row', style=style)
+	disp_str = chart_string(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
-def WoG3(text, font_color='#32CD32', bg_color='#000000', bold=False, italic=False, length=0, align='left', print_yn='Y'):
-	if print_yn == 'Y':
-		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-	else:
-		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
+#<=====>#
 
-def WoG4(text, font_color='#FFFFFF', bg_color='#9ACD32', bold=False, italic=False, length=0, align='left', print_yn='Y'):
-	if print_yn == 'Y':
-		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-	else:
-		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-
-def WoG5(text, font_color='#FFFFFF', bg_color='#228B22', bold=False, italic=False, length=0, align='left', print_yn='Y'):
-	if print_yn == 'Y':
-		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-	else:
-		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-
-def WoG6(text, font_color='#FFFFFF', bg_color='#32CD32', bold=False, italic=False, length=0, align='left', print_yn='Y'):
-	if print_yn == 'Y':
-		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-	else:
-		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-
-#	# Greens
-#	pallette["greenyellow"]           = "#ADFF2F"      # greenyellow                           #ADFF2F  173  255   47  475
-#	pallette["chartreuse"]            = "#7FFF00"      # chartreuse                            #7FFF00  127  255    0  382
-#	pallette["lawngreen"]             = "#7CFC00"      # lawngreen                             #7CFC00  124  252    0  376
-#	pallette["lime"]                  = "#00FF00"      # lime                                  #00FF00    0  255    0  255
-#	pallette["limegreen"]             = "#32CD32"      # limegreen                             #32CD32   50  205   50  305
-#	pallette["palegreen"]             = "#98FB98"      # palegreen                             #98FB98  152  251  152  555
-#	pallette["lightgreen"]            = "#90EE90"      # lightgreen                            #90EE90  144  238  144  526
-#	pallette["mediumspringgreen"]     = "#00FA9A"      # mediumspringgreen                     #00FA9A    0  250  154  404
-#	pallette["springgreen"]           = "#00FF7F"      # springgreen                           #00FF7F    0  255  127  382
-#	pallette["mediumseagreen"]        = "#3CB371"      # mediumseagreen                        #3CB371   60  179  113  352
-#	pallette["seagreen"]              = "#2E8B57"      # seagreen                              #2E8B57   46  139   87  272
-#	pallette["forestgreen"]           = "#228B22"      # forestgreen                           #228B22   34  139   34  207
-#	pallette["green"]                 = "#008000"      # green                                 #008000    0  128    0  128
-#	pallette["darkgreen"]             = "#006400"      # darkgreen                             #006400    0  100    0  100
-#	pallette["yellowgreen"]           = "#9ACD32"      # yellowgreen                           #9ACD32  154  205   50  409
-#	pallette["olivedrab"]             = "#6B8E23"      # olivedrab                             #6B8E23  107  142   35  284
-#	pallette["olive"]                 = "#808000"      # olive                                 #808000  128  128    0  256
-#	pallette["darkolivegreen"]        = "#556B2F"      # darkolivegreen                        #556B2F   85  107   47  239
-#	pallette["mediumaquamarine"]      = "#66CDAA"      # mediumaquamarine                      #66CDAA  102  205  170  477
-#	pallette["darkseagreen"]          = "#8FBC8F"      # darkseagreen                          #8FBC8F  143  188  143  474
-#	pallette["lightseagreen"]         = "#20B2AA"      # lightseagreen                         #20B2AA   32  178  170  380
-#	pallette["darkcyan"]              = "#008B8B"      # darkcyan                              #008B8B    0  139  139  278
-#	pallette["teal"]                  = "#008080"      # teal                                  #008080    0  128  128  256
+def chart_bottom(in_str='', len_cnt=250, align='left', font_color='white', bg_color='darkblue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+	l, s, r = chart_shapes(part='bottom', style=style)
+	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
 #<=====>#
 # Post Variables
@@ -569,51 +585,87 @@ def WoG6(text, font_color='#FFFFFF', bg_color='#32CD32', bold=False, italic=Fals
 #<=====>#
 
 if __name__ == "__main__":
-	WoR6('WoR6 - WoR6 - WoR6')
-	WoR5('WoR5 - WoR5 - WoR5')
-	WoR4('WoR4 - WoR4 - WoR4')
-	WoR3('WoR3 - WoR3 - WoR3')
-	WoR2('WoR2 - WoR2 - WoR2')
-	WoR1('WoR1 - WoR1 - WoR1')
-	WoG1('WoG1 - WoG1 - WoG1')
-	WoG2('WoG2 - WoG2 - WoG2')
-	WoG3('WoG3 - WoG3 - WoG3')
-	WoG4('WoG4 - WoG4 - WoG4')
-	WoG5('WoG5 - WoG5 - WoG5')
-	WoG6('WoG6 - WoG6 - WoG6')
 
-	print()
+	msg_t1   = '* Market Summary * A8-USDC * 2024-09-04 06:56:43 * 2024-09-04 06:55:34 * 1:8 * 8/89'
+	msg_h1   = '$     price      |  prc_chg   % | $    buy_prc     | $    sell_prc    |  buy_var   % |  sell_var  % | spread_pct % | $ usdc bal  | $  reserve  | $ available | reserves state |'
+	msg_1_01 = '$     0.09140000 |    -7.3961 % | $     0.09140000 | $     0.09130000 |     0.0000 % |     0.1094 % |     0.1094 % | $      1.96 | $      0.00 | $      1.96 |    UNLOCKED    |'
+	msg_t2   = '* Market Stats * A8-USDC * 2024-09-04 06:56:45'
+	msg_h2   = 'trades   |   wins    |   lose    |  win_pct  % | lose_pct  % | $  win_amt  | $ lose_amt  | $   spent   | $   recv    | $   hold    | $    val    | $ gain_amt  | gain_pct  % |  gain_hr  % | gain_day  % |  elapsed  |'
+	msg_2_01 = '34 |      29.0 |       5.0 |     85.29 % |     14.71 % | $    3.5900 | $   -1.9200 | $  137.0000 | $  138.5800 | $   11.9300 | $  138.6700 | $    1.6700 |    1.2200 % |    0.0018 % |    0.0424 % |      9999 |'
+	msg_2_02 = 'found no more 4h candles, returning 293 candles...'
+	msg_2_03 = 'found no more 1d candles, returning 50 candles...'
+	msg_t3   = '* BUY LOGIC * A8-USDC * 2024-09-04 06:56:53'
+	msg_h3   = 'mkt             | strat           | freq            | total | open  | close | wins  | lose  |  win   % |  lose  % |  gain_amt  |  gain_pct  % |  gain_hr   % |  gain_day  % | elapsed |    trade_size    |  | pass | fail |  test  % |'
+	msg_3_01 = 'A8-USDC         | sha             | 30min           |     5 |     0 |     5 |     5 |     0 | 100.00 % |   0.00 % |       0.73 |       3.18 % |       0.05 % |       1.25 % |    9999 |      10.00000000 |  |    6 |   30 |  16.67 % |'
+	msg_3_02 = 'A8-USDC         | sha             | 15min           |     5 |     0 |     5 |     5 |     0 | 100.00 % |   0.00 % |       0.65 |       3.10 % |       0.02 % |       0.44 % |    9999 |      10.00000000 |  |    7 |   21 |  25.00 % |'
+	msg_3_03 = 'A8-USDC         | sha             | 4h              |     0 |     0 |     0 |     0 |     0 |   0.00 % |   0.00 % |       0.00 |       0.00 % |       0.00 % |       0.00 % |    9999 |       5.00000000 |  |   13 |   39 |  25.00 % |'
+	msg_3_04 = 'A8-USDC         | sha             | 1d              |     0 |     0 |     0 |     0 |     0 |   0.00 % |   0.00 % |       0.00 |       0.00 % |       0.00 % |       0.00 % |    9999 |       5.00000000 |  |   12 |   48 |  20.00 % |'
+	msg_3_05 = 'A8-USDC         | imp_macd        | 1d              |     0 |     0 |     0 |     0 |     0 |   0.00 % |   0.00 % |       0.00 |       0.00 % |       0.00 % |       0.00 % |    9999 |       5.00000000 |  |    2 |   20 |   9.09 % |'
+	msg_3_06 = 'A8-USDC         | bb_bo           | 1h              |     0 |     0 |     0 |     0 |     0 |   0.00 % |   0.00 % |       0.00 |       0.00 % |       0.00 % |       0.00 % |    9999 |       5.00000000 |  |    1 |   14 |   6.67 % |'
+	msg_3_07 = 'A8-USDC         | bb_bo           | 4h              |     0 |     0 |     0 |     0 |     0 |   0.00 % |   0.00 % |       0.00 |       0.00 % |       0.00 % |       0.00 % |    9999 |       5.00000000 |  |    2 |   16 |  11.11 % |'
+	msg_3_08 = 'A8-USDC         | bb_bo           | 1d              |     0 |     0 |     0 |     0 |     0 |   0.00 % |   0.00 % |       0.00 |       0.00 % |       0.00 % |       0.00 % |    9999 |       5.00000000 |  |    2 |   19 |   9.52 % |'
+	msg_3_09 = 'A8-USDC         | bb              | 15min           |     0 |     0 |     0 |     0 |     0 |   0.00 % |   0.00 % |       0.00 |       0.00 % |       0.00 % |       0.00 % |    9999 |       5.00000000 |  |    1 |    8 |  11.11 % |'
+	msg_3_10 = 'A8-USDC         | bb              | 30min           |     0 |     0 |     0 |     0 |     0 |   0.00 % |   0.00 % |       0.00 |       0.00 % |       0.00 % |       0.00 % |    9999 |       5.00000000 |  |    1 |   11 |   8.33 % |'
+	msg_3_11 = 'A8-USDC         | bb              | 1h              |     0 |     0 |     0 |     0 |     0 |   0.00 % |   0.00 % |       0.00 |       0.00 % |       0.00 % |       0.00 % |    9999 |       5.00000000 |  |    2 |   13 |  13.33 % |'
+	msg_3_12 = 'A8-USDC         | bb              | 4h              |     0 |     0 |     0 |     0 |     0 |   0.00 % |   0.00 % |       0.00 |       0.00 % |       0.00 % |       0.00 % |    9999 |       5.00000000 |  |    3 |   15 |  16.67 % |'
+	msg_3_13 = 'A8-USDC         | bb              | 1d              |     0 |     0 |     0 |     0 |     0 |   0.00 % |   0.00 % |       0.00 |       0.00 % |       0.00 % |       0.00 % |    9999 |       5.00000000 |  |    3 |   18 |  14.29 % |'
+	msg_3_14 = 'A8-USDC         | sha             | 1h              |     5 |     0 |     5 |     4 |     1 |  80.00 % |  20.00 % |       0.00 |      -0.01 % |      -0.00 % |      -0.00 % |    9999 |       5.00000000 |  |    7 |   37 |  15.91 % |'
+	msg_3_15 = 'A8-USDC         | imp_macd        | 4h              |     4 |     0 |     4 |     3 |     1 |  75.00 % |  25.00 % |      -0.04 |      -0.22 % |      -0.00 % |      -0.08 % |    9999 |       5.00000000 |  |    5 |   14 |  26.32 % |'
+	msg_3_16 = 'A8-USDC         | imp_macd        | 1h              |     3 |     0 |     3 |     1 |     2 |  33.33 % |  66.67 % |      -0.36 |      -3.99 % |      -0.06 % |      -1.55 % |    9999 |       5.00000000 |  |    1 |   15 |   6.25 % |'
+	msg_t4   = '* SELL LOGIC * A8-USDC * 2024-09-04 06:56:53'
+	msg_h4   = '    mkt      | T | pos_id |  buy_strat   | freq  |    age     |     buy_val      |    curr_val    |    buy_prc     |    curr_prc    |    high_prc    | prc_pct  % | prc_top  % | prc_low  % | prc_drop % | $    net_est     | $  net_est_high   '
+	msg_4_01 = 'A8-USDC has no open positions...'
+	msg_4_02 = 'mkt_loop for A8-USDC - took 10.204 seconds...'
 
-	cp('lime                  = #00FF00', font_color="#FFFFFF", bg_color="#00FF00")      # lime             
-	cp('limegreen             = #32CD32', font_color="#FFFFFF", bg_color="#32CD32")      # limegreen        
-	cp('forestgreen           = #228B22', font_color="#FFFFFF", bg_color="#228B22")      # forestgreen      
-	cp('green                 = #008000', font_color="#FFFFFF", bg_color="#008000")      # green            
-	cp('darkgreen             = #006400', font_color="#FFFFFF", bg_color="#006400")      # darkgreen        
+	print('')
+	print('')
+	print('')
+	print('')
+	print('')
 
-	print()
-	cp('greenyellow           = #ADFF2F', font_color="#FFFFFF", bg_color="#ADFF2F")      # greenyellow      
-	cp('chartreuse            = #7FFF00', font_color="#FFFFFF", bg_color="#7FFF00")      # chartreuse       
-	cp('lawngreen             = #7CFC00', font_color="#FFFFFF", bg_color="#7CFC00")      # lawngreen        
-	cp('palegreen             = #98FB98', font_color="#FFFFFF", bg_color="#98FB98")      # palegreen        
-	cp('lightgreen            = #90EE90', font_color="#FFFFFF", bg_color="#90EE90")      # lightgreen       
-	cp('mediumspringgreen     = #00FA9A', font_color="#FFFFFF", bg_color="#00FA9A")      # mediumspringgreen
-	cp('springgreen           = #00FF7F', font_color="#FFFFFF", bg_color="#00FF7F")      # springgreen      
+	chart_top(in_str='top')
+	chart_top()
+	chart_top(in_str=msg_t1)
+	chart_headers(in_str=msg_h1)
+	chart_row(in_str=msg_1_01)
 
-	print()
-	cp('yellowgreen           = #9ACD32', font_color="#FFFFFF", bg_color="#9ACD32")      # yellowgreen      
-	cp('olivedrab             = #6B8E23', font_color="#FFFFFF", bg_color="#6B8E23")      # olivedrab        
-	cp('olive                 = #808000', font_color="#FFFFFF", bg_color="#808000")      # olive            
-	cp('darkolivegreen        = #556B2F', font_color="#FFFFFF", bg_color="#556B2F")      # darkolivegreen   
-	cp('mediumseagreen        = #3CB371', font_color="#FFFFFF", bg_color="#3CB371")      # mediumseagreen   
-	cp('seagreen              = #2E8B57', font_color="#FFFFFF", bg_color="#2E8B57")      # seagreen         
+	chart_mid()
 
-	print()
-	cp('mediumaquamarine      = #66CDAA', font_color="#FFFFFF", bg_color="#66CDAA")      # mediumaquamarine 
-	cp('darkseagreen          = #8FBC8F', font_color="#FFFFFF", bg_color="#8FBC8F")      # darkseagreen     
-	cp('lightseagreen         = #20B2AA', font_color="#FFFFFF", bg_color="#20B2AA")      # lightseagreen    
-	cp('darkcyan              = #008B8B', font_color="#FFFFFF", bg_color="#008B8B")      # darkcyan         
-	cp('teal                  = #008080', font_color="#FFFFFF", bg_color="#008080")      # teal             
+	chart_title(in_str=msg_t2)
+	chart_headers(in_str=msg_h2)
+	chart_row(in_str=msg_2_01)
+	chart_row(in_str=msg_2_02)
+	chart_row(in_str=msg_2_03)
 
-	cp(' * bold italic teal = #008080', font_color="#FFFFFF", bg_color="#008080", bold=True, italic=True, length=69, align='center')      # teal             
+	chart_mid()
+
+	chart_title(in_str=msg_t3)
+	chart_headers(in_str=msg_h3)
+	chart_row(in_str=msg_3_01, align='left',   font_color='white', bg_color='green',    border_font_color='yellow', border_bg_color='darkblue', style=2)
+	chart_row(in_str=msg_3_02)
+	chart_row(in_str=msg_3_03)
+	chart_row(in_str=msg_3_04, align='left',   font_color='white', bg_color='orangered',    border_font_color='yellow', border_bg_color='darkblue', style=2)
+	chart_row(in_str=msg_3_05)
+	chart_row(in_str=msg_3_06)
+	chart_row(in_str=msg_3_07)
+	chart_row(in_str=msg_3_08, align='left',   font_color='white', bg_color='lightgreen', border_font_color='yellow', border_bg_color='darkblue', style=2)
+	chart_row(in_str=msg_3_09)
+	chart_row(in_str=msg_3_10)
+	chart_row(in_str=msg_3_11)
+	chart_row(in_str=msg_3_12)
+	chart_row(in_str=msg_3_13)
+	chart_row(in_str=msg_3_14)
+	chart_row(in_str=msg_3_15)
+	chart_row(in_str=msg_3_16, align='left',   font_color='white', bg_color='red',      border_font_color='yellow', border_bg_color='darkblue', style=2)
+
+	chart_mid()
+
+	chart_title(in_str=msg_t4)
+	chart_headers(in_str=msg_h4)
+	chart_row(in_str=msg_4_01)
+	chart_row(in_str=msg_4_02)
+
+	chart_bottom()
+	chart_bottom(in_str='bottom')
 
 #<=====>#

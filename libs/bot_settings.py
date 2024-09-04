@@ -3,22 +3,18 @@
 #<=====>#
 
 
-
 #<=====>#
 # Known To Do List
 #<=====>#
-
 
 
 #<=====>#
 # Imports - Common Modules
 #<=====>#
 
-
 #<=====>#
 # Imports - Download Modules
 #<=====>#
-
 
 
 #<=====>#
@@ -28,11 +24,9 @@
 from cls_settings import Settings
 from pprint import pprint
 
-
 #<=====>#
 # Imports - Local Library
 #<=====>#
-
 
 
 #<=====>#
@@ -43,17 +37,14 @@ log_name      = 'bot_settings'
 lib_verbosity = 1
 lib_debug_lvl = 1
 
-
 #<=====>#
 # Assignments Pre
 #<=====>#
 
 
-
 #<=====>#
 # Classes
 #<=====>#
-
 
 #<=====>#
 # Functions
@@ -62,7 +53,6 @@ lib_debug_lvl = 1
 def test_main(settings):
 	st = settings.settings_load()
 	pprint(st)
-
 
 #<=====>#
 # Post Variables
@@ -107,6 +97,7 @@ settings_template_json = {
 			"show_tests_min": 101,
 			"save_files_yn": "N",
 			"buy_limit_yn": "N",
+			"allow_tests_yn": "Y",
 			"mkts_open_max": 65,
 			"reserve_amt": {
 				"***": 0,
@@ -115,7 +106,7 @@ settings_template_json = {
 				"SOL": 1,
 				"USDC": 100
 				},
-			"reserve_daily_amt": {
+			"reserve_addtl_daily_amt": {
 				"***": 0,
 				"BTC": 0.01,
 				"ETH": 0.01,
@@ -341,7 +332,6 @@ settings = Settings('settings/settings.json', settings_template_json)
 
 if __name__ == "__main__":
 	test_main(settings)
-
 
 #<=====>#
 

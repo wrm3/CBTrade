@@ -3,11 +3,9 @@
 #<=====>#
 
 
-
 #<=====>#
 # Known To Do List
 #<=====>#
-
 
 
 #<=====>#
@@ -17,17 +15,14 @@ import sys
 import os
 from pprint import pprint
 
-
 #<=====>#
 # Imports - Download Modules
 #<=====>#
 
 
-
 #<=====>#
 # Imports - Shared Library
 #<=====>#
-
 
 
 #<=====>#
@@ -36,7 +31,6 @@ from pprint import pprint
 # shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
 # if shared_libs_path not in sys.path:
 # 	sys.path.append(shared_libs_path)
-
 
 
 #<=====>#
@@ -49,7 +43,6 @@ if local_libs_path not in sys.path:
 from cls_settings import Settings
 from lib_common                    import *
 
-
 #<=====>#
 # Variables
 #<=====>#
@@ -58,17 +51,14 @@ log_name      = 'bot_secrets'
 lib_verbosity = 1
 lib_debug_lvl = 1
 
-
 #<=====>#
 # Assignments Pre
 #<=====>#
 
 
-
 #<=====>#
 # Classes
 #<=====>#
-
 
 
 #<=====>#
@@ -78,7 +68,6 @@ lib_debug_lvl = 1
 def test_main(secrets):
 	sc = secrets.settings_load()
 	pprint(sc)
-
 
 #<=====>#
 # Post Variables
@@ -111,6 +100,5 @@ secrets = Settings('settings/secrets.json', secrets_template_json)
 
 if __name__ == "__main__":
 	test_main(secrets)
-
 
 #<=====>#

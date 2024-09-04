@@ -3,11 +3,9 @@
 #<=====>#
 
 
-
 #<=====>#
 # Known To Do List
 #<=====>#
-
 
 
 #<=====>#
@@ -21,11 +19,9 @@ from pprint import pprint
 from datetime import datetime as dt
 #from pathlib import Path
 
-
 #<=====>#
 # Imports - Download Modules
 #<=====>#
-
 
 
 #<=====>#
@@ -33,11 +29,9 @@ from datetime import datetime as dt
 #<=====>#
 
 
-
 #<=====>#
 # Imports - Local Library
 #<=====>#
-
 
 
 #<=====>#
@@ -45,11 +39,9 @@ from datetime import datetime as dt
 #<=====>#
 lib_name      = 'cls_settings'
 
-
 #<=====>#
 # Assignments Pre
 #<=====>#
-
 
 
 #<=====>#
@@ -248,7 +240,6 @@ class Settings():
 
 		return self.kv
 
-
 #<=====>#
 # Functions
 #<=====>#
@@ -256,17 +247,14 @@ class Settings():
 def test_main():
 	pass
 
-
 #<=====>#
 # Post Variables
 #<=====>#
 
 
-
 #<=====>#
 # Default Run
 #<=====>#
-
 
 
 

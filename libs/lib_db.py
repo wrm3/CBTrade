@@ -3,7 +3,6 @@
 #<=====>#
 
 
-
 #<=====>#
 # Import All
 #<=====>#
@@ -60,11 +59,9 @@ import_all_func_list.append("db_tbl_poss_insupd")
 import_all_func_list.append("db_table_csvs_dump")
 __all__ = import_all_func_list
 
-
 #<=====>#
 # Known To Do List
 #<=====>#
-
 
 
 #<=====>#
@@ -75,11 +72,9 @@ import sys
 import os
 import re
 
-
 #<=====>#
 # Imports - Download Modules
 #<=====>#
-
 
 
 #<=====>#
@@ -88,7 +83,6 @@ import re
 # shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
 # if shared_libs_path not in sys.path:
 # 	sys.path.append(shared_libs_path)
-
 
 
 #<=====>#
@@ -103,7 +97,6 @@ from lib_common                    import *
 
 from bot_secrets                   import secrets
 
-
 #<=====>#
 # Variables
 #<=====>#
@@ -114,18 +107,15 @@ lib_debug_lvl = 1
 verbosity     = 1
 debug_lvl     = 1
 
-
 #<=====>#
 # Assignments Pre
 #<=====>#
 sc = secrets.settings_load()
 db = db_mysql(sc.mysql.host, sc.mysql.port, sc.mysql.db, sc.mysql.user, sc.mysql.pw)
 
-
 #<=====>#
 # Classes
 #<=====>#
-
 
 
 #<=====>#
@@ -1393,7 +1383,6 @@ def db_sell_ords_open_get():
 
 #<=====>#
 
-
 def db_bal_get_by_symbol(symb):
 	func_name = 'db_bal_get_by_symbol'
 	func_str = '{}.{}(symb={})'.format(lib_name, func_name, symb)
@@ -1411,7 +1400,6 @@ def db_bal_get_by_symbol(symb):
 
 	func_end(fnc, debug_lvl=lib_debug_lvl)
 	return bal
-
 
 #<=====>#
 
@@ -1580,7 +1568,6 @@ def db_curr_prc_mkt_upd():
 
 	func_end(fnc, debug_lvl=lib_debug_lvl)
 
-
 #<=====>#
 
 def db_tbl_insupd(table_name, in_data):
@@ -1659,7 +1646,6 @@ def db_tbl_insupd(table_name, in_data):
 
 	sql3 = " ) values ( "
 
-
 	sql4 = ', '.join(['%s'] * len(data_cols))
 
 	sql5 = " ) on duplicate key update  "
@@ -1680,9 +1666,7 @@ def db_tbl_insupd(table_name, in_data):
 
 	func_end(fnc, debug_lvl=lib_debug_lvl)
 
-
 #<=====>#
-
 
 def db_tbl_currs_insupd(in_data):
 	func_name = 'db_tbl_currs_insupd'
@@ -1697,9 +1681,7 @@ def db_tbl_currs_insupd(in_data):
 
 	func_end(fnc, debug_lvl=lib_debug_lvl)
 
-
 #<=====>#
-
 
 def db_tbl_bals_insupd(in_data):
 	func_name = 'db_tbl_bals_insupd'
@@ -1714,9 +1696,7 @@ def db_tbl_bals_insupd(in_data):
 
 	func_end(fnc, debug_lvl=lib_debug_lvl)
 
-
 #<=====>#
-
 
 def db_tbl_mkts_insupd(in_data):
 	func_name = 'db_tbl_mkts_insupd'
@@ -1752,9 +1732,7 @@ def db_tbl_mkts_insupd(in_data):
 
 	func_end(fnc, debug_lvl=lib_debug_lvl)
 
-
 #<=====>#
-
 
 def db_tbl_ords_insupd(in_data):
 	func_name = 'db_tbl_ords_insupd'
@@ -1768,9 +1746,7 @@ def db_tbl_ords_insupd(in_data):
 
 	func_end(fnc, debug_lvl=lib_debug_lvl)
 
-
 #<=====>#
-
 
 def db_tbl_buy_ords_insupd(in_data):
 	func_name = 'db_tbl_buy_ords_insupd'
@@ -1784,9 +1760,7 @@ def db_tbl_buy_ords_insupd(in_data):
 
 	func_end(fnc, debug_lvl=lib_debug_lvl)
 
-
 #<=====>#
-
 
 def db_tbl_sell_ords_insupd(in_data):
 	func_name = 'db_tbl_sell_ords_insupd'
@@ -1800,9 +1774,7 @@ def db_tbl_sell_ords_insupd(in_data):
 
 	func_end(fnc, debug_lvl=lib_debug_lvl)
 
-
 #<=====>#
-
 
 def db_tbl_poss_insupd(in_data):
 	func_name = 'db_tbl_poss_insupd'
@@ -1843,11 +1815,9 @@ def db_table_csvs_dump():
 #<=====>#
 
 
-
 #<=====>#
 # Default Run
 #<=====>#
-
 
 
 #<=====>#
