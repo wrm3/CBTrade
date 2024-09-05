@@ -415,7 +415,7 @@ def prt_cols(l, cols=10, clr='WoG'):
 			s += ''
 		else:
 			s += ' | '
-	if col_cnt < cols:
+	if col_cnt > 0 and col_cnt < cols:
 		print(s)
 		print_adv()
 

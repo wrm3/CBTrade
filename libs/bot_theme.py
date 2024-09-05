@@ -49,7 +49,7 @@ if local_libs_path not in sys.path:
 	sys.path.append(local_libs_path)
 
 from lib_common                    import *
-from lib_common                    import lpad, rpad, cpad
+#from lib_common                    import lpad, rpad, cpad
 from lib_colors                    import cs, cp
 
 #<=====>#

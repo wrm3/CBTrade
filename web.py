@@ -66,6 +66,7 @@ if local_libs_path not in sys.path:
 from libs.lib_charts                   import *
 from libs.lib_common                   import *
 from libs.lib_colors                   import *
+from libs.lib_strings                  import *
 
 from libs.bot_common                        import *
 from libs.bot_db_read                       import db

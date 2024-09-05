@@ -42,6 +42,7 @@ if local_libs_path not in sys.path:
 from libs.lib_charts                   import *
 from libs.lib_common                   import *
 from libs.lib_colors                   import *
+from libs.lib_strings                  import *
 
 from libs.bot_common                   import *
 from libs.bot_coinbase                 import *
@@ -114,6 +115,7 @@ class BOT():
 
 				print_adv(4)
 				WoB(f"{'<----- // ===== | == TOP == | ===== \\ ----->':^200}")
+				print_adv(4)
 
 				self.st = settings.reload()
 
@@ -155,6 +157,10 @@ class BOT():
 							msg += f"{'UNLOCKED':^14} | "
 						WoG(msg)
 
+				print_adv(4)
+				WoB(f"{'<----- // ===== | == END == | ===== \\ ----->':^200}")
+				print_adv(4)
+
 				time.sleep(loop_secs)
 
 			except KeyboardInterrupt as e:
@@ -173,68 +179,15 @@ class BOT():
 
 	#<=====>#
 
-	def before_start(self):
-		func_name = 'before_loop'
-		func_str = f'{lib_name}.{func_name}()'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#		G(func_str)
-
-		# this is here just to proof that sounds alerts will be heard
-		if self.st.speak_yn == 'Y': speak_async('Coinbase Trade Bot Online')
-
-		self.wallet_refresh(force_tf=True)
-
-		report_buys_recent(cnt=20)
-		report_sells_recent(cnt=20)
-		report_open_by_age()
-
-		func_end(fnc)
-
-	#<=====>#
-
-	def before_loop(self):
-		func_name = 'before_loop'
-		func_str = f'{lib_name}.{func_name}()'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#		G(func_str)
-
-		self.sell_ords_check()
-		self.buy_ords_check()
-		cb_mkts_refresh()
-		self.wallet_refresh(force_tf=True)
-
-		func_end(fnc)
-
-	#<=====>#
-
-	def after_loop(self):
-		func_name = 'after_loop'
-		func_str = f'{lib_name}.{func_name}()'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#		G(func_str)
-
-		self.sell_ords_check()
-		self.buy_ords_check()
-
-		report_buys_recent(cnt=20)
-		report_sells_recent(cnt=20)
-		report_open_by_age()
-
-#		# End of Market Loop Balance Display
-		self.wallet_refresh()
-
-		func_end(fnc)
-
-	#<=====>#
-
 	def mkts_loop(self):
 		func_name = 'mkts_loop'
 		func_str = f'{lib_name}.{func_name}()'
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #		G(func_str)
 
-		print_adv()
+		print_adv(3)
 		WoM(f"{'Markets Loop':^200}")
+		print_adv(1)
 
 		cnt = 0
 		# loop through all mkts for buy/sell logic
@@ -251,7 +204,7 @@ class BOT():
 			prod_id = m['prod_id']
 			m = dec_2_float(m)
 			m = AttrDictConv(in_dict=m)
-			# This is only for mkt_disp
+			# This is only for disp_mkt
 			m.cnt = cnt
 			m.mkts_tot = len(self.mkts)
 
@@ -310,6 +263,9 @@ class BOT():
 		self.buy_mkts = []
 		self.trade_mkts = []	
 
+		chart_top(in_str='Market Collection', len_cnt=177)
+
+
 		# get mkts from settings
 		spot_mkts  = self.st.spot.mkts.trade_mkts
 		self.trade_mkts = spot_mkts
@@ -323,8 +279,9 @@ class BOT():
 		mkts       = db_mkts_loop_poss_open_prod_ids_get()
 		if mkts:
 			mkts = list(set(mkts))
-			WoB(f'adding markets with open positions ({len(mkts)}) :')
-			prt_cols(mkts, cols=10)
+			hmsg = f'adding markets with open positions ({len(mkts)}) :'
+			chart_mid(in_str=hmsg, len_cnt=177)
+			self.prt_cols(mkts, cols=10)
 			loop_mkts.extend(mkts)
 
 		# Get The Markets with the best performance on the bot so far
@@ -335,13 +292,15 @@ class BOT():
 		mkts       = db_mkts_loop_top_perfs_prod_ids_get(lmt=lmt_cnt, pct_min=pct_min)
 		if mkts:
 			if self.st.spot.mkts.extra_mkts_top_bot_perf_yn == 'Y':
-				WoB(f'adding mkts top bot gain loss percent per day performers ({len(mkts)}) :')
-				prt_cols(mkts, cols=10, clr='WoG')
+				hmsg = f'adding mkts top bot gain loss percent per day performers ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='WoG')
 				loop_mkts.extend(mkts)
 				self.buy_mkts.extend(mkts)
 			elif self.st.spot.mkts.extra_mkts_top_bot_perf_cnt > 0:
-				WoB(f'skipping mkts top bot gain loss percent per day  performers ({len(mkts)}) :')
-				prt_cols(mkts, cols=10, clr='GoW')
+				hmsg = f'skipping mkts top bot gain loss percent per day performers ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='GoW')
 
 		# Get The Markets with the best performance on the bot so far
 		# By Gain Loss Amount Total
@@ -350,13 +309,15 @@ class BOT():
 		mkts       = db_mkts_loop_top_gains_prod_ids_get(lmt=lmt_cnt)
 		if mkts:
 			if self.st.spot.mkts.extra_mkts_top_bot_gains_yn == 'Y':
-				WoB(f'adding mkts top bot gain loss performers ({len(mkts)}) :')
-				prt_cols(mkts, cols=10, clr='WoG')
+				hmsg = f'adding mkts top bot gain loss performers ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='WoG')
 				loop_mkts.extend(mkts)
 				self.buy_mkts.extend(mkts)
 			elif self.st.spot.mkts.extra_mkts_top_bot_gains_cnt > 0:
-				WoB(f'skipping mkts top bot gain loss performers ({len(mkts)}) :')
-				prt_cols(mkts, cols=10, clr='GoW')
+				hmsg = f'skipping mkts top bot gain loss performers ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='GoW')
 
 		# Get The Markets with the top 24h price increase
 		# Settings how many of these we will look at
@@ -365,13 +326,15 @@ class BOT():
 		mkts       = db_mkts_loop_top_prc_chg_prod_ids_get(lmt=lmt_cnt, pct_min=pct_min)
 		if mkts:
 			if self.st.spot.mkts.extra_mkts_prc_pct_chg_24h_yn == 'Y':
-				WoB(f'adding mkts top price increases ({len(mkts)}) :')
-				prt_cols(mkts, cols=10, clr='WoG')
+				hmsg = f'adding mkts top price increases ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='WoG')
 				loop_mkts.extend(mkts)
 				self.buy_mkts.extend(mkts)
 			elif self.st.spot.mkts.extra_mkts_prc_pct_chg_24h_cnt > 0:
-				WoB(f'skipping mkts top price increases ({len(mkts)}) :')
-				prt_cols(mkts, cols=10, clr='GoW')
+				hmsg = f'skipping mkts top price increases ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='GoW')
 
 		# Get The Markets with the top 24h volume increase
 		# Settings how many of these we will look at
@@ -379,13 +342,15 @@ class BOT():
 		mkts       = db_mkts_loop_top_vol_chg_prod_ids_get(lmt=lmt_cnt)
 		if mkts:
 			if self.st.spot.mkts.extra_mkts_vol_quote_24h_yn == 'Y':
-				WoB(f'adding mkts highest volume ({len(mkts)}) :')
-				prt_cols(mkts, cols=10, clr='WoG')
+				hmsg = f'adding mkts highest volume ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='WoG')
 				loop_mkts.extend(mkts)
 				self.buy_mkts.extend(mkts)
 			elif self.st.spot.mkts.extra_mkts_vol_quote_24h_cnt > 0:
-				WoB(f'skipping mkts highest volume ({len(mkts)}) :')
-				prt_cols(mkts, cols=10, clr='GoW')
+				hmsg = f'skipping mkts highest volume ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='GoW')
 
 		# Get The Markets with the top 24h volume percent increase
 		# Settings how many of these we will look at
@@ -393,25 +358,29 @@ class BOT():
 		mkts       = db_mkts_loop_top_vol_chg_pct_prod_ids_get(lmt=lmt_cnt)
 		if mkts:
 			if self.st.spot.mkts.extra_mkts_vol_pct_chg_24h_yn == 'Y':
-				WoB(f'adding mkts highest volume increase ({len(mkts)}) :')
-				prt_cols(mkts, cols=10, clr='WoG')
+				hmsg = f'adding mkts highest volume increase ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='WoG')
 				loop_mkts.extend(mkts)
 				self.buy_mkts.extend(mkts)
 			elif self.st.spot.mkts.extra_mkts_vol_pct_chg_24h_cnt > 0:
-				WoB(f'skipping mkts highest volume increase ({len(mkts)}) :')
-				prt_cols(mkts, cols=10, clr='GoW')
+				hmsg = f'skipping mkts highest volume increase ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='GoW')
 
 		# Get The Markets that are marked as favorites on Coinbase
 		mkts       = db_mkts_loop_watched_prod_ids_get()
 		if mkts:
 			if self.st.spot.mkts.extra_mkts_watched_yn == 'Y':
-				WoB(f'adding watched markets ({len(mkts)}) :')
-				prt_cols(mkts, cols=10, clr='WoG')
+				hmsg = f'adding watched markets ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='WoG')
 				loop_mkts.extend(mkts)
 				self.buy_mkts.extend(mkts)
 			else:
-				WoB(f'skipping watched markets ({len(mkts)}) :')
-				prt_cols(mkts, cols=10, clr='GoW')
+				hmsg = f'skipping watched markets ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='GoW')
 
 		stable_mkts           = self.st.spot.mkts.stable_mkts
 		err_mkts              = self.st.spot.mkts.err_mkts
@@ -425,12 +394,16 @@ class BOT():
 		disp_mkts = []
 		for m in self.mkts:
 			disp_mkts.append(m['prod_id'])
-		WoB(f'loop mkts ({len(mkts)}) :')
-		prt_cols(disp_mkts, cols=10)
+		hmsg = f'loop mkts ({len(mkts)}) :'
+		chart_mid(in_str=hmsg, len_cnt=177)
+		self.prt_cols(disp_mkts, cols=10)
 
 		# Display the markets that will be looped
-		WoB(f'buy mkts ({len(self.buy_mkts)}) :')
-		prt_cols(self.buy_mkts, cols=10)
+		hmsg = f'buy mkts ({len(self.buy_mkts)}) :'
+		chart_mid(in_str=hmsg, len_cnt=177)
+		self.prt_cols(self.buy_mkts, cols=10)
+
+		chart_bottom(len_cnt=177)
 
 		func_end(fnc)
 
@@ -584,143 +557,6 @@ class BOT():
 
 	#<=====>#
 
-	def mkt_disp(self, mkt, trade_perf, trade_strat_perfs):
-		func_name = 'mkt_disp'
-		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
-#		G(func_str)
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
-
-		# Market Basics
-		prod_id = mkt.prod_id
-
-		# Prices & Balances
-		hmsg = ""
-		hmsg += f"$ {'price':^14} | "
-		hmsg += f"{'prc_chg':^10} % | "
-		hmsg += f"$ {'buy_prc':^14} | "
-		hmsg += f"$ {'sell_prc':^14} | "
-		hmsg += f"{'buy_var':^10} % | "
-		hmsg += f"{'sell_var':^10} % | "
-		hmsg += f"{'spread_pct':^10} % | "
-		hmsg += f"$ {'usdc bal':^9} | "
-		hmsg += f"$ {'reserve':^9} | "
-		hmsg += f"$ {'available':^9} | "
-		hmsg += f"{'reserves state':^14} | "
-
-		msg = ""
-		msg += f"$ {mkt.prc_mkt:>14.8f} | "
-		msg += f"{mkt.prc_pct_chg_24h:>10.4f} % | "
-		msg += f"$ {mkt.prc_buy:>14.8f} | "
-		msg += f"$ {mkt.prc_sell:>14.8f} | "
-		msg += f"{mkt.prc_buy_diff_pct:>10.4f} % | "
-		msg += f"{mkt.prc_sell_diff_pct:>10.4f} % | "
-		msg += f"{mkt.prc_range_pct:>10.4f} % | "
-		msg += cs(f"$ {mkt.bal_avail:>9.2f} | ", "white", "green")
-		msg += cs(f"$ {mkt.reserve_amt:>9.2f} | ", "white", "green")
-		msg += cs(f"$ {mkt.spendable_amt:>9.2f} | ", "white", "green")
-		if self.reserve_locked_tf:
-			msg += cs(f"{'LOCKED':^14} | ", "yellow", "magenta")
-		else:
-			msg += cs(f"{'UNLOCKED':^14} | ", "magenta", "yellow")
-		chart_headers(in_str=hmsg, len_cnt=240)
-		chart_row(in_str=msg, len_cnt=240)
-
-		hmsg = ""
-		hmsg += f"{'trades':^9} | "
-		hmsg += f"{'wins':^9} | "
-		hmsg += f"{'lose':^9} | "
-		hmsg += f"{'win_pct':^9} % | "
-		hmsg += f"{'lose_pct':^9} % | "
-		hmsg += f"$ {'win_amt':^9} | "
-		hmsg += f"$ {'lose_amt':^9} | "
-		hmsg += f"$ {'spent':^9} | "
-		hmsg += f"$ {'recv':^9} | "
-		hmsg += f"$ {'hold':^9} | "
-		hmsg += f"$ {'val':^9} | "
-		hmsg += f"$ {'gain_amt':^9} | "
-		hmsg += f"{'gain_pct':^9} % | "
-		hmsg += f"{'gain_hr':^9} % | "
-		hmsg += f"{'gain_day':^9} % | "
-		hmsg += f"{'elapsed':^9} | "
-
-		msg = ''
-		msg += f'{trade_perf.tot_cnt:>9} | '
-		msg += f'{trade_perf.win_cnt:>9} | '
-		msg += f'{trade_perf.lose_cnt:>9} | '
-		msg += f'{trade_perf.win_pct:>9.2f} % | '
-		msg += f'{trade_perf.lose_pct:>9.2f} % | '
-		msg += f'$ {trade_perf.win_amt:>9.4f} | '
-		msg += f'$ {trade_perf.lose_amt:>9.4f} | '
-		msg += f'$ {trade_perf.tot_out_cnt:>9.4f} | '
-		msg += f'$ {trade_perf.tot_in_cnt:>9.4f} | '
-		msg += f'$ {trade_perf.val_curr:>9.4f} | '
-		msg += f'$ {trade_perf.val_tot:>9.4f} | '
-		msg += f'$ {trade_perf.gain_loss_amt:>9.4f} | '
-		msg += f'{trade_perf.gain_loss_pct:>9.4f} % | '
-		msg += f'{trade_perf.gain_loss_pct_hr:>9.4f} % | '
-		msg += f'{trade_perf.gain_loss_pct_day:>9.4f} % | '
-		msg += f'{trade_perf.last_elapsed:>9} | '
-
-		title_msg = f'* Market Stats * {prod_id} *'
-		chart_mid(in_str=title_msg, len_cnt=240)
-		chart_headers(in_str=hmsg, len_cnt=240)
-		if trade_perf.gain_loss_pct > 0:
-#			chart_row(in_str=msg, font_color='white', bg_color='green', len_cnt=240)
-			WoG('|' + msg)
-		else:
-#			chart_row(in_str=msg, font_color='white', bg_color='red', len_cnt=240)
-			WoR('|' + msg)
-
-		hmsg = ""
-		hmsg += f"{'strat':<15} | "
-		hmsg += f"{'freq':<15} | "
-		hmsg += f"{'total':^5} | "
-		hmsg += f"{'open':^5} | "
-		hmsg += f"{'close':^5} | "
-		hmsg += f"{'wins':^5} | "
-		hmsg += f"{'lose':^5} | "
-		hmsg += f"{'win':^6} % | "
-		hmsg += f"{'lose':^6} % | "
-		hmsg += f"{'gain_amt':^10} | "
-		hmsg += f"{'gain_pct':^10} % | "
-		hmsg += f"{'gain_hr':^10} % | "
-		hmsg += f"{'gain_day':^10} % | "
-		hmsg += f"{'elapsed':^7} | "
-
-#		print_adv(2)
-		title_msg = '* Buy Strategy Past Performance *'
-		chart_mid(in_str=title_msg, len_cnt=240)
-		chart_headers(hmsg, len_cnt=240)
-
-		for x in trade_strat_perfs:
-			x = dec_2_float(x)
-			x = AttrDictConv(in_dict=x)
-
-			if x.tot_cnt > 0:
-				msg = ''
-				msg += f'{x.buy_strat_name:<15} | '
-				msg += f'{x.buy_strat_freq:<15} | '
-				msg += f'{int(x.tot_cnt):>5} | '
-				msg += f'{int(x.open_cnt):>5} | '
-				msg += f'{int(x.close_cnt):>5} | '
-				msg += f'{int(x.win_cnt):>5} | '
-				msg += f'{int(x.lose_cnt):>5} | '
-				msg += f'{x.win_pct:>6.2f} % | '
-				msg += f'{x.lose_pct:>6.2f} % | '
-				msg += f'{x.gain_loss_amt:>10.2f} | '
-				msg += f'{x.gain_loss_pct:>10.2f} % | '
-				msg += f'{x.gain_loss_pct_hr:>10.2f} % | '
-				msg += f'{x.gain_loss_pct_day:>10.2f} % | '
-				msg += f'{x.strat_last_elapsed:>7} | '
-				msg  = '|' + cs_pct_color_50(pct=x.win_pct, msg=msg)
-				print(msg)
-#				chart_row(in_str=msg, len_cnt=240)
-
-		func_end(fnc)
-		return mkt, trade_perf, trade_strat_perfs
-
-	#<=====>#
-
 	def mkt_logic(self, mkt, trade_perf, trade_strat_perfs):
 		func_name = 'mkt_logic'
 		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
@@ -738,7 +574,7 @@ class BOT():
 			try:
 				t0 = time.perf_counter()
 
-				mkt, trade_perf, trade_strat_perfs = self.mkt_disp(mkt, trade_perf, trade_strat_perfs)
+				mkt, trade_perf, trade_strat_perfs = self.disp_mkt(mkt, trade_perf, trade_strat_perfs)
 
 				t1 = time.perf_counter()
 				secs = round(t1 - t0, 3)
@@ -939,7 +775,6 @@ class BOT():
 		mkt.buy_strat_type        = ''
 		mkt.buy_strat_name        = ''
 		mkt.buy_strat_freq        = ''
-	#	show_buy_disp_yn          = 'N'
 		debug_yn                  = 'N'
 		buy_signals               = []
 
@@ -988,7 +823,7 @@ class BOT():
 			mkt, trade_perf, trade_strat_perf, buy_yn, wait_yn, buy_signals, self.reserve_locked_tf = buy_strats_check(self.st, mkt, trade_perf, trade_strat_perf, ta, buy_signals, self.reserve_locked_tf)
 
 			# display
-			self.buy_disp(mkt, trade_strat_perf)
+			self.disp_buy(mkt, trade_strat_perf)
 
 			# these will have been checked before hand unless we forced the tests anyways
 			if buy_yn == 'Y':
@@ -1653,7 +1488,7 @@ class BOT():
 		hodl_yn                   = 'Y'
 		sell_signals              = []
 
-		self.sell_disp(pos)
+		self.disp_sell(pos)
 
 		# Logic that will block the sell from happening
 #		if sell_yn == 'Y':
@@ -2658,125 +2493,6 @@ class BOT():
 
 	#<=====>#
 
-	def buy_disp(self, mkt, trade_strat_perf):
-		func_name = 'buy_disp'
-		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perf)'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#		G(func_str)
-
-		prod_id          = mkt.prod_id
-		show_tests_yn    = self.st.spot.buy.show_tests_yn
-		show_tests_min   = self.st.spot.buy.show_tests_min
-
-		if self.show_buy_header_tf:
-			self.buy_header(prod_id)
-			self.show_buy_header_tf = False
-
-		msg1 = ''
-		msg1 += f'{trade_strat_perf.prod_id:<15} | '
-		msg1 += f'{trade_strat_perf.buy_strat_name:<15} | '
-		msg1 += f'{trade_strat_perf.buy_strat_freq:<15} | '
-		msg1 += f'{int(trade_strat_perf.tot_cnt):>5} | '
-		msg1 += f'{int(trade_strat_perf.open_cnt):>5} | '
-		msg1 += f'{int(trade_strat_perf.close_cnt):>5} | '
-		msg1 += f'{int(trade_strat_perf.win_cnt):>5} | '
-		msg1 += f'{int(trade_strat_perf.lose_cnt):>5} | '
-		msg1 += f'{trade_strat_perf.win_pct:>6.2f} % | '
-		msg1 += f'{trade_strat_perf.lose_pct:>6.2f} % | '
-		msg1 += f'{trade_strat_perf.gain_loss_amt:>10.2f} | '
-		msg1 += f'{trade_strat_perf.gain_loss_pct:>10.2f} % | '
-		msg1 += f'{trade_strat_perf.gain_loss_pct_hr:>10.2f} % | '
-		msg1 += f'{trade_strat_perf.gain_loss_pct_day:>10.2f} % | '
-		msg1 += f'{trade_strat_perf.strat_last_elapsed:>7} | '
-		msg1 += f'{trade_strat_perf.trade_size:>16.8f} | '
-
-		msg2 = ''
-		msg2 += f' | {int(trade_strat_perf.pass_cnt):>4} | '
-		msg2 += f'{int(trade_strat_perf.fail_cnt):>4} | '
-		msg2 += f'{trade_strat_perf.pass_pct:>6.2f} % | '
-
-		wmsg = f'{dttm_get()} ==> {msg1}{msg2}'
-		buy_log(wmsg)
-
-		in_str_len1 = len(msg1)
-		in_str_len2 = len(msg2)
-		in_str_len  = in_str_len1 + in_str_len2
-
-		if trade_strat_perf.tot_cnt > 0:
-			msg1 = cs_pct_color_50(pct=trade_strat_perf.win_pct, msg=msg1)
-		msg2 = cs_pct_color_100(pct=trade_strat_perf.pass_pct, msg=msg2)
-
-		if trade_strat_perf.pass_pct > 0:
-			msg = f'{msg1}{msg2}'
-			print(msg)
-		else:
-			msg = msg1
-
-		for msg in trade_strat_perf.all_passes:
-			buy_log(msg)
-			if trade_strat_perf.buy_yn == 'Y' or show_tests_yn in ('Y') or trade_strat_perf.pass_pct >= show_tests_min:
-				G('|' + msg)
-				self.show_buy_header_tf = True
-
-		for msg in trade_strat_perf.all_fails:
-			buy_log(msg)
-			if trade_strat_perf.buy_yn == 'Y' or show_tests_yn in ('Y') or trade_strat_perf.pass_pct >= show_tests_min:
-				R( '|' + msg)
-				self.show_buy_header_tf = True
-
-		func_end(fnc)
-
-	#<=====>#
-
-	def sell_disp(self, pos):
-		func_name = 'sell_disp'
-		func_str = f'{lib_name}.{func_name}(pos)'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#		G(func_str)
-
-		prod_id = pos.prod_id
-
-		if self.show_sell_header_tf:
-			self.sell_header(prod_id)
-			self.show_sell_header_tf = False
-
-		disp_age = format_disp_age(pos.age_mins)
-
-		if pos.test_tf == 1:
-			test_tf = 'T'
-		else:
-			test_tf = ''
-
-		msg = ''
-		msg += f'{pos.prod_id:<12} | '
-		msg += f'{test_tf:^1} | '
-		msg += f'{pos.pos_id:^6} | '
-		msg += f'{pos.buy_strat_name:^12} | '
-		msg += f'{pos.buy_strat_freq:^5} | '
-		msg += f'{disp_age:^10} | '
-		msg += f'{pos.tot_out_cnt:>16.8f} | '
-		msg += f'{pos.val_curr:>14.8f} | '
-		msg += f'{pos.prc_buy:>14.8f} | '
-		msg += f'{pos.prc_curr:>14.8f} | '
-		msg += f'{pos.prc_high:>14.8f} | '
-		msg += f'{pos.prc_chg_pct:>8.2f} % | '
-		msg += f'{pos.prc_chg_pct_high:>8.2f} % | '
-		msg += f'{pos.prc_chg_pct_low:>8.2f} % | '
-		msg += f'{pos.prc_chg_pct_drop:>8.2f} % | '
-		msg += f'$ {pos.gain_loss_amt:>14.8f} | '
-		msg += f'$ {pos.gain_loss_amt_est_high:>14.8f}'
-
-		wmsg = f'{dttm_get()} ==> {msg}'
-		sell_log(wmsg)
-
-		in_str_len = len(msg)
-		msg = '|' + cs_pct_color(pos.prc_chg_pct, msg)
-		print(msg)
-
-		func_end(fnc)
-
-	#<=====>#
-
 	def buy_log(self, msg):
 		func_name = 'buy_log'
 		func_str = f'{lib_name}.{func_name}(msg)'
@@ -2943,6 +2659,348 @@ class BOT():
 
 		func_end(fnc)
 		return pos
+
+#<=====>#
+
+	def prt_cols(self, l, cols=10, clr='WoG'):
+		func_name = 'prt_cols'
+		func_str = f'{lib_name}.{func_name}(l, cols={cols}, clr={clr})'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+	#	G(func_str)
+
+		col_cnt = 0
+		s = ''
+		for x in l:
+			col_cnt += 1
+			if clr == 'WoG':
+				s += cs(text=f'{x:<15}', font_color='white', bg_color='green')
+			elif clr == 'GoW':
+				s += cs(text=f'{x:<15}', font_color='green', bg_color='white')
+	#		print(f'col_cnt : {col_cnt}, col_cnt // 10 : {col_cnt // 10}')
+			if col_cnt % cols == 0:
+				chart_row(s, len_cnt=177)
+				s = ''
+				col_cnt = 0
+			elif col_cnt == len(l):
+				s += ''
+			else:
+				s += ' | '
+		if col_cnt > 0 and col_cnt < cols:
+			chart_row(s, len_cnt=177)
+#			print_adv()
+
+		func_end(fnc)
+
+	#<=====>#
+
+	def disp_mkt(self, mkt, trade_perf, trade_strat_perfs):
+		func_name = 'disp_mkt'
+		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
+#		G(func_str)
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
+
+		self.disp_mkt_summary(mkt, trade_perf, trade_strat_perfs)
+		self.disp_mkt_stats(mkt, trade_perf, trade_strat_perfs)
+		self.disp_mkt_performance(mkt, trade_perf, trade_strat_perfs)
+
+		func_end(fnc)
+		return mkt, trade_perf, trade_strat_perfs
+
+	#<=====>#
+
+	def disp_mkt_summary(self, mkt, trade_perf, trade_strat_perfs):
+		func_name = 'disp_mkt_summary'
+		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
+#		G(func_str)
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
+
+		# Market Basics
+		prod_id = mkt.prod_id
+
+		# Prices & Balances
+		hmsg = ""
+		hmsg += f"$ {'price':^14} | "
+		hmsg += f"{'prc_chg':^10} % | "
+		hmsg += f"$ {'buy_prc':^14} | "
+		hmsg += f"$ {'sell_prc':^14} | "
+		hmsg += f"{'buy_var':^10} % | "
+		hmsg += f"{'sell_var':^10} % | "
+		hmsg += f"{'spread_pct':^10} % | "
+		hmsg += f"$ {'usdc bal':^9} | "
+		hmsg += f"$ {'reserve':^9} | "
+		hmsg += f"$ {'available':^9} | "
+		hmsg += f"{'reserves state':^14} | "
+
+		msg = ""
+		msg += f"$ {mkt.prc_mkt:>14.8f} | "
+		msg += f"{mkt.prc_pct_chg_24h:>10.4f} % | "
+		msg += f"$ {mkt.prc_buy:>14.8f} | "
+		msg += f"$ {mkt.prc_sell:>14.8f} | "
+		msg += f"{mkt.prc_buy_diff_pct:>10.4f} % | "
+		msg += f"{mkt.prc_sell_diff_pct:>10.4f} % | "
+		msg += f"{mkt.prc_range_pct:>10.4f} % | "
+		msg += cs(f"$ {mkt.bal_avail:>9.2f}", "white", "green") + " | "
+		msg += cs(f"$ {mkt.reserve_amt:>9.2f}", "white", "green") + " | "
+		msg += cs(f"$ {mkt.spendable_amt:>9.2f}", "white", "green") + " | "
+		if self.reserve_locked_tf:
+			msg += cs(f"{'LOCKED':^14}", "yellow", "magenta") + " | "
+		else:
+			msg += cs(f"{'UNLOCKED':^14}", "magenta", "yellow") + " | "
+		chart_headers(in_str=hmsg, len_cnt=240)
+		chart_row(in_str=msg, len_cnt=240)
+
+		func_end(fnc)
+		return mkt, trade_perf, trade_strat_perfs
+
+	#<=====>#
+
+	def disp_mkt_stats(self, mkt, trade_perf, trade_strat_perfs):
+		func_name = 'disp_mkt_stats'
+		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
+#		G(func_str)
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
+
+		# Market Basics
+		prod_id = mkt.prod_id
+
+
+		hmsg = ""
+		hmsg += f"{'trades':^9} | "
+		hmsg += f"{'wins':^9} | "
+		hmsg += f"{'lose':^9} | "
+		hmsg += f"{'win_pct':^9} % | "
+		hmsg += f"{'lose_pct':^9} % | "
+		hmsg += f"$ {'win_amt':^9} | "
+		hmsg += f"$ {'lose_amt':^9} | "
+		hmsg += f"$ {'spent':^9} | "
+		hmsg += f"$ {'recv':^9} | "
+		hmsg += f"$ {'hold':^9} | "
+		hmsg += f"$ {'val':^9} | "
+		hmsg += f"$ {'gain_amt':^9} | "
+		hmsg += f"{'gain_pct':^9} % | "
+		hmsg += f"{'gain_hr':^9} % | "
+		hmsg += f"{'gain_day':^9} % | "
+		hmsg += f"{'elapsed':^9} | "
+
+		msg = ''
+		msg += f'{trade_perf.tot_cnt:>9}' + ' | '
+		msg += cs(f'{trade_perf.win_cnt:>9}', font_color='white', bg_color='green') + ' | '
+		msg += cs(f'{trade_perf.lose_cnt:>9}', font_color='white', bg_color='red') + ' | '
+		msg += cs(f'{trade_perf.win_pct:>9.2f} %', font_color='white', bg_color='green') + ' | '
+		msg += cs(f'{trade_perf.lose_pct:>9.2f} %', font_color='white', bg_color='red') + ' | '
+		msg += cs(f'$ {trade_perf.win_amt:>9.4f}', font_color='white', bg_color='green') + ' | '
+		msg += cs(f'$ {trade_perf.lose_amt:>9.4f}', font_color='white', bg_color='red') + ' | '
+		msg += f'$ {trade_perf.tot_out_cnt:>9.4f}' + ' | '
+		msg += f'$ {trade_perf.tot_in_cnt:>9.4f}' + ' | '
+		msg += f'$ {trade_perf.val_curr:>9.4f}' + ' | '
+		msg += f'$ {trade_perf.val_tot:>9.4f}' + ' | '
+		if trade_perf.gain_loss_amt > 0:
+			msg += cs(f'$ {trade_perf.gain_loss_amt:>9.4f}', font_color='white', bg_color='green') + ' | '
+			msg += cs(f'{trade_perf.gain_loss_pct:>9.4f} %', font_color='white', bg_color='green') + ' | '
+			msg += cs(f'{trade_perf.gain_loss_pct_hr:>9.4f} %', font_color='white', bg_color='green') + ' | '
+			msg += cs(f'{trade_perf.gain_loss_pct_day:>9.4f} %', font_color='white', bg_color='green') + ' | '
+		else:
+			msg += cs(f'$ {trade_perf.gain_loss_amt:>9.4f}', font_color='white', bg_color='red') + ' | '
+			msg += cs(f'{trade_perf.gain_loss_pct:>9.4f} %', font_color='white', bg_color='red') + ' | '
+			msg += cs(f'{trade_perf.gain_loss_pct_hr:>9.4f} %', font_color='white', bg_color='red') + ' | '
+			msg += cs(f'{trade_perf.gain_loss_pct_day:>9.4f} %', font_color='white', bg_color='red') + ' | '
+		msg += f'{trade_perf.last_elapsed:>9}' + ' | '
+
+		title_msg = f'* Market Stats * {prod_id} *'
+		chart_mid(in_str=title_msg, len_cnt=240)
+		chart_headers(in_str=hmsg, len_cnt=240)
+		chart_row(msg, len_cnt=240)
+#		if trade_perf.gain_loss_pct > 0:
+#			chart_row(in_str=msg, font_color='white', bg_color='green', len_cnt=240)
+#			WoG('|' + msg)
+#		else:
+#			chart_row(in_str=msg, font_color='white', bg_color='red', len_cnt=240)
+#			WoR('|' + msg)
+
+
+		func_end(fnc)
+		return mkt, trade_perf, trade_strat_perfs
+
+	#<=====>#
+
+	def disp_mkt_performance(self, mkt, trade_perf, trade_strat_perfs):
+		func_name = 'disp_mkt_performance'
+		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
+#		G(func_str)
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
+
+		# Market Basics
+		prod_id = mkt.prod_id
+
+		hmsg = ""
+		hmsg += f"{'strat':<15} | "
+		hmsg += f"{'freq':<15} | "
+		hmsg += f"{'total':^5} | "
+		hmsg += f"{'open':^5} | "
+		hmsg += f"{'close':^5} | "
+		hmsg += f"{'wins':^5} | "
+		hmsg += f"{'lose':^5} | "
+		hmsg += f"{'win':^6} % | "
+		hmsg += f"{'lose':^6} % | "
+		hmsg += f"{'gain_amt':^10} | "
+		hmsg += f"{'gain_pct':^10} % | "
+		hmsg += f"{'gain_hr':^10} % | "
+		hmsg += f"{'gain_day':^10} % | "
+		hmsg += f"{'elapsed':^7} | "
+
+#		print_adv(2)
+		title_msg = '* Buy Strategy Past Performance *'
+		chart_mid(in_str=title_msg, len_cnt=240)
+		chart_headers(hmsg, len_cnt=240)
+
+		for x in trade_strat_perfs:
+			x = dec_2_float(x)
+			x = AttrDictConv(in_dict=x)
+
+			if x.tot_cnt > 0:
+				msg = ''
+				msg += f'{x.buy_strat_name:<15} | '
+				msg += f'{x.buy_strat_freq:<15} | '
+				msg += f'{int(x.tot_cnt):>5} | '
+				msg += f'{int(x.open_cnt):>5} | '
+				msg += f'{int(x.close_cnt):>5} | '
+				msg += f'{int(x.win_cnt):>5} | '
+				msg += f'{int(x.lose_cnt):>5} | '
+				msg += f'{x.win_pct:>6.2f} % | '
+				msg += f'{x.lose_pct:>6.2f} % | '
+				msg += f'{x.gain_loss_amt:>10.2f} | '
+				msg += f'{x.gain_loss_pct:>10.2f} % | '
+				msg += f'{x.gain_loss_pct_hr:>10.2f} % | '
+				msg += f'{x.gain_loss_pct_day:>10.2f} % | '
+				msg += f'{x.strat_last_elapsed:>7}' + ' | '
+				msg  = cs_pct_color_50(pct=x.win_pct, msg=msg)
+#				print(msg)
+				chart_row(in_str=msg, len_cnt=240)
+
+		func_end(fnc)
+		return mkt, trade_perf, trade_strat_perfs
+
+	#<=====>#
+
+	def disp_buy(self, mkt, trade_strat_perf):
+		func_name = 'disp_buy'
+		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perf)'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#		G(func_str)
+
+		prod_id          = mkt.prod_id
+		show_tests_yn    = self.st.spot.buy.show_tests_yn
+		show_tests_min   = self.st.spot.buy.show_tests_min
+
+		if self.show_buy_header_tf:
+			self.buy_header(prod_id)
+			self.show_buy_header_tf = False
+
+		msg1 = ''
+		msg1 += f'{trade_strat_perf.prod_id:<15}' +' | '
+		msg1 += f'{trade_strat_perf.buy_strat_name:<15}' +' | '
+		msg1 += f'{trade_strat_perf.buy_strat_freq:<15}' +' | '
+		msg1 += f'{int(trade_strat_perf.tot_cnt):>5}' +' | '
+		msg1 += f'{int(trade_strat_perf.open_cnt):>5}' +' | '
+		msg1 += f'{int(trade_strat_perf.close_cnt):>5}' +' | '
+		msg1 += f'{int(trade_strat_perf.win_cnt):>5}' +' | '
+		msg1 += f'{int(trade_strat_perf.lose_cnt):>5}' +' | '
+		msg1 += f'{trade_strat_perf.win_pct:>6.2f} %' +' | '
+		msg1 += f'{trade_strat_perf.lose_pct:>6.2f} %' +' | '
+		msg1 += f'{trade_strat_perf.gain_loss_amt:>10.2f}' +' | '
+		msg1 += f'{trade_strat_perf.gain_loss_pct:>10.2f} %' +' | '
+		msg1 += f'{trade_strat_perf.gain_loss_pct_hr:>10.2f} %' +' | '
+		msg1 += f'{trade_strat_perf.gain_loss_pct_day:>10.2f} %' +' | '
+		msg1 += f'{trade_strat_perf.strat_last_elapsed:>7}' +' | '
+		msg1 += f'{trade_strat_perf.trade_size:>16.8f}' +' | '
+
+		msg2 = ''
+		msg2 += f' | {int(trade_strat_perf.pass_cnt):>4}' +' | '
+		msg2 += f'{int(trade_strat_perf.fail_cnt):>4}' +' | '
+		msg2 += f'{trade_strat_perf.pass_pct:>6.2f} %' +' | '
+
+		wmsg = f'{dttm_get()} ==> {msg1}{msg2}'
+		buy_log(wmsg)
+
+		in_str_len1 = len(msg1)
+		in_str_len2 = len(msg2)
+		in_str_len  = in_str_len1 + in_str_len2
+
+		if trade_strat_perf.tot_cnt > 0:
+			msg1 = cs_pct_color_50(pct=trade_strat_perf.win_pct, msg=msg1)
+		msg2 = cs_pct_color_100(pct=trade_strat_perf.pass_pct, msg=msg2)
+
+		if trade_strat_perf.pass_pct > 0:
+			msg = f'{msg1}{msg2}'
+			chart_row(msg, len_cnt=240)
+		else:
+			msg = msg1
+#			chart_row(msg, len_cnt=240)
+
+		for msg in trade_strat_perf.all_passes:
+			buy_log(msg)
+			if trade_strat_perf.buy_yn == 'Y' or show_tests_yn in ('Y') or trade_strat_perf.pass_pct >= show_tests_min:
+				msg = cs(msg, font_color='green')
+				chart_row(msg, len_cnt=240)
+				self.show_buy_header_tf = True
+
+		for msg in trade_strat_perf.all_fails:
+			buy_log(msg)
+			if trade_strat_perf.buy_yn == 'Y' or show_tests_yn in ('Y') or trade_strat_perf.pass_pct >= show_tests_min:
+				msg = cs(msg, font_color='red')
+				chart_row(msg, len_cnt=240)
+				self.show_buy_header_tf = True
+
+		func_end(fnc)
+
+	#<=====>#
+
+	def disp_sell(self, pos):
+		func_name = 'disp_sell'
+		func_str = f'{lib_name}.{func_name}(pos)'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#		G(func_str)
+
+		prod_id = pos.prod_id
+
+		if self.show_sell_header_tf:
+			self.sell_header(prod_id)
+			self.show_sell_header_tf = False
+
+		disp_age = format_disp_age(pos.age_mins)
+
+		if pos.test_tf == 1:
+			test_tf = 'T'
+		else:
+			test_tf = ''
+
+		msg = ''
+		msg += f'{pos.prod_id:<12}' + ' | '
+		msg += f'{test_tf:^1}' + ' | '
+		msg += f'{pos.pos_id:^6}' + ' | '
+		msg += f'{pos.buy_strat_name:^12}' + ' | '
+		msg += f'{pos.buy_strat_freq:^5}' + ' | '
+		msg += f'{disp_age:^10}' + ' | '
+		msg += f'{pos.tot_out_cnt:>16.8f}' + ' | '
+		msg += f'{pos.val_curr:>14.8f}' + ' | '
+		msg += f'{pos.prc_buy:>14.8f}' + ' | '
+		msg += f'{pos.prc_curr:>14.8f}' + ' | '
+		msg += f'{pos.prc_high:>14.8f}' + ' | '
+		msg += f'{pos.prc_chg_pct:>8.2f} %' + ' | '
+		msg += f'{pos.prc_chg_pct_high:>8.2f} %' + ' | '
+		msg += f'{pos.prc_chg_pct_low:>8.2f} %' + ' | '
+		msg += f'{pos.prc_chg_pct_drop:>8.2f} %' + ' | '
+		msg += f'$ {pos.gain_loss_amt:>14.8f}' + ' | '
+		msg += f'$ {pos.gain_loss_amt_est_high:>14.8f}'
+
+		wmsg = f'{dttm_get()} ==> {msg}'
+		sell_log(wmsg)
+
+		in_str_len = len(msg)
+		msg = cs_pct_color(pos.prc_chg_pct, msg)
+		chart_row(msg, len_cnt=240)
+
+		func_end(fnc)
 
 	#<=====>#
 
@@ -3322,6 +3380,60 @@ class BOT():
 
 		func_end(fnc)
 		return pos
+
+	#<=====>#
+
+	def before_start(self):
+		func_name = 'before_loop'
+		func_str = f'{lib_name}.{func_name}()'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#		G(func_str)
+
+		# this is here just to proof that sounds alerts will be heard
+		if self.st.speak_yn == 'Y': speak_async('Coinbase Trade Bot Online')
+
+		self.wallet_refresh(force_tf=True)
+
+		report_buys_recent(cnt=20)
+		report_sells_recent(cnt=20)
+		report_open_by_age()
+
+		func_end(fnc)
+
+	#<=====>#
+
+	def before_loop(self):
+		func_name = 'before_loop'
+		func_str = f'{lib_name}.{func_name}()'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#		G(func_str)
+
+		self.sell_ords_check()
+		self.buy_ords_check()
+		cb_mkts_refresh()
+		self.wallet_refresh(force_tf=True)
+
+		func_end(fnc)
+
+	#<=====>#
+
+	def after_loop(self):
+		func_name = 'after_loop'
+		func_str = f'{lib_name}.{func_name}()'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#		G(func_str)
+
+		self.sell_ords_check()
+		self.buy_ords_check()
+
+		report_buys_recent(cnt=20)
+		report_sells_recent(cnt=20)
+		report_open_by_age()
+
+#		# End of Market Loop Balance Display
+		self.wallet_refresh()
+
+		func_end(fnc)
 
 	#<=====>#
 

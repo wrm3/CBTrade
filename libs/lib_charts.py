@@ -48,8 +48,8 @@ local_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '', 'l
 if local_libs_path not in sys.path:
 	sys.path.append(local_libs_path)
 
-from lib_common                    import *
-from lib_common                    import lpad, rpad, cpad
+#from lib_common                    import *
+#from lib_common                    import lpad, rpad, cpad
 from lib_colors                    import cs, cp
 
 #<=====>#
@@ -247,6 +247,42 @@ lib_secs_max  = 10
 #	pallette["darkslategray"]         = "#2F4F4F"      # darkslategray                         #2F4F4F   47   79   79  205
 #	#pallette["darkslategrey"]         = "#2F4F4F"      # darkslategrey                         #2F4F4F   47   79   79  205
 #	pallette["black"]                 = "#000000"      # black                                 #000000    0    0    0    0
+
+#<=====>#
+
+def chart_top(in_str='', len_cnt=250, align='left', font_color='white', bg_color='darkblue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+	l, s, r = chart_shapes(part='top', style=style)
+	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+
+#<=====>#
+
+def chart_title(in_str='', len_cnt=250, align='left', font_color='white', bg_color='darkblue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+	l, s, r = chart_shapes(part='row', style=style)
+	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+
+#<=====>#
+
+def chart_headers(in_str='', len_cnt=250, align='left', font_color='white', bg_color='blue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+	l, s, r = chart_shapes(part='row', style=style)
+	disp_str = chart_string(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+
+#<=====>#
+
+def chart_mid(in_str='', len_cnt=250, align='left', font_color='white', bg_color='darkblue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+	l, s, r = chart_shapes(part='mid', style=style)
+	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+
+#<=====>#
+
+def chart_row(in_str='', len_cnt=250, align='left', font_color='white', bg_color='black', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+	l, s, r = chart_shapes(part='row', style=style)
+	disp_str = chart_string(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+
+#<=====>#
+
+def chart_bottom(in_str='', len_cnt=250, align='left', font_color='white', bg_color='darkblue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+	l, s, r = chart_shapes(part='bottom', style=style)
+	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
 '''
 Single-Line Box Drawing Characters:
@@ -528,52 +564,96 @@ def chart_string(l, s, r, align, font_color, bg_color, border_font_color, border
 		disp_str = f"{fore}{disp_str}{aft}"
 	else:
 		if align == 'left':
-			in_str = rpad(in_str, len_cnt, s)
+#			in_str = rpad(in_str, len_cnt, s)
+			true_len = display_length(in_str)
+			in_str = in_str + ' ' * (len_cnt - true_len)
 		if align == 'right':
-			in_str = lpad(in_str, len_cnt, s)
+#			in_str = lpad(in_str, len_cnt, s)
+			true_len = display_length(in_str)
+			in_str = ' ' * (len_cnt - true_len) + in_str
 		if align == 'center':
-			in_str = cpad(in_str, len_cnt, s)
+#			in_str = cpad(in_str, len_cnt, s)
+			true_len = display_length(in_str)
+			needed_pad_len = len_cnt - true_len
+			lead_pad_len = int(needed_pad_len / 2)
+			rear_pad_len = int(needed_pad_len / 2)
+			if lead_pad_len + rear_pad_len > needed_pad_len:
+				rear_pad_len -= 1
+			in_str = ' ' * lead_pad_len + in_str + ' ' * rear_pad_len
 
-		disp_str  = cs(text=in_str, font_color=font_color, bg_color=bg_color)
+		if not formatted:
+			disp_str  = cs(text=in_str, font_color=font_color, bg_color=bg_color)
+
 		disp_str = f"{fore}{disp_str}{aft}"
 
 	print(disp_str) 
 
 #<=====>#
 
-def chart_top(in_str='', len_cnt=250, align='left', font_color='white', bg_color='darkblue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
-	l, s, r = chart_shapes(part='top', style=style)
-	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+def lpad(in_str, length, pad_char):
+	out_str = in_str.rjust(length, pad_char)
+	return out_str
 
 #<=====>#
 
-def chart_title(in_str='', len_cnt=250, align='left', font_color='white', bg_color='darkblue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
-	l, s, r = chart_shapes(part='row', style=style)
-	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+def rpad(in_str, length, pad_char):
+	out_str = in_str.ljust(length, pad_char)
+	return out_str
 
 #<=====>#
 
-def chart_headers(in_str='', len_cnt=250, align='left', font_color='white', bg_color='blue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
-	l, s, r = chart_shapes(part='row', style=style)
-	disp_str = chart_string(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+def cpad(in_str, length, pad_char):
+	out_str = in_str.center(length, pad_char)
+	return out_str
 
 #<=====>#
 
-def chart_mid(in_str='', len_cnt=250, align='left', font_color='white', bg_color='darkblue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
-	l, s, r = chart_shapes(part='mid', style=style)
-	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+def left(in_str, length):
+	out_str = in_str[0:length]
+	return out_str
 
 #<=====>#
 
-def chart_row(in_str='', len_cnt=250, align='left', font_color='white', bg_color='black', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
-	l, s, r = chart_shapes(part='row', style=style)
-	disp_str = chart_string(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+def right(in_str, length):
+	out_str = in_str[length*-1:]
+	return out_str
 
 #<=====>#
 
-def chart_bottom(in_str='', len_cnt=250, align='left', font_color='white', bg_color='darkblue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
-	l, s, r = chart_shapes(part='bottom', style=style)
-	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+def mid(in_str, start_position, length):
+	out_str = in_str[start_position:length+1]
+	return out_str
+
+#<=====>#
+
+def strip_formatting(in_str):
+	# Define a regex pattern to match ANSI escape sequences
+	ansi_escape = re.compile(r'''
+		\x1B     # ESC
+		\[       # CSI (Control Sequence Introducer)
+		[0-?]*   # Parameter bytes
+		[ -/]*   # Intermediate bytes
+		[@-~]    # Final byte
+		''', re.VERBOSE)
+	strip_str = ansi_escape.sub('', in_str)
+	return strip_str
+
+#<=====>#
+
+def is_even(number: int) -> bool:
+	return number % 2 == 0
+
+#<=====>#
+
+def is_odd(number: int) -> bool:
+	return number % 2 != 0
+
+#<=====>#
+
+def display_length(in_str):
+	strip_str = strip_formatting(in_str)
+	display_length = len(strip_str)
+	return display_length
 
 #<=====>#
 # Post Variables
