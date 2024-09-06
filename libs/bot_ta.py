@@ -53,7 +53,7 @@ import pandas_ta as pta
 # import schedule
 # import sys
 # import time
-# import traceback
+import traceback
 import warnings
 
 warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
@@ -115,141 +115,155 @@ def mkt_ta_main(mkt, st):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
-	prod_id     = mkt.prod_id
-	ta          = AttrDict()
-	prc_mkt    = mkt.prc_mkt
+	try:
 
-	dfs = {}
-	rfreqs = ['1min', '3min', '5min', '15min', '30min', '1h', '4h', '1d']
-	for rfreq in rfreqs:
-		dfs[rfreq] = ta_df_get(prod_id=prod_id, rfreq=rfreq)
-	mkt.dfs = dfs
+		prod_id     = mkt.prod_id
+		ta          = AttrDict()
+		prc_mkt     = mkt.prc_mkt
+		rfreq       = ''
+		df          = None
 
-	rfreqs = ['1min', '3min', '5min', '15min', '30min', '1h', '4h', '1d']
+		dfs = {}
+		rfreqs = ['1min', '3min', '5min', '15min', '30min', '1h', '4h', '1d']
+		for rfreq in rfreqs:
+			dfs[rfreq] = ta_df_get(prod_id=prod_id, rfreq=rfreq)
+		mkt.dfs = dfs
 
-	close_price = dfs['1min']['close'].iloc[-1]
+		rfreqs = ['1min', '3min', '5min', '15min', '30min', '1h', '4h', '1d']
 
-#	# backfills the oldest rows to ensure we have min 250
-#	for rfreq in rfreqs:
-#		if len(dfs[rfreq]) < 300:
-#			# Calculate the number of rows to replicate
-#			rows_to_add = 300 - len(dfs[rfreq])
-#			# Replicate the first row
-#			first_row_replicated = pd.concat([dfs[rfreq].iloc[0:1]] * rows_to_add, ignore_index=True)
-#			# Append the replicated rows to the start of the DataFrame
-#			dfs[rfreq] = pd.concat([first_row_replicated, dfs[rfreq]], ignore_index=True)
-#			# Ensure the index is a DatetimeIndex
-#			if 'timestamp' in dfs[rfreq].columns:
-#				dfs[rfreq]['timestamp'] = pd.to_datetime(dfs[rfreq]['timestamp'])
-#				dfs[rfreq].set_index('timestamp', inplace=True)
-#			else:
-#				print(f"Warning: 'timestamp' column missing in {rfreq} data")
+		close_price = dfs['1min']['close'].iloc[-1]
 
-#	# Backfills the oldest rows to ensure we have min 250
-#	for rfreq in rfreqs:
-#		if len(dfs[rfreq]) < 300:
-#			# Calculate the number of rows to replicate
-#			rows_to_add = 300 - len(dfs[rfreq])
-#			# Replicate the first row
-#			first_row = dfs[rfreq].iloc[0].to_frame().T
-#			first_row_replicated = pd.concat([first_row] * rows_to_add, ignore_index=True)
-#			# Ensure the timestamp column is present
-#			first_row_replicated.index = pd.date_range(start=dfs[rfreq].index[0] - pd.Timedelta(minutes=rows_to_add), periods=rows_to_add, freq=rfreq)
-#			first_row_replicated.index.name = 'timestamp'
-#			# Append the replicated rows to the start of the DataFrame
-#			dfs[rfreq] = pd.concat([first_row_replicated, dfs[rfreq]]).sort_index()
+#		# backfills the oldest rows to ensure we have min 250
+#		for rfreq in rfreqs:
+#			if len(dfs[rfreq]) < 300:
+#				# Calculate the number of rows to replicate
+#				rows_to_add = 300 - len(dfs[rfreq])
+#				# Replicate the first row
+#				first_row_replicated = pd.concat([dfs[rfreq].iloc[0:1]] * rows_to_add, ignore_index=True)
+#				# Append the replicated rows to the start of the DataFrame
+#				dfs[rfreq] = pd.concat([first_row_replicated, dfs[rfreq]], ignore_index=True)
+#				# Ensure the index is a DatetimeIndex
+#				if 'timestamp' in dfs[rfreq].columns:
+#					dfs[rfreq]['timestamp'] = pd.to_datetime(dfs[rfreq]['timestamp'])
+#					dfs[rfreq].set_index('timestamp', inplace=True)
+#				else:
+#					print(f"Warning: 'timestamp' column missing in {rfreq} data")
 
-#	for rfreq in rfreqs:
-#			print(f"Debug Info Initial => {dfs[rfreq].df.tail(5)}")  # Add this line for more debug info
+#		# Backfills the oldest rows to ensure we have min 250
+#		for rfreq in rfreqs:
+#			if len(dfs[rfreq]) < 300:
+#				# Calculate the number of rows to replicate
+#				rows_to_add = 300 - len(dfs[rfreq])
+#				# Replicate the first row
+#				first_row = dfs[rfreq].iloc[0].to_frame().T
+#				first_row_replicated = pd.concat([first_row] * rows_to_add, ignore_index=True)
+#				# Ensure the timestamp column is present
+#				first_row_replicated.index = pd.date_range(start=dfs[rfreq].index[0] - pd.Timedelta(minutes=rows_to_add), periods=rows_to_add, freq=rfreq)
+#				first_row_replicated.index.name = 'timestamp'
+#				# Append the replicated rows to the start of the DataFrame
+#				dfs[rfreq] = pd.concat([first_row_replicated, dfs[rfreq]]).sort_index()
 
-	# populate the data for forming current candles
-	for rfreq in rfreqs:
-		if rfreq in ('1d','4h'):
-			# remove last row
-			dfs[rfreq] = dfs[rfreq].iloc[:-1]
-			# get max index
-			last_candle_dttm = dfs[rfreq].index.max()
-			# get the 1h
-			df_add = dfs['1h']
-			# get the recent 1h
-			df_add_filtered = df_add[df_add.index > last_candle_dttm]
-			# assemble them
-			dfs[rfreq] = pd.concat([dfs[rfreq], df_add_filtered]).sort_index()
+#		for rfreq in rfreqs:
+#				print(f"Debug Info Initial => {dfs[rfreq].df.tail(5)}")  # Add this line for more debug info
 
-		if rfreq not in ('1min'):
-			# remove last row
-			dfs[rfreq] = dfs[rfreq].iloc[:-1]
-			# get max index
-			last_candle_dttm = dfs[rfreq].index.max()
-			# get the 1min
-			df_add = dfs['1min']
-			# get the recent 1min
-			df_add_filtered = df_add[df_add.index > last_candle_dttm]
-			# assemble them
-			dfs[rfreq] = pd.concat([dfs[rfreq], df_add_filtered]).sort_index()
+		# populate the data for forming current candles
+		for rfreq in rfreqs:
+			if rfreq in ('1d','4h'):
+				# remove last row
+				dfs[rfreq] = dfs[rfreq].iloc[:-1]
+				# get max index
+				last_candle_dttm = dfs[rfreq].index.max()
+				# get the 1h
+				df_add = dfs['1h']
+				# get the recent 1h
+				df_add_filtered = df_add[df_add.index > last_candle_dttm]
+				# assemble them
+				dfs[rfreq] = pd.concat([dfs[rfreq], df_add_filtered]).sort_index()
 
-		if rfreq not in ('1min'):
-			dfs[rfreq] = dfs[rfreq].resample(rfreq).agg({
-				'open': 'first',
-				'high': 'max',
-				'low': 'min',
-				'close': 'last',
-				'volume': 'sum'
-				}).dropna()
+			if rfreq not in ('1min'):
+				# remove last row
+				dfs[rfreq] = dfs[rfreq].iloc[:-1]
+				# get max index
+				last_candle_dttm = dfs[rfreq].index.max()
+				# get the 1min
+				df_add = dfs['1min']
+				# get the recent 1min
+				df_add_filtered = df_add[df_add.index > last_candle_dttm]
+				# assemble them
+				dfs[rfreq] = pd.concat([dfs[rfreq], df_add_filtered]).sort_index()
 
-		# Ensure the index is a DatetimeIndex
-		if not isinstance(dfs[rfreq].index, pd.DatetimeIndex):
-			dfs[rfreq]['timestamp'] = pd.to_datetime(dfs[rfreq]['timestamp'])
-			dfs[rfreq] = dfs[rfreq].set_index('timestamp')
+			if rfreq not in ('1min'):
+				dfs[rfreq] = dfs[rfreq].resample(rfreq).agg({
+					'open': 'first',
+					'high': 'max',
+					'low': 'min',
+					'close': 'last',
+					'volume': 'sum'
+					}).dropna()
 
-		if rfreq == '1min':
+			# Ensure the index is a DatetimeIndex
+			if not isinstance(dfs[rfreq].index, pd.DatetimeIndex):
+				dfs[rfreq]['timestamp'] = pd.to_datetime(dfs[rfreq]['timestamp'])
+				dfs[rfreq] = dfs[rfreq].set_index('timestamp')
+
+			if rfreq == '1min':
+				csv_fname = f'data/{mkt.prod_id}_{rfreq}.csv'
+				dfs[rfreq].to_csv(csv_fname, index=True)
+
+		for rfreq in rfreqs:
+			if dfs[rfreq]['close'].iloc[-1] != close_price:
+				print(f"line 149 => rfreq : {rfreq}, end : {dfs[rfreq].index.max()}, close : {dfs[rfreq]['close'].iloc[-1]}, close should be {close_price}")
+				print('before fix')
+				print(dfs[rfreq].tail(3))
+				dfs[rfreq].loc[dfs[rfreq].index[-1], 'close'] = close_price
+				dfs[rfreq].loc[dfs[rfreq].index[-1], 'open']  = dfs[rfreq]['close'].iloc[-2]
+				print('after fix')
+				print(dfs[rfreq].tail(3))
+
+		# reduced list, previous was used for forming current candles
+		rfreqs = ['3min', '5min', '15min', '30min', '1h', '4h', '1d']
+
+		for rfreq in rfreqs:
+#			print(f'rfreq : {rfreq}')
+			ta[rfreq]            = AttrDict()
+			ta[rfreq].df         = None
+			ta[rfreq].curr       = AttrDict()
+			ta[rfreq].last       = AttrDict()
+			ta[rfreq].prev       = AttrDict()
+
+			df = dfs[rfreq]
+			df = ta_add_indicators(df, st, prc_mkt, rfreq)
+			ta[rfreq].df = df
+
 			csv_fname = f'data/{mkt.prod_id}_{rfreq}.csv'
-			dfs[rfreq].to_csv(csv_fname, index=True)
+			df.to_csv(csv_fname, index=True)
 
-	for rfreq in rfreqs:
-		if dfs[rfreq]['close'].iloc[-1] != close_price:
-			print(f"line 149 => rfreq : {rfreq}, end : {dfs[rfreq].index.max()}, close : {dfs[rfreq]['close'].iloc[-1]}, close should be {close_price}")
-			print('before fix')
-			print(dfs[rfreq].tail(3))
-			dfs[rfreq].loc[dfs[rfreq].index[-1], 'close'] = close_price
-			dfs[rfreq].loc[dfs[rfreq].index[-1], 'open']  = dfs[rfreq]['close'].iloc[-2]
-			print('after fix')
-			print(dfs[rfreq].tail(3))
+			for x in range(0,-6,-1):
+				desc = f'ago{abs(x)}'
+				y = x - 1
+				for k in df:
+					if not rfreq in ta: ta[rfreq] = AttrDict()
+					if not k in ta[rfreq]: ta[rfreq][k] = AttrDict()
+					ta[rfreq][k][desc] =  df[k].iloc[y]
 
-	# reduced list, previous was used for forming current candles
-	rfreqs = ['3min', '5min', '15min', '30min', '1h', '4h', '1d']
+		for rfreq in rfreqs:
+			if ta[rfreq].df['close'].iloc[-1] != close_price:
+				print(f"line 302 => rfreq : {rfreq}, end : {ta[rfreq].df.index.max()}, close_price : {close_price:>.8f}, close : {ta[rfreq].df['close'].iloc[-1]:>.8f}")
+				print(f"Debug Info Final => {ta[rfreq].df.tail(5)}")  # Add this line for more debug info
+				ta = 'Error!'
+#				beep(3)
+#				sys.exit()
+				break
 
-	for rfreq in rfreqs:
-#		print(f'rfreq : {rfreq}')
-		ta[rfreq]            = AttrDict()
-		ta[rfreq].df         = None
-		ta[rfreq].curr       = AttrDict()
-		ta[rfreq].last       = AttrDict()
-		ta[rfreq].prev       = AttrDict()
-
-		df = dfs[rfreq]
-		df = ta_add_indicators(df, st, prc_mkt, rfreq)
-		ta[rfreq].df = df
-
-		csv_fname = f'data/{mkt.prod_id}_{rfreq}.csv'
-		df.to_csv(csv_fname, index=True)
-
-		for x in range(0,-6,-1):
-			desc = f'ago{abs(x)}'
-			y = x - 1
-			for k in df:
-				if not rfreq in ta: ta[rfreq] = AttrDict()
-				if not k in ta[rfreq]: ta[rfreq][k] = AttrDict()
-				ta[rfreq][k][desc] =  df[k].iloc[y]
-
-	for rfreq in rfreqs:
-		if ta[rfreq].df['close'].iloc[-1] != close_price:
-			print(f"line 302 => rfreq : {rfreq}, end : {ta[rfreq].df.index.max()}, close_price : {close_price:>.8f}, close : {ta[rfreq].df['close'].iloc[-1]:>.8f}")
-			print(f"Debug Info Final => {ta[rfreq].df.tail(5)}")  # Add this line for more debug info
-			ta = 'Error!'
-#			beep(3)
-#			sys.exit()
-			break
+	except Exception as e:
+		print(f'{func_name} ==> errored... {e}')
+		print(dttm_get())
+		traceback.print_exc()
+		print(type(e))
+		print(e)
+		print(f'rfreq {type(rfreq)} : {rfreq}')
+		print(f'df {type(df)} :  {df}')
+		ta = None
 
 	func_end(fnc)
 	return ta

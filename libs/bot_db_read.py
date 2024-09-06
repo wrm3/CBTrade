@@ -231,6 +231,9 @@ def db_mkts_loop_get(loop_mkts=None, stable_mkts=None, err_mkts=None):
 	sql += "  and m.mkt_limit_only_tf = 0 "
 	if loop_mkts:
 		loop_mkts_str = "'" + "', '".join(loop_mkts) + "'"
+
+#		print(f'loop_mkts_str : {loop_mkts_str}')
+
 		sql += "   and m.prod_id in ({}) ".format(loop_mkts_str)
 	if stable_mkts:
 		stable_mkts_str = "'" + "', '".join(stable_mkts) + "'"
@@ -240,6 +243,8 @@ def db_mkts_loop_get(loop_mkts=None, stable_mkts=None, err_mkts=None):
 		sql += "   and m.prod_id not in ({}) ".format(err_mkts_str)
 
 	sql += "   order by vmp.gain_loss_pct_hr desc "
+
+#	print(sql)
 
 	mkts = db.seld(sql)
 

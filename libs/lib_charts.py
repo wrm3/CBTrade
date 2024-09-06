@@ -250,37 +250,39 @@ lib_secs_max  = 10
 
 #<=====>#
 
-def chart_top(in_str='', len_cnt=250, align='left', font_color='white', bg_color='darkblue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+# font_color='#00FF00', bg_color='#4B0082', border_font_color='lightblue', border_bg_color='darkblue'
+
+def chart_top(in_str='', len_cnt=250, align='left', font_color='#00FF00', bg_color='#4B0082', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
 	l, s, r = chart_shapes(part='top', style=style)
 	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
 #<=====>#
 
-def chart_title(in_str='', len_cnt=250, align='left', font_color='white', bg_color='darkblue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+def chart_title(in_str='', len_cnt=250, align='left', font_color='#00FF00', bg_color='#4B0082', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
 	l, s, r = chart_shapes(part='row', style=style)
 	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
 #<=====>#
 
-def chart_headers(in_str='', len_cnt=250, align='left', font_color='white', bg_color='blue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+def chart_headers(in_str='', len_cnt=250, align='left', font_color='gold', bg_color='blue', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
 	l, s, r = chart_shapes(part='row', style=style)
 	disp_str = chart_string(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
 #<=====>#
 
-def chart_mid(in_str='', len_cnt=250, align='left', font_color='white', bg_color='darkblue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+def chart_mid(in_str='', len_cnt=250, align='left', font_color='#00FF00', bg_color='#4B0082', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
 	l, s, r = chart_shapes(part='mid', style=style)
 	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
 #<=====>#
 
-def chart_row(in_str='', len_cnt=250, align='left', font_color='white', bg_color='black', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+def chart_row(in_str='', len_cnt=250, align='left', font_color='white', bg_color='black', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
 	l, s, r = chart_shapes(part='row', style=style)
 	disp_str = chart_string(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
 #<=====>#
 
-def chart_bottom(in_str='', len_cnt=250, align='left', font_color='white', bg_color='darkblue', border_font_color='lightblue', border_bg_color='darkblue', style=2, formatted=False):
+def chart_bottom(in_str='', len_cnt=250, align='left', font_color='#00FF00', bg_color='#4B0082', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
 	l, s, r = chart_shapes(part='bottom', style=style)
 	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
@@ -721,14 +723,14 @@ if __name__ == "__main__":
 
 	chart_title(in_str=msg_t3)
 	chart_headers(in_str=msg_h3)
-	chart_row(in_str=msg_3_01, align='left',   font_color='white', bg_color='green',    border_font_color='yellow', border_bg_color='darkblue', style=2)
+	chart_row(in_str=msg_3_01, align='left',   font_color='white', bg_color='green',    border_font_color='yellow', border_bg_color='#4B0082', style=2)
 	chart_row(in_str=msg_3_02)
 	chart_row(in_str=msg_3_03)
-	chart_row(in_str=msg_3_04, align='left',   font_color='white', bg_color='orangered',    border_font_color='yellow', border_bg_color='darkblue', style=2)
+	chart_row(in_str=msg_3_04, align='left',   font_color='white', bg_color='orangered',    border_font_color='yellow', border_bg_color='#4B0082', style=2)
 	chart_row(in_str=msg_3_05)
 	chart_row(in_str=msg_3_06)
 	chart_row(in_str=msg_3_07)
-	chart_row(in_str=msg_3_08, align='left',   font_color='white', bg_color='lightgreen', border_font_color='yellow', border_bg_color='darkblue', style=2)
+	chart_row(in_str=msg_3_08, align='left',   font_color='white', bg_color='lightgreen', border_font_color='yellow', border_bg_color='#4B0082', style=2)
 	chart_row(in_str=msg_3_09)
 	chart_row(in_str=msg_3_10)
 	chart_row(in_str=msg_3_11)
@@ -736,7 +738,7 @@ if __name__ == "__main__":
 	chart_row(in_str=msg_3_13)
 	chart_row(in_str=msg_3_14)
 	chart_row(in_str=msg_3_15)
-	chart_row(in_str=msg_3_16, align='left',   font_color='white', bg_color='red',      border_font_color='yellow', border_bg_color='darkblue', style=2)
+	chart_row(in_str=msg_3_16, align='left',   font_color='white', bg_color='red',      border_font_color='yellow', border_bg_color='#4B0082', style=2)
 
 	chart_mid()
 

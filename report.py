@@ -298,7 +298,7 @@ def report_sells_recent(cnt=15, test_yn='N'):
 			report_pos_close(title, pos, show_pos_close_header_yn)
 			show_pos_close_header_yn = 'N'
 
-		chart_bottom(in_str='bottom6', len_cnt=268)
+		chart_bottom(in_str='bottom6', len_cnt=251)
 	func_end(fnc)
 
 #<=====>#
@@ -462,7 +462,7 @@ def report_pos_close(title, pos, show_pos_close_header_yn='Y'):
 	hmsg += f"{'buy_val':^16} | "
 	hmsg += f"{'buy_prc':^14} | "
 	hmsg += f"{'curr_prc':^14} | "
-	hmsg += f"{'high_prc':^14} | "
+#	hmsg += f"{'high_prc':^14} | "
 	hmsg += f"{'gain_pct':^8} % | "
 	hmsg += f"{'gain_est':^8} % | "
 	hmsg += f"{'gain_top':^8} % | "
@@ -507,7 +507,7 @@ def report_pos_close(title, pos, show_pos_close_header_yn='Y'):
 	msg += f'$ {pos.tot_out_cnt:>14.8f} | '
 	msg += f'{pos.prc_buy:>14.8f} | '
 	msg += f'{pos.prc_curr:>14.8f} | '
-	msg += f'{pos.prc_high:>14.8f} | '
+#	msg += f'{pos.prc_high:>14.8f} | '
 	msg += f'{pos.gain_loss_pct:>8.2f} % | ' # Open Shows Estimates, Closed Shows Actual
 	msg += f'{pos.gain_loss_pct_est:>8.2f} % | '  # Open Shows Estimates, Closed Shows Actual
 	msg += f'{pos.gain_loss_pct_est_high:>8.2f} % | '
