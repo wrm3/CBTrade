@@ -1,0 +1,207 @@
+To Do & Dreams list (tackle as they manifest)
+
+
+Displays Changes
+* add max pos cnt to the various displays
+* make more prominent current investment amount
+* make more prominent current cashout amount
+* make the displays workable with different trading coins /quote currency
+    ie dynamically update $ with 
+    1. Bitcoin             Symbol: ₿  Unicode: U+20BF
+    2. Ethereum            Symbol: Ξ  Unicode: U+039E
+    3. Solana              Symbol: ◎  Unicode: U+25CE (Bullseye)
+    5. Binance Coin (BNB)  Symbol: Ƀ  Unicode: U+0243 (Latin Capital Letter B with Stroke)
+    6. Cardano             Symbol: ₳  Unicode: U+20B3 (Austral Sign)
+    7. Ripple (XRP)        Symbol: ✕  Unicode: U+2715 (Multiplication X)
+
+Themes
+* Add theme choices to the settings
+
+AutoBot
+* add auto.py (an autobot lol) that works on keeping tables updated
+* like the above mkt refresh
+* like keeping candles ohlcv topped off 
+
+Testout duckdb
+* see if performance improvement over mysql (and pandas?)
+* initial test with candles ohlcv saving to reduce the API calls for speed improvement
+
+candles & ohlcv data db
+* reduce api calls, as they are currently taking about 8-10 seconds per trade pair
+* aim to reduce to 1-2 calls per trade_pair
+* possible duckdb interation
+* will need to check db for last update of (1min, 3min, 5min, 15min, 30min, 1h, 4h, 1d)
+   and compare latest time period, then use shorter periods to update forming candle
+   and only update the larger calls like 15min, 30min, 1h, 4h, 1d when once past.
+   this of course will be more complex, none... seperate field for calculated row vs 
+   from api row indicator etc... last actual api update, vs calculated
+
+Email Notifications & Summaries
+* email for buys & sells, and daily summaries and balances
+* settings to send alot of emails or summaries alone, etc...
+
+
+On Market Refresh
+* add market refresh occur more frequently even if we add into autobot
+* add update to price information on open positions and related fields like gain_loss_amt, gain_loss_pct... 
+    so that looping can be resorted with diff priorities for nice events
+    or alternatively is allow_sell_at_loss is False to skip loop, unless also in buy_mkt
+
+
+
+Test Mode shakedown.. make sure that testmode is still capable of being run...
+* do this after speed enhancements.. last time of greatly bogged down main loop... 
+* this might be easier after I finish portfolio seperation, since I could keep my live bot running seperate
+
+
+Backtest mode ---
+* Be able to test a new strategy against OHLCV data with current settings and determine how it would have performed
+    using the logic of this bot... which of course is very different from backtesting module
+* Need to collect the OHLCV data in a very specific way, to do player piano to avoid the same issues as backtesting.py
+* Need 1 minute interval rows... with the 3min, 5min, 15min, 30min, 1h, 4h, 1d forming data
+* Would this be true beyond the curr forming rows? or could hey just be NA for a non interval row
+
+
+Other Candle Modes - Right Handed Candles
+* Always been curious about this... and have played with it before...
+* what if you didn't form candles in the way they currently are... lets call them left handed candles...
+* left handed candles have fix start points.  
+* So when a new 1h candle starts on the hour, and 5 minutes past the hour, it only represents 5 minutes of price action
+* What happens if you use right handed candles? where the current candle always represents a rolling 60 minute timeframe...
+* they will repaint alot, and everyone hates repainting signals... 
+* but would it actually give you more information?
+* would all the technical indicators need to be rewritten or their settings changed?
+* would there be new insights gained?
+
+
+
+
+Portfolio Specific Coinbase calls, so the the trade bot can be isolated from other holdings
+* all api calls
+* portfoilio transfer funds... ie transfer (all/part) gains to external holding area for whatever (reinvest, tax, bills, reserves, next bot etc)
+* new column in database tables
+
+
+Multiple Trade Coin / Quote Currency options
+* have started integrating in different places
+* some notes are in those sections
+* will need distinct settings, perhaps additional file ie USDC_SPOT_settings.json, BTC_Future_settings.json
+
+
+Reserves Logic & Budgeting...
+* make reserve lock/unlock independant of strategy module for drop
+* add options for spending/not spending trade currencies (BTC,ETH,SOL) when available
+* conceptualize better than base reserve amt + daily reserve amt... perhaps % of trading pool
+* with budgets, right now trade size is relatively fixed then boosted... 
+    introduce dynamic trade sizing for performance... 
+    ie Budget of X size.  
+        BTC, ETH & SOL is top performer and gets 5 shares
+        OTHER1, OTHER2 consistantly are positive gains, so they get 3 Schares
+        NEW1, NEW2 are unknowns and get the lowest shares...
+        All shares add up are like 50 shares... divide that into $10000 budget
+            so BTC,ETH,SOL max_spend on all open positions would be 10000 / 50 * 5 = $1,000 each
+            so OTHER1, OTHERS max_spend on all open positions would be 10000 / 50 * 3 = $600
+            so NEW1, NEW2 max_spend on all open positions would be 10000 / 50 * 1 = $200
+    or something similiar
+* also with budgets, have a set amount reserved for uptrends and downtrends
+    could be dynamic, so less for downtrends in a BULL market and vice versa
+    basically would set aside of the budget amounts determined aboved would allocate
+        40% for downtrend buys like BB, DOWN
+        60% for uptrend buys like BB_BO, IMP_MACD, SHA
+
+Multiple Trade Coins/Quote Currencies
+* add the rest of the logic for trading the markets that quote in BTC, ETH, SOL & other etc
+* need to not dip into each others open trades from other currencies
+* need to not dip into each others closed trades pocket and clip amounts, unless allowed settings
+
+
+TA Failure
+* when TA fails, don't just skip, also perform the non - TA sell checks
+
+Time improvement
+* As I have with other bots, seperate the buy and sell functions to run independantly.
+* Can easily split, but this would double api calls
+* To reduce API calls, need to have the candlestick data saved to db logic above before integrating
+
+
+Multi-Threading & Async
+* current version runs in single thread, so it can prettily display everything to the screen
+* this is purely cosmentic and significantly slows down exectution and response times to time sensitive financial triggers/actions
+* multi parallell async will need some thought in regards to several factors
+    API Calls, need to introduce a last call timer.  And define how much time can elapse in general between calls, and different weights of calls
+    DB Read Write Blocking.  I have had issues with this before.  Thought I had MySQL resolved in past, but its happening in the code here.
+    Python - 3.13 is suppose to have changes to how this works removing the GIL, and how to properly do this.  Read examples, easy to accidentally
+        increase the timings if implemented wrong... keep this for later research ./configure --disable-gil --enable-optimizations
+
+
+
+
+host web & mysql/db on external server, to allow people to watch, perhaps the python componens 
+  out on server as well, to keep me online...
+
+flask public on local network
+* its setup to be but not visible from other machines on lan
+
+Settings modifications
+* Breaking the settings into smaller and easier to conceptualize
+* this might be the best way to handle the dynamic settings for strats
+
+
+
+re-evaluate trade requirement price > daily 100 or 200 EMA
+* and for which trade strategies that is required, probably only some of the up momentums
+
+
+Add New strategies & Modularity of strategies
+* strategy settings needs to be moved to bot_strats from the bo_settngs.py
+* this will allow all strat modifications to be done in bot_strats
+* modifiy bot_strats to simplify how easy to create new strats will be
+* create documnetation for new strats and simple strat demo 
+* remove some of my crazier strats that I can tell already are duds
+* dynamic loading... perhaps a self.buy_strats variable that reads from
+    buy_strats.json file, which would include the names of the user created strats to load
+    the strats functions would cycle through the self.strats executing the func_names by string
+        In Python, you can execute a function from its string name by using the globals() or locals() dictionary, depending on where the function is defined. Here's how you can do it:
+
+        If the function is in the global scope, you can use the globals() function to retrieve it from the global symbol table.
+        def my_function():
+            print("Function executed!")
+        # Function name as a string
+        function_name = "my_function"
+        # Execute the function
+        globals()[function_name]()
+        For a function in the local scope:
+
+        If the function is defined within a local scope (e.g., inside another function), use locals() to retrieve it from the local symbol table.
+        def outer_function():
+            def my_inner_function():
+                print("Inner function executed!")
+            # Function name as a string
+            function_name = "my_inner_function"
+            # Execute the inner function
+            locals()[function_name]()
+        outer_function()
+        Using getattr() for class methods:
+
+        If the function is a method within a class, you can use getattr() to dynamically call it from an object or class.
+        class MyClass:
+            def my_method(self):
+                print("Method executed!")
+        obj = MyClass()
+        # Method name as a string
+        method_name = "my_method"
+        # Execute the method
+        getattr(obj, method_name)()
+
+        This approach works for both globally and locally defined functions, as well as class methods. Make sure the string exactly matches the function name and the function is defined or loaded before you attempt to execute it.
+
+
+
+Reintegrate Long & Short Futures instead of just Spot
+* When I switched to coinbase from previous exchange, I removed wait, long, short, hodl from strategies... (remnants scattered around)
+* This was from not understanding how CB does its futures (they are different and require larger amounts of funds)
+* re-introduce when I can afford the larger positions, and understand it enough from manual trading
+* I think this could really backfire without proper research first... not even sure if I could facsilate paper trading version
+    with my current understanding of it here on CB.  It was much easier and had variable leverage (including 1x) on other exchanges
+
+

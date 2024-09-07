@@ -223,9 +223,9 @@ class BOT():
 			# build Out Everything We Will Need in the Market
 			print_adv(3)
 
-			title_msg = f'* Market Summary * {prod_id} * {dttm_get()} * {dttm_start_loop} * {loop_age} * {cnt}/{len(self.mkts)}'
-			chart_top(len_cnt=240)
-			chart_mid(in_str=title_msg, len_cnt=240)
+			title_msg = f'* Market Summary * {prod_id} * {dttm_get()} * {dttm_start_loop} * {loop_age} * {cnt}/{len(self.mkts)} *'
+			chart_top(len_cnt=240, bold=True)
+			chart_mid(in_str=title_msg, len_cnt=240, bold=True)
 
 			# build the market
 			mkt, trade_perf, trade_strat_perfs = self.mkt_build(m)
@@ -242,7 +242,7 @@ class BOT():
 				msg = cs(msg, font_color='white', bg_color='orangered')
 				print(msg)
 
-			chart_bottom(len_cnt=240)
+			chart_bottom(len_cnt=240, bold=True)
 
 		# end of Performance Timer for mkt loop
 		t1 = time.perf_counter()
@@ -784,10 +784,10 @@ class BOT():
 		tot_daily_reserve_amt          = day * daily_reserve_amt
 
 		if self.reserve_locked_tf:
-	#		reserve_amt                    = max(tot_daily_reserve_amt, min_reserve_amt)
-			reserve_amt           = tot_daily_reserve_amt + min_reserve_amt
+	#		reserve_amt                = max(tot_daily_reserve_amt, min_reserve_amt)
+			reserve_amt                = tot_daily_reserve_amt + min_reserve_amt
 		else:
-			reserve_amt = 0
+			reserve_amt                = min_reserve_amt
 
 		func_end(fnc)
 		return reserve_amt
@@ -937,7 +937,7 @@ class BOT():
 					for k in mkt:
 						writeit(fname, f'{k} : {mkt[k]}')
 
-		chart_mid(len_cnt=240)
+		chart_mid(len_cnt=240, bold=True)
 
 		func_end(fnc)
 		return mkt
@@ -1375,6 +1375,8 @@ class BOT():
 						db_tbl_buy_ords_insupd(bo)
 						self.pos_open(bo.buy_order_uuid)
 
+				print_adv(2)
+
 		except Exception as e:
 			print(f'{func_name} ==> errored... {type(e)} {e}')
 			traceback.print_exc()
@@ -1501,7 +1503,7 @@ class BOT():
 				traceback.print_exc()
 				pass
 
-		chart_mid(len_cnt=240)
+		chart_mid(len_cnt=240, bold=True)
 
 		func_end(fnc)
 		return mkt
@@ -2441,6 +2443,8 @@ class BOT():
 						db_tbl_sell_ords_insupd(so)
 						self.pos_close(so.pos_id, so.sell_order_uuid)
 
+				print_adv(2)
+
 		except Exception as e:
 			print(f'{func_name} ==> errored... {type(e)} {e}')
 			traceback.print_exc()
@@ -2502,8 +2506,8 @@ class BOT():
 		hmsg += f"{'test':^6} % | "
 
 		title_msg = f'* BUY LOGIC * {prod_id} *'
-		chart_mid(in_str=title_msg, len_cnt=240)
-		chart_headers(in_str=hmsg, len_cnt=240)
+		chart_mid(in_str=title_msg, len_cnt=240, bold=True)
+		chart_headers(in_str=hmsg, len_cnt=240, bold=True)
 		self.show_buy_header_tf = False
 #		buy_log('')
 		wmsg = f'{dttm_get()} ==> {hmsg}'
@@ -2543,8 +2547,8 @@ class BOT():
 #		sell_log(wmsg)
 
 		title_msg = f'* SELL LOGIC * {prod_id} *'
-		chart_mid(in_str=title_msg, len_cnt=240)
-		chart_headers(in_str=hmsg, len_cnt=240)
+		chart_mid(in_str=title_msg, len_cnt=240, bold=True)
+		chart_headers(in_str=hmsg, len_cnt=240, bold=True)
 
 		self.show_sell_header_tf = False
 
@@ -2805,9 +2809,9 @@ class BOT():
 			msg += cs(f"{'LOCKED':^14}", "yellow", "magenta") + " | "
 		else:
 			msg += cs(f"{'UNLOCKED':^14}", "magenta", "yellow") + " | "
-		chart_headers(in_str=hmsg, len_cnt=240)
+		chart_headers(in_str=hmsg, len_cnt=240, bold=True)
 		chart_row(in_str=msg, len_cnt=240)
-		chart_mid(len_cnt=240)
+		chart_mid(len_cnt=240, bold=True)
 
 		func_end(fnc)
 		return mkt, trade_perf, trade_strat_perfs
@@ -2867,8 +2871,8 @@ class BOT():
 		msg += f'{trade_perf.last_elapsed:>9}' + ' | '
 
 		title_msg = f'* Market Stats * {prod_id} *'
-		chart_mid(in_str=title_msg, len_cnt=240)
-		chart_headers(in_str=hmsg, len_cnt=240)
+		chart_mid(in_str=title_msg, len_cnt=240, bold=True)
+		chart_headers(in_str=hmsg, len_cnt=240, bold=True)
 		chart_row(msg, len_cnt=240)
 #		if trade_perf.gain_loss_pct > 0:
 #			chart_row(in_str=msg, font_color='white', bg_color='green', len_cnt=240)
@@ -2877,7 +2881,7 @@ class BOT():
 #			chart_row(in_str=msg, font_color='white', bg_color='red', len_cnt=240)
 #			WoR('|' + msg)
 
-		chart_mid(len_cnt=240)
+		chart_mid(len_cnt=240, bold=True)
 
 		func_end(fnc)
 		return mkt, trade_perf, trade_strat_perfs
@@ -2911,8 +2915,8 @@ class BOT():
 
 #		print_adv(2)
 		title_msg = '* Buy Strategy Past Performance *'
-		chart_mid(in_str=title_msg, len_cnt=240)
-		chart_headers(hmsg, len_cnt=240)
+		chart_mid(in_str=title_msg, len_cnt=240, bold=True)
+		chart_headers(hmsg, len_cnt=240, bold=True)
 
 		for x in trade_strat_perfs:
 			x = dec_2_float(x)
@@ -2937,7 +2941,7 @@ class BOT():
 				msg  = cs_pct_color_50(pct=x.win_pct, msg=msg)
 #				print(msg)
 				chart_row(in_str=msg, len_cnt=240)
-		chart_mid(len_cnt=240)
+		chart_mid(len_cnt=240, bold=True)
 
 		func_end(fnc)
 		return mkt, trade_perf, trade_strat_perfs

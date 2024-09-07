@@ -44,10 +44,10 @@
 			"err_mkts": [],
 			"extra_mkts_watched_yn": "N",
 			"extra_mkts_top_bot_perf_yn": "Y",
-			"extra_mkts_top_bot_perf_cnt": 10,
+			"extra_mkts_top_bot_perf_cnt": 5,
 			"extra_mkts_top_bot_perf_pct_min": 0.1,
 			"extra_mkts_top_bot_gains_yn": "Y",
-			"extra_mkts_top_bot_gains_cnt": 10,
+			"extra_mkts_top_bot_gains_cnt": 5,
 			"extra_mkts_prc_pct_chg_24h_yn": "Y",
 			"extra_mkts_prc_pct_chg_24h_cnt": 5,
 			"extra_mkts_prc_pct_chg_24h_pct_min": 7,
@@ -70,14 +70,14 @@
 				"BTC": 1,
 				"ETH": 1,
 				"SOL": 1,
-				"USDC": 50
+				"USDC": 25
 				},
 			"reserve_addtl_daily_amt": {
 				"***": 0,
 				"BTC": 0.01,
 				"ETH": 0.01,
 				"SOL": 0.01,
-				"USDC": 10
+				"USDC": 5
 				},
 			"special_prod_ids": [
 					"BTC-USDC",
