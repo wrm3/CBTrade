@@ -252,39 +252,39 @@ lib_secs_max  = 10
 
 # font_color='#00FF00', bg_color='#4B0082', border_font_color='lightblue', border_bg_color='darkblue'
 
-def chart_top(in_str='', len_cnt=250, align='left', font_color='#00FF00', bg_color='#4B0082', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
+def chart_top(in_str='', len_cnt=250, align='left', bold=True, italic=False, font_color='#00FF00', bg_color='#4B0082', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
 	l, s, r = chart_shapes(part='top', style=style)
-	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+	disp_str = chart_embed(l, s, r, align, bold, italic, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
 #<=====>#
 
-def chart_title(in_str='', len_cnt=250, align='left', font_color='#00FF00', bg_color='#4B0082', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
+def chart_title(in_str='', len_cnt=250, align='left', bold=True, italic=False, font_color='#00FF00', bg_color='#4B0082', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
 	l, s, r = chart_shapes(part='row', style=style)
-	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+	disp_str = chart_embed(l, s, r, align, bold, italic, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
 #<=====>#
 
-def chart_headers(in_str='', len_cnt=250, align='left', font_color='gold', bg_color='blue', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
+def chart_headers(in_str='', len_cnt=250, align='left', bold=True, italic=False, font_color='gold', bg_color='blue', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
 	l, s, r = chart_shapes(part='row', style=style)
-	disp_str = chart_string(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+	disp_str = chart_string(l, s, r, align, bold, italic, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
 #<=====>#
 
-def chart_mid(in_str='', len_cnt=250, align='left', font_color='#00FF00', bg_color='#4B0082', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
+def chart_mid(in_str='', len_cnt=250, align='left', bold=True, italic=False, font_color='#00FF00', bg_color='#4B0082', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
 	l, s, r = chart_shapes(part='mid', style=style)
-	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+	disp_str = chart_embed(l, s, r, align, bold, italic, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
 #<=====>#
 
-def chart_row(in_str='', len_cnt=250, align='left', font_color='white', bg_color='black', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
+def chart_row(in_str='', len_cnt=250, align='left', bold=False, italic=False, font_color='white', bg_color='black', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
 	l, s, r = chart_shapes(part='row', style=style)
-	disp_str = chart_string(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+	disp_str = chart_string(l, s, r, align, bold, italic, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
 #<=====>#
 
-def chart_bottom(in_str='', len_cnt=250, align='left', font_color='#00FF00', bg_color='#4B0082', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
+def chart_bottom(in_str='', len_cnt=250, align='left', bold=True, italic=False, font_color='#00FF00', bg_color='#4B0082', border_font_color='#00FF00', border_bg_color='#4B0082', style=2, formatted=False):
 	l, s, r = chart_shapes(part='bottom', style=style)
-	disp_str = chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
+	disp_str = chart_embed(l, s, r, align, bold, italic, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=in_str)
 
 '''
 Single-Line Box Drawing Characters:
@@ -521,7 +521,7 @@ def chart_rep_str(s, border_font_color, border_bg_color, in_str=''):
 
 #<=====>#
 
-def chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=''):
+def chart_embed(l, s, r, align, bold, italic, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=''):
 	func_name = 'chart_embed'
 
 	fore = cs(l, font_color=border_font_color, bg_color=border_bg_color)
@@ -529,7 +529,7 @@ def chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_
 
 	if in_str == '':
 		in_str = s * len_cnt
-		disp_str = cs(text=in_str, font_color=border_font_color, bg_color=border_bg_color)
+		disp_str = cs(text=in_str, font_color=border_font_color, bg_color=border_bg_color, bold=bold, italic=italic)
 		disp_str = f"{fore}{disp_str}{aft}"
 	else:
 		in_str = f' {in_str} '
@@ -544,9 +544,9 @@ def chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_
 			temp_str = cpad(temp_str, len_cnt, s)
 
 		front_str, rear_str = chart_rep_str(s, border_font_color, border_bg_color, in_str=temp_str)
-		front_str = cs(text=front_str, font_color=border_font_color, bg_color=border_bg_color)
-		rear_str  = cs(text=rear_str,  font_color=border_font_color, bg_color=border_bg_color)
-		disp_str  = cs(text=in_str, font_color=font_color, bg_color=bg_color)
+		front_str = cs(text=front_str, font_color=border_font_color, bg_color=border_bg_color, bold=bold, italic=italic)
+		rear_str  = cs(text=rear_str,  font_color=border_font_color, bg_color=border_bg_color, bold=bold, italic=italic)
+		disp_str  = cs(text=in_str, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic)
 
 		disp_str = f"{fore}{front_str}{disp_str}{rear_str}{aft}"
 
@@ -554,15 +554,15 @@ def chart_embed(l, s, r, align, font_color, bg_color, border_font_color, border_
 
 #<=====>#
 
-def chart_string(l, s, r, align, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=''):
+def chart_string(l, s, r, align, bold, italic, font_color, bg_color, border_font_color, border_bg_color, len_cnt, formatted, in_str=''):
 	func_name = 'chart_embed'
 
-	fore = cs(l, font_color=border_font_color, bg_color=border_bg_color)
-	aft  = cs(r, font_color=border_font_color, bg_color=border_bg_color)
+	fore = cs(l, font_color=border_font_color, bg_color=border_bg_color, bold=bold, italic=italic)
+	aft  = cs(r, font_color=border_font_color, bg_color=border_bg_color, bold=bold, italic=italic)
 
 	if in_str == '':
 		in_str = s * len_cnt
-		disp_str = cs(text=in_str, font_color=border_font_color, bg_color=border_bg_color)
+		disp_str = cs(text=in_str, font_color=border_font_color, bg_color=border_bg_color, bold=bold, italic=italic)
 		disp_str = f"{fore}{disp_str}{aft}"
 	else:
 		if align == 'left':
@@ -584,7 +584,7 @@ def chart_string(l, s, r, align, font_color, bg_color, border_font_color, border
 			in_str = ' ' * lead_pad_len + in_str + ' ' * rear_pad_len
 
 		if not formatted:
-			disp_str  = cs(text=in_str, font_color=font_color, bg_color=bg_color)
+			disp_str  = cs(text=in_str, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic)
 
 		disp_str = f"{fore}{disp_str}{aft}"
 

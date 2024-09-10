@@ -98,6 +98,7 @@ def report_loop():
 			clear_screen()
 
 			report_open_by_age()
+			report_open_by_gain()
 			report_open_by_prod_id()
 
 			report_strats_best(25, min_trades=3)
@@ -206,8 +207,38 @@ def report_open_by_age():
 
 #<=====>#
 
+def report_open_by_gain():
+	func_name = 'report_open_by_gain'
+	func_str = f'{lib_name}.{func_name}()'
+#	G(func_str)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
+	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+
+	poss = db_poss_open_get(include_test_yn='Y')
+
+	if poss:
+		print_adv(2)
+		title = f'Open Positions - By Prod_id'
+		show_pos_open_header_yn = 'Y'
+		poss_sorted = sorted(poss, key=lambda x: x["gain_loss_pct"], reverse=True)
+		poss = poss_sorted
+		for pos in poss:
+			pos = dec_2_float(pos)
+			pos = AttrDictConv(in_dict=pos)
+			pos.pos_begin_dttm = pos.pos_begin_dttm.strftime('%m-%d-%Y %H:%M')
+			pos.report_age = format_disp_age(pos.age_mins)
+			report_pos_open(title, pos, show_pos_open_header_yn)
+			show_pos_open_header_yn = 'N'
+
+		chart_bottom(in_str='bottom4', len_cnt=226)
+	func_end(fnc)
+
+	#<=====>#
+
+#<=====>#
+
 def report_open_by_prod_id():
-	func_name = 'report_open'
+	func_name = 'report_open_by_prod_id'
 	func_str = f'{lib_name}.{func_name}()'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)

@@ -98,6 +98,9 @@ class BOT():
 		# don't change this value, need more codiging for USDT or USD, someday integrae USDT/USD/BTC/ETH
 		self.quote_curr_symb = 'USDC'
 
+#		print('ddb_check_tables...')
+#		ddb_check_tables()
+
 	#<=====>#
 
 	def bot(self):
@@ -195,6 +198,12 @@ class BOT():
 
 		dttm_start_loop = dttm_get()	
 		t_loop = time.perf_counter()
+
+
+		for m in self.mkts:
+			prod_id = m['prod_id']
+			db_check_ohlcv_prod_id_table(prod_id)
+
 
 		for m in self.mkts:
 			cnt += 1
@@ -587,6 +596,8 @@ class BOT():
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #		G(func_str)
 
+		mkt_logic_t0 = time.perf_counter()
+
 		try:
 			prod_id      = mkt.prod_id
 			self.st      = settings.reload()
@@ -595,17 +606,9 @@ class BOT():
 			self.wallet_refresh()
 
 			# Market Summary
+			t0 = time.perf_counter()
 			try:
-				t0 = time.perf_counter()
-
 				mkt, trade_perf, trade_strat_perfs = self.disp_mkt(mkt, trade_perf, trade_strat_perfs)
-
-				t1 = time.perf_counter()
-				secs = round(t1 - t0, 3)
-				if secs > lib_secs_max:
-					cp(f'mkt_summary for {prod_id} - took {secs} seconds...', font_color='white', bg_color='orangered')
-#					print_adv()
-
 			except Exception as e:
 				print(f'{dttm_get()} {func_name} - Market Summary ==> {prod_id} = Error : ({type(e)}){e}')
 				traceback.print_exc()
@@ -615,20 +618,21 @@ class BOT():
 				beep()
 				beep()
 				pass
+			t1 = time.perf_counter()
+			secs = round(t1 - t0, 3)
+			if secs >= 2:
+				msg = cs(f'disp_mkt for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
+				chart_row(msg, len_cnt=240)
+				chart_mid(len_cnt=240)
+
+
+
 
 			# Market Technical Analysis
 			ta = None
+			t0 = time.perf_counter()
 			try:
-				t0 = time.perf_counter()
-
-#				if self.st.spot.buy.buying_on_yn == 'Y' or self.st.spot.sell.selling_on_yn == 'Y':
-				ta = mkt_ta_main(mkt, self.st)
-
-				t1 = time.perf_counter()
-				secs = round(t1 - t0, 2)
-				if secs > lib_secs_max:
-					cp(f'mkt_ta_main for {prod_id}- took {secs} seconds...', font_color='white', bg_color='orangered')
-#					print_adv()
+				ta = mkt_ta_main_new(mkt, self.st)
 				if not ta:
 					WoR(f'{dttm_get()} {func_name} - Get TA ==> TA Errored and is None')
 					WoR(f'{dttm_get()} {func_name} - Get TA ==> TA Errored and is None')
@@ -636,7 +640,6 @@ class BOT():
 					beep()
 					func_end(fnc)
 					return mkt
-
 				if ta == 'Error!':
 					WoR(f'{dttm_get()} {func_name} - Get TA ==> {prod_id} - close prices do not match')
 					WoR(f'{dttm_get()} {func_name} - Get TA ==> {prod_id} - close prices do not match')
@@ -644,7 +647,6 @@ class BOT():
 					beep()
 					func_end(fnc)
 					return mkt
-
 			except Exception as e:
 				print(f'{dttm_get()} {func_name} - Get TA ==> {prod_id} = Error : ({type(e)}){e}')
 				traceback.print_exc()
@@ -652,51 +654,69 @@ class BOT():
 				print_adv(3)
 				beep(3)
 				pass
+			t1 = time.perf_counter()
+			secs = round(t1 - t0, 2)
+			if secs >= 2:
+				msg = cs(f'mkt_ta_main_new for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
+				chart_row(msg, len_cnt=240)
+				chart_mid(len_cnt=240)
+
+
 
 			# Market Buy Logic
-			try:
-				t0 = time.perf_counter()
+			t0 = time.perf_counter()
+			if self.st.spot.buy.buying_on_yn == 'Y' and prod_id in self.buy_mkts:
+				try:
+					mkt = self.buy_logic(self.buy_mkts, mkt, trade_perf, trade_strat_perfs, ta)
+				except Exception as e:
+					print(f'{dttm_get()} {func_name} - Buy Logic ==> {prod_id} = Error : ({type(e)}){e}')
+					traceback.print_exc()
+					pprint(mkt)
+					print_adv(3)
+					beep(3)
+					pass
+			t1 = time.perf_counter()
+			secs = round(t1 - t0, 2)
+			if secs >= 2:
+				msg = cs(f'buy_logic for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
+				chart_row(msg, len_cnt=240)
+				chart_mid(len_cnt=240)
 
-#				if self.st.spot.buy.buying_on_yn == 'Y':
-				mkt = self.buy_logic(self.buy_mkts, mkt, trade_perf, trade_strat_perfs, ta)
 
-				t1 = time.perf_counter()
-				secs = round(t1 - t0, 2)
-				if secs > lib_secs_max:
-					cp(f'buy_logic for {prod_id} - took {secs} seconds...', font_color='white', bg_color='orangered')
-#					print_adv()
-
-			except Exception as e:
-				print(f'{dttm_get()} {func_name} - Buy Logic ==> {prod_id} = Error : ({type(e)}){e}')
-				traceback.print_exc()
-				pprint(mkt)
-				print_adv(3)
-				beep(3)
-				pass
 
 			# Market Sell Logic
-			try:
-				t0 = time.perf_counter()
+			t0 = time.perf_counter()
+			if self.st.spot.sell.selling_on_yn == 'Y':
+				try:
+					open_poss = db_pos_open_get_by_prod_id(prod_id)
+					if len(open_poss) > 0:
+						mkt = self.sell_logic(mkt, ta, open_poss)
+				except Exception as e:
+					print(f'{dttm_get()} {func_name} - Sell Logic ==> {prod_id} = Error : ({type(e)}){e}')
+					traceback.print_exc()
+					pprint(mkt)
+					print_adv(3)
+					beep(3)
+					pass
+			t1 = time.perf_counter()
+			secs = round(t1 - t0, 2)
+			if secs >= 2:
+				msg = cs(f'sell_logic for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
+				chart_row(msg, len_cnt=240)
+				chart_mid(len_cnt=240)
 
-#				if self.st.spot.sell.selling_on_yn == 'Y':
-				open_poss = db_pos_open_get_by_prod_id(prod_id)
-				mkt = self.sell_logic(mkt, ta, open_poss)
 
-				t1 = time.perf_counter()
-				secs = round(t1 - t0, 2)
-				if secs > lib_secs_max:
-					cp(f'sell_logic for {prod_id} - took {secs} seconds...', font_color='white', bg_color='orangered')
-#					print_adv()
 
-			except Exception as e:
-				print(f'{dttm_get()} {func_name} - Sell Logic ==> {prod_id} = Error : ({type(e)}){e}')
-				traceback.print_exc()
-				pprint(mkt)
-				print_adv(3)
-				beep(3)
-				pass
+
+			t0 = time.perf_counter()
 
 			db_tbl_mkts_insupd([mkt])
+
+			secs = round(t1 - t0, 2)
+			if secs >= 2:
+				msg = cs(f'db_tbl_mkts_insupd for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
+				chart_row(msg, len_cnt=240)
+				chart_mid(len_cnt=240)
 
 		except Exception as e:
 			print(f'{func_name} ==> errored 2... {e}')
@@ -711,6 +731,15 @@ class BOT():
 			beep()
 			beep()
 			pass
+
+		mkt_logic_t1 = time.perf_counter()
+		secs = round(mkt_logic_t1 - mkt_logic_t0, 2)
+		if secs >= 5:
+			msg = cs(f'mkt_logic for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='green')
+			chart_row(msg, len_cnt=240)
+		else:
+			msg = cs(f'mkt_logic for {prod_id} - took {secs} seconds...', font_color='green', bg_color='white')
+			chart_row(msg, len_cnt=240)
 
 		func_end(fnc)
 		return mkt
@@ -2184,7 +2213,7 @@ class BOT():
 		freqs, faster_freqs       = freqs_get(rfreq)
 
 #		ha_color_1min  = ta['1min']['ha_color']['ago0']
-		ha_color_3min  = ta['3min']['ha_color']['ago0']
+#		ha_color_3min  = ta['3min']['ha_color']['ago0']
 		ha_color_5min  = ta['5min']['ha_color']['ago0']
 		ha_color_15min = ta['15min']['ha_color']['ago0']
 		ha_color_30min = ta['30min']['ha_color']['ago0']
@@ -2204,37 +2233,70 @@ class BOT():
 
 		if not skip_checks:
 			green_save = False
+#			if rfreq == '1d':
+#				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   1d : {ha_color_1d}, 4h : {ha_color_4h}, 30min : {ha_color_30min}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+#				if ha_color_4h == 'green':
+#					if (ha_color_30min == 'green' or ha_color_15min == 'green') and (ha_color_5min == 'green' or ha_color_3min == 'green'):
+#						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   1d : {ha_color_1d}, 4h : {ha_color_4h}, 30min : {ha_color_30min}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+#						green_save = True
+#			elif rfreq == '4h':
+#				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   4h : {ha_color_4h}, 1h : {ha_color_1h}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+#				if ha_color_1h == 'green':
+#					if ha_color_15min == 'green' and (ha_color_5min == 'green' or ha_color_3min == 'green'):
+#						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   4h : {ha_color_4h}, 1h : {ha_color_1h}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+#						green_save = True
+#			elif rfreq == '1h':
+#				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   1h : {ha_color_1h}, 30min : {ha_color_30min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+#				if ha_color_30min == 'green':
+#					if (ha_color_5min == 'green' or ha_color_3min == 'green'):
+#						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   1h : {ha_color_1h}, 30min : {ha_color_30min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+#						green_save = True
+#			elif rfreq == '30min':
+#				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   30min : {ha_color_30min}, 15min : {ha_color_15min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+#				if ha_color_15min == 'green':
+#					if (ha_color_5min == 'green' or ha_color_3min == 'green'):
+#						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   30min : {ha_color_30min}, 15min : {ha_color_15min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+#						green_save = True
+#			elif rfreq == '15min':
+#				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+#				if ha_color_5min == 'green':
+#					if (ha_color_5min == 'green' or ha_color_3min == 'green'):
+#						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+#						green_save = True
+
+
 			if rfreq == '1d':
-				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   1d : {ha_color_1d}, 4h : {ha_color_4h}, 30min : {ha_color_30min}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   1d : {ha_color_1d}, 4h : {ha_color_4h}, 30min : {ha_color_30min}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, sell_block_yn : {sell_block_yn}'
 				if ha_color_4h == 'green':
-					if (ha_color_30min == 'green' or ha_color_15min == 'green') and (ha_color_5min == 'green' or ha_color_3min == 'green'):
-						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   1d : {ha_color_1d}, 4h : {ha_color_4h}, 30min : {ha_color_30min}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+					if (ha_color_30min == 'green' or ha_color_15min == 'green') and ha_color_5min == 'green':
+						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   1d : {ha_color_1d}, 4h : {ha_color_4h}, 30min : {ha_color_30min}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, sell_block_yn : {sell_block_yn}'
 						green_save = True
 			elif rfreq == '4h':
-				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   4h : {ha_color_4h}, 1h : {ha_color_1h}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   4h : {ha_color_4h}, 1h : {ha_color_1h}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, sell_block_yn : {sell_block_yn}'
 				if ha_color_1h == 'green':
-					if ha_color_15min == 'green' and (ha_color_5min == 'green' or ha_color_3min == 'green'):
-						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   4h : {ha_color_4h}, 1h : {ha_color_1h}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+					if ha_color_15min == 'green' and ha_color_5min == 'green':
+						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   4h : {ha_color_4h}, 1h : {ha_color_1h}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, sell_block_yn : {sell_block_yn}'
 						green_save = True
 			elif rfreq == '1h':
-				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   1h : {ha_color_1h}, 30min : {ha_color_30min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   1h : {ha_color_1h}, 30min : {ha_color_30min}, 5min : {ha_color_5min}, sell_block_yn : {sell_block_yn}'
 				if ha_color_30min == 'green':
-					if (ha_color_5min == 'green' or ha_color_3min == 'green'):
-						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   1h : {ha_color_1h}, 30min : {ha_color_30min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+					if ha_color_5min == 'green':
+						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   1h : {ha_color_1h}, 30min : {ha_color_30min}, 5min : {ha_color_5min}, sell_block_yn : {sell_block_yn}'
 						green_save = True
 			elif rfreq == '30min':
-				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   30min : {ha_color_30min}, 15min : {ha_color_15min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   30min : {ha_color_30min}, 15min : {ha_color_15min}, sell_block_yn : {sell_block_yn}'
 				if ha_color_15min == 'green':
-					if (ha_color_5min == 'green' or ha_color_3min == 'green'):
-						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   30min : {ha_color_30min}, 15min : {ha_color_15min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+					if ha_color_5min == 'green':
+						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   30min : {ha_color_30min}, 15min : {ha_color_15min}, sell_block_yn : {sell_block_yn}'
 						green_save = True
 			elif rfreq == '15min':
-				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   15min : {ha_color_15min}, 5min : {ha_color_5min}, sell_block_yn : {sell_block_yn}'
 				if ha_color_5min == 'green':
-					if (ha_color_5min == 'green' or ha_color_3min == 'green'):
-						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
+					if ha_color_5min == 'green':
+						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   15min : {ha_color_15min}, 5min : {ha_color_5min}, sell_block_yn : {sell_block_yn}'
 						green_save = True
-				
+
+
 			if green_save:
 				sell_block_yn = 'N'
 				all_hodls.append(pass_msg)
@@ -3463,6 +3525,7 @@ class BOT():
 		report_buys_recent(cnt=20)
 		report_sells_recent(cnt=20)
 		report_open_by_age()
+		db_table_csvs_dump()
 
 		func_end(fnc)
 
@@ -3702,5 +3765,37 @@ if __name__ == "__main__":
 				"UNI-USDC",
 				"WIF-USDC",
 				"XRP-USDC"
+
+				"AAVE-USDC",
+				"ADA-USDC",
+				"ALGO-USDC",
+				"ATOM-USDC",
+				"AVAX-USDC",
+				"BADGER-USDC",
+				"BNB-USDC",
+				"BONK-USDC",
+				"BTC-USDC",
+				"DOGE-USDC",
+				"DOT-USDC",
+				"ETH-USDC",
+				"FTM-USDC",
+				"HBAR-USDC",
+				"HNT-USDC",
+				"HONEY-USDC",
+				"ICP-USDC",
+				"JASMY-USDC",
+				"LDO-USDC",
+				"OMNI-USDC",
+				"POL-USDC",
+				"RNDR-USDC",
+				"SHIB-USDC",
+				"SOL-USDC",
+				"SUI-USDC",
+				"TON-USDC",
+				"UNI-USDC",
+				"WIF-USDC",
+				"XRP-USDC"
+
+				
 '''
 

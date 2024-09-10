@@ -50,7 +50,7 @@
 			"extra_mkts_top_bot_gains_cnt": 5,
 			"extra_mkts_prc_pct_chg_24h_yn": "Y",
 			"extra_mkts_prc_pct_chg_24h_cnt": 5,
-			"extra_mkts_prc_pct_chg_24h_pct_min": 7,
+			"extra_mkts_prc_pct_chg_24h_pct_min": 5,
 			"extra_mkts_vol_quote_24h_yn": "N",
 			"extra_mkts_vol_quote_24h_cnt": 5,
 			"extra_mkts_vol_pct_chg_24h_yn": "N",
@@ -77,7 +77,7 @@
 				"BTC": 0.01,
 				"ETH": 0.01,
 				"SOL": 0.01,
-				"USDC": 5
+				"USDC": 0
 				},
 			"special_prod_ids": [
 					"BTC-USDC",
@@ -120,7 +120,7 @@
 				"SOL-USDC": 10
 			},
 			"trade_size_min_mult": {
-				"***": 5,
+				"***": 3,
 				"BTC-USDC": 10,
 				"ETH-USDC": 10,
 				"SOL-USDC": 10
@@ -212,9 +212,9 @@
 			},
 			"stop_loss": {
 				"hard_stop_loss_yn": "Y",
-				"hard_stop_loss_pct": 6,
+				"hard_stop_loss_pct": 30,
 				"trailing_stop_loss_yn": "Y",
-				"trailing_stop_loss_pct": 6,
+				"trailing_stop_loss_pct": 30,
 				"atr_stop_loss_yn": "N",
 				"atr_stop_loss_rfreq": "1d",
 				"trailing_atr_stop_loss_yn": "N",

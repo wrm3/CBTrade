@@ -7,6 +7,12 @@
 # Import All
 #<=====>#
 import_all_func_list = []
+
+import_all_func_list.append("db_check_ohlcv_prod_id_piano")
+import_all_func_list.append("db_check_ohlcv_prod_id_table")
+import_all_func_list.append("db_tbl_ohlcv_prod_id_insupd")
+import_all_func_list.append("db_tbl_ohlcv_prod_id_insupd_many")
+
 import_all_func_list.append("db_safe_string")
 import_all_func_list.append("db_curr_prc_mkt_upd")
 import_all_func_list.append("db_curr_prc_stable_upd")
@@ -44,6 +50,10 @@ import sys
 import os
 import re
 import time
+from datetime import timedelta
+from datetime import datetime as dt
+import sqlparse
+
 
 #<=====>#
 # Imports - Download Modules
@@ -67,8 +77,11 @@ if local_libs_path not in sys.path:
 
 from cls_db_mysql                  import db_mysql
 from lib_common                    import *
+from lib_colors                    import *
+from lib_strings                   import *
 
 #from bot_common                    import *
+from bot_db_read                   import *
 from bot_secrets                   import secrets
 
 #<=====>#
@@ -81,7 +94,7 @@ lib_debug_lvl = 1
 verbosity     = 1
 debug_lvl     = 1
 lib_secs_max  = 0.5
-lib_secs_max  = 10
+lib_secs_max  = 0.5
 
 #<=====>#
 # Assignments Pre
@@ -108,12 +121,185 @@ def db_safe_string(in_str):
 
 #<=====>#
 
+# def db_check_ohlcv_prod_id_freqs_table(prod_id, freq):
+# 	func_name = 'db_check_ohlcv_prod_id_freqs_table'
+# 	G(func_name)
+
+
+# 	sql = ''
+# 	sql += 'create table if not exists ohlcv_prod_id_freqs ('
+# 	sql += '    prod_id           varchar(64) '
+# 	sql += '  , freq              varchar(64) '
+# 	sql += '  , last_start_dttm   timestamp default current_timestamp '
+# 	sql += '  , dlm               timestamp default current_timestamp on update current_timestamp '
+# 	sql += ');'
+
+# 	db.execute(sql)
+
+#<=====>#
+
+def db_check_ohlcv_prod_id_piano(prod_id, in_data):
+	func_name = 'db_check_ohlcv_prod_id_piano'
+#	G(func_name)
+
+#	freqs = ['1min','3min','5min','15min','30min','1h','4h','1d']
+	freqs = ['1min','5min','15min','30min','1h','4h','1d']
+
+	sql = ''
+	sql += 'create table if not exists '
+	sql += f'ohlcv_{prod_id}_piano('
+	sql += '    prod_id     varchar(64) '
+	for freq in freqs:
+		sql += '  , timestamp   timestamp '
+		sql += '  , freq_{freq}        varchar(64) '
+		sql += '  , open_{freq}        decimal(36, 12) '
+		sql += '  , high_{freq}        decimal(36, 12) '
+		sql += '  , low_{freq}         decimal(36, 12) '
+		sql += '  , close_{freq}       decimal(36, 12) '
+		sql += '  , volume_{freq}      decimal(36, 12) '
+		sql += '  , start_dttm_{freq}  timestamp, '
+		sql += '  , end_dttm_{freq}    timestamp '
+	sql += '  , upd_dttm    timestamp '
+	sql += '  , dlm         timestamp default current_timestamp on update current_timestamp '                              
+	sql += ');'
+
+	db.execute(sql)
+
+#<=====>#
+
+def db_check_ohlcv_prod_id_table(prod_id):
+	func_name = 'db_check_ohlcv_prod_id_table'
+#	G(func_name)
+
+	prod_id = prod_id.replace('-','_')
+
+	sql = ""
+	sql += "create table if not exists "
+	sql += f"ohlcv_{prod_id} ("
+	sql += "  timestamp     timestamp "
+	sql += "  , freq        varchar(64) "
+	sql += "  , open        decimal(36, 12) "
+	sql += "  , high        decimal(36, 12) "
+	sql += "  , low         decimal(36, 12) "
+	sql += "  , close       decimal(36, 12) "
+	sql += "  , volume      decimal(36, 12) "
+	sql += "  , start_dttm  timestamp "
+	sql += "  , end_dttm    timestamp "
+	sql += "  , upd_dttm    timestamp default current_timestamp on update current_timestamp "
+	sql += "  , dlm         timestamp default current_timestamp on update current_timestamp "
+	sql += "  , unique(timestamp, freq) "
+	sql += "  )"
+#	print(sql)
+	db.execute(sql)
+	time.sleep(0.05)
+
+
+#<=====>#
+
+def db_tbl_ohlcv_prod_id_insupd(prod_id, freq, in_df):
+	func_name = 'db_tbl_ohlcv_prod_id_insupd'
+	func_str = f'{lib_name}.{func_name}(prod_id={prod_id}, freq={freq}, in_df)'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	t0 = time.perf_counter()
+	prod_id = prod_id.replace('-','_')
+
+	in_df['freq'] = freq
+
+	in_df['start_dttm'] = in_df.index
+	if freq == '1min':
+		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=59) 
+#	elif freq == '3min':
+#		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=179) 
+	elif freq == '5min':
+		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=299) 
+	elif freq == '15min':
+		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=899) 
+	elif freq == '30min':
+		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=1799) 
+	elif freq == '1h':
+		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=3599) 
+	elif freq == '4h':
+		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=14399) 
+	elif freq == '1d':
+		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=86399) 
+
+	in_data = in_df.reset_index().rename(columns={'index': 'timestamp'}).to_dict(orient='records')
+
+	table_name = f'ohlcv_{prod_id}'
+#	db_tbl_del(table_name=table_name)
+	db_tbl_insupd(table_name, in_data)
+
+#	print(in_df.head(3))
+#	print(in_df.tail(3))
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+	msg = cs(f'{func_str} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
+	print(msg)
+
+	func_end(fnc)
+
+#<=====>#
+
+def db_tbl_ohlcv_prod_id_insupd_many(prod_id, in_dfs):
+	func_name = 'db_tbl_ohlcv_prod_id_insupd_many'
+	func_str = f'{lib_name}.{func_name}(prod_id={prod_id}, in_df)'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	t0 = time.perf_counter()
+
+	prod_id = prod_id.replace('-','_')
+
+	all_data = []
+
+	for rfreq in in_dfs:
+		in_df = in_dfs[rfreq] 
+
+		in_df['freq'] = rfreq
+
+		in_df['start_dttm'] = in_df.index
+		if rfreq == '1min':
+			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=59) 
+#		elif rfreq == '3min':
+#			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=179) 
+		elif rfreq == '5min':
+			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=299) 
+		elif rfreq == '15min':
+			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=899) 
+		elif rfreq == '30min':
+			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=1799) 
+		elif rfreq == '1h':
+			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=3599) 
+		elif rfreq == '4h':
+			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=14399) 
+		elif rfreq == '1d':
+			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=86399) 
+
+		in_data = in_df.reset_index().rename(columns={'index': 'timestamp'}).to_dict(orient='records')
+		all_data.extend(in_data)
+
+	table_name = f'ohlcv_{prod_id}'
+#	db_tbl_del(table_name=table_name)
+	db_tbl_insupd(table_name, all_data)
+
+#	print(in_df.head(3))
+#	print(in_df.tail(3))
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+	msg = cs(f'{func_str} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
+	print(msg)
+
+	func_end(fnc)
+
+#<=====>#
+
 def db_curr_prc_upd(prc_usd, symb):
 	func_name = 'db_curr_prc_upd'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "update cbtrade.currs c"
@@ -128,9 +314,8 @@ def db_curr_prc_upd(prc_usd, symb):
 def db_curr_prc_stable_upd(stable_symbs=None):
 	func_name = 'db_curr_prc_stable_upd'
 	func_str = '{}.{}(stable_symbs={})'.format(lib_name, func_name, stable_symbs)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	if stable_symbs:
 		if not isinstance(stable_symbs, list):
@@ -158,9 +343,8 @@ def db_curr_prc_stable_upd(stable_symbs=None):
 def db_curr_prc_mkt_upd():
 	func_name = 'db_curr_prc_mkt_upd'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "update cbtrade.currs c "
@@ -177,9 +361,8 @@ def db_curr_prc_mkt_upd():
 def db_buy_ords_stat_upd(bo_id, ord_stat):
 	func_name = 'db_buy_ords_stat_upd'
 	func_str = '{}.{}(bo_id={}, ord_stat={})'.format(lib_name, func_name, bo_id, ord_stat)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = "update buy_ords set ord_stat = '{}' where bo_id = {}".format(ord_stat, bo_id)
 	db.execute(sql)
@@ -191,9 +374,8 @@ def db_buy_ords_stat_upd(bo_id, ord_stat):
 def db_poss_err_upd(pos_id, pos_stat):
 	func_name = 'db_poss_err_upd'
 	func_str = '{}.{}(pos_id={})'.format(lib_name, func_name, pos_id)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = "update poss set pos_stat = '{}' where pos_id = {}".format(pos_stat, pos_id)
 	db.execute(sql)
@@ -205,9 +387,8 @@ def db_poss_err_upd(pos_id, pos_stat):
 def db_poss_stat_upd(pos_id, pos_stat):
 	func_name = 'db_poss_stat_upd'
 	func_str = '{}.{}(pos_id={})'.format(lib_name, func_name, pos_id)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = "update poss set pos_stat = '{}' where pos_id = {}".format(pos_stat, pos_id)
 	db.execute(sql)
@@ -219,9 +400,8 @@ def db_poss_stat_upd(pos_id, pos_stat):
 def db_sell_ords_stat_upd(so_id, ord_stat):
 	func_name = 'db_sell_ords_stat_upd'
 	func_str = '{}.{}(so_id={}, ord_stat={})'.format(lib_name, func_name, so_id, ord_stat)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = "update sell_ords set ord_stat = '{}' where so_id = {}".format(ord_stat, so_id)
 	db.execute(sql)
@@ -239,9 +419,8 @@ def db_tbl_del(table_name):
 def db_tbl_insupd(table_name, in_data, rat_on_extra_cols_yn='N'):
 	func_name = 'db_tbl_insupd'
 	func_str = '{}.{}(table_name={}, in_data)'.format(lib_name, func_name, table_name)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 #	if table_name == 'mkts':
 #		print('len(in_data)  : {}'.format(len(in_data)))
@@ -326,6 +505,13 @@ def db_tbl_insupd(table_name, in_data, rat_on_extra_cols_yn='N'):
 
 	sql = sql1 + sql2 + sql3 + sql4 + sql5 + sql6
 
+
+	if table_name == 'mkts' and ins_type == 'one':
+		print(f'sql  :')
+		formatted_sql = sqlparse.format(sql, reindent=True, keyword_case='upper')
+		print(formatted_sql)
+		print(f'vals : {ins_data}')
+
 	if ins_type == 'one':
 		db.ins_one(sql=sql, vals=ins_data)
 	else:
@@ -340,9 +526,8 @@ def db_tbl_insupd(table_name, in_data, rat_on_extra_cols_yn='N'):
 def db_tbl_bals_insupd(in_data):
 	func_name = 'db_tbl_bals_insupd'
 	func_str = '{}.{}(in_data)'.format(lib_name, func_name)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	table_name = 'bals'
 	db_tbl_del(table_name=table_name)
@@ -355,9 +540,8 @@ def db_tbl_bals_insupd(in_data):
 def db_tbl_buy_ords_insupd(in_data):
 	func_name = 'db_tbl_buy_ords_insupd'
 	func_str = '{}.{}(in_data)'.format(lib_name, func_name)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	table_name = 'buy_ords'
 	db_tbl_insupd(table_name, in_data)
@@ -369,9 +553,8 @@ def db_tbl_buy_ords_insupd(in_data):
 def db_tbl_buy_signs_insupd(in_data):
 	func_name = 'db_tbl_buy_signs_insupd'
 	func_str = '{}.{}(in_data)'.format(lib_name, func_name)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	table_name = 'buy_signs'
 	db_tbl_insupd(table_name, in_data)
@@ -383,9 +566,8 @@ def db_tbl_buy_signs_insupd(in_data):
 def db_tbl_buy_signals_insupd(in_data):
 	func_name = 'db_tbl_buy_signals_insupd'
 	func_str = '{}.{}(in_data)'.format(lib_name, func_name)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	table_name = 'buy_signals'
 	db_tbl_insupd(table_name, in_data)
@@ -397,9 +579,8 @@ def db_tbl_buy_signals_insupd(in_data):
 def db_tbl_currs_insupd(in_data):
 	func_name = 'db_tbl_currs_insupd'
 	func_str = '{}.{}(in_data)'.format(lib_name, func_name)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	table_name = 'currs'
 	db_tbl_del(table_name=table_name)
@@ -412,9 +593,8 @@ def db_tbl_currs_insupd(in_data):
 def db_tbl_mkts_insupd(in_data):
 	func_name = 'db_tbl_mkts_insupd'
 	func_str = '{}.{}(in_data)'.format(lib_name, func_name)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 # 	rem_cols = []
 # 	rem_cols.append('buy_yn')
@@ -527,9 +707,8 @@ def db_tbl_mkts_insupd(in_data):
 def db_tbl_ords_insupd(in_data):
 	func_name = 'db_tbl_ords_insupd'
 	func_str = '{}.{}(in_data)'.format(lib_name, func_name)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	table_name = 'ords'
 	db_tbl_insupd(table_name, in_data)
@@ -541,9 +720,8 @@ def db_tbl_ords_insupd(in_data):
 def db_tbl_poss_insupd(in_data):
 	func_name = 'db_tbl_poss_insupd'
 	func_str = '{}.{}(in_data)'.format(lib_name, func_name)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	rem_cols = []	
 	rem_cols.append('sell_yn')
@@ -563,9 +741,8 @@ def db_tbl_poss_insupd(in_data):
 def db_tbl_sell_ords_insupd(in_data):
 	func_name = 'db_tbl_sell_ords_insupd'
 	func_str = '{}.{}(in_data)'.format(lib_name, func_name)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	table_name = 'sell_ords'
 	db_tbl_insupd(table_name, in_data)
@@ -577,9 +754,8 @@ def db_tbl_sell_ords_insupd(in_data):
 def db_tbl_sell_signs_insupd(in_data):
 	func_name = 'db_tbl_sell_signs_insupd'
 	func_str = '{}.{}(in_data)'.format(lib_name, func_name)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	table_name = 'sell_signs'
 	db_tbl_insupd(table_name, in_data)
@@ -591,9 +767,8 @@ def db_tbl_sell_signs_insupd(in_data):
 def db_tbl_sell_signals_insupd(in_data):
 	func_name = 'db_tbl_sell_signals_insupd'
 	func_str = '{}.{}(in_data)'.format(lib_name, func_name)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	table_name = 'sell_signals'
 	db_tbl_insupd(table_name, in_data)
@@ -605,19 +780,21 @@ def db_tbl_sell_signals_insupd(in_data):
 def db_table_csvs_dump():
 	func_name = 'db_table_csvs_dump'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
-	tbl_list = ['bals','buy_ords','buy_strats','currs','freqs','mkts','ords','poss','sell_ords']
+	tbls_list = db_table_names_get()
+	tbls_exclude_list = []
 	print('')
-	for tbl in tbl_list:
-		sql = "select * from {}".format(tbl)
-		res = db.seld(sql)
-		df = pd.DataFrame(res)
-		csv_fname = 'csvs/{}_table.csv'.format(tbl)
-		df.to_csv(csv_fname, index=True)
-		print('{} saved...'.format(csv_fname))
+	for tbl in tbls_list:
+		if tbl not in tbls_exclude_list and left(tbl,5) != 'ohlcv':
+			sql = "select * from {}".format(tbl)
+			res = db.seld(sql)
+			df = pd.DataFrame(res)
+			csv_fname = 'csvs/{}_table.csv'.format(tbl)
+			dir_val(csv_fname)
+			df.to_csv(csv_fname, index=True)
+			print('{} saved...'.format(csv_fname))
 	print('')
 
 	func_end(fnc)

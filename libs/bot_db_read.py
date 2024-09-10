@@ -8,6 +8,10 @@
 #<=====>#
 
 import_all_func_list = []
+
+import_all_func_list.append("db_ohlcv_prod_id_freqs")
+import_all_func_list.append("db_ohlcv_freq_get")
+
 import_all_func_list.append("db_safe_string")
 import_all_func_list.append("db_mkts_loop_get")
 import_all_func_list.append("db_mkts_loop_top_perfs_prod_ids_get")
@@ -45,6 +49,7 @@ import_all_func_list.append("db_sell_ords_get_by_uuid")
 import_all_func_list.append("db_strats_perf_get_all")
 import_all_func_list.append("db_strats_w_stats_get_all")
 import_all_func_list.append("db_view_trade_perf_get_by_prod_id")
+import_all_func_list.append("db_table_names_get")
 __all__ = import_all_func_list
 
 #<=====>#
@@ -60,6 +65,9 @@ import sys
 import os
 import re
 import time
+from pprint import pprint
+import sqlparse
+
 
 #<=====>#
 # Imports - Download Modules
@@ -82,7 +90,10 @@ if local_libs_path not in sys.path:
 	sys.path.append(local_libs_path)
 
 from cls_db_mysql                  import db_mysql
+from cls_db_duckdb                 import db_duckdb
+
 from lib_common                    import *
+from lib_colors                    import *
 
 #from bot_common                    import *
 from bot_secrets                   import secrets
@@ -97,7 +108,7 @@ lib_debug_lvl = 1
 verbosity     = 1
 debug_lvl     = 1
 lib_secs_max  = 0.33
-lib_secs_max  = 10
+lib_secs_max  = 5
 
 #<=====>#
 # Assignments Pre
@@ -135,6 +146,54 @@ def db_safe_string(in_str):
 	# Replace characters not in the allowed set with an empty string
 	out_str = re.sub(allowed_chars_pattern, '', in_str)
 	return out_str
+
+#<=====>#
+
+def db_ohlcv_prod_id_freqs(prod_id):
+	func_name = 'db_ohlcv_prod_id_freqs'
+	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
+#	G(func_str)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+
+	prod_id = prod_id.replace('-','_')
+
+	sql = ""
+	sql += "select distinct x.freq "
+	sql += "  , max(start_dttm) as last_start_dttm "
+	sql += f"  from ohlcv_{prod_id} x "
+	sql += "  where 1=1 "
+	sql += "  group by x.freq "
+#	print(sql)
+	last_dttms = db.seld(sql)
+	if not last_dttms:
+		last_dttms = {}
+
+	func_end(fnc)
+	return last_dttms
+
+#<=====>#
+
+def db_ohlcv_freq_get(prod_id, freq, lmt=500):
+	func_name = 'db_ohlcv_freq_get'
+	func_str = f'{lib_name}.{func_name}(prod_id={prod_id}, freq={freq})'
+#	G(func_str)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+
+	prod_id = prod_id.replace('-','_')
+
+	sql = ""
+	sql += "select * "
+	sql += f"  from ohlcv_{prod_id} x "
+	sql += f"  where freq = '{freq}' "
+	sql += "   order by x.timestamp desc "
+	sql += f"  limit {lmt} "
+#	print(sql)
+	ohlcv = db.seld(sql)
+	if not ohlcv:
+		ohlcv = []
+
+	func_end(fnc)
+	return ohlcv
 
 #<=====>#
 
@@ -1379,6 +1438,25 @@ def db_view_trade_perf_get_by_prod_id(prod_id):
 
 	func_end(fnc)
 	return mkt_perf
+
+#<=====>#
+
+# => mkt_perf_get
+def db_table_names_get():
+	func_name = 'db_table_names_get'
+	func_str = f'{lib_name}.{func_name}()'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "SELECT x.table_name as table_name "
+	sql += "FROM information_schema.TABLES x "
+	sql += "WHERE x.table_schema = 'cbtrade' "
+	sql += "GROUP BY x.table_schema, x.table_name "
+	table_names = db.sel(sql)
+
+	func_end(fnc)
+	return table_names
 
 #<=====>#
 # Post Variables

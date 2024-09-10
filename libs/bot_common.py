@@ -370,21 +370,37 @@ def freqs_get(rfreq):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
+#	if rfreq == '1d':
+#		freqs = ['3min', '5min', '15min', '30min', '1h', '4h', '1d']
+#		faster_freqs = ['3min', '5min', '15min', '30min', '1h', '4h']
+#	elif rfreq == '4h':
+#		freqs = ['3min', '5min', '15min', '30min', '1h', '4h']
+#		faster_freqs = ['3min', '5min', '15min', '30min', '1h']
+#	elif rfreq == '1h':
+#		freqs = ['3min', '5min', '15min', '30min', '1h']
+#		faster_freqs = ['3min', '5min', '15min', '30min']
+#	elif rfreq == '30min':
+#		freqs = ['3min', '5min', '15min', '30min']
+#		faster_freqs = ['3min', '5min', '15min']
+#	elif rfreq == '15min':
+#		freqs = ['3min', '5min', '15min']
+#		faster_freqs = ['3min', '5min']
+
 	if rfreq == '1d':
-		freqs = ['3min', '5min', '15min', '30min', '1h', '4h', '1d']
-		faster_freqs = ['3min', '5min', '15min', '30min', '1h', '4h']
+		freqs = ['5min', '15min', '30min', '1h', '4h', '1d']
+		faster_freqs = ['5min', '15min', '30min', '1h', '4h']
 	elif rfreq == '4h':
-		freqs = ['3min', '5min', '15min', '30min', '1h', '4h']
-		faster_freqs = ['3min', '5min', '15min', '30min', '1h']
+		freqs = ['5min', '15min', '30min', '1h', '4h']
+		faster_freqs = ['5min', '15min', '30min', '1h']
 	elif rfreq == '1h':
-		freqs = ['3min', '5min', '15min', '30min', '1h']
-		faster_freqs = ['3min', '5min', '15min', '30min']
+		freqs = ['5min', '15min', '30min', '1h']
+		faster_freqs = ['5min', '15min', '30min']
 	elif rfreq == '30min':
-		freqs = ['3min', '5min', '15min', '30min']
-		faster_freqs = ['3min', '5min', '15min']
+		freqs = ['5min', '15min', '30min']
+		faster_freqs = ['5min', '15min']
 	elif rfreq == '15min':
-		freqs = ['3min', '5min', '15min']
-		faster_freqs = ['3min', '5min']
+		freqs = ['5min', '15min']
+		faster_freqs = ['5min']
 
 	func_end(fnc)
 	return freqs, faster_freqs
