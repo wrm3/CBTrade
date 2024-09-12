@@ -16,6 +16,21 @@ Modifications Log
         worked on lib_ai_youtube, which transcribes yt videos... next will be to integrate into a knowledgebase/wiki/RAG (might be seperate project)
         began beaking lib_common into smaller libraries focused on logical groupings
 
+    2024-09-12
+        summary: display, more chart work, options to hide some messages
+        fixed several chart sides during messaging (mainly sell logic, and sell strat logic)
+        strat performance boosting requirements and optional messaging, trade size + max open
+        mkt performance boosting requirements and optional message, max open
+        added display information for boosted prod_ids and strats 
+            open_cnt/max_open in Buy Logic
+        fixed position sell header missing after messages were shown in sell by strat logic
+        reduced code duplicated in sell tests by creating bot.disp_sell_tests
+        reduced code duplicated in sell tests by creating bot_strats.disp_sell_tests
+        cleaned up dead code in bot.py
+        played around alot with timers, assessing where time can be shaved, minor improvements
+        
+
+
 
 
 -------------------------------------------------
@@ -26,7 +41,7 @@ To Do & Dreams list (tackle as they manifest)
     -------------------------------------------------
     remove extra unused library clutter
     -------------------------------------------------
-    * fix the speak async or switch to different library
+    * remove extra unused library clutter
 
 
     -------------------------------------------------
@@ -38,7 +53,6 @@ To Do & Dreams list (tackle as they manifest)
     -------------------------------------------------
     Displays Changes
     -------------------------------------------------
-    * add max pos cnt to the various displays
     * make more prominent current investment amount
     * make more prominent current cashout amount
     * make the displays workable with different trading coins /quote currency
@@ -324,3 +338,7 @@ Handled for now
     this of course will be more complex, none... seperate field for calculated row vs 
     from api row indicator etc... last actual api update, vs calculated
 
+    -------------------------------------------------
+    Displays Changes
+    -------------------------------------------------
+    * add max pos cnt to the various displays

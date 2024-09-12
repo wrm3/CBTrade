@@ -98,9 +98,6 @@ class BOT():
 		# don't change this value, need more codiging for USDT or USD, someday integrae USDT/USD/BTC/ETH
 		self.quote_curr_symb = 'USDC'
 
-#		print('ddb_check_tables...')
-#		ddb_check_tables()
-
 	#<=====>#
 
 	def bot(self):
@@ -295,7 +292,6 @@ class BOT():
 			self.prt_cols(mkts, cols=10)
 
 			loop_mkts.extend(mkts)
-#			print(f'loop_mkts: {loop_mkts}')
 
 		# Get The Markets with the best performance on the bot so far
 		# By Gain Loss Percen Per Hour
@@ -310,7 +306,6 @@ class BOT():
 				self.prt_cols(mkts, cols=10, clr='WoG')
 
 				loop_mkts.extend(mkts)
-#				print(f'loop_mkts: {loop_mkts}')
 				self.buy_mkts.extend(mkts)
 
 			elif self.st.spot.mkts.extra_mkts_top_bot_perf_cnt > 0:
@@ -330,7 +325,6 @@ class BOT():
 				self.prt_cols(mkts, cols=10, clr='WoG')
 
 				loop_mkts.extend(mkts)
-#				print(f'loop_mkts: {loop_mkts}')
 				self.buy_mkts.extend(mkts)
 
 			elif self.st.spot.mkts.extra_mkts_top_bot_gains_cnt > 0:
@@ -350,7 +344,6 @@ class BOT():
 				self.prt_cols(mkts, cols=10, clr='WoG')
 
 				loop_mkts.extend(mkts)
-#				print(f'loop_mkts: {loop_mkts}')
 				self.buy_mkts.extend(mkts)
 
 			elif self.st.spot.mkts.extra_mkts_prc_pct_chg_24h_cnt > 0:
@@ -369,7 +362,6 @@ class BOT():
 				self.prt_cols(mkts, cols=10, clr='WoG')
 
 				loop_mkts.extend(mkts)
-#				print(f'loop_mkts: {loop_mkts}')
 				self.buy_mkts.extend(mkts)
 
 			elif self.st.spot.mkts.extra_mkts_vol_quote_24h_cnt > 0:
@@ -388,7 +380,6 @@ class BOT():
 				self.prt_cols(mkts, cols=10, clr='WoG')
 
 				loop_mkts.extend(mkts)
-#				print(f'loop_mkts: {loop_mkts}')
 				self.buy_mkts.extend(mkts)
 
 			elif self.st.spot.mkts.extra_mkts_vol_pct_chg_24h_cnt > 0:
@@ -405,7 +396,6 @@ class BOT():
 				self.prt_cols(mkts, cols=10, clr='WoG')
 
 				loop_mkts.extend(mkts)
-#				print(f'loop_mkts: {loop_mkts}')
 				self.buy_mkts.extend(mkts)
 
 			else:
@@ -413,7 +403,6 @@ class BOT():
 				chart_mid(in_str=hmsg, len_cnt=177)
 				self.prt_cols(mkts, cols=10, clr='GoW')
 
-#		print(f'loop_mkts final before select: {loop_mkts}')
 
 		stable_mkts           = self.st.spot.mkts.stable_mkts
 		err_mkts              = self.st.spot.mkts.err_mkts
@@ -480,7 +469,7 @@ class BOT():
 		trade_perf.restricts_open_poss_cnt_max   = settings.get_ovrd(in_dict=self.st.spot.buy.open_poss_cnt_max, in_key=prod_id)
 
 		# get market performance boosts
-		mkt, trade_perf                          = self.mkt_boosts(mkt, trade_perf)
+		mkt, trade_perf                          = self.buy_logic_mkt_boosts(mkt, trade_perf)
 
 		# Market Strat Performances
 		trade_strat_perfs    = []
@@ -577,19 +566,6 @@ class BOT():
 
 	#<=====>#
 
-	def mkt_boosts(self, mkt, trade_perf):
-		func_name = 'mkt_boosts'
-		func_str = f'{lib_name}.{func_name}(mkt, trade_perf)'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#		G(func_str)
-
-		# Boost trade_perf.restricts_open_poss_cnt_max
-
-		func_end(fnc)
-		return mkt, trade_perf
-
-	#<=====>#
-
 	def mkt_logic(self, mkt, trade_perf, trade_strat_perfs):
 		func_name = 'mkt_logic'
 		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
@@ -626,8 +602,6 @@ class BOT():
 				chart_mid(len_cnt=240)
 
 
-
-
 			# Market Technical Analysis
 			ta = None
 			t0 = time.perf_counter()
@@ -662,7 +636,6 @@ class BOT():
 				chart_mid(len_cnt=240)
 
 
-
 			# Market Buy Logic
 			t0 = time.perf_counter()
 			if self.st.spot.buy.buying_on_yn == 'Y' and prod_id in self.buy_mkts:
@@ -677,11 +650,10 @@ class BOT():
 					pass
 			t1 = time.perf_counter()
 			secs = round(t1 - t0, 2)
-			if secs >= 2:
+			if secs >= 5:
 				msg = cs(f'buy_logic for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
 				chart_row(msg, len_cnt=240)
 				chart_mid(len_cnt=240)
-
 
 
 			# Market Sell Logic
@@ -704,8 +676,6 @@ class BOT():
 				msg = cs(f'sell_logic for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
 				chart_row(msg, len_cnt=240)
 				chart_mid(len_cnt=240)
-
-
 
 
 			t0 = time.perf_counter()
@@ -735,10 +705,10 @@ class BOT():
 		mkt_logic_t1 = time.perf_counter()
 		secs = round(mkt_logic_t1 - mkt_logic_t0, 2)
 		if secs >= 5:
-			msg = cs(f'mkt_logic for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='green')
+			msg = cs(f'mkt_logic for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
 			chart_row(msg, len_cnt=240)
 		else:
-			msg = cs(f'mkt_logic for {prod_id} - took {secs} seconds...', font_color='green', bg_color='white')
+			msg = cs(f'mkt_logic for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='green')
 			chart_row(msg, len_cnt=240)
 
 		func_end(fnc)
@@ -750,8 +720,8 @@ class BOT():
 	def wallet_refresh(self, force_tf=False):
 		func_name = 'wallet_refresh'
 		func_str = f'{lib_name}.{func_name}(self.refresh_wallet_tf={self.refresh_wallet_tf}, force_tf={force_tf})'
-#		G(func_str)
 		fnc = func_begin(func_name=func_name, func_str=func_str,  logname=log_name, secs_max=1.5)
+#		G(func_str)
 
 		if self.refresh_wallet_tf or force_tf:
 			cb_wallet_refresh()
@@ -765,7 +735,6 @@ class BOT():
 			# when/if we start trading  against btc, eth, sol and not just usdc
 			# we will need to add a deduction for the amount outstanding on trades 
 			# that used other currencies
-
 			open_trade_amts = {}
 			open_trade_amts = AttrDictConv(in_dict=open_trade_amts)
 			r = db_open_trade_amts_get()
@@ -795,7 +764,6 @@ class BOT():
 						open_trade_amt = 0
 						self.open_trade_amts[curr] = 0
 					self.spendable_amts[curr] = spendable_amt
-#					print(f'{func_name} - {curr} - bal_avail : {bal_avail}, reserve_amt : {reserve_amt}, open_trade_amt : {open_trade_amt}, spendable_amt : {spendable_amt}')
 
 		func_end(fnc)
 
@@ -826,8 +794,8 @@ class BOT():
 	def buy_logic(self, buy_mkts, mkt, trade_perf, trade_strat_perfs, ta):
 		func_name = 'buy_logic'
 		func_str = f'{lib_name}.{func_name}(buy_mkts, mkt, trade_perf, trade_strat_perfs, ta)'
-#		G(func_str)
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=6)
+#		G(func_str)
 
 		st                        = settings.settings_load()
 		prod_id                   = mkt.prod_id
@@ -956,7 +924,7 @@ class BOT():
 				txt = '!!! WAIT !!!'
 				m = '{} * {} * CURR: ${:>16.8f} * SIZE: ${:>16.8f} * BAL: ${:>16.8f}'
 				msg = m.format(dttm, txt, mkt.prc_buy, trade_strat_perf.trade_size, mkt.bal_avail)
-	#			BoW(msg)
+#				BoW(msg)
 
 			# Save Files
 			if buy_yn == 'Y':
@@ -1034,6 +1002,43 @@ class BOT():
 
 	#<=====>#
 
+	def buy_logic_mkt_boosts(self, mkt, trade_perf):
+		func_name = 'buy_logic_mkt_boosts'
+		func_str = f'{lib_name}.{func_name}(mkt, trade_perf)'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#		G(func_str)
+
+		prod_id                   = mkt.prod_id
+		debug_yn                  = 'N'
+		show_boosts_yn            = self.st.spot.buy.show_boosts_yn
+
+		# get default open position max for strat
+		# add double override logic strat + prod
+		# fixme
+		trade_perf.restricts_open_poss_cnt_max = settings.get_ovrd(in_dict=self.st.spot.buy.open_poss_cnt_max, in_key=prod_id) 
+
+		# Open Position Count Checks Performance Based
+		# Boost allowed max positions based upon past performance
+		if trade_perf.tot_cnt >= 5 and trade_perf.gain_loss_pct_day > 0.1:
+			trade_perf.restricts_open_poss_cnt_max *= 2
+			if show_boosts_yn == 'Y':
+				msg = ''
+				msg += f'    * BOOST BUY STRAT : '
+				msg += f'{mkt.prod_id} '
+				msg += f'has {trade_perf.tot_cnt} trades '
+				msg += f'with performance {trade_perf.gain_loss_pct_day:>.8f} % < 0 % '
+				msg += f'boosting allowed open pos ... '
+				msg = cs(msg, font_color='blue', bg_color='white')
+				chart_row(msg, len_cnt= 240)
+		else:
+			if debug_yn == 'Y':
+				print(f'{func_name}, tot_cnt : {trade_perf.tot_cnt}, gain_loss_pct_day : {trade_perf.gain_loss_pct_day}, strat_open_cnt_max : {trade_perf.restricts_open_poss_cnt_max}')
+
+		func_end(fnc)
+		return mkt, trade_perf
+
+	#<=====>#
+
 	def buy_logic_strat_boosts(self, mkt, trade_strat_perf):
 		func_name = 'buy_logic_strat_boosts'
 		func_str = f'{lib_name}.{func_name}(mkt, trade_strat_perf)'
@@ -1045,6 +1050,7 @@ class BOT():
 		buy_strat_name            = trade_strat_perf.buy_strat_name
 		buy_strat_freq            = trade_strat_perf.buy_strat_freq
 		debug_yn                  = 'N'
+		show_boosts_yn            = self.st.spot.buy.show_boosts_yn
 
 		# get default open position max for strat
 		# add double override logic strat + prod
@@ -1054,15 +1060,17 @@ class BOT():
 		# Open Position Count Checks Performance Based
 		# Boost allowed max positions based upon past performance
 		if trade_strat_perf.tot_cnt >= 25 and trade_strat_perf.gain_loss_pct_day > 1:
-			msg = ''
-			msg += f'    * BOOST BUY STRAT : '
-			msg += f'{mkt.prod_id} '
-			msg += f'{buy_strat_name} - {buy_strat_freq} '
-			msg += f'has {trade_strat_perf.tot_cnt} trades '
-			msg += f'with performance {trade_strat_perf.gain_loss_pct_day:>.8f} % < 0 % '
-			msg += f'boosting allowed open pos ... '
-			YoB(msg)
 			trade_strat_perf.restricts_strat_open_cnt_max *= 2
+			if show_boosts_yn == 'Y':
+				msg = ''
+				msg += f'    * BOOST BUY STRAT : '
+				msg += f'{mkt.prod_id} '
+				msg += f'{buy_strat_name} - {buy_strat_freq} '
+				msg += f'has {trade_strat_perf.tot_cnt} trades '
+				msg += f'with performance {trade_strat_perf.gain_loss_pct_day:>.8f} % < 0 % '
+				msg += f'boosting allowed open pos ... '
+				msg = cs(msg, font_color='blue', bg_color='white')
+				chart_row(msg, len_cnt= 240)
 		else:
 			if debug_yn == 'Y':
 				print(f'{func_name}, tot_cnt : {trade_strat_perf.tot_cnt}, gain_loss_pct_day : {trade_strat_perf.gain_loss_pct_day}, strat_open_cnt_max : {trade_strat_perf.restricts_strat_open_cnt_max}')
@@ -1085,10 +1093,16 @@ class BOT():
 				print(f'{func_name}, tot_cnt : {trade_strat_perf.tot_cnt}, gain_loss_pct_day : {trade_strat_perf.gain_loss_pct_day}, trade_size : {trade_size}')
 
 		# Kid has potential, lets give it a little more earlier
-		if trade_strat_perf.tot_cnt >= 3 and trade_strat_perf.gain_loss_pct_day > 0.25:
+		if trade_strat_perf.tot_cnt >= 3 and trade_strat_perf.gain_loss_pct_day > 0.05:
 			trade_size             *= 2
 		# Boost those with proven track records
-		if trade_strat_perf.tot_cnt >= tests_min and trade_strat_perf.gain_loss_pct_day > 0.5:
+		if trade_strat_perf.tot_cnt >= tests_min and trade_strat_perf.gain_loss_pct_day > 0.1:
+			trade_size             *= 2
+		# Boost those with proven track records
+		if trade_strat_perf.tot_cnt >= boost_tests_min and trade_strat_perf.gain_loss_pct_day > 0.25:
+			trade_size             *= 2
+		# Boost those with proven track records
+		if trade_strat_perf.tot_cnt >= boost_tests_min and trade_strat_perf.gain_loss_pct_day > 0.5:
 			trade_size             *= 2
 		# Boost those with proven track records
 		if trade_strat_perf.tot_cnt >= boost_tests_min and trade_strat_perf.gain_loss_pct_day > 1:
@@ -1099,6 +1113,16 @@ class BOT():
 		# Boost those with proven track records
 		if trade_strat_perf.tot_cnt >= boost_tests_min and trade_strat_perf.gain_loss_pct_day > 4:
 			trade_size             *= 2
+		# Boost those with proven track records
+		if trade_strat_perf.tot_cnt >= boost_tests_min and trade_strat_perf.gain_loss_pct_day > 8:
+			trade_size             *= 2
+
+		if show_boosts_yn == 'Y':
+			msg = ''
+			msg += f'    * BOOST BUY STRAT : {mkt.prod_id} {buy_strat_name} - {buy_strat_freq} has {trade_strat_perf.tot_cnt} trades '
+			msg += f'with performance {trade_strat_perf.gain_loss_pct_day:>.8f} % < 0 % boosting trade_size ${trade_size} ... '
+			msg = cs(msg, font_color='blue', bg_color='white')
+			chart_row(msg, len_cnt= 240)
 
 		if debug_yn == 'Y':
 			print(f'{func_name}, tot_cnt : {trade_strat_perf.tot_cnt}, gain_loss_pct_day : {trade_strat_perf.gain_loss_pct_day}, trade_size : {trade_size}')
@@ -1343,8 +1367,8 @@ class BOT():
 	def buy_ords_check(self):
 		func_name = 'buy_ords_check'
 		func_str = f'{lib_name}.{func_name}()'
-#		G(func_str)
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
+#		G(func_str)
 
 		try:
 			bos = db_buy_ords_open_get()
@@ -1356,16 +1380,18 @@ class BOT():
 				cnt = 0
 				for bo in bos:
 					cnt += 1
-	#				print(bo)
 					bo = dec_2_float(bo)
 					bo = AttrDictConv(in_dict=bo)
 					test_tf = bo.test_tf
+
 					if test_tf == 0:
 						ord_id = bo.buy_order_uuid
 						o = cb_ord_get(order_id=ord_id)
+
 						if o:
 							o = dec_2_float(o)
 							o = AttrDictConv(in_dict=o)
+
 							if o.prod_id != bo.prod_id:
 								print(func_str)
 								print('error #1 !')
@@ -1373,7 +1399,7 @@ class BOT():
 								beep()
 								beep()
 								sys.exit()
-		#					print(f'(o.ord_completion_percentage : {o.ord_completion_percentage} {type(o.ord_completion_percentage)}')
+
 							if o.ord_status == 'FILLED' or o.ord_completion_percentage == '100.0' or o.ord_completion_percentage == 100.0:
 								bo.buy_cnt_act                    = o.ord_filled_size
 								bo.fees_cnt_act                   = o.ord_total_fees
@@ -1389,18 +1415,20 @@ class BOT():
 
 								db_tbl_buy_ords_insupd(bo)
 								self.pos_open(bo.buy_order_uuid)
+
 							elif o.ord_status == 'OPEN':
 								print(o)
 								print('WE NEED CODE HERE!!!')
 								beep()
+
 							else:
 								print(func_str)
 								print('error #2 !')
 								beep(3)
 								db_buy_ords_stat_upd(bo_id=bo.bo_id, ord_stat='ERR')
+
 					elif test_tf == 1:
 						bo.ord_stat = 'FILL'
-#						bo.buy_end_dttm = bo.buy_begin_dttm
 						db_tbl_buy_ords_insupd(bo)
 						self.pos_open(bo.buy_order_uuid)
 
@@ -1451,7 +1479,6 @@ class BOT():
 			pos.buy_strat_type          = bo.buy_strat_type
 			pos.buy_strat_name          = bo.buy_strat_name
 			pos.buy_strat_freq          = bo.buy_strat_freq
-#			pos.buy_asset_type          = bo.buy_asset_type
 			pos.buy_curr_symb           = bo.buy_curr_symb
 			pos.buy_cnt                 = bo.buy_cnt_act
 			pos.spend_curr_symb         = bo.spend_curr_symb
@@ -1460,7 +1487,6 @@ class BOT():
 			pos.tot_out_cnt             = bo.tot_out_cnt
 			pos.sell_curr_symb          = bo.buy_curr_symb
 			pos.recv_curr_symb          = bo.spend_curr_symb
-#			pos.sell_fees_curr_symb     = bo.fees_curr_symb
 			pos.sell_order_cnt          = 0
 			pos.sell_order_attempt_cnt  = 0
 			pos.hold_cnt                = bo.buy_cnt_act
@@ -1489,9 +1515,6 @@ class BOT():
 			pos.gain_loss_pct_est_low   = 0
 			pos.gain_loss_pct           = 0
 
-#			print(func_name)
-#			pprint(pos)
-
 			db_tbl_poss_insupd(pos)
 
 		func_end(fnc)
@@ -1501,8 +1524,8 @@ class BOT():
 	def sell_logic(self, mkt, ta, open_poss):
 		func_name = 'sell_logic'
 		func_str = f'{lib_name}.{func_name}(mkt, ta, open_poss)'
-#		G(func_str)
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=6)
+#		G(func_str)
 
 		prod_id = mkt.prod_id
 		st = settings.settings_load()
@@ -1542,8 +1565,8 @@ class BOT():
 	def sell_pos_logic(self, mkt, ta, pos):
 		func_name = 'sell_pos_logic'
 		func_str = f'{lib_name}.{func_name}(mkt, ta, pos)'
-#		G(func_str)
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=1)
+#		G(func_str)
 
 		pos                       = self.pos_upd(pos=pos, mkt=mkt)
 		pos.sell_strat_type       = ''
@@ -1558,17 +1581,14 @@ class BOT():
 		self.disp_sell(pos)
 
 		# Logic that will block the sell from happening
-#		if sell_yn == 'Y':
 		sell_block_yn = self.sell_pos_blocks(mkt, pos)
-#		print(f'sell_yn: {sell_yn}, sell_block_yn: {sell_block_yn}')
 
 		# Sell By Strat Logic
 		if sell_yn == 'N' and ta:
-			mkt, pos, sell_yn, hodl_yn, sell_signals = sell_strats_check(self.st, mkt, ta, pos, sell_yn, hodl_yn, sell_signals, sell_block_yn)
+			mkt, pos, sell_yn, hodl_yn, sell_signals, self.show_sell_header_tf = sell_strats_check(self.st, mkt, ta, pos, sell_yn, hodl_yn, sell_signals, self.show_sell_header_tf, sell_block_yn)
 
 		# Forced Sell Logic
 		if sell_yn == 'N':
-#			print(f'mkt, pos, sell_yn : {sell_yn}, hodl_yn: {hodl_yn} = sell_strat_sha()')
 			mkt, pos, sell_yn, hodl_yn, sell_block_yn = self.sell_logic_forced(mkt, pos, sell_yn, hodl_yn, sell_block_yn)
 			sell_signal = {"pos_id": pos.pos_id, "sell_strat_type": pos.sell_strat_type, "sell_strat_name": pos.sell_strat_name, "sell_yn": sell_yn, "hodl_yn": hodl_yn}
 			sell_signals.append(sell_signal)
@@ -1576,14 +1596,12 @@ class BOT():
 		# Take Profits
 		if pos.prc_chg_pct > 0:
 			if sell_yn == 'N':
-#				print(f'mkt, pos, sell_yn : {sell_yn}, hodl_yn: {hodl_yn} = sell_logic_hard_profit()')
 				if self.st.spot.sell.take_profit.hard_take_profit_yn == 'Y':
 					mkt, pos, sell_yn, hodl_yn = self.sell_logic_hard_profit(mkt, pos, sell_block_yn)
 					sell_signal = {"pos_id": pos.pos_id, "sell_strat_type": pos.sell_strat_type, "sell_strat_name": pos.sell_strat_name, "sell_yn": sell_yn, "hodl_yn": hodl_yn}
 					sell_signals.append(sell_signal)
 
 			if sell_yn == 'N':
-#				print(f'mkt, pos, sell_yn : {sell_yn}, hodl_yn: {hodl_yn} = sell_logic_trailing_profit()')
 				if self.st.spot.sell.take_profit.trailing_profit_yn == 'Y':
 					mkt, pos, sell_yn, hodl_yn = self.sell_logic_trailing_profit(mkt, pos, sell_block_yn)
 					sell_signal = {"pos_id": pos.pos_id, "sell_strat_type": pos.sell_strat_type, "sell_strat_name": pos.sell_strat_name, "sell_yn": sell_yn, "hodl_yn": hodl_yn}
@@ -1593,28 +1611,24 @@ class BOT():
 		if pos.prc_chg_pct < 0:
 			if sell_yn == 'N':
 				if self.st.spot.sell.stop_loss.hard_stop_loss_yn == 'Y':
-#					print(f'mkt, pos, sell_yn : {sell_yn}, hodl_yn: {hodl_yn} = sell_logic_hard_stop()')
 					mkt, pos, sell_yn, hodl_yn = self.sell_logic_hard_stop(mkt, pos, sell_block_yn)
 					sell_signal = {"pos_id": pos.pos_id, "sell_strat_type": pos.sell_strat_type, "sell_strat_name": pos.sell_strat_name, "sell_yn": sell_yn, "hodl_yn": hodl_yn}
 					sell_signals.append(sell_signal)
 
 			if sell_yn == 'N':
 				if self.st.spot.sell.stop_loss.trailing_stop_loss_yn == 'Y':
-#					print(f'mkt, pos, sell_yn : {sell_yn}, hodl_yn: {hodl_yn} = sell_logic_trailing_stop()')
 					mkt, pos, sell_yn, hodl_yn = self.sell_logic_trailing_stop(mkt, pos, sell_block_yn)
 					sell_signal = {"pos_id": pos.pos_id, "sell_strat_type": pos.sell_strat_type, "sell_strat_name": pos.sell_strat_name, "sell_yn": sell_yn, "hodl_yn": hodl_yn}
 					sell_signals.append(sell_signal)
 
 			if sell_yn == 'N':
 				if self.st.spot.sell.stop_loss.atr_stop_loss_yn == 'Y':
-#					print(f'mkt, pos, sell_yn : {sell_yn}, hodl_yn: {hodl_yn} = sell_logic_atr_stop()')
 					mkt, pos, sell_yn, hodl_yn = self.sell_logic_atr_stop(mkt, ta, pos, sell_block_yn)
 					sell_signal = {"pos_id": pos.pos_id, "sell_strat_type": pos.sell_strat_type, "sell_strat_name": pos.sell_strat_name, "sell_yn": sell_yn, "hodl_yn": hodl_yn}
 					sell_signals.append(sell_signal)
 
 			if sell_yn == 'N':
 				if self.st.spot.sell.stop_loss.trailing_atr_stop_loss_yn == 'Y':
-#					print(f'mkt, pos, sell_yn : {sell_yn}, hodl_yn: {hodl_yn} = sell_logic_trailing_atr_stop()')
 					mkt, pos, sell_yn, hodl_yn = self.sell_logic_trailing_atr_stop(mkt, ta, pos, sell_block_yn)
 					sell_signal = {"pos_id": pos.pos_id, "sell_strat_type": pos.sell_strat_type, "sell_strat_name": pos.sell_strat_name, "sell_yn": sell_yn, "hodl_yn": hodl_yn}
 					sell_signals.append(sell_signal)
@@ -1624,15 +1638,11 @@ class BOT():
 
 		# Forced Sell Logic
 		# Second calling so a forced sell still overwrites a forced don't sell
-#		print(f'before second force sell call : sell_yn {sell_yn}')
 		if sell_yn == 'N' or (sell_yn == 'Y' and sell_block_yn == 'Y'):
-#			print(f'mkt, pos, sell_yn : {sell_yn}, hodl_yn: {hodl_yn} = sell_strat_sha()')
 			mkt, pos, sell_yn, hodl_yn, sell_block_yn = self.sell_logic_forced(mkt, pos, sell_yn, hodl_yn, sell_block_yn)
 
 			sell_signal = {"pos_id": pos.pos_id, "sell_strat_type": pos.sell_strat_type, "sell_strat_name": pos.sell_strat_name, "sell_yn": sell_yn, "hodl_yn": hodl_yn}
 			sell_signals.append(sell_signal)
-#		print(f'after second force sell call : sell_yn {sell_yn}')
-
 
 		if sell_yn == 'Y' and sell_block_yn == 'Y':
 			hodl_yn = 'Y'
@@ -1641,11 +1651,8 @@ class BOT():
 
 		db_tbl_poss_insupd(pos)
 
-#		print(f'sell_yn: {sell_yn}, sell_block_yn: {sell_block_yn}, hodl_yn: {hodl_yn}')
-
 		if sell_yn == 'Y' and sell_block_yn == 'N':
 			if pos.test_tf == 0:
-#				MoY('!!! WTF WTF WTF WTF !!!')
 				pos = self.sell_live(mkt, pos)
 				if pos.gain_loss_amt > 0:
 					symb = prod_id.split(',')[0]
@@ -1674,12 +1681,6 @@ class BOT():
 				for k in pos:
 					writeit(fname, f'{k} : {pos[k]}')
 
-		# final_sell_signals = []
-		# for sell_signal in sell_signals:
-		# 	if sell_signal['sell_yn'] == 'Y':
-		# 		final_sell_signals.append(sell_signal)
-		# db_tbl_sell_signals_insupd(final_sell_signals)
-
 		pos.sell_yn = sell_yn
 		pos.sell_block_yn = sell_block_yn
 		pos.hodl_yn = hodl_yn
@@ -1692,8 +1693,8 @@ class BOT():
 	def sell_pos_blocks(self, mkt, pos):
 		func_name = 'sell_pos_blocks'
 		func_str = f'{lib_name}.{func_name}(mkt, pos)'
-#		G(func_str)
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=1)
+#		G(func_str)
 
 		prod_id     = pos.prod_id
 		pos_id      = pos.pos_id
@@ -1705,49 +1706,42 @@ class BOT():
 			msg = f'    * SELL BLOCK * selling_on_yn : {sell_block_yn} - self.st.spot.sell.selling_on_yn == N'
 			if self.st.spot.sell.show_tests_yn in ('Y','F'):
 				BoW(msg)
-#		print(f'sell_block_yn: {sell_block_yn} * selling_on_yn : {sell_block_yn} - self.st.spot.sell.selling_on_yn == N')
 
 		if self.st.spot.sell.never_sell_all_yn == 'Y':
 			sell_block_yn = 'Y'
 			msg = f'    * SELL BLOCK * sell_block_yn : {sell_block_yn} - self.st.spot.sell.never_sell_all_yn == Y'
 			if self.st.spot.sell.show_tests_yn in ('Y','F'):
 				BoW(msg)
-#		print(f'sell_block_yn: {sell_block_yn} * sell_block_yn : {sell_block_yn} - self.st.spot.sell.never_sell_all_yn == Y')
 
 		if self.st.spot.sell.never_sell_loss_all_yn == 'Y' and pos.prc_chg_pct < 0:
 			sell_block_yn = 'Y'
 			msg = f'    * SELL BLOCK * sell_block_yn : {sell_block_yn} - self.st.spot.sell.never_sell_loss_all_yn == Y and pos.prc_chg_pct < 0'
 			if self.st.spot.sell.show_tests_yn in ('Y','F'):
 				BoW(msg)
-#		print(f'sell_block_yn: {sell_block_yn} * sell_block_yn : {sell_block_yn} - self.st.spot.sell.never_sell_loss_all_yn == Y and pos.prc_chg_pct < 0')
 
 		if prod_id in self.st.spot.sell.never_sell.prod_ids:
 			sell_block_yn = 'Y'
 			msg = f'    * SELL BLOCK * sell_block_yn : {sell_block_yn} - {pos.prod_id} - in self.st.spot.sell.never_sell.prod_ids'
 			if self.st.spot.sell.show_tests_yn in ('Y','F'):
 				BoW(msg)
-#		print(f'sell_block_yn: {sell_block_yn} * sell_block_yn : {sell_block_yn} - {pos.prod_id} - in self.st.spot.sell.never_sell.prod_ids')
 
 		if prod_id in self.st.spot.sell.never_sell_loss.prod_ids and pos.prc_chg_pct < 0:
 			sell_block_yn = 'Y'
 			msg = f'    * SELL BLOCK * sell_block_yn : {sell_block_yn} - {pos.prod_id} - in self.st.spot.sell.never_sell_loss.prod_ids and pos.prc_chg_pct < 0'
 			if self.st.spot.sell.show_tests_yn in ('Y','F'):
 				BoW(msg)
-#		print(f'sell_block_yn: {sell_block_yn} * sell_block_yn : {sell_block_yn} - {pos.prod_id} - in self.st.spot.sell.never_sell_loss.prod_ids and pos.prc_chg_pct < 0')
 
 		if pos_id in self.st.spot.sell.never_sell.pos_ids:
 			sell_block_yn = 'Y'
 			msg = f'    * SELL BLOCK * sell_block_yn : {sell_block_yn} - {pos.prod_id} {pos.pos_id} - pos_id in self.st.spot.sell.never_sell.pos_ids'
 			if self.st.spot.sell.show_tests_yn in ('Y','F'):
 				BoW(msg)
-#		print(f'sell_block_yn: {sell_block_yn} * sell_block_yn : {sell_block_yn} - {pos.prod_id} {pos.pos_id} - pos_id in self.st.spot.sell.never_sell.pos_ids')
 
 		if pos_id in self.st.spot.sell.never_sell_loss.pos_ids and pos.prc_chg_pct < 0:
 			sell_block_yn = 'Y'
 			msg = f'    * SELL BLOCK * sell_block_yn : {sell_block_yn} - {pos.prod_id} {pos.pos_id} - pos_id in self.st.spot.sell.never_sell_loss.pos_ids and pos.prc_chg_pct < 0'
 			if self.st.spot.sell.show_tests_yn in ('Y','F'):
 				BoW(msg)
-#		print(f'sell_block_yn: {sell_block_yn}')
 
 		# Market Price Range Looks Very Suspect
 		if mkt.prc_range_pct >= 5:
@@ -1755,7 +1749,6 @@ class BOT():
 			msg = f'    * SELL BLOCK * sell_block_yn : {sell_block_yn} - {pos.prod_id} - has a price range variance of {mkt.prc_range_pct}, this price range looks sus... skipping sell'
 			BoW(msg)
 			beep(3)
-#		print(f'sell_block_yn: {sell_block_yn} * sell_block_yn : {sell_block_yn} - {pos.prod_id} - has a price range variance of {mkt.prc_range_pct}, this price range looks sus... skipping sell')
 
 		func_end(fnc)
 		return sell_block_yn
@@ -1770,7 +1763,6 @@ class BOT():
 
 		prod_id     = mkt.prod_id
 		pos_id      = pos.pos_id
-		# sell_prc    = mkt.prc_sell
 		all_sells   = []
 		all_hodls   = []
 		sell_yn     = 'N'
@@ -1779,11 +1771,6 @@ class BOT():
 
 		force_sell_all_yn     = self.st.spot.sell.force_sell_all_yn
 		# from db table
-
-#		print(f'pos.force_sell_tf : {pos.force_sell_tf}')
-#		print(f'self.st.spot.sell.force_sell_all_yn : {self.st.spot.sell.force_sell_all_yn}')
-#		print(f'prod_id : {prod_id}, self.st.spot.sell.force_sell.prod_ids : {self.st.spot.sell.force_sell.prod_ids}')
-#		print(f'pos_id : {pos_id}, self.st.spot.sell.force_sell.pos_ids : {self.st.spot.sell.force_sell.pos_ids}')
 
 		if pos.force_sell_tf == 1:
 			sell_yn = 'Y'
@@ -1813,21 +1800,8 @@ class BOT():
 		else:
 			hodl_yn = 'Y'
 
-	#	if sell_yn == 'Y' or show_tests_yn in ('Y','F'):
-		if sell_yn == 'Y':
-			msg = f'    SELL TESTS - {prod_id} - {pos_id}- Forced Sell'
-			WoG(msg)
-			if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y'):
-				for e in all_sells:
-					if pos.prc_chg_pct > 0:
-						G(e)
-					else:
-						R(e)
-					self.show_sell_header_tf = True
-				for e in all_hodls:
-					WoG(e)
-					self.show_sell_header_tf = True
-				print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
+		msg = f'    SELL TESTS - {prod_id} - {pos_id}- Forced Sell'
+		self.disp_sell_tests(msg, pos, all_sells, all_hodls, sell_yn, sell_block_yn, hodl_yn, show_tests_yn)
 
 		func_end(fnc)
 		return mkt, pos, sell_yn, hodl_yn, sell_block_yn
@@ -1841,7 +1815,6 @@ class BOT():
 #		G(func_str)
 
 		prod_id     = mkt.prod_id
-		# sell_prc    = mkt.prc_sell
 		all_sells   = []
 		all_hodls   = []
 		sell_yn     = 'N'
@@ -1869,21 +1842,8 @@ class BOT():
 		else:
 			hodl_yn = 'Y'
 
-	#	if sell_yn == 'Y' or show_tests_yn in ('Y','F'):
-		if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
-			msg = f'    SELL TESTS - {prod_id} - Hard Take Profit'
-			WoG(msg)
-			if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y'):
-				for e in all_sells:
-					if pos.prc_chg_pct > 0:
-						G(e)
-					else:
-						R(e)
-					self.show_sell_header_tf = True
-				for e in all_hodls:
-					WoG(e)
-					selfshow_sell_header_tf = True
-				print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
+		msg = f'    SELL TESTS - {prod_id} - Hard Take Profit'
+		self.disp_sell_tests(msg, pos, all_sells, all_hodls, sell_yn, sell_block_yn, hodl_yn, show_tests_yn)
 
 		func_end(fnc)
 		return mkt, pos, sell_yn, hodl_yn
@@ -1897,7 +1857,6 @@ class BOT():
 #		G(func_str)
 
 		prod_id     = mkt.prod_id
-		# sell_prc    = mkt.prc_sell
 		all_sells   = []
 		all_hodls   = []
 		sell_yn     = 'N'
@@ -1925,21 +1884,7 @@ class BOT():
 		else:
 			hodl_yn = 'Y'
 
-	#	if sell_yn == 'Y' or show_tests_yn in ('Y','F'):
-		if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
-			m = f'    SELL TESTS - {prod_id} - Hard Stop Loss'
-			WoG(msg)
-			if (sell_yn == 'Y' and sell_block_yn == 'N')  or show_tests_yn in ('Y'):
-				for e in all_sells:
-					if pos.prc_chg_pct > 0:
-						G(e)
-					else:
-						R(e)
-					self.show_sell_header_tf = True
-				for e in all_hodls:
-					WoG(e)
-					self.show_sell_header_tf = True
-	#			print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
+		self.disp_sell_tests(msg, pos, all_sells, all_hodls, sell_yn, sell_block_yn, hodl_yn, show_tests_yn)
 
 		func_end(fnc)
 		return mkt, pos, sell_yn, hodl_yn
@@ -1953,7 +1898,6 @@ class BOT():
 #		G(func_str)
 
 		prod_id     = mkt.prod_id
-		# sell_prc    = mkt.prc_sell
 		all_sells   = []
 		all_hodls   = []
 		sell_yn     = 'N'
@@ -2002,21 +1946,8 @@ class BOT():
 		else:
 			hodl_yn = 'Y'
 
-	#	if sell_yn == 'Y' or show_tests_yn in ('Y','F'):
-		if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
-			msg = f'    SELL TESTS - {prod_id} - Trailing Profit'
-			WoG(msg)
-			if (sell_yn == 'Y' and sell_block_yn == 'N')  or show_tests_yn in ('Y'):
-				for e in all_sells:
-					if pos.prc_chg_pct > 0:
-						G(e)
-					else:
-						R(e)
-					self.show_sell_header_tf = True
-				for e in all_hodls:
-					WoG(e)
-					self.show_sell_header_tf = True
-	#			print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
+		msg = f'    SELL TESTS - {prod_id} - Trailing Profit'
+		self.disp_sell_tests(msg, pos, all_sells, all_hodls, sell_yn, sell_block_yn, hodl_yn, show_tests_yn)
 
 		func_end(fnc)
 		return mkt, pos, sell_yn, hodl_yn
@@ -2030,7 +1961,6 @@ class BOT():
 #		G(func_str)
 
 		prod_id     = mkt.prod_id
-		# sell_prc    = mkt.prc_sell
 		all_sells   = []
 		all_hodls   = []
 		sell_yn     = 'N'
@@ -2061,21 +1991,8 @@ class BOT():
 		else:
 			hodl_yn = 'Y'
 
-	#	if sell_yn == 'Y' or show_tests_yn in ('Y','F'):
-		if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
-			msg = '    SELL TESTS - {prod_id} - Trailing Stop Loss'
-			WoR(msg)
-			if (sell_yn == 'Y' and sell_block_yn == 'N')  or show_tests_yn in ('Y'):
-				for e in all_sells:
-					if pos.prc_chg_pct > 0:
-						G(e)
-					else:
-						R(e)
-					self.show_sell_header_tf = True
-				for e in all_hodls:
-					WoG(e)
-					self.show_sell_header_tf = True
-	#			print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
+		msg = '    SELL TESTS - {prod_id} - Trailing Stop Loss'
+		self.disp_sell_tests(msg, pos, all_sells, all_hodls, sell_yn, sell_block_yn, hodl_yn, show_tests_yn)
 
 		func_end(fnc)
 		return mkt, pos, sell_yn, hodl_yn
@@ -2117,21 +2034,8 @@ class BOT():
 		else:
 			hodl_yn = 'Y'
 
-	#	if sell_yn == 'Y' or show_tests_yn in ('Y','F'):
-		if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
-			msg = f'    SELL TESTS - {prod_id} - ATR Stop Loss'
-			WoR(msg)
-			if (sell_yn == 'Y' and sell_block_yn == 'N')  or show_tests_yn in ('Y'):
-				for e in all_sells:
-					if pos.prc_chg_pct > 0:
-						G(e)
-					else:
-						R(e)
-					self.show_sell_header_tf = True
-				for e in all_hodls:
-					WoG(e)
-					self.show_sell_header_tf = True
-	#			print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
+		msg = f'    SELL TESTS - {prod_id} - ATR Stop Loss'
+		self.disp_sell_tests(msg, pos, all_sells, all_hodls, sell_yn, sell_block_yn, hodl_yn, show_tests_yn)
 
 		func_end(fnc)
 		return mkt, pos, sell_yn, hodl_yn
@@ -2177,21 +2081,8 @@ class BOT():
 		else:
 			hodl_yn = 'Y'
 
-	#	if sell_yn == 'Y' or show_tests_yn in ('Y','F'):
-		if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
-			msg = f'    SELL TESTS - {prod_id} - Trailing ATR Stop Loss'
-			WoR(msg)
-			if (sell_yn == 'Y' and sell_block_yn == 'N')  or show_tests_yn in ('Y'):
-				for e in all_sells:
-					if pos.prc_chg_pct > 0:
-						G(e)
-					else:
-						R(e)
-					self.show_sell_header_tf = True
-				for e in all_hodls:
-					WoG(e)
-					self.show_sell_header_tf = True
-	#			print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
+		msg = f'    SELL TESTS - {prod_id} - Trailing ATR Stop Loss'
+		self.disp_sell_tests(msg, pos, all_sells, all_hodls, sell_yn, sell_block_yn, hodl_yn, show_tests_yn)
 
 		func_end(fnc)
 		return mkt, pos, sell_yn, hodl_yn
@@ -2212,8 +2103,6 @@ class BOT():
 		rfreq                     = pos.buy_strat_freq
 		freqs, faster_freqs       = freqs_get(rfreq)
 
-#		ha_color_1min  = ta['1min']['ha_color']['ago0']
-#		ha_color_3min  = ta['3min']['ha_color']['ago0']
 		ha_color_5min  = ta['5min']['ha_color']['ago0']
 		ha_color_15min = ta['15min']['ha_color']['ago0']
 		ha_color_30min = ta['30min']['ha_color']['ago0']
@@ -2233,37 +2122,6 @@ class BOT():
 
 		if not skip_checks:
 			green_save = False
-#			if rfreq == '1d':
-#				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   1d : {ha_color_1d}, 4h : {ha_color_4h}, 30min : {ha_color_30min}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
-#				if ha_color_4h == 'green':
-#					if (ha_color_30min == 'green' or ha_color_15min == 'green') and (ha_color_5min == 'green' or ha_color_3min == 'green'):
-#						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   1d : {ha_color_1d}, 4h : {ha_color_4h}, 30min : {ha_color_30min}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
-#						green_save = True
-#			elif rfreq == '4h':
-#				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   4h : {ha_color_4h}, 1h : {ha_color_1h}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
-#				if ha_color_1h == 'green':
-#					if ha_color_15min == 'green' and (ha_color_5min == 'green' or ha_color_3min == 'green'):
-#						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   4h : {ha_color_4h}, 1h : {ha_color_1h}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
-#						green_save = True
-#			elif rfreq == '1h':
-#				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   1h : {ha_color_1h}, 30min : {ha_color_30min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
-#				if ha_color_30min == 'green':
-#					if (ha_color_5min == 'green' or ha_color_3min == 'green'):
-#						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   1h : {ha_color_1h}, 30min : {ha_color_30min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
-#						green_save = True
-#			elif rfreq == '30min':
-#				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   30min : {ha_color_30min}, 15min : {ha_color_15min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
-#				if ha_color_15min == 'green':
-#					if (ha_color_5min == 'green' or ha_color_3min == 'green'):
-#						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   30min : {ha_color_30min}, 15min : {ha_color_15min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
-#						green_save = True
-#			elif rfreq == '15min':
-#				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
-#				if ha_color_5min == 'green':
-#					if (ha_color_5min == 'green' or ha_color_3min == 'green'):
-#						pass_msg = f'    * HODL COND: ALL CANDLES GREEN ==> OVERIDING SELL!!!   15min : {ha_color_15min}, 5min : {ha_color_5min}, 3min : {ha_color_3min}, sell_block_yn : {sell_block_yn}'
-#						green_save = True
-
 
 			if rfreq == '1d':
 				fail_msg = f'    * SELL COND: ALL CANDLES NOT GREEN ==> Allowing Sell...   1d : {ha_color_1d}, 4h : {ha_color_4h}, 30min : {ha_color_30min}, 15min : {ha_color_15min}, 5min : {ha_color_5min}, sell_block_yn : {sell_block_yn}'
@@ -2300,13 +2158,11 @@ class BOT():
 			if green_save:
 				sell_block_yn = 'N'
 				all_hodls.append(pass_msg)
-#				WoG(msg)
 			else:
 				msg = f'    * CANCEL SELL: ALL CANDLES NOT GREEN ==> Allowing Sell...   5min : {ha_color_5min}, 15min : {ha_color_15min}, 30min : {ha_color_30min}, sell_block_yn : {sell_block_yn}'
 				all_sells.append(fail_msg)
-#				R(msg)
 
-		print(f'sell_block_yn : {sell_block_yn}, show_tests_yn : {show_tests_yn}')
+		print(f'{func_name} - sell_block_yn : {sell_block_yn}, show_tests_yn : {show_tests_yn}')
 		if sell_block_yn == 'Y' or show_tests_yn in ('Y','F'):
 			msg = f'    SELL TESTS - {prod_id} - All Green Candes...'
 			WoG(msg)
@@ -2571,9 +2427,6 @@ class BOT():
 		chart_mid(in_str=title_msg, len_cnt=240, bold=True)
 		chart_headers(in_str=hmsg, len_cnt=240, bold=True)
 		self.show_buy_header_tf = False
-#		buy_log('')
-		wmsg = f'{dttm_get()} ==> {hmsg}'
-#		buy_log(wmsg)
 
 		func_end(fnc)
 
@@ -2603,10 +2456,6 @@ class BOT():
 		hmsg += f"{'prc_drop':^8} % | "
 		hmsg += f"$ {'net_est':^14} | "
 		hmsg += f"$ {'net_est_high':^14}"
-
-#		sell_log('')
-		wmsg = f'{dttm_get()} ==> {hmsg}'
-#		sell_log(wmsg)
 
 		title_msg = f'* SELL LOGIC * {prod_id} *'
 		chart_mid(in_str=title_msg, len_cnt=240, bold=True)
@@ -2744,8 +2593,8 @@ class BOT():
 	def buy_live(self, mkt, trade_strat_perf):
 		func_name = 'buy_live'
 		func_str = f'{lib_name}.{func_name}(mkt)'
-		G(func_str)
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#		G(func_str)
 
 		if self.st.spot.buy.buy_limit_yn == 'Y':
 			try:
@@ -2801,7 +2650,6 @@ class BOT():
 				s += cs(text=f'{x:<15}', font_color='white', bg_color='green')
 			elif clr == 'GoW':
 				s += cs(text=f'{x:<15}', font_color='green', bg_color='white')
-	#		print(f'col_cnt : {col_cnt}, col_cnt // 10 : {col_cnt // 10}')
 			if col_cnt % cols == 0:
 				chart_row(s, len_cnt=177)
 				s = ''
@@ -2812,7 +2660,6 @@ class BOT():
 				s += ' | '
 		if col_cnt > 0 and col_cnt < cols:
 			chart_row(s, len_cnt=177)
-#			print_adv()
 
 		func_end(fnc)
 
@@ -2821,8 +2668,8 @@ class BOT():
 	def disp_mkt(self, mkt, trade_perf, trade_strat_perfs):
 		func_name = 'disp_mkt'
 		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
-#		G(func_str)
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
+#		G(func_str)
 
 		self.disp_mkt_summary(mkt, trade_perf, trade_strat_perfs)
 		self.disp_mkt_stats(mkt, trade_perf, trade_strat_perfs)
@@ -2836,8 +2683,8 @@ class BOT():
 	def disp_mkt_summary(self, mkt, trade_perf, trade_strat_perfs):
 		func_name = 'disp_mkt_summary'
 		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
-#		G(func_str)
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
+#		G(func_str)
 
 		# Market Basics
 		prod_id = mkt.prod_id
@@ -2857,13 +2704,28 @@ class BOT():
 		hmsg += f"{'reserves state':^14} | "
 
 		msg = ""
-		msg += f"$ {mkt.prc_mkt:>14.8f} | "
-		msg += f"{mkt.prc_pct_chg_24h:>10.4f} % | "
+		if mkt.prc_pct_chg_24h < 0:
+			msg += cs(f"$ {mkt.prc_mkt:>14.8f}", 'white', 'red') + " | "
+			msg += cs(f"{mkt.prc_pct_chg_24h:>10.4f} %", 'white', 'red') + " | "
+		elif mkt.prc_pct_chg_24h > 0:
+			msg += cs(f"$ {mkt.prc_mkt:>14.8f}", 'white', 'green') + " | "
+			msg += cs(f"{mkt.prc_pct_chg_24h:>10.4f} %", 'white', 'green') + " | "
+		else:
+			msg += f"$ {mkt.prc_mkt:>14.8f} | "
+			msg += f"{mkt.prc_pct_chg_24h:>10.4f} % | "
+
 		msg += f"$ {mkt.prc_buy:>14.8f} | "
 		msg += f"$ {mkt.prc_sell:>14.8f} | "
 		msg += f"{mkt.prc_buy_diff_pct:>10.4f} % | "
 		msg += f"{mkt.prc_sell_diff_pct:>10.4f} % | "
-		msg += f"{mkt.prc_range_pct:>10.4f} % | "
+
+		if mkt.prc_range_pct < 0:
+			msg += cs(f"{mkt.prc_range_pct:>10.4f} %", 'white', 'red') + " | "
+		elif mkt.prc_range_pct > 0:
+			msg += cs(f"{mkt.prc_range_pct:>10.4f} %", 'white', 'green') + " | "
+		else:
+			msg += f"{mkt.prc_range_pct:>10.4f} %" + " | "
+
 		msg += cs(f"$ {mkt.bal_avail:>9.2f}", "white", "green") + " | "
 		msg += cs(f"$ {mkt.reserve_amt:>9.2f}", "white", "green") + " | "
 		msg += cs(f"$ {mkt.spendable_amt:>9.2f}", "white", "green") + " | "
@@ -2883,8 +2745,8 @@ class BOT():
 	def disp_mkt_stats(self, mkt, trade_perf, trade_strat_perfs):
 		func_name = 'disp_mkt_stats'
 		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
-#		G(func_str)
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
+#		G(func_str)
 
 		# Market Basics
 		prod_id = mkt.prod_id
@@ -2936,12 +2798,6 @@ class BOT():
 		chart_mid(in_str=title_msg, len_cnt=240, bold=True)
 		chart_headers(in_str=hmsg, len_cnt=240, bold=True)
 		chart_row(msg, len_cnt=240)
-#		if trade_perf.gain_loss_pct > 0:
-#			chart_row(in_str=msg, font_color='white', bg_color='green', len_cnt=240)
-#			WoG('|' + msg)
-#		else:
-#			chart_row(in_str=msg, font_color='white', bg_color='red', len_cnt=240)
-#			WoR('|' + msg)
 
 		chart_mid(len_cnt=240, bold=True)
 
@@ -2953,8 +2809,8 @@ class BOT():
 	def disp_mkt_performance(self, mkt, trade_perf, trade_strat_perfs):
 		func_name = 'disp_mkt_performance'
 		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
-#		G(func_str)
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
+#		G(func_str)
 
 		# Market Basics
 		prod_id = mkt.prod_id
@@ -2975,7 +2831,6 @@ class BOT():
 		hmsg += f"{'gain_day':^10} % | "
 		hmsg += f"{'elapsed':^7} | "
 
-#		print_adv(2)
 		title_msg = '* Buy Strategy Past Performance *'
 		chart_mid(in_str=title_msg, len_cnt=240, bold=True)
 		chart_headers(hmsg, len_cnt=240, bold=True)
@@ -3001,7 +2856,6 @@ class BOT():
 				msg += f'{x.gain_loss_pct_day:>10.2f} % | '
 				msg += f'{x.strat_last_elapsed:>7}' + ' | '
 				msg  = cs_pct_color_50(pct=x.win_pct, msg=msg)
-#				print(msg)
 				chart_row(in_str=msg, len_cnt=240)
 		chart_mid(len_cnt=240, bold=True)
 
@@ -3025,34 +2879,27 @@ class BOT():
 			self.show_buy_header_tf = False
 
 		msg1 = ''
-		msg1 += f'{trade_strat_perf.prod_id:<15}' +' | '
-		msg1 += f'{trade_strat_perf.buy_strat_name:<15}' +' | '
-		msg1 += f'{trade_strat_perf.buy_strat_freq:<15}' +' | '
-		msg1 += f'{int(trade_strat_perf.tot_cnt):>5}' +' | '
-		msg1 += f'{int(trade_strat_perf.open_cnt):>5}' +' | '
-		msg1 += f'{int(trade_strat_perf.close_cnt):>5}' +' | '
-		msg1 += f'{int(trade_strat_perf.win_cnt):>5}' +' | '
-		msg1 += f'{int(trade_strat_perf.lose_cnt):>5}' +' | '
-		msg1 += f'{trade_strat_perf.win_pct:>6.2f} %' +' | '
-		msg1 += f'{trade_strat_perf.lose_pct:>6.2f} %' +' | '
-		msg1 += f'{trade_strat_perf.gain_loss_amt:>10.2f}' +' | '
-		msg1 += f'{trade_strat_perf.gain_loss_pct:>10.2f} %' +' | '
-		msg1 += f'{trade_strat_perf.gain_loss_pct_hr:>10.2f} %' +' | '
-		msg1 += f'{trade_strat_perf.gain_loss_pct_day:>10.2f} %' +' | '
-		msg1 += f'{trade_strat_perf.strat_last_elapsed:>7}' +' | '
-		msg1 += f'{trade_strat_perf.trade_size:>16.8f}' +' | '
+		msg1 += f'{trade_strat_perf.prod_id:<15}' + ' | '
+		msg1 += f'{trade_strat_perf.buy_strat_name:<15}' + ' | '
+		msg1 += f'{trade_strat_perf.buy_strat_freq:<15}' + ' | '
+		msg1 += f'{int(trade_strat_perf.tot_cnt):>5}' + ' | '
+		msg1 += f'{int(trade_strat_perf.open_cnt):^2}/{int(trade_strat_perf.restricts_strat_open_cnt_max):^2}' + ' | '
+		msg1 += f'{int(trade_strat_perf.close_cnt):>5}' + ' | '
+		msg1 += f'{int(trade_strat_perf.win_cnt):>5}' + ' | '
+		msg1 += f'{int(trade_strat_perf.lose_cnt):>5}' + ' | '
+		msg1 += f'{trade_strat_perf.win_pct:>6.2f} %' + ' | '
+		msg1 += f'{trade_strat_perf.lose_pct:>6.2f} %' + ' | '
+		msg1 += f'{trade_strat_perf.gain_loss_amt:>10.2f}' + ' | '
+		msg1 += f'{trade_strat_perf.gain_loss_pct:>10.2f} %' + ' | '
+		msg1 += f'{trade_strat_perf.gain_loss_pct_hr:>10.2f} %' + ' | '
+		msg1 += f'{trade_strat_perf.gain_loss_pct_day:>10.2f} %' + ' | '
+		msg1 += f'{trade_strat_perf.strat_last_elapsed:>7}' + ' | '
+		msg1 += f'{trade_strat_perf.trade_size:>16.8f}' + ' | '
 
 		msg2 = ''
-		msg2 += f' | {int(trade_strat_perf.pass_cnt):>4}' +' | '
-		msg2 += f'{int(trade_strat_perf.fail_cnt):>4}' +' | '
-		msg2 += f'{trade_strat_perf.pass_pct:>6.2f} %' +' | '
-
-		wmsg = f'{dttm_get()} ==> {msg1}{msg2}'
-#		buy_log(wmsg)
-
-		in_str_len1 = len(msg1)
-		in_str_len2 = len(msg2)
-		in_str_len  = in_str_len1 + in_str_len2
+		msg2 += f' | {int(trade_strat_perf.pass_cnt):>4}' + ' | '
+		msg2 += f'{int(trade_strat_perf.fail_cnt):>4}' + ' | '
+		msg2 += f'{trade_strat_perf.pass_pct:>6.2f} %' + ' | '
 
 		if trade_strat_perf.tot_cnt > 0:
 			msg1 = cs_pct_color_50(pct=trade_strat_perf.win_pct, msg=msg1)
@@ -3061,19 +2908,14 @@ class BOT():
 		if trade_strat_perf.pass_pct > 0:
 			msg = f'{msg1}{msg2}'
 			chart_row(msg, len_cnt=240)
-		else:
-			msg = msg1
-#			chart_row(msg, len_cnt=240)
 
 		for msg in trade_strat_perf.all_passes:
-#			buy_log(msg)
 			if trade_strat_perf.buy_yn == 'Y' or show_tests_yn in ('Y') or trade_strat_perf.pass_pct >= show_tests_min:
 				msg = cs(msg, font_color='green')
 				chart_row(msg, len_cnt=240)
 				self.show_buy_header_tf = True
 
 		for msg in trade_strat_perf.all_fails:
-#			buy_log(msg)
 			if trade_strat_perf.buy_yn == 'Y' or show_tests_yn in ('Y') or trade_strat_perf.pass_pct >= show_tests_min:
 				msg = cs(msg, font_color='red')
 				chart_row(msg, len_cnt=240)
@@ -3121,12 +2963,38 @@ class BOT():
 		msg += f'$ {pos.gain_loss_amt:>14.8f}' + ' | '
 		msg += f'$ {pos.gain_loss_amt_est_high:>14.8f}'
 
-		wmsg = f'{dttm_get()} ==> {msg}'
-#		sell_log(wmsg)
-
-		in_str_len = len(msg)
 		msg = cs_pct_color(pos.prc_chg_pct, msg)
 		chart_row(msg, len_cnt=240)
+
+		func_end(fnc)
+
+	#<=====>#
+
+	def disp_sell_tests(self, msg, pos, all_sells, all_hodls, sell_yn, sell_block_yn, hodl_yn, show_tests_yn):
+		func_name = 'disp_sell_tests'
+		func_str = f'{lib_name}.{func_name}(pos)'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#		G(func_str)
+
+		prod_id = pos.prod_id
+
+		if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
+			msg = '    ' + cs('==> ' + msg + f' * sell => {sell_yn} * sell_block => {sell_block_yn} * hodl => {hodl_yn}', font_color='white', bg_color='blue')
+			chart_row(msg, len_cnt=240)
+			if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y'):
+				for e in all_sells:
+					if pos.prc_chg_pct > 0:
+						e = '    ' + cs('* ' + e, font_color='green')
+						chart_row(e, len_cnt=240)
+					else:
+						e = '    ' + cs('* ' + e, font_color='red')
+						chart_row(e, len_cnt=240)
+					self.show_sell_header_tf = True
+				for e in all_hodls:
+					e = '    ' + cs('* ' + e, font_color='green', bg_color='white')
+					chart_row(e, len_cnt=240)
+					self.show_sell_header_tf = True
+				print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
 
 		func_end(fnc)
 
@@ -3266,6 +3134,7 @@ class BOT():
 				side = 'BUY', 
 				order_configuration = oc
 				)
+		print(o)
 		self.refresh_wallet_tf       = True
 		time.sleep(0.25)
 
@@ -3341,6 +3210,7 @@ class BOT():
 				side = 'SELL', 
 				order_configuration = oc
 				)
+		print(o)
 		self.refresh_wallet_tf       = True
 		time.sleep(0.25)
 
@@ -3397,13 +3267,10 @@ class BOT():
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #		G(func_str)
 
-		prod_id               = mkt.prod_id
-		spend_amt             = str(trade_strat_perf.trade_size)
-#		buy_prc               = mkt.prc_buy
-
-#		order = cb.fiat_limit_buy(prod_id, spend_amt, buy_prc, price_multiplier=".995")
-		order = cb.fiat_limit_buy(prod_id, spend_amt, price_multiplier=".995")
-		self.refresh_wallet_tf       = True
+		prod_id                   = mkt.prod_id
+		spend_amt                 = str(trade_strat_perf.trade_size)
+		order                     = cb.fiat_limit_buy(prod_id, spend_amt, price_multiplier=".995")
+		self.refresh_wallet_tf    = True
 		time.sleep(0.25)
 
 		ord_id = order.id
@@ -3420,7 +3287,6 @@ class BOT():
 			bo.buy_strat_name        = mkt.buy_strat_name
 			bo.buy_strat_freq        = mkt.buy_strat_freq
 			bo.buy_order_uuid        = ord_id # o['success_response']['order_id']
-#			bo.buy_client_order_id   = o['success_response']['client_order_id']
 			bo.buy_begin_dttm        = dt.now()
 			bo.buy_curr_symb         = mkt.base_curr_symb
 			bo.spend_curr_symb       = mkt.quote_curr_symb
@@ -3489,7 +3355,6 @@ class BOT():
 			so.pos_type              = 'SPOT'
 			so.ord_stat              = 'OPEN'
 			so.sell_order_uuid       = ord_id # o['success_response']['order_id']
-#			so.sell_client_order_id  =  # o['success_response']['client_order_id']
 			so.sell_begin_dttm       = dt.now()
 			so.sell_strat_type       = pos.sell_strat_type
 			so.sell_strat_name       = pos.sell_strat_name
@@ -3613,7 +3478,6 @@ class BOT():
 		ss["sell_strat_type"]      = pos.sell_strat_type
 		ss["sell_strat_name"]      = pos.sell_strat_name
 		ss["sell_strat_freq"]      = pos.sell_strat_freq
-#		ss["sell_asset_type"]      = pos.sell_asset_type
 		ss["buy_yn"]               = pos.buy_yn
 		ss["wait_yn"]              = pos.wait_yn
 		ss["sell_curr_symb"]       = pos.sell_curr_symb

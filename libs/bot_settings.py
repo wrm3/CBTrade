@@ -97,6 +97,7 @@ settings_template_json = {
 			"show_tests_min": 101,
 			"save_files_yn": "N",
 			"buy_limit_yn": "N",
+			"show_boosts_yn": "N",
 			"allow_tests_yn": "Y",
 			"mkts_open_max": 65,
 			"reserve_amt": {

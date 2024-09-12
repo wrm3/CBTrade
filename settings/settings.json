@@ -63,14 +63,15 @@
 			"show_tests_min": 101,
 			"save_files_yn": "N",
 			"buy_limit_yn": "N",
+			"show_boosts_yn": "N",
 			"allow_tests_yn": "N",
-			"mkts_open_max": 90,
+			"mkts_open_max": 100,
 			"reserve_amt": {
 				"***": 0,
 				"BTC": 1,
 				"ETH": 1,
 				"SOL": 1,
-				"USDC": 25
+				"USDC": 10
 				},
 			"reserve_addtl_daily_amt": {
 				"***": 0,
@@ -102,10 +103,10 @@
 				"1d": 720
 			},
 			"open_poss_cnt_max": {
-				"***": 10,
-				"BTC-USDC": 50,
-				"ETH-USDC": 50,
-				"SOL-USDC": 50
+				"***": 5,
+				"BTC-USDC": 45,
+				"ETH-USDC": 45,
+				"SOL-USDC": 45
 			},
 			"strat_open_cnt_max": {
 				"***": 2,
@@ -208,13 +209,13 @@
 				"hard_take_profit_yn": "Y",
 				"hard_take_profit_pct": 100,
 				"trailing_profit_yn": "Y",
-				"trailing_profit_trigger_pct": 3
+				"trailing_profit_trigger_pct": 5
 			},
 			"stop_loss": {
 				"hard_stop_loss_yn": "Y",
-				"hard_stop_loss_pct": 30,
+				"hard_stop_loss_pct": 21,
 				"trailing_stop_loss_yn": "Y",
-				"trailing_stop_loss_pct": 30,
+				"trailing_stop_loss_pct": 21,
 				"atr_stop_loss_yn": "N",
 				"atr_stop_loss_rfreq": "1d",
 				"trailing_atr_stop_loss_yn": "N",
@@ -233,7 +234,7 @@
 			},
 			"never_sell_loss_all_yn": "Y",
 			"never_sell_loss": {
-				"prod_ids": ["BTC-USDC","ETH-USDC","SOL-USDC"],
+				"prod_ids": ["BTC-USDC", "ETH-USDC", "SOL-USDC"],
 				"pos_ids": []
 			},
 			"strats": {
@@ -272,13 +273,13 @@
 			},
 			"rainy_day": {
 				"pocket_pct": {
-					"***": 3,
+					"***": 5,
 					"BTC-USDC": 50,
 					"ETH-USDC": 50,
 					"SOL-USDC": 50
 				},
 				"clip_pct": {
-					"***": 0,
+					"***": 5,
 					"BTC-USDC": 5,
 					"ETH-USDC": 5,
 					"SOL-USDC": 5

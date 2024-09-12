@@ -202,7 +202,8 @@ def db_tbl_ohlcv_prod_id_insupd(prod_id, freq, in_df):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
+
 	prod_id = prod_id.replace('-','_')
 
 	in_df['freq'] = freq
@@ -228,15 +229,12 @@ def db_tbl_ohlcv_prod_id_insupd(prod_id, freq, in_df):
 	in_data = in_df.reset_index().rename(columns={'index': 'timestamp'}).to_dict(orient='records')
 
 	table_name = f'ohlcv_{prod_id}'
-#	db_tbl_del(table_name=table_name)
 	db_tbl_insupd(table_name, in_data)
 
-#	print(in_df.head(3))
-#	print(in_df.tail(3))
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
-	msg = cs(f'{func_str} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
-	print(msg)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
+#	msg = cs(f'{func_str} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
+#	print(msg)
 
 	func_end(fnc)
 
@@ -248,7 +246,7 @@ def db_tbl_ohlcv_prod_id_insupd_many(prod_id, in_dfs):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 
 	prod_id = prod_id.replace('-','_')
 
@@ -281,15 +279,12 @@ def db_tbl_ohlcv_prod_id_insupd_many(prod_id, in_dfs):
 		all_data.extend(in_data)
 
 	table_name = f'ohlcv_{prod_id}'
-#	db_tbl_del(table_name=table_name)
 	db_tbl_insupd(table_name, all_data)
 
-#	print(in_df.head(3))
-#	print(in_df.tail(3))
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
-	msg = cs(f'{func_str} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
-	print(msg)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
+#	msg = cs(f'{func_str} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
+#	print(msg)
 
 	func_end(fnc)
 

@@ -1686,9 +1686,9 @@ def sell_strats_avail_get(mkt):
 
 #<=====>#
 
-def sell_strats_check(st, mkt, ta, pos, sell_yn, hodl_yn, sell_signals, sell_block_yn='N'):
+def sell_strats_check(st, mkt, ta, pos, sell_yn, hodl_yn, sell_signals, show_sell_header_tf, sell_block_yn='N'):
 	func_name = 'sell_strats_check'
-	func_str = f'{lib_name}.{func_name}(st, mkt, ta, pos, sell_block_yn={sell_block_yn})'
+	func_str = f'{lib_name}.{func_name}(st, mkt, ta, pos, show_sell_header_tf={show_sell_header_tf}, sell_block_yn={sell_block_yn})'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
@@ -1697,7 +1697,7 @@ def sell_strats_check(st, mkt, ta, pos, sell_yn, hodl_yn, sell_signals, sell_blo
 	if sell_yn == 'N':
 		if pos.buy_strat_name == 'sha':
 #			print(f'mkt, pos, sell_yn : {sell_yn}, hodl_yn: {hodl_yn} = sell_strat_sha()')
-			mkt, pos, sell_yn, hodl_yn = sell_strat_sha(st, mkt, ta, pos, sell_block_yn=sell_block_yn)
+			mkt, pos, sell_yn, hodl_yn, show_sell_header_tf = sell_strat_sha(st, mkt, ta, pos, show_sell_header_tf, sell_block_yn=sell_block_yn)
 			sell_signal = {"pos_id": pos.pos_id, "sell_strat_type": pos.sell_strat_type, "sell_strat_name": pos.sell_strat_name, "sell_yn": sell_yn, "hodl_yn": hodl_yn}
 			sell_signals.append(sell_signal)
 
@@ -1705,7 +1705,7 @@ def sell_strats_check(st, mkt, ta, pos, sell_yn, hodl_yn, sell_signals, sell_blo
 	if sell_yn == 'N':
 		if pos.buy_strat_name == 'imp_macd':
 #			print(f'mkt, pos, sell_yn : {sell_yn}, hodl_yn: {hodl_yn} = sell_strat_imp_macd()')
-			mkt, pos, sell_yn, hodl_yn = sell_strat_imp_macd(st, mkt, ta, pos, sell_block_yn=sell_block_yn)
+			mkt, pos, sell_yn, hodl_yn, show_sell_header_tf = sell_strat_imp_macd(st, mkt, ta, pos, show_sell_header_tf, sell_block_yn=sell_block_yn)
 			sell_signal = {"pos_id": pos.pos_id, "sell_strat_type": pos.sell_strat_type, "sell_strat_name": pos.sell_strat_name, "sell_yn": sell_yn, "hodl_yn": hodl_yn}
 			sell_signals.append(sell_signal)
 
@@ -1713,18 +1713,52 @@ def sell_strats_check(st, mkt, ta, pos, sell_yn, hodl_yn, sell_signals, sell_blo
 	if sell_yn == 'N':
 		if pos.buy_strat_name == 'bb':
 #			print(f'mkt, pos, sell_yn : {sell_yn}, hodl_yn: {hodl_yn} = sell_strat_imp_macd()')
-			mkt, pos, sell_yn, hodl_yn = sell_strat_bb(st, mkt, ta, pos, sell_block_yn=sell_block_yn)
+			mkt, pos, sell_yn, hodl_yn, show_sell_header_tf = sell_strat_bb(st, mkt, ta, pos, show_sell_header_tf, sell_block_yn=sell_block_yn)
 			sell_signal = {"pos_id": pos.pos_id, "sell_strat_type": pos.sell_strat_type, "sell_strat_name": pos.sell_strat_name, "sell_yn": sell_yn, "hodl_yn": hodl_yn}
 			sell_signals.append(sell_signal)
 
 	func_end(fnc)
-	return mkt, pos, sell_yn, hodl_yn, sell_signals
+	return mkt, pos, sell_yn, hodl_yn, sell_signals, show_sell_header_tf
 
 #<=====>#
 
-def sell_strat_sha(st, mkt, ta, pos, sell_block_yn='N'):
+def disp_sell_tests(msg, pos, all_sells, all_hodls, sell_yn, sell_block_yn, hodl_yn, show_sell_header_tf, show_tests_yn):
+	func_name = 'disp_sell_tests'
+	func_str = f'{lib_name}.{func_name}(msg, pos, all_sells, all_hodls, sell_yn={sell_yn}, sell_block_yn={sell_block_yn}, hodl_yn={hodl_yn}, show_sell_header_tf={show_sell_header_tf}, show_tests_yn={show_tests_yn})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	prod_id = pos.prod_id
+
+#	if sell_yn == 'Y' or show_tests_yn in ('Y','F'):
+	if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
+		msg = '    ' + cs('==> ' + msg + f' * sell => {sell_yn} * sell_block => {sell_block_yn} * hodl => {hodl_yn}', font_color='white', bg_color='blue')
+		chart_row(msg, len_cnt=240)
+		if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y'):
+			for e in all_sells:
+#				print('lol')
+				if pos.prc_chg_pct > 0:
+					e = '    ' + cs('* ' + e, font_color='green')
+					chart_row(e, len_cnt=240)
+				else:
+					e = '    ' + cs('* ' + e, font_color='red')
+					chart_row(e, len_cnt=240)
+				show_sell_header_tf = True
+			for e in all_hodls:
+#				print('kek')
+				e = '    ' + cs('* ' + e, font_color='white', bg_color='green')
+				chart_row(e, len_cnt=240)
+				show_sell_header_tf = True
+			chart_row(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}', len_cnt=240)
+
+	func_end(fnc)
+	return show_sell_header_tf
+
+#<=====>#
+
+def sell_strat_sha(st, mkt, ta, pos, show_sell_header_tf, sell_block_yn='N'):
 	func_name = 'sell_strat_sha'
-	func_str = f'{lib_name}.{func_name}(mkt, ta, pos, sell_block_yn={sell_block_yn})'
+	func_str = f'{lib_name}.{func_name}(mkt, ta, pos, show_sell_header_tf={show_sell_header_tf}, sell_block_yn={sell_block_yn})'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
@@ -1756,10 +1790,10 @@ def sell_strat_sha(st, mkt, ta, pos, sell_block_yn='N'):
 			sha_fast_body_shrinking_tf = False
 
 		if sha_fast_body_shrinking_tf:
-			msg = f'    * SELL COND: {freq} sha fast body is shrinking - curr {sha_fast_body_curr:>.8f} <<< last {sha_fast_body_last:>.8f} <<<  prev {sha_fast_body_prev:>.8f}'
+			msg = f'SELL COND: {freq} sha fast body is shrinking - curr {sha_fast_body_curr:>.8f} <<< last {sha_fast_body_last:>.8f} <<<  prev {sha_fast_body_prev:>.8f}'
 			all_sells.append(msg)
 		else:
-			msg = f'    * HODL COND: {freq} sha fast body not shrinking - curr {sha_fast_body_curr:>.8f} >>> last {sha_fast_body_last:>.8f} >>>  prev {sha_fast_body_prev:>.8f}'
+			msg = f'HODL COND: {freq} sha fast body not shrinking - curr {sha_fast_body_curr:>.8f} >>> last {sha_fast_body_last:>.8f} >>>  prev {sha_fast_body_prev:>.8f}'
 			all_hodls.append(msg)
 
 		# Check if sha slow body is growing or shrinking
@@ -1774,10 +1808,10 @@ def sell_strat_sha(st, mkt, ta, pos, sell_block_yn='N'):
 			sha_slow_body_shrinking_tf = False
 
 		if sha_slow_body_shrinking_tf:
-			msg = f'    * SELL COND: {freq} sha slow body is shrinking - curr {sha_slow_body_curr:>.8f} <<< last {sha_slow_body_last:>.8f} <<<  prev {sha_slow_body_prev:>.8f}'
+			msg = f'SELL COND: {freq} sha slow body is shrinking - curr {sha_slow_body_curr:>.8f} <<< last {sha_slow_body_last:>.8f} <<<  prev {sha_slow_body_prev:>.8f}'
 			all_sells.append(msg)
 		else:
-			msg = f'    * HODL COND: {freq} sha slow body not shrinking - curr {sha_slow_body_curr:>.8f} >>> last {sha_slow_body_last:>.8f} >>>  prev {sha_slow_body_prev:>.8f}'
+			msg = f'HODL COND: {freq} sha slow body not shrinking - curr {sha_slow_body_curr:>.8f} >>> last {sha_slow_body_last:>.8f} >>>  prev {sha_slow_body_prev:>.8f}'
 			all_hodls.append(msg)
 
 
@@ -1794,21 +1828,21 @@ def sell_strat_sha(st, mkt, ta, pos, sell_block_yn='N'):
 			elif ago == 'ago2': ago_desc = 'prev'
 			else: ago = 'curr'
 			if sha_fast_wick_upper <= sha_fast_wick_lower:
-				msg = f'    * SELL COND: {freq} {ago_desc} smaller upper wick - upper {sha_fast_wick_upper:>.8f} <<< lower {sha_fast_wick_lower:>.8f}'
+				msg = f'SELL COND: {freq} {ago_desc} smaller upper wick - upper {sha_fast_wick_upper:>.8f} <<< lower {sha_fast_wick_lower:>.8f}'
 				temp_all_sells.append(msg)
 			else:
 				sha_fast_upper_wick_weakening_tf = False
-				msg = f'    * HODL COND: {freq} {ago_desc} larger upper wick - upper {sha_fast_wick_upper:>.8f} >>> lower {sha_fast_wick_lower:>.8f}' 
+				msg = f'HODL COND: {freq} {ago_desc} larger upper wick - upper {sha_fast_wick_upper:>.8f} >>> lower {sha_fast_wick_lower:>.8f}' 
 				temp_all_hodls.append(msg)
 			# Need 4 in a row for test2 to be True
 
 		if sha_fast_upper_wick_weakening_tf:
-			msg = f'    * SELL COND: {freq} smaller upper wick for 4 consecutive candles'
+			msg = f'SELL COND: {freq} smaller upper wick for 4 consecutive candles'
 			all_sells.append(msg)
 			for msg in temp_all_sells:
 				all_sells.append(msg)
 		else:
-			msg = f'    * HODL COND: {freq} larger upper wick in last 4 consecutive candles'
+			msg = f'HODL COND: {freq} larger upper wick in last 4 consecutive candles'
 			all_hodls.append(msg)
 			for msg in temp_all_hodls:
 				all_hodls.append(msg)
@@ -1827,21 +1861,21 @@ def sell_strat_sha(st, mkt, ta, pos, sell_block_yn='N'):
 			elif ago == 'ago2': ago_desc = 'prev'
 			else: ago = 'curr'
 			if sha_slow_wick_upper <= sha_slow_wick_lower:
-				msg = f'    * SELL COND: {freq} {ago_desc} smaller upper wick - upper {sha_slow_wick_upper:>.8f} <<< lower {sha_slow_wick_lower:>.8f}'
+				msg = f'SELL COND: {freq} {ago_desc} smaller upper wick - upper {sha_slow_wick_upper:>.8f} <<< lower {sha_slow_wick_lower:>.8f}'
 				temp_all_sells.append(msg)
 			else:
 				sha_slow_upper_wick_weakening_tf = False
-				msg = f'    * HODL COND: {freq} {ago_desc} larger upper wick - upper {sha_slow_wick_upper:>.8f} >>> lower {sha_slow_wick_lower:>.8f}' 
+				msg = f'HODL COND: {freq} {ago_desc} larger upper wick - upper {sha_slow_wick_upper:>.8f} >>> lower {sha_slow_wick_lower:>.8f}' 
 				temp_all_hodls.append(msg)
 			# Need 4 in a row for test2 to be True
 
 		if sha_slow_upper_wick_weakening_tf:
-			msg = f'    * SELL COND: {freq} smaller upper wick for 4 consecutive candles'
+			msg = f'SELL COND: {freq} smaller upper wick for 4 consecutive candles'
 			all_sells.append(msg)
 			for msg in temp_all_sells:
 				all_sells.append(msg)
 		else:
-			msg = f'    * HODL COND: {freq} larger upper wick in last 4 consecutive candles'
+			msg = f'HODL COND: {freq} larger upper wick in last 4 consecutive candles'
 			all_hodls.append(msg)
 			for msg in temp_all_hodls:
 				all_hodls.append(msg)
@@ -1851,11 +1885,11 @@ def sell_strat_sha(st, mkt, ta, pos, sell_block_yn='N'):
 		sha_fast_close = ta[freq]['sha_fast_close']['ago0']
 		if sell_prc < sha_fast_close:
 			sell_prc_intersect_sha_fast_tf = True
-			msg = f'    * SELL COND: {freq} curr_price : {sell_prc:>.8f} is be below sha_fast_close {sha_fast_close:>.8f}'
+			msg = f'SELL COND: {freq} curr_price : {sell_prc:>.8f} is be below sha_fast_close {sha_fast_close:>.8f}'
 			all_sells.append(msg)
 		else:
 			sell_prc_intersect_sha_fast_tf = False
-			msg = f'    * HODL COND: {freq} curr_price : {sell_prc:>.8f} is be above sha_fast_close {sha_fast_close:>.8f}'
+			msg = f'HODL COND: {freq} curr_price : {sell_prc:>.8f} is be above sha_fast_close {sha_fast_close:>.8f}'
 			all_hodls.append(msg)
 
 
@@ -1865,11 +1899,11 @@ def sell_strat_sha(st, mkt, ta, pos, sell_block_yn='N'):
 		sha_fast_color_prev = ta[freq]['sha_fast_color']['ago2']
 		if sha_fast_color_curr == 'red' and sha_fast_color_last == 'red' and sha_fast_color_prev == 'red':
 			sha_fast_reddening_tf = True
-			msg = f'    * SELL COND: {freq} sha fast colors ==> curr : {sha_fast_color_curr:>5}, last : {sha_fast_color_last:>5}, prev : {sha_fast_color_prev:>5}'
+			msg = f'SELL COND: {freq} sha fast colors ==> curr : {sha_fast_color_curr:>5}, last : {sha_fast_color_last:>5}, prev : {sha_fast_color_prev:>5}'
 			all_sells.append(msg)
 		else:
 			sha_fast_reddening_tf = False
-			msg = f'    * HODL COND: {freq} sha fast colors ==> curr : {sha_fast_color_curr:>5}, last : {sha_fast_color_last:>5}, prev : {sha_fast_color_prev:>5}'
+			msg = f'HODL COND: {freq} sha fast colors ==> curr : {sha_fast_color_curr:>5}, last : {sha_fast_color_last:>5}, prev : {sha_fast_color_prev:>5}'
 			# YES!!! Allow the green candles to override the price touch above!
 			all_hodls.append(msg)
 
@@ -1880,11 +1914,11 @@ def sell_strat_sha(st, mkt, ta, pos, sell_block_yn='N'):
 		sha_slow_color_prev = ta[freq]['sha_slow_color']['ago2']
 		if sha_slow_color_curr == 'red' and sha_slow_color_last == 'red' and sha_slow_color_prev == 'red':
 			# sha_slow_reddening_tf = True
-			msg = f'    * SELL COND: {freq} sha slow colors ==> curr : {sha_slow_color_curr:>5}, last : {sha_slow_color_last:>5}, prev : {sha_slow_color_prev:>5}'
+			msg = f'SELL COND: {freq} sha slow colors ==> curr : {sha_slow_color_curr:>5}, last : {sha_slow_color_last:>5}, prev : {sha_slow_color_prev:>5}'
 			all_sells.append(msg)
 		else:
 			# sha_slow_reddening_tf = False
-			msg = f'    * HODL COND: {freq} sha slow colors ==> curr : {sha_slow_color_curr:>5}, last : {sha_slow_color_last:>5}, prev : {sha_slow_color_prev:>5}'
+			msg = f'HODL COND: {freq} sha slow colors ==> curr : {sha_slow_color_curr:>5}, last : {sha_slow_color_last:>5}, prev : {sha_slow_color_prev:>5}'
 			# YES!!! Allow the green candles to override the price touch above!
 			all_hodls.append(msg)
 
@@ -1907,19 +1941,22 @@ def sell_strat_sha(st, mkt, ta, pos, sell_block_yn='N'):
 #		if sell_prc_intersect_sha_fast_tf and sha_fast_body_shrinking_tf:
 #			sell_yn  = 'Y'
 
-		if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
-			msg = '    SELL TESTS - Smoothed Heikin Ashi'
-			WoB(msg)
-			if (sell_yn == 'Y' and sell_block_yn == 'N')  or show_tests_yn in ('Y'):
-				for e in all_sells:
-					if pos.prc_chg_pct > 0:
-						G(e)
-					else:
-						R(e)
-			for e in all_hodls:
-				WoG(e)
+		# if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
+		# 	msg = '    SELL TESTS - Smoothed Heikin Ashi'
+		# 	WoB(msg)
+		# 	if (sell_yn == 'Y' and sell_block_yn == 'N')  or show_tests_yn in ('Y'):
+		# 		for e in all_sells:
+		# 			if pos.prc_chg_pct > 0:
+		# 				G(e)
+		# 			else:
+		# 				R(e)
+		# 	for e in all_hodls:
+		# 		WoG(e)
 
-#			print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
+		if sell_yn == 'Y': hodl_yn = 'N'
+		msg = '    SELL TESTS - Smoothed Heikin Ashi'
+		show_sell_header_tf = disp_sell_tests(msg=msg, pos=pos, all_sells=all_sells, all_hodls=all_hodls, sell_yn=sell_yn, sell_block_yn=sell_block_yn, hodl_yn=hodl_yn, show_sell_header_tf=show_sell_header_tf, show_tests_yn=show_tests_yn)
+#		print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
 
 
 		exit_if_profit_yn      = st.spot.sell.strats.sha.exit_if_profit_yn
@@ -1976,13 +2013,13 @@ def sell_strat_sha(st, mkt, ta, pos, sell_block_yn='N'):
 		pass
 
 	func_end(fnc)
-	return mkt, pos, sell_yn, hodl_yn
+	return mkt, pos, sell_yn, hodl_yn, show_sell_header_tf
 
 #<=====>#
 
-def sell_strat_imp_macd(st, mkt, ta, pos, sell_block_yn='N'):
+def sell_strat_imp_macd(st, mkt, ta, pos, show_sell_header_tf, sell_block_yn='N'):
 	func_name = 'sell_strat_imp_macd'
-	func_str = f'{lib_name}.{func_name}(mkt, ta, pos, sell_block_yn={sell_block_yn})'
+	func_str = f'{lib_name}.{func_name}(mkt, ta, pos, show_sell_header_tf={show_sell_header_tf}, sell_block_yn={sell_block_yn})'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
@@ -2008,10 +2045,10 @@ def sell_strat_imp_macd(st, mkt, ta, pos, sell_block_yn='N'):
 		imp_macd_sign_curr = ta[freq]['imp_macd_sign']['ago0']
 		if imp_macd_curr < imp_macd_sign_curr:
 			# macd_under_signal_tf = True
-			msg = f'    * SELL COND: {freq} impulse macd < signal ==> macd : {imp_macd_curr:>5}, signal : {imp_macd_sign_curr:>5}'
+			msg = f'SELL COND: {freq} impulse macd < signal ==> macd : {imp_macd_curr:>5}, signal : {imp_macd_sign_curr:>5}'
 			all_sells.append(msg)
 		else:
-			msg = f'    * HODL COND: {freq} impulse macd > signal ==> macd : {imp_macd_curr:>5}, signal : {imp_macd_sign_curr:>5}'
+			msg = f'HODL COND: {freq} impulse macd > signal ==> macd : {imp_macd_curr:>5}, signal : {imp_macd_sign_curr:>5}'
 			# macd_under_signal_tf = False
 			all_hodls.append(msg)
 
@@ -2020,29 +2057,31 @@ def sell_strat_imp_macd(st, mkt, ta, pos, sell_block_yn='N'):
 		if imp_macd_color in ('red','orange'):
 			imp_macd_color_ok_tf = True
 			#this is where it was erroring before
-			msg = f'    * SELL COND: {freq} impulse macd color must be lime or green ==> macd color : {imp_macd_color:>5}'
+			msg = f'SELL COND: {freq} impulse macd color must be lime or green ==> macd color : {imp_macd_color:>5}'
 			all_sells.append(msg)
 		else:
 			imp_macd_color_ok_tf = False
-			msg = f'    * HODL COND: {freq} impulse macd color must be lime or green ==> macd color : {imp_macd_color:>5}'
+			msg = f'HODL COND: {freq} impulse macd color must be lime or green ==> macd color : {imp_macd_color:>5}'
 			all_hodls.append(msg)
 
 		if imp_macd_curr and imp_macd_color_ok_tf:
 			sell_yn  = 'Y'
 
-		if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
-			msg = '    SELL TESTS - Impluse MACD'
-			WoB(msg)
-			if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y'):
-				for e in all_sells:
-					if pos.prc_chg_pct > 0:
-						G(e)
-					else:
-						R(e)
-			for e in all_hodls:
-				WoG(e)
-
-#			print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
+		# if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
+		# 	msg = '    SELL TESTS - Impluse MACD'
+		# 	WoB(msg)
+		# 	if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y'):
+		# 		for e in all_sells:
+		# 			if pos.prc_chg_pct > 0:
+		# 				G(e)
+		# 			else:
+		# 				R(e)
+		# 	for e in all_hodls:
+		# 		WoG(e)
+		if sell_yn == 'Y': hodl_yn = 'N'
+		msg = '    SELL TESTS - Impluse MACD'
+		show_sell_header_tf = disp_sell_tests(msg=msg, pos=pos, all_sells=all_sells, all_hodls=all_hodls, sell_yn=sell_yn, sell_block_yn=sell_block_yn, hodl_yn=hodl_yn, show_sell_header_tf=show_sell_header_tf, show_tests_yn=show_tests_yn)
+#		print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
 
 		exit_if_profit_yn      = st.spot.sell.strats.imp_macd.exit_if_profit_yn
 		exit_if_profit_pct_min = st.spot.sell.strats.imp_macd.exit_if_profit_pct_min
@@ -2097,13 +2136,13 @@ def sell_strat_imp_macd(st, mkt, ta, pos, sell_block_yn='N'):
 		pass
 
 	func_end(fnc)
-	return mkt, pos, sell_yn, hodl_yn
+	return mkt, pos, sell_yn, hodl_yn, show_sell_header_tf
 
 #<=====>#
 
-def sell_strat_bb_bo(st, mkt, ta, pos, sell_block_yn='N'):
+def sell_strat_bb_bo(st, mkt, ta, pos, show_sell_header_tf, sell_block_yn='N'):
 	func_name = 'sell_strat_bb_bo'
-	func_str = f'{lib_name}.{func_name}(mkt, ta, pos, sell_block_yn={sell_block_yn})'
+	func_str = f'{lib_name}.{func_name}(mkt, ta, pos, show_sell_header_tf={show_sell_header_tf}, sell_block_yn={sell_block_yn})'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
@@ -2127,11 +2166,11 @@ def sell_strat_bb_bo(st, mkt, ta, pos, sell_block_yn='N'):
 		sell_prc_intersects_bb_upper_inner_tf
 		if sell_prc < curr_bb_upper_inner:
 			sell_prc_intersects_bb_upper_inner_tf = True
-			msg = f'    * SELL COND: {rfreq} current price : {sell_prc:>.8f} below bb upper inner : {curr_bb_upper_inner:>.8f}'
+			msg = f'SELL COND: {rfreq} current price : {sell_prc:>.8f} below bb upper inner : {curr_bb_upper_inner:>.8f}'
 			all_sells.append(msg)
 		else:
 			sell_prc_intersects_bb_upper_inner_tf = False
-			msg = f'    * HODL COND: {rfreq} current price : {sell_prc:>.8f} below bb upper inner : {curr_bb_upper_inner:>.8f}'
+			msg = f'HODL COND: {rfreq} current price : {sell_prc:>.8f} below bb upper inner : {curr_bb_upper_inner:>.8f}'
 			all_hodls.append(msg)
 
 		if sell_prc_intersects_bb_upper_inner_tf:
@@ -2139,18 +2178,21 @@ def sell_strat_bb_bo(st, mkt, ta, pos, sell_block_yn='N'):
 		else:
 			sell_yn  = 'N'
 
-		if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
-			msg = '    SELL TESTS - Bollinger Band Breakout'
-			WoB(msg)
-			if (sell_yn == 'Y' and sell_block_yn == 'N')  or show_tests_yn in ('Y'):
-				for e in all_sells:
-					if pos.prc_chg_pct > 0:
-						G(e)
-					else:
-						R(e)
-			for e in all_hodls:
-				WoG(e)
-#			print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
+		# if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
+		# 	msg = '    SELL TESTS - Bollinger Band Breakout'
+		# 	WoB(msg)
+		# 	if (sell_yn == 'Y' and sell_block_yn == 'N')  or show_tests_yn in ('Y'):
+		# 		for e in all_sells:
+		# 			if pos.prc_chg_pct > 0:
+		# 				G(e)
+		# 			else:
+		# 				R(e)
+		# 	for e in all_hodls:
+		# 		WoG(e)
+		if sell_yn == 'Y': hodl_yn = 'N'
+		msg = '    SELL TESTS - Bollinger Band Breakout'
+		show_sell_header_tf = disp_sell_tests(msg=msg, pos=pos, all_sells=all_sells, all_hodls=all_hodls, sell_yn=sell_yn, sell_block_yn=sell_block_yn, hodl_yn=hodl_yn, show_sell_header_tf=show_sell_header_tf, show_tests_yn=show_tests_yn)
+#		print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
 
 		exit_if_profit_yn      = st.spot.sell.strats.bb_bo.exit_if_profit_yn
 		exit_if_profit_pct_min = st.spot.sell.strats.bb_bo.exit_if_profit_pct_min
@@ -2205,13 +2247,13 @@ def sell_strat_bb_bo(st, mkt, ta, pos, sell_block_yn='N'):
 		pass
 
 	func_end(fnc)
-	return mkt, pos, sell_yn, hodl_yn
+	return mkt, pos, sell_yn, hodl_yn, show_sell_header_tf
 
 #<=====>#
 
-def sell_strat_bb(st, mkt, ta, pos, sell_block_yn='N'):
+def sell_strat_bb(st, mkt, ta, pos, show_sell_header_tf, sell_block_yn='N'):
 	func_name = 'sell_strat_bb'
-	func_str = f'{lib_name}.{func_name}(mkt, ta, pos, sell_block_yn={sell_block_yn})'
+	func_str = f'{lib_name}.{func_name}(mkt, ta, pos, show_sell_header_tf={show_sell_header_tf}, sell_block_yn={sell_block_yn})'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
@@ -2266,11 +2308,11 @@ def sell_strat_bb(st, mkt, ta, pos, sell_block_yn='N'):
 
 		if age_mins > min_mins and sell_prc < curr_bb_lower_outer:
 			bb_downward_spiral_tf = True
-			msg = f'    * SELL COND: {rfreq} current price : {sell_prc:>.8f} below bb lower outer : {curr_bb_lower_outer:>.8f} and gain_pct < 0 : {pos.gain_loss_pct_est}'
+			msg = f'SELL COND: {rfreq} current price : {sell_prc:>.8f} below bb lower outer : {curr_bb_lower_outer:>.8f} and gain_pct < 0 : {pos.gain_loss_pct_est}'
 			all_sells.append(msg)
 		else:
 			bb_downward_spiral_tf = False
-			msg = f'    * HODL COND: {rfreq} current price : {sell_prc:>.8f} above bb lower outer : {curr_bb_lower_outer:>.8f} and gain_pct < 0 : {pos.gain_loss_pct_est}'
+			msg = f'HODL COND: {rfreq} current price : {sell_prc:>.8f} above bb lower outer : {curr_bb_lower_outer:>.8f} and gain_pct < 0 : {pos.gain_loss_pct_est}'
 			all_hodls.append(msg)
 
 		if bb_downward_spiral_tf:
@@ -2278,18 +2320,22 @@ def sell_strat_bb(st, mkt, ta, pos, sell_block_yn='N'):
 		else:
 			sell_yn  = 'N'
 
-		if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
-			msg = '    SELL TESTS - Bollinger Band'
-			WoB(msg)
-			if (sell_yn == 'Y' and sell_block_yn == 'N')  or show_tests_yn in ('Y'):
-				for e in all_sells:
-					if pos.prc_chg_pct > 0:
-						G(e)
-					else:
-						R(e)
-			for e in all_hodls:
-				WoG(e)
-#			print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
+		# if (sell_yn == 'Y' and sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
+		# 	msg = '    SELL TESTS - Bollinger Band'
+		# 	WoB(msg)
+		# 	if (sell_yn == 'Y' and sell_block_yn == 'N')  or show_tests_yn in ('Y'):
+		# 		for e in all_sells:
+		# 			if pos.prc_chg_pct > 0:
+		# 				G(e)
+		# 			else:
+		# 				R(e)
+		# 	for e in all_hodls:
+		# 		WoG(e)
+#		print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
+		if sell_yn == 'Y': hodl_yn = 'N'
+		msg = '    SELL TESTS - Bollinger Band'
+		show_sell_header_tf = disp_sell_tests(msg=msg, pos=pos, all_sells=all_sells, all_hodls=all_hodls, sell_yn=sell_yn, sell_block_yn=sell_block_yn, hodl_yn=hodl_yn, show_sell_header_tf=show_sell_header_tf, show_tests_yn=show_tests_yn)
+#		print(f'sell_yn : {sell_yn}, hodl_yn : {hodl_yn}')
 
 		exit_if_profit_yn      = st.spot.sell.strats.bb.exit_if_profit_yn
 		exit_if_profit_pct_min = st.spot.sell.strats.bb.exit_if_profit_pct_min
@@ -2344,7 +2390,7 @@ def sell_strat_bb(st, mkt, ta, pos, sell_block_yn='N'):
 		pass
 
 	func_end(fnc)
-	return mkt, pos, sell_yn, hodl_yn
+	return mkt, pos, sell_yn, hodl_yn, show_sell_header_tf
 
 #<=====>#
 
