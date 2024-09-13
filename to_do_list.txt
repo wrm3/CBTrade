@@ -29,7 +29,14 @@ Modifications Log
         cleaned up dead code in bot.py
         played around alot with timers, assessing where time can be shaved, minor improvements
         
-
+    2024-09-13
+        I have refactored my code from bot.py into bot_cls_buy.py, bot_cls_sell.py, bot_cls_main.py and run_bot.py.  
+        This was mainly done to allow reduce the length of the bot.py file to allow the AI to parse it better. 
+        I was using o1-mini today in cursor composer, and its a massive improvement.  
+        The changes will also set me up to be able to run the buy and sell logic as seperate scripts, 
+            and to also dump other loop actions into run_auto.py to make the bot loop faster.  
+        I would like to get it done to being able to loop 90 markets in 3 minutes, curently its taking around 10 minutes.
+        Glad I found a way to break apart a monolithic class without pylint and other tools going nuts over it.
 
 
 

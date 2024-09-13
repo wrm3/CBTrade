@@ -41,7 +41,7 @@
 				"XRP-USDC"
 			],
 			"stable_mkts": ["DAI-USDC","GUSD-USDC","PAX-USDC","PYUSD-USDC","USDT-USDC"],
-			"err_mkts": [],
+			"err_mkts": ["MATIC-USDC"],
 			"extra_mkts_watched_yn": "N",
 			"extra_mkts_top_bot_perf_yn": "Y",
 			"extra_mkts_top_bot_perf_cnt": 5,
@@ -115,16 +115,16 @@
 				"SOL-USDC": 5
 			},
 			"trade_size": {
-				"***": 5,
-				"BTC-USDC": 10,
-				"ETH-USDC": 10,
-				"SOL-USDC": 10
+				"***": 20,
+				"BTC-USDC": 50,
+				"ETH-USDC": 50,
+				"SOL-USDC": 50
 			},
 			"trade_size_min_mult": {
-				"***": 3,
-				"BTC-USDC": 10,
-				"ETH-USDC": 10,
-				"SOL-USDC": 10
+				"***": 10,
+				"BTC-USDC": 25,
+				"ETH-USDC": 25,
+				"SOL-USDC": 25
 			},
 			"strats": {
 				"sha": {

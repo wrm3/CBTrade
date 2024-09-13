@@ -4,8 +4,23 @@
 
 
 #<=====>#
-# Known To Do List
+# Import All
 #<=====>#
+
+import_all_func_list = []
+import_all_func_list.append("report_open")
+import_all_func_list.append("report_open_by_age")
+import_all_func_list.append("report_open_by_gain")
+import_all_func_list.append("report_open_by_prod_id")
+import_all_func_list.append("report_buys_recent")
+import_all_func_list.append("report_sells_recent")
+import_all_func_list.append("report_strats_best")
+import_all_func_list.append("report_pos_open")
+import_all_func_list.append("report_pos_close")
+import_all_func_list.append("report_strat")
+import_all_func_list.append("report_strats")
+import_all_func_list.append("disp_recent")
+__all__ = import_all_func_list
 
 
 #<=====>#
@@ -41,22 +56,22 @@ local_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '', 'l
 if local_libs_path not in sys.path:
 	sys.path.append(local_libs_path)
 
-from libs.lib_charts                   import *
-from libs.lib_common                   import *
-from libs.lib_colors                   import *
-from libs.lib_strings                  import *
+from lib_charts                   import *
+from lib_common                   import *
+from lib_colors                   import *
+from lib_strings                  import *
 
-from libs.bot_common                    import *
-from libs.bot_db_read                   import *
-from libs.bot_settings                  import settings
-from libs.bot_theme                     import *
+from bot_common                    import *
+from bot_db_read                   import *
+from bot_settings                  import settings
+from bot_theme                     import *
 #from bot                               import bot
 
 #<=====>#
 # Variables
 #<=====>#
-lib_name      = 'report'
-log_name      = 'report'
+lib_name      = 'bot_reports'
+log_name      = 'bot_reports'
 lib_verbosity = 1
 lib_debug_lvl = 1
 lib_secs_max  = 0
@@ -75,66 +90,11 @@ lib_secs_max  = 0
 # Functions
 #<=====>#
 
-def report_loop():
-	func_name = 'report_loop'
-	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
-
-	st = settings.reload()
-
-	# this is for the disp.py bot only...
-	upd_delay = 60
-
-	cnt = 0
-	while True:
-		try:
-			cnt += 1
-
-			if cnt % 10 == 0:
-				st = settings.reload()
-				pprint(st)
-
-			clear_screen()
-
-			report_open_by_age()
-			report_open_by_gain()
-			report_open_by_prod_id()
-
-			report_strats_best(25, min_trades=3)
-			report_strats_best(25, min_trades=10)
-
-			report_buys_recent(25, test_yn='Y')
-			report_sells_recent(25, test_yn='Y')
-
-			report_buys_recent(25, test_yn='N')
-			report_sells_recent(25, test_yn='N')
-
-			print_adv(2)
-			print(f'{dttm_get()} updating every {upd_delay} seconds...')
-			time.sleep(upd_delay)
-
-		except KeyboardInterrupt as e:
-			print(f'{func_name} ==> keyed exit... {e}')
-			sys.exit()
-
-		except Exception as e:
-			print(f'{func_name} ==> errored... {e}')
-			print(dttm_get())
-			traceback.print_exc()
-			print(type(e))
-			print(e)
-			print(f'sleeping {upd_delay} seconds and then restarting')
-			time.sleep(upd_delay)
-
-#<=====>#
-
 def report_open():
 	func_name = 'report_open'
 	func_str = f'{lib_name}.{func_name}()'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
 	poss = db_poss_open_get(include_test_yn='Y')
 
@@ -181,7 +141,6 @@ def report_open_by_age():
 	func_str = f'{lib_name}.{func_name}()'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
 	poss = db_poss_open_get(include_test_yn='Y')
 
@@ -212,7 +171,6 @@ def report_open_by_gain():
 	func_str = f'{lib_name}.{func_name}()'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
 	poss = db_poss_open_get(include_test_yn='Y')
 
@@ -242,7 +200,6 @@ def report_open_by_prod_id():
 	func_str = f'{lib_name}.{func_name}()'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
 	poss = db_poss_open_get(include_test_yn='Y')
 
@@ -272,7 +229,6 @@ def report_buys_recent(cnt=15, test_yn='N'):
 	func_str = f'{lib_name}.{func_name}()'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
 	print_adv(2)
 
@@ -306,7 +262,6 @@ def report_sells_recent(cnt=15, test_yn='N'):
 	func_str = f'{lib_name}.{func_name}()'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
 	print_adv(2)
 
@@ -339,7 +294,6 @@ def report_strats_best(cnt=10, min_trades=1):
 	func_str = f'{lib_name}.{func_name}(cnt={cnt}, min_trades={min_trades})'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
 	print_adv(2)
 
@@ -409,7 +363,6 @@ def report_pos_open(title, pos, show_pos_open_header_yn='Y'):
 	func_str = f'{lib_name}.{func_name}(pos)'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
 #	chart_title('Currently Open Positions - By Market', len(hmsg))
 
@@ -478,7 +431,6 @@ def report_pos_close(title, pos, show_pos_close_header_yn='Y'):
 	func_str = f'{lib_name}.{func_name}(pos)'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
 	hmsg = ""
 	hmsg += f"{'mkt':^12} | "
@@ -560,7 +512,6 @@ def report_strat(title, mkt_strat_perf, show_strat_header_yn):
 	func_str = f'{lib_name}.{func_name}(title, mkt_strat_perf, show_strat_header_yn)'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
 #	pprint(mkt_strat_perf)
 
@@ -638,7 +589,6 @@ def report_strats():
 	func_str = f'{lib_name}.{func_name}()'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
 	hf = ''
 	mf = ''
@@ -857,7 +807,6 @@ def disp_recent(show_pos_close_header_yn='Y'):
 	func_str = f'{lib_name}.{func_name}()'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
 	print_adv(3)
 
@@ -1055,11 +1004,11 @@ def disp_recent(show_pos_close_header_yn='Y'):
 #<=====>#
 
 
+
 #<=====>#
 # Default Run
 #<=====>#
 
-if __name__ == "__main__":
-	report_loop()
+
 
 #<=====>#
