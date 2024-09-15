@@ -38,12 +38,64 @@ Modifications Log
         I would like to get it done to being able to loop 90 markets in 3 minutes, curently its taking around 10 minutes.
         Glad I found a way to break apart a monolithic class without pylint and other tools going nuts over it.
 
+    2024-09-15
+        Continued working on breaking the buy & sell routines into seperate separate flows
+        While maintaining the ability to run the original way so that it loops markets, does ta, attempts to buy, evals sells
+        The Original Mode is now called Full, its still the default run mode
+        Buy Mode only loops markets that come back from the buy markets logic.  
+            For me I was looping 95 markets in about 12 minutes.
+            The Buy Loop now completes in about 3 minutes after evaluating 45 markets for buying
+        Sell Mode only loops markets that have open positions.
+            For me I was looping 95 markets in about 12 minutes.
+            The Sell Loop now completes in about 3 minutes after evaluating 90 markets for selling multiple positions
+                when running 3 bots set to sell
+        To run the oringal method, command is still 
+            py -3 run_bot.py
+        To run buy mode, the command is 
+            py -3 run_bot.py b
+        To run sell mode, the command is
+            py -3 run_bot.py s
+        I have placed logic into the sell routine that allows multiple bots to be run in sell mode.
+        This will allow you to cycle through your sell positions faster.
+        Logic introduced a check to see when a market was updated last, if it changes since the loop started it skips
+        So far I have not had any data collisions.
+        Still cleaning up the code from this
+        I will be adding more logic to speed up Sells
+            Most of which will be based on settings... 
+                ie if all open positions have current price below buy price and allow sell at loss is not on, skips TA
+        I will be adding more logic to speed up Buys
+            For example switching to Sell mode if there are no available funds to spend
 
 
 -------------------------------------------------
 To Do & Dreams list (tackle as they manifest)
 -------------------------------------------------
 -------------------------------------------------
+
+    -------------------------------------------------
+    clean up excess timing narcs
+    -------------------------------------------------
+    * there are alot of timing narcs still reporting things that are ok..
+    * remove them asap
+
+    -------------------------------------------------
+    sell mode
+    -------------------------------------------------
+    * clean up extra commented or dead out code
+    * add logic to skip TA & other tests when settings would prevent sell anyways
+
+    -------------------------------------------------
+    buy mode
+    -------------------------------------------------
+    * switch to sell mode temporarily when lacking available funds
+
+    -------------------------------------------------
+    auto mode
+    -------------------------------------------------
+    * perform routine checks outside of the buy/sell routines
+        speed boosts
+        prevent data collides if multiple bots attempt to update markets or refresh wallet
+    * update markets routine should update price on open positions and recalc some fields
 
     -------------------------------------------------
     remove extra unused library clutter

@@ -230,7 +230,7 @@ def buy_logic(self, buy_mkts, mkt, trade_perf, trade_strat_perfs, ta):
 				WoG(msg)
 
 			elif buy_deny_yn == 'Y':
-				if prod_id in self.trade_mkts:
+				if prod_id in self.buy_mkts:
 					if self.st.spot.buy.allow_tests_yn == 'Y':
 						if trade_strat_perf.open_cnt == 0:
 							txt = '!!! BUY * TEST * !!!'
@@ -246,7 +246,7 @@ def buy_logic(self, buy_mkts, mkt, trade_perf, trade_strat_perfs, ta):
 			txt = '!!! WAIT !!!'
 			m = '{} * {} * CURR: ${:>16.8f} * SIZE: ${:>16.8f} * BAL: ${:>16.8f}'
 			msg = m.format(dttm, txt, mkt.prc_buy, trade_strat_perf.trade_size, mkt.bal_avail)
-			BoW(msg)
+#			BoW(msg)
 
 		# Save Files
 		if buy_yn == 'Y':

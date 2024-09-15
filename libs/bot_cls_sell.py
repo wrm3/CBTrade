@@ -133,6 +133,9 @@ def sell_logic(self, mkt, ta, open_poss):
 		func_end(fnc)
 		return mkt
 
+	db_poss_check_mkt_dttm_upd(prod_id)
+	mkt.check_mkt_dttm = db_poss_check_mkt_dttm_get(prod_id)
+
 	for pos in open_poss:
 		pos = dec_2_float(pos)
 		pos = AttrDictConv(in_dict=pos)
@@ -174,6 +177,8 @@ def sell_pos_logic(self, mkt, ta, pos):
 	sell_signals              = []
 
 	self.disp_sell(pos)
+	db_poss_check_last_dttm_upd(pos_id)
+	pos.check_last_dttm = db_poss_check_last_dttm_get(pos_id)
 
 	# Logic that will block the sell from happening
 	sell_block_yn = self.sell_pos_blocks(mkt, pos)

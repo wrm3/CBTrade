@@ -1,73 +1,68 @@
-#<=====>#
+# <=====>#
 # Description
-#<=====>#
+# <=====>#
 
-#<=====>#
+
+# <=====>#
 # Known To Do List
-#<=====>#
+# <=====>#
 
-#<=====>#
+
+# <=====>#
 # Imports - Common Modules
-#<=====>#
-from datetime import datetime as dt
-from datetime import timedelta
-from pprint import pprint
+# <=====>#
 import os
-import pandas as pd 
 import sys
-import time
 import traceback
-import warnings
-import uuid
 import argparse
-warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
-#<=====>#
+
+# <=====>#
 # Imports - Download Modules
-#<=====>#
+# <=====>#
 
-#<=====>#
+
+# <=====>#
 # Imports - Shared Library
-#<=====>#
+# <=====>#
 # shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
 # if shared_libs_path not in sys.path:
 # 	sys.path.append(shared_libs_path)
 
-#<=====>#
+
+# <=====>#
 # Imports - Local Library
-#<=====>#
-local_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '', 'libs'))
+# <=====>#
+local_libs_path = os.path.abspath(
+	os.path.join(os.path.dirname(__file__), '', 'libs'))
 if local_libs_path not in sys.path:
 	sys.path.append(local_libs_path)
 
-from libs.bot_cls_main                 import BOT
+from libs.lib_colors import *
+from libs.lib_common import *
+from libs.bot_cls_main import BOT
 
-from libs.lib_common                   import *
 
-
-#<=====>#
+# <=====>#
 # Variables
-#<=====>#
-lib_name      = 'run_bot'
-log_name      = 'run_bot'
-lib_secs_max  = 10
+# <=====>#
+lib_name = 'run_bot'
+log_name = 'run_bot'
+lib_secs_max = 10
 
-#<=====>#
+# <=====>#
 # Assignments Pre
-#<=====>#
+# <=====>#
 
 
-
-#<=====>#
+# <=====>#
 # Classes
-#<=====>#
+# <=====>#
 
 
-
-#<=====>#
+# <=====>#
 # Functions
-#<=====>#
-
+# <=====>#
 
 
 def main(bot):
@@ -77,39 +72,58 @@ def main(bot):
 	# G(func_str)
 
 	# Set up argument parser
-	parser = argparse.ArgumentParser(description="Process command line arguments.")
-	
-	# Add the argument 'action' which can be 's' or 'b'
-	parser.add_argument('action', nargs='?', choices=['s', 'b'], help="Specify 's' or 'b' for specific actions")
-	
+	parser = argparse.ArgumentParser(
+		description="Process command line arguments.")
+
+	# Add the argument 'action' which can be 'a', 'b', 'f', 's'
+	parser.add_argument(
+		'action', 
+		nargs='?', 
+		choices=['a', 'auto', 'b', 'buy', 'f', 'full', 's', 'sell', 's1', 'sell1', 's2', 'sell2'], 
+		help="Specify 'a', 'b', 'f', 's', 's1', 's2' for specific actions..."
+		)
+
 	# Parse the arguments
 	args = parser.parse_args()
-	
+
+	msg = 'you can add command line arguments to this bot. default if f for full. b for buy only. s for sell only. a for auto only...'
+	msg = cs(msg, font_color='purple')
+
 	# Perform actions based on the arguments
-	if args.action == 's':
-		bot.bot_sell()
-	elif args.action == 'b':
-		bot.bot_buy()
+	if args.action in ('s', 's1', 's2', 'sell', 'sell1', 'sell2'):
+		bot.mode = 'sell'
+		if args.action in ('s1', 'sell1'):
+			bot.mode_sub = 1
+		elif args.action in ('s2', 'sell2'):
+			bot.mode_sub = 2
+		bot.bot_loop()
+	elif args.action in ('b', 'buy'):
+		bot.mode = 'buy'
+		bot.bot_loop()
+	elif args.action in ('a', 'auto'):
+		bot.mode = 'auto'
+		bot.auto_loop()
 	else:
-		bot.bot()
+		bot.mode = 'full'
+		bot.bot_loop()
 
 
-#<=====>#
+# <=====>#
 # Post Variables
-#<=====>#
+# <=====>#
 
 bot = BOT()
 
 
-#<=====>#
+# <=====>#
 # Default Run
-#<=====>#
+# <=====>#
 
 if __name__ == "__main__":
 	main(bot)
 
 
-#<=====>#
+# <=====>#
 
 '''
 				"AAVE-USDC",
@@ -260,4 +274,3 @@ if __name__ == "__main__":
 
 				
 '''
-

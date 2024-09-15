@@ -21,6 +21,10 @@ import_all_func_list.append("db_buy_ords_stat_upd")
 import_all_func_list.append("db_poss_err_upd")
 import_all_func_list.append("db_poss_stat_upd")
 import_all_func_list.append("db_sell_ords_stat_upd")
+
+import_all_func_list.append("db_poss_check_mkt_dttm_upd")
+import_all_func_list.append("db_poss_check_last_dttm_upd")
+
 import_all_func_list.append("db_tbl_del")
 import_all_func_list.append("db_tbl_insupd")
 import_all_func_list.append("db_tbl_bals_insupd")
@@ -118,6 +122,39 @@ def db_safe_string(in_str):
 	# Replace characters not in the allowed set with an empty string
 	out_str = re.sub(allowed_chars_pattern, '', in_str)
 	return out_str
+
+#<=====>#
+
+def db_poss_check_mkt_dttm_upd(prod_id):
+	func_name = 'db_poss_check_mkt_dttm_upd'
+	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "update cbtrade.poss p "
+	sql += "  set p.check_mkt_dttm = NOW() "
+	sql += "  where p.pos_stat in ('OPEN')"
+	sql += f"  and p.prod_id = '{prod_id}'"
+	db.execute(sql)
+
+	func_end(fnc)
+
+#<=====>#
+
+def db_poss_check_last_dttm_upd(pos_id):
+	func_name = 'db_poss_check_last_dttm_upd'
+	func_str = f'{lib_name}.{func_name}(pos_id={pos_id})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "update cbtrade.poss p "
+	sql += "  set p.check_last_dttm = NOW() "
+	sql += f"  where p.pos_id = {pos_id}"
+	db.execute(sql)
+
+	func_end(fnc)
 
 #<=====>#
 

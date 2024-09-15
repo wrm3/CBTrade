@@ -99,8 +99,9 @@ class BOT():
 		self.show_buy_header_tf        = True
 		self.show_sell_header_tf       = True
 		# don't change this value, need more codiging for USDT or USD, someday integrae USDT/USD/BTC/ETH
-		self.quote_curr_symb = 'USDC'
-
+		self.quote_curr_symb           = 'USDC'
+		self.mode                      = 'full' # full, auto, buy, sell
+		self.mode_sub                  = None
 
 	buy_logic                      = buy_logic
 	buy_logic_mkt_boosts           = buy_logic_mkt_boosts
@@ -140,492 +141,206 @@ class BOT():
 
 	#<=====>#
 
-	def bot(self):
-		func_name = 'bot'
-		func_str = f'{lib_name}.{func_name}()'
-#		G(func_str)
-
-		self.before_start()
-
-		cnt = 0
-		while True:
-			try:
-				cnt += 1
-				t0                = time.perf_counter()
-
-				print_adv(4)
-				WoB(f"{'<----- // ===== | == TOP == | ===== \\ ----->':^200}")
-				print_adv(4)
-
-				self.st = settings.reload()
-
-				self.before_loop()
-
-				self.mkts_lists_get()
-				self.mkts_loop()
-
-				self.after_loop()
-
-				# Dump CSVs of database tables for recovery
-				if cnt == 1 or cnt % 10 == 0:
-					db_table_csvs_dump()
-
-				# End of Loop Display
-				loop_secs = self.st.loop_secs
-				print_adv(2)
-				t1 = time.perf_counter()
-				elapsed_seconds = round(t1 - t0, 2)
-				if elapsed_seconds >= 5:
-					WoB(f'loop {cnt} completed in {elapsed_seconds} seconds, sleeping {loop_secs} seconds and then restarting...')
-					WoB(f'reserve_locked_tf : {self.reserve_locked_tf}')
-
-					hmsg = ''
-					hmsg += f"$ {'usdc bal':^9} | "
-					hmsg += f"$ {'reserve':^9} | "
-					hmsg += f"$ {'available':^9} | "
-					hmsg += f"{'reserves state':^14} | "
-					WoM(hmsg)
-
-					for trade_curr in self.trade_currs:
-						msg = ""
-						msg += f"$ {self.bal_avails[trade_curr]:>9.2f} | "
-						msg += f"$ {self.reserve_amts[trade_curr]:>9.2f} | "
-						msg += f"$ {self.spendable_amts[trade_curr]:>9.2f} | "
-						if self.reserve_locked_tf:
-							msg += f"{'LOCKED':^14} | "
-						else:
-							msg += f"{'UNLOCKED':^14} | "
-						WoG(msg)
-
-				print_adv(4)
-				WoB(f"{'<----- // ===== | == END == | ===== \\ ----->':^200}")
-				print_adv(4)
-
-				time.sleep(loop_secs)
-
-			except KeyboardInterrupt as e:
-				print(f'{func_name} ==> keyed exit... {e}')
-				sys.exit()
-
-			except Exception as e:
-				loop_secs = self.st.loop_secs
-				print(f'{func_name} ==> errored... {e}')
-				print(dttm_get())
-				traceback.print_exc()
-				print(type(e))
-				print(e)
-				print(f'sleeping {loop_secs} seconds and then restarting')
-				time.sleep(loop_secs)
-
-	#<=====>#
-
-	def bot_buy(self):
-		func_name = 'bot_buy'
-		func_str = f'{lib_name}.{func_name}()'
-#		G(func_str)
-
-		self.before_start()
-
-		cnt = 0
-		while True:
-			try:
-				cnt += 1
-				t0                = time.perf_counter()
-
-				print_adv(4)
-				WoB(f"{'<----- // ===== | == TOP == | ===== \\ ----->':^200}")
-				print_adv(4)
-
-				self.st = settings.reload()
-
-				self.before_loop()
-
-				self.mkts_lists_get()
-				self.mkts_loop()
-
-				self.after_loop()
-
-				# Dump CSVs of database tables for recovery
-				if cnt == 1 or cnt % 10 == 0:
-					db_table_csvs_dump()
-
-				# End of Loop Display
-				loop_secs = self.st.loop_secs
-				print_adv(2)
-				t1 = time.perf_counter()
-				elapsed_seconds = round(t1 - t0, 2)
-				if elapsed_seconds >= 5:
-					WoB(f'loop {cnt} completed in {elapsed_seconds} seconds, sleeping {loop_secs} seconds and then restarting...')
-					WoB(f'reserve_locked_tf : {self.reserve_locked_tf}')
-
-					hmsg = ''
-					hmsg += f"$ {'usdc bal':^9} | "
-					hmsg += f"$ {'reserve':^9} | "
-					hmsg += f"$ {'available':^9} | "
-					hmsg += f"{'reserves state':^14} | "
-					WoM(hmsg)
-
-					for trade_curr in self.trade_currs:
-						msg = ""
-						msg += f"$ {self.bal_avails[trade_curr]:>9.2f} | "
-						msg += f"$ {self.reserve_amts[trade_curr]:>9.2f} | "
-						msg += f"$ {self.spendable_amts[trade_curr]:>9.2f} | "
-						if self.reserve_locked_tf:
-							msg += f"{'LOCKED':^14} | "
-						else:
-							msg += f"{'UNLOCKED':^14} | "
-						WoG(msg)
-
-				print_adv(4)
-				WoB(f"{'<----- // ===== | == END == | ===== \\ ----->':^200}")
-				print_adv(4)
-
-				time.sleep(loop_secs)
-
-			except KeyboardInterrupt as e:
-				print(f'{func_name} ==> keyed exit... {e}')
-				sys.exit()
-
-			except Exception as e:
-				loop_secs = self.st.loop_secs
-				print(f'{func_name} ==> errored... {e}')
-				print(dttm_get())
-				traceback.print_exc()
-				print(type(e))
-				print(e)
-				print(f'sleeping {loop_secs} seconds and then restarting')
-				time.sleep(loop_secs)
-
-	#<=====>#
-
-	def bot_sell(self):
-		func_name = 'bot_sell'
-		func_str = f'{lib_name}.{func_name}()'
-#		G(func_str)
-
-		self.before_start()
-
-		cnt = 0
-		while True:
-			try:
-				cnt += 1
-				t0                = time.perf_counter()
-
-				print_adv(4)
-				WoB(f"{'<----- // ===== | == TOP == | ===== \\ ----->':^200}")
-				print_adv(4)
-
-				self.st = settings.reload()
-
-				self.before_loop()
-
-				self.mkts_lists_get()
-				self.mkts_loop()
-
-				self.after_loop()
-
-				# Dump CSVs of database tables for recovery
-				if cnt == 1 or cnt % 10 == 0:
-					db_table_csvs_dump()
-
-				# End of Loop Display
-				loop_secs = self.st.loop_secs
-				print_adv(2)
-				t1 = time.perf_counter()
-				elapsed_seconds = round(t1 - t0, 2)
-				if elapsed_seconds >= 5:
-					WoB(f'loop {cnt} completed in {elapsed_seconds} seconds, sleeping {loop_secs} seconds and then restarting...')
-					WoB(f'reserve_locked_tf : {self.reserve_locked_tf}')
-
-					hmsg = ''
-					hmsg += f"$ {'usdc bal':^9} | "
-					hmsg += f"$ {'reserve':^9} | "
-					hmsg += f"$ {'available':^9} | "
-					hmsg += f"{'reserves state':^14} | "
-					WoM(hmsg)
-
-					for trade_curr in self.trade_currs:
-						msg = ""
-						msg += f"$ {self.bal_avails[trade_curr]:>9.2f} | "
-						msg += f"$ {self.reserve_amts[trade_curr]:>9.2f} | "
-						msg += f"$ {self.spendable_amts[trade_curr]:>9.2f} | "
-						if self.reserve_locked_tf:
-							msg += f"{'LOCKED':^14} | "
-						else:
-							msg += f"{'UNLOCKED':^14} | "
-						WoG(msg)
-
-				print_adv(4)
-				WoB(f"{'<----- // ===== | == END == | ===== \\ ----->':^200}")
-				print_adv(4)
-
-				time.sleep(loop_secs)
-
-			except KeyboardInterrupt as e:
-				print(f'{func_name} ==> keyed exit... {e}')
-				sys.exit()
-
-			except Exception as e:
-				loop_secs = self.st.loop_secs
-				print(f'{func_name} ==> errored... {e}')
-				print(dttm_get())
-				traceback.print_exc()
-				print(type(e))
-				print(e)
-				print(f'sleeping {loop_secs} seconds and then restarting')
-				time.sleep(loop_secs)
-
-	#<=====>#
-
-	def mkts_loop(self):
-		func_name = 'mkts_loop'
+	def before_start(self):
+		func_name = 'before_start'
 		func_str = f'{lib_name}.{func_name}()'
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #		G(func_str)
 
-		print_adv(3)
-		WoM(f"{'Markets Loop':^200}")
-		print_adv(1)
+		# this is here just to proof that sounds alerts will be heard
+		if self.st.speak_yn == 'Y': speak_async('Coinbase Trade Bot Online')
 
-		cnt = 0
-		# loop through all mkts for buy/sell logic
-		t0 = time.perf_counter()
-
-		dttm_start_loop = dttm_get()	
-		t_loop = time.perf_counter()
-
-
-		for m in self.mkts:
-			prod_id = m['prod_id']
-			db_check_ohlcv_prod_id_table(prod_id)
-
-
-		for m in self.mkts:
-			cnt += 1
-			t00 = time.perf_counter()
-
-			# formatting the mkt
-			prod_id = m['prod_id']
-			m = dec_2_float(m)
-			m = AttrDictConv(in_dict=m)
-			# This is only for disp_mkt
-			m.cnt = cnt
-			m.mkts_tot = len(self.mkts)
-
-			# lets Avoid Trading Stable Coins Against One Another
-			if m.base_curr_symb in self.st.stable_coins:
-				continue
-
-			# refresh settings each loop for hot changes
-			self.st = settings.reload()
-			self.wallet_refresh()
-
-			t_now = time.perf_counter()
-			t_elapse = t_now - t_loop
-			loop_age = format_disp_age2(t_elapse)
-
-			# build Out Everything We Will Need in the Market
-			print_adv(3)
-
-			title_msg = f'* Market Summary * {prod_id} * {dttm_get()} * {dttm_start_loop} * {loop_age} * {cnt}/{len(self.mkts)} *'
-			chart_top(len_cnt=240, bold=True)
-			chart_mid(in_str=title_msg, len_cnt=240, bold=True)
-
-			# build the market
-			mkt, trade_perf, trade_strat_perfs = self.mkt_build(m)
-
-			# process the mkt
-			mkt = self.mkt_logic(mkt, trade_perf, trade_strat_perfs)
-
-			# end of Performance Timer for ind mkt
-			t11 = time.perf_counter()
-			secs = round(t11 - t00, 3)
-			if secs > lib_secs_max:
-				msg = f'mkt_loop for {prod_id} - took {secs} seconds...'
-				in_str_len = len(msg)
-				msg = cs(msg, font_color='white', bg_color='orangered')
-				print(msg)
-
-			chart_bottom(len_cnt=240, bold=True)
-
-		# end of Performance Timer for mkt loop
-		t1 = time.perf_counter()
-		secs = round(t1 - t0, 3)
-		if secs > lib_secs_max:
-			cp(f'mkt_loops - took {secs} seconds to complete...', font_color='white', bg_color='orangered')
+		self.wallet_refresh(force_tf=True)
+		db_table_csvs_dump()
 
 		func_end(fnc)
 
 	#<=====>#
 
-	def mkts_lists_get(self):
-		func_name = 'mkts_lists_get'
+	def bot_loop(self):
+		func_name = 'bot_loop'
 		func_str = f'{lib_name}.{func_name}()'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #		G(func_str)
 
-		loop_mkts = []
-		self.buy_mkts = []
-		self.trade_mkts = []	
+		self.before_start()
 
-		chart_top(in_str='Market Collection', len_cnt=177)
+		cnt = 0
+		while True:
+			try:
+				cnt += 1
+				t0                = time.perf_counter()
 
+				print_adv(4)
+				WoB(f"{'<----- // ===== | == TOP == | ===== \\ ----->':^200}")
+				print_adv(4)
 
-		# get mkts from settings
-		spot_mkts  = self.st.spot.mkts.trade_mkts
-		self.trade_mkts = spot_mkts
-		if spot_mkts:
-			loop_mkts.extend(spot_mkts)
-			loop_mkts = list(set(loop_mkts))
-			self.buy_mkts.extend(loop_mkts)
-#			print(f'loop_mkts: {loop_mkts}')
+				self.st = settings.reload()
 
-		# Get The Markets with Open Positions
-		# They all need to be looped through buy/sell logic
-		mkts       = db_mkts_loop_poss_open_prod_ids_get()
-		if mkts:
-			mkts = list(set(mkts))
-			hmsg = f'adding markets with open positions ({len(mkts)}) :'
-			chart_mid(in_str=hmsg, len_cnt=177)
-			self.prt_cols(mkts, cols=10)
+				cb_mkts_refresh()
 
-			loop_mkts.extend(mkts)
+				if self.mode in ('buy'):
+					self.buy_ords_check()
+					report_buys_recent(cnt=20)
+				elif self.mode in ('sell'):
+					self.sell_ords_check()
+					report_sells_recent(cnt=20)
+				else:
+					self.buy_ords_check()
+					self.sell_ords_check()
+					report_buys_recent(cnt=20)
+					report_sells_recent(cnt=20)
 
-		# Get The Markets with the best performance on the bot so far
-		# By Gain Loss Percen Per Hour
-		# Settings how many of these we will look at
-		pct_min    = self.st.spot.mkts.extra_mkts_top_bot_perf_pct_min
-		lmt_cnt    = self.st.spot.mkts.extra_mkts_top_bot_perf_cnt
-		mkts       = db_mkts_loop_top_perfs_prod_ids_get(lmt=lmt_cnt, pct_min=pct_min)
-		if mkts:
-			if self.st.spot.mkts.extra_mkts_top_bot_perf_yn == 'Y':
-				hmsg = f'adding mkts top bot gain loss percent per day performers ({len(mkts)}) :'
-				chart_mid(in_str=hmsg, len_cnt=177)
-				self.prt_cols(mkts, cols=10, clr='WoG')
+				self.wallet_refresh(force_tf=True)
+				self.mkts_loop()
 
-				loop_mkts.extend(mkts)
-				self.buy_mkts.extend(mkts)
+				if self.mode in ('buy'):
+					self.buy_ords_check()
+					report_buys_recent(cnt=20)
+				elif self.mode in ('sell'):
+					self.sell_ords_check()
+					report_open_by_age()
+					report_sells_recent(cnt=20)
+				else:
+					self.buy_ords_check()
+					self.sell_ords_check()
+					report_open_by_age()
+					report_buys_recent(cnt=20)
+					report_sells_recent(cnt=20)
 
-			elif self.st.spot.mkts.extra_mkts_top_bot_perf_cnt > 0:
-				hmsg = f'skipping mkts top bot gain loss percent per day performers ({len(mkts)}) :'
-				chart_mid(in_str=hmsg, len_cnt=177)
-				self.prt_cols(mkts, cols=10, clr='GoW')
+				# Dump CSVs of database tables for recovery
+				if cnt == 1 or cnt % 10 == 0:
+					db_table_csvs_dump()
 
-		# Get The Markets with the best performance on the bot so far
-		# By Gain Loss Amount Total
-		# Settings how many of these we will look at
-		lmt_cnt    = self.st.spot.mkts.extra_mkts_top_bot_gains_cnt
-		mkts       = db_mkts_loop_top_gains_prod_ids_get(lmt=lmt_cnt)
-		if mkts:
-			if self.st.spot.mkts.extra_mkts_top_bot_gains_yn == 'Y':
-				hmsg = f'adding mkts top bot gain loss performers ({len(mkts)}) :'
-				chart_mid(in_str=hmsg, len_cnt=177)
-				self.prt_cols(mkts, cols=10, clr='WoG')
+				# End of Loop Display
+				loop_secs = self.st.loop_secs
+				print_adv(2)
+				t1 = time.perf_counter()
+				elapsed_seconds = round(t1 - t0, 2)
+				if elapsed_seconds >= 5:
+					WoB(f'loop {cnt} completed in {elapsed_seconds} seconds, sleeping {loop_secs} seconds and then restarting...')
+					WoB(f'reserve_locked_tf : {self.reserve_locked_tf}')
 
-				loop_mkts.extend(mkts)
-				self.buy_mkts.extend(mkts)
+					hmsg = f"$ {'usdc bal':^9} | $ {'reserve':^9} | $ {'available':^9} | {'reserves state':^14} | "
+					WoM(hmsg)
 
-			elif self.st.spot.mkts.extra_mkts_top_bot_gains_cnt > 0:
-				hmsg = f'skipping mkts top bot gain loss performers ({len(mkts)}) :'
-				chart_mid(in_str=hmsg, len_cnt=177)
-				self.prt_cols(mkts, cols=10, clr='GoW')
+					for trade_curr in self.trade_currs:
+						msg = f"$ {self.bal_avails[trade_curr]:>9.2f} | $ {self.reserve_amts[trade_curr]:>9.2f} | $ {self.spendable_amts[trade_curr]:>9.2f} | "
+						if self.reserve_locked_tf:
+							msg += f"{'LOCKED':^14} | "
+						else:
+							msg += f"{'UNLOCKED':^14} | "
+						WoG(msg)
 
-		# Get The Markets with the top 24h price increase
-		# Settings how many of these we will look at
-		pct_min    = self.st.spot.mkts.extra_mkts_prc_pct_chg_24h_pct_min
-		lmt_cnt    = self.st.spot.mkts.extra_mkts_prc_pct_chg_24h_cnt
-		mkts       = db_mkts_loop_top_prc_chg_prod_ids_get(lmt=lmt_cnt, pct_min=pct_min)
-		if mkts:
-			if self.st.spot.mkts.extra_mkts_prc_pct_chg_24h_yn == 'Y':
-				hmsg = f'adding mkts top price increases ({len(mkts)}) :'
-				chart_mid(in_str=hmsg, len_cnt=177)
-				self.prt_cols(mkts, cols=10, clr='WoG')
+				print_adv(4)
+				WoB(f"{'<----- // ===== | == END == | ===== \\ ----->':^200}")
+				print_adv(4)
 
-				loop_mkts.extend(mkts)
-				self.buy_mkts.extend(mkts)
+				time.sleep(loop_secs)
 
-			elif self.st.spot.mkts.extra_mkts_prc_pct_chg_24h_cnt > 0:
-				hmsg = f'skipping mkts top price increases ({len(mkts)}) :'
-				chart_mid(in_str=hmsg, len_cnt=177)
-				self.prt_cols(mkts, cols=10, clr='GoW')
+			except KeyboardInterrupt as e:
+				print(f'{func_name} ==> keyed exit... {e}')
+				sys.exit()
 
-		# Get The Markets with the top 24h volume increase
-		# Settings how many of these we will look at
-		lmt_cnt    = self.st.spot.mkts.extra_mkts_vol_quote_24h_cnt
-		mkts       = db_mkts_loop_top_vol_chg_prod_ids_get(lmt=lmt_cnt)
-		if mkts:
-			if self.st.spot.mkts.extra_mkts_vol_quote_24h_yn == 'Y':
-				hmsg = f'adding mkts highest volume ({len(mkts)}) :'
-				chart_mid(in_str=hmsg, len_cnt=177)
-				self.prt_cols(mkts, cols=10, clr='WoG')
+			except Exception as e:
+				loop_secs = self.st.loop_secs
+				print(f'{func_name} ==> errored... {e}')
+				print(dttm_get())
+				traceback.print_exc()
+				print(type(e))
+				print(e)
+				print(f'sleeping {loop_secs} seconds and then restarting')
+				time.sleep(loop_secs)
 
-				loop_mkts.extend(mkts)
-				self.buy_mkts.extend(mkts)
+	#<=====>#
 
-			elif self.st.spot.mkts.extra_mkts_vol_quote_24h_cnt > 0:
-				hmsg = f'skipping mkts highest volume ({len(mkts)}) :'
-				chart_mid(in_str=hmsg, len_cnt=177)
-				self.prt_cols(mkts, cols=10, clr='GoW')
+	def auto_loop(self):
+		func_name = 'auto_loop'
+		func_str = f'{lib_name}.{func_name}()'
+#		G(func_str)
 
-		# Get The Markets with the top 24h volume percent increase
-		# Settings how many of these we will look at
-		lmt_cnt    = self.st.spot.mkts.extra_mkts_vol_pct_chg_24h_cnt
-		mkts       = db_mkts_loop_top_vol_chg_pct_prod_ids_get(lmt=lmt_cnt)
-		if mkts:
-			if self.st.spot.mkts.extra_mkts_vol_pct_chg_24h_yn == 'Y':
-				hmsg = f'adding mkts highest volume increase ({len(mkts)}) :'
-				chart_mid(in_str=hmsg, len_cnt=177)
-				self.prt_cols(mkts, cols=10, clr='WoG')
+		self.before_start()
 
-				loop_mkts.extend(mkts)
-				self.buy_mkts.extend(mkts)
+		cnt = 0
+		while True:
+			try:
+				cnt += 1
+				t0                = time.perf_counter()
 
-			elif self.st.spot.mkts.extra_mkts_vol_pct_chg_24h_cnt > 0:
-				hmsg = f'skipping mkts highest volume increase ({len(mkts)}) :'
-				chart_mid(in_str=hmsg, len_cnt=177)
-				self.prt_cols(mkts, cols=10, clr='GoW')
+				print_adv(4)
+				WoB(f"{'<----- // ===== | == TOP == | ===== \\ ----->':^200}")
+				print_adv(4)
 
-		# Get The Markets that are marked as favorites on Coinbase
-		mkts       = db_mkts_loop_watched_prod_ids_get()
-		if mkts:
-			if self.st.spot.mkts.extra_mkts_watched_yn == 'Y':
-				hmsg = f'adding watched markets ({len(mkts)}) :'
-				chart_mid(in_str=hmsg, len_cnt=177)
-				self.prt_cols(mkts, cols=10, clr='WoG')
+				self.st = settings.reload()
 
-				loop_mkts.extend(mkts)
-				self.buy_mkts.extend(mkts)
+				self.sell_ords_check()
+				self.buy_ords_check()
+				cb_mkts_refresh()
+				self.wallet_refresh(force_tf=True)
 
-			else:
-				hmsg = f'skipping watched markets ({len(mkts)}) :'
-				chart_mid(in_str=hmsg, len_cnt=177)
-				self.prt_cols(mkts, cols=10, clr='GoW')
+				self.mkts_lists_get()
+				self.mkts_loop()
+
+				self.sell_ords_check()
+				self.buy_ords_check()
+
+				report_buys_recent(cnt=20)
+				report_sells_recent(cnt=20)
+				report_open_by_age()
+
+		#		# End of Market Loop Balance Display
+				self.wallet_refresh()
 
 
-		stable_mkts           = self.st.spot.mkts.stable_mkts
-		err_mkts              = self.st.spot.mkts.err_mkts
-		mkts                  = db_mkts_loop_get(loop_mkts=loop_mkts, stable_mkts=stable_mkts, err_mkts=err_mkts)
-		# Iterates through the mkts returned from MySQL and converts all decimals to floats
-		# This is faster than making everything be done in decimals (which I would prefer)
-		mkts                  = dec_2_float(mkts)
-		self.mkts             = mkts
+				# Dump CSVs of database tables for recovery
+				if cnt == 1 or cnt % 10 == 0:
+					db_table_csvs_dump()
 
-		# Display the markets that will be looped
-		disp_mkts = []
-		for m in self.mkts:
-			disp_mkts.append(m['prod_id'])
-		hmsg = f'loop mkts ({len(mkts)}) :'
-		chart_mid(in_str=hmsg, len_cnt=177)
-		self.prt_cols(disp_mkts, cols=10)
+				# End of Loop Display
+				loop_secs = self.st.loop_secs
+				print_adv(2)
+				t1 = time.perf_counter()
+				elapsed_seconds = round(t1 - t0, 2)
+				if elapsed_seconds >= 5:
+					WoB(f'loop {cnt} completed in {elapsed_seconds} seconds, sleeping {loop_secs} seconds and then restarting...')
+					WoB(f'reserve_locked_tf : {self.reserve_locked_tf}')
 
-		# Display the markets that will be looped
-		hmsg = f'buy mkts ({len(self.buy_mkts)}) :'
-		chart_mid(in_str=hmsg, len_cnt=177)
-		self.prt_cols(self.buy_mkts, cols=10)
+					hmsg = ''
+					hmsg += f"$ {'usdc bal':^9} | "
+					hmsg += f"$ {'reserve':^9} | "
+					hmsg += f"$ {'available':^9} | "
+					hmsg += f"{'reserves state':^14} | "
+					WoM(hmsg)
 
-		chart_bottom(len_cnt=177)
+					for trade_curr in self.trade_currs:
+						msg = ""
+						msg += f"$ {self.bal_avails[trade_curr]:>9.2f} | "
+						msg += f"$ {self.reserve_amts[trade_curr]:>9.2f} | "
+						msg += f"$ {self.spendable_amts[trade_curr]:>9.2f} | "
+						if self.reserve_locked_tf:
+							msg += f"{'LOCKED':^14} | "
+						else:
+							msg += f"{'UNLOCKED':^14} | "
+						WoG(msg)
 
-		func_end(fnc)
+				print_adv(4)
+				WoB(f"{'<----- // ===== | == END == | ===== \\ ----->':^200}")
+				print_adv(4)
+
+				time.sleep(loop_secs)
+
+			except KeyboardInterrupt as e:
+				print(f'{func_name} ==> keyed exit... {e}')
+				sys.exit()
+
+			except Exception as e:
+				loop_secs = self.st.loop_secs
+				print(f'{func_name} ==> errored... {e}')
+				print(dttm_get())
+				traceback.print_exc()
+				print(type(e))
+				print(e)
+				print(f'sleeping {loop_secs} seconds and then restarting')
+				time.sleep(loop_secs)
 
 	#<=====>#
 
@@ -696,71 +411,718 @@ class BOT():
 
 	#<=====>#
 
-	def mkt_trade_perf_get(self, mkt):
-		func_name = 'mkt_trade_perf_get'
-		func_str = f'{lib_name}.{func_name}(mkt)'
+	def disp_mkt(self, mkt, trade_perf, trade_strat_perfs):
+		func_name = 'disp_mkt'
+		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
+#		G(func_str)
+
+		self.disp_mkt_summary(mkt, trade_perf, trade_strat_perfs)
+		self.disp_mkt_stats(mkt, trade_perf, trade_strat_perfs)
+		self.disp_mkt_performance(mkt, trade_perf, trade_strat_perfs)
+
+		func_end(fnc)
+		return mkt, trade_perf, trade_strat_perfs
+
+	#<=====>#
+
+	def disp_mkt_summary(self, mkt, trade_perf, trade_strat_perfs):
+		func_name = 'disp_mkt_summary'
+		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
+#		G(func_str)
+
+		# Market Basics
+		prod_id = mkt.prod_id
+
+		# Prices & Balances
+		hmsg = ""
+		hmsg += f"$ {'price':^14} | "
+		hmsg += f"{'prc_chg':^10} % | "
+		hmsg += f"$ {'buy_prc':^14} | "
+		hmsg += f"$ {'sell_prc':^14} | "
+		hmsg += f"{'buy_var':^10} % | "
+		hmsg += f"{'sell_var':^10} % | "
+		hmsg += f"{'spread_pct':^10} % | "
+		hmsg += f"$ {'usdc bal':^9} | "
+		hmsg += f"$ {'reserve':^9} | "
+		hmsg += f"$ {'available':^9} | "
+		hmsg += f"{'reserves state':^14} | "
+
+		msg = ""
+		if mkt.prc_pct_chg_24h < 0:
+			msg += cs(f"$ {mkt.prc_mkt:>14.8f}", 'white', 'red') + " | "
+			msg += cs(f"{mkt.prc_pct_chg_24h:>10.4f} %", 'white', 'red') + " | "
+		elif mkt.prc_pct_chg_24h > 0:
+			msg += cs(f"$ {mkt.prc_mkt:>14.8f}", 'white', 'green') + " | "
+			msg += cs(f"{mkt.prc_pct_chg_24h:>10.4f} %", 'white', 'green') + " | "
+		else:
+			msg += f"$ {mkt.prc_mkt:>14.8f} | "
+			msg += f"{mkt.prc_pct_chg_24h:>10.4f} % | "
+
+		msg += f"$ {mkt.prc_buy:>14.8f} | "
+		msg += f"$ {mkt.prc_sell:>14.8f} | "
+		msg += f"{mkt.prc_buy_diff_pct:>10.4f} % | "
+		msg += f"{mkt.prc_sell_diff_pct:>10.4f} % | "
+
+		if mkt.prc_range_pct < 0:
+			msg += cs(f"{mkt.prc_range_pct:>10.4f} %", 'white', 'red') + " | "
+		elif mkt.prc_range_pct > 0:
+			msg += cs(f"{mkt.prc_range_pct:>10.4f} %", 'white', 'green') + " | "
+		else:
+			msg += f"{mkt.prc_range_pct:>10.4f} %" + " | "
+
+		msg += cs(f"$ {mkt.bal_avail:>9.2f}", "white", "green") + " | "
+		msg += cs(f"$ {mkt.reserve_amt:>9.2f}", "white", "green") + " | "
+		msg += cs(f"$ {mkt.spendable_amt:>9.2f}", "white", "green") + " | "
+		if self.reserve_locked_tf:
+			msg += cs(f"{'LOCKED':^14}", "yellow", "magenta") + " | "
+		else:
+			msg += cs(f"{'UNLOCKED':^14}", "magenta", "yellow") + " | "
+		chart_headers(in_str=hmsg, len_cnt=240, bold=True)
+		chart_row(in_str=msg, len_cnt=240)
+		chart_mid(len_cnt=240, bold=True)
+
+		func_end(fnc)
+		return mkt, trade_perf, trade_strat_perfs
+
+	#<=====>#
+
+	def disp_mkt_stats(self, mkt, trade_perf, trade_strat_perfs):
+		func_name = 'disp_mkt_stats'
+		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
+#		G(func_str)
+
+		# Market Basics
+		prod_id = mkt.prod_id
+
+
+		hmsg = ""
+		hmsg += f"{'trades':^9} | "
+		hmsg += f"{'wins':^9} | "
+		hmsg += f"{'lose':^9} | "
+		hmsg += f"{'win_pct':^9} % | "
+		hmsg += f"{'lose_pct':^9} % | "
+		hmsg += f"$ {'win_amt':^9} | "
+		hmsg += f"$ {'lose_amt':^9} | "
+		hmsg += f"$ {'spent':^9} | "
+		hmsg += f"$ {'recv':^9} | "
+		hmsg += f"$ {'hold':^9} | "
+		hmsg += f"$ {'val':^9} | "
+		hmsg += f"$ {'gain_amt':^9} | "
+		hmsg += f"{'gain_pct':^9} % | "
+		hmsg += f"{'gain_hr':^9} % | "
+		hmsg += f"{'gain_day':^9} % | "
+		hmsg += f"{'elapsed':^9} | "
+
+		msg = ''
+		msg += f'{trade_perf.tot_cnt:>9}' + ' | '
+		msg += cs(f'{trade_perf.win_cnt:>9}', font_color='white', bg_color='green') + ' | '
+		msg += cs(f'{trade_perf.lose_cnt:>9}', font_color='white', bg_color='red') + ' | '
+		msg += cs(f'{trade_perf.win_pct:>9.2f} %', font_color='white', bg_color='green') + ' | '
+		msg += cs(f'{trade_perf.lose_pct:>9.2f} %', font_color='white', bg_color='red') + ' | '
+		msg += cs(f'$ {trade_perf.win_amt:>9.4f}', font_color='white', bg_color='green') + ' | '
+		msg += cs(f'$ {trade_perf.lose_amt:>9.4f}', font_color='white', bg_color='red') + ' | '
+		msg += f'$ {trade_perf.tot_out_cnt:>9.4f}' + ' | '
+		msg += f'$ {trade_perf.tot_in_cnt:>9.4f}' + ' | '
+		msg += f'$ {trade_perf.val_curr:>9.4f}' + ' | '
+		msg += f'$ {trade_perf.val_tot:>9.4f}' + ' | '
+		if trade_perf.gain_loss_amt > 0:
+			msg += cs(f'$ {trade_perf.gain_loss_amt:>9.4f}', font_color='white', bg_color='green') + ' | '
+			msg += cs(f'{trade_perf.gain_loss_pct:>9.4f} %', font_color='white', bg_color='green') + ' | '
+			msg += cs(f'{trade_perf.gain_loss_pct_hr:>9.4f} %', font_color='white', bg_color='green') + ' | '
+			msg += cs(f'{trade_perf.gain_loss_pct_day:>9.4f} %', font_color='white', bg_color='green') + ' | '
+		else:
+			msg += cs(f'$ {trade_perf.gain_loss_amt:>9.4f}', font_color='white', bg_color='red') + ' | '
+			msg += cs(f'{trade_perf.gain_loss_pct:>9.4f} %', font_color='white', bg_color='red') + ' | '
+			msg += cs(f'{trade_perf.gain_loss_pct_hr:>9.4f} %', font_color='white', bg_color='red') + ' | '
+			msg += cs(f'{trade_perf.gain_loss_pct_day:>9.4f} %', font_color='white', bg_color='red') + ' | '
+		msg += f'{trade_perf.last_elapsed:>9}' + ' | '
+
+		title_msg = f'* Market Stats * {prod_id} *'
+		chart_mid(in_str=title_msg, len_cnt=240, bold=True)
+		chart_headers(in_str=hmsg, len_cnt=240, bold=True)
+		chart_row(msg, len_cnt=240)
+
+		chart_mid(len_cnt=240, bold=True)
+
+		func_end(fnc)
+		return mkt, trade_perf, trade_strat_perfs
+
+	#<=====>#
+
+	def disp_mkt_performance(self, mkt, trade_perf, trade_strat_perfs):
+		func_name = 'disp_mkt_performance'
+		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
+#		G(func_str)
+
+		# Market Basics
+		prod_id = mkt.prod_id
+
+		hmsg = ""
+		hmsg += f"{'strat':<15} | "
+		hmsg += f"{'freq':<15} | "
+		hmsg += f"{'total':^5} | "
+		hmsg += f"{'open':^5} | "
+		hmsg += f"{'close':^5} | "
+		hmsg += f"{'wins':^5} | "
+		hmsg += f"{'lose':^5} | "
+		hmsg += f"{'win':^6} % | "
+		hmsg += f"{'lose':^6} % | "
+		hmsg += f"{'gain_amt':^10} | "
+		hmsg += f"{'gain_pct':^10} % | "
+		hmsg += f"{'gain_hr':^10} % | "
+		hmsg += f"{'gain_day':^10} % | "
+		hmsg += f"{'elapsed':^7} | "
+
+		title_msg = '* Strategy Past Performance *'
+		chart_mid(in_str=title_msg, len_cnt=240, bold=True)
+		chart_headers(hmsg, len_cnt=240, bold=True)
+
+		for x in trade_strat_perfs:
+			x = dec_2_float(x)
+			x = AttrDictConv(in_dict=x)
+
+			if x.tot_cnt > 0:
+				msg = ''
+				msg += f'{x.buy_strat_name:<15} | '
+				msg += f'{x.buy_strat_freq:<15} | '
+				msg += f'{int(x.tot_cnt):>5} | '
+				msg += f'{int(x.open_cnt):>5} | '
+				msg += f'{int(x.close_cnt):>5} | '
+				msg += f'{int(x.win_cnt):>5} | '
+				msg += f'{int(x.lose_cnt):>5} | '
+				msg += f'{x.win_pct:>6.2f} % | '
+				msg += f'{x.lose_pct:>6.2f} % | '
+				msg += f'{x.gain_loss_amt:>10.2f} | '
+				msg += f'{x.gain_loss_pct:>10.2f} % | '
+				msg += f'{x.gain_loss_pct_hr:>10.2f} % | '
+				msg += f'{x.gain_loss_pct_day:>10.2f} % | '
+				msg += f'{x.strat_last_elapsed:>7}' + ' | '
+				msg  = cs_pct_color_50(pct=x.win_pct, msg=msg)
+				chart_row(in_str=msg, len_cnt=240)
+		chart_mid(len_cnt=240, bold=True)
+
+		func_end(fnc)
+		return mkt, trade_perf, trade_strat_perfs
+
+	#<=====>#
+
+	def mkts_lists_get(self):
+		func_name = 'mkts_lists_get'
+		func_str = f'{lib_name}.{func_name}()'
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #		G(func_str)
 
-		prod_id = mkt.prod_id
+#		chart_top(in_str='Market Collection', len_cnt=177)
 
-		# Build to Defaults
-		trade_perf = {}
-		trade_perf['prod_id']                       = prod_id
-		trade_perf['tot_cnt']                       = 0
-		trade_perf['win_cnt']                       = 0
-		trade_perf['lose_cnt']                      = 0
-		trade_perf['win_pct']                       = 0
-		trade_perf['lose_pct']                      = 0
-		trade_perf['age_mins']                      = 0
-		trade_perf['age_hours']                     = 0
-		trade_perf['bo_elapsed']                    = 9999
-		trade_perf['pos_elapsed']                   = 9999
-		trade_perf['last_elapsed']                  = 0
-		trade_perf['tot_out_cnt']                   = 0
-		trade_perf['tot_in_cnt']                    = 0
-		trade_perf['buy_fees_cnt']                  = 0
-		trade_perf['sell_fees_cnt_tot']             = 0
-		trade_perf['fees_cnt_tot']                  = 0
-		trade_perf['buy_cnt']                       = 0
-		trade_perf['sell_cnt_tot']                  = 0
-		trade_perf['hold_cnt']                      = 0
-		trade_perf['pocket_cnt']                    = 0
-		trade_perf['clip_cnt']                      = 0
-		trade_perf['sell_order_cnt']                = 0
-		trade_perf['sell_order_attempt_cnt']        = 0
-		trade_perf['val_curr']                      = 0
-		trade_perf['val_tot']                       = 0
-		trade_perf['win_amt']                       = 0
-		trade_perf['lose_amt']                      = 0
-		trade_perf['gain_loss_amt']                 = 0
-		trade_perf['gain_loss_amt_net']             = 0
-		trade_perf['gain_loss_pct']                 = 0
-		trade_perf['gain_loss_pct_hr']              = 0
-		trade_perf['gain_loss_pct_day']             = 0
-		trade_perf = AttrDictConv(in_dict=trade_perf)
+		self.loop_mkts       = []
+		self.buy_mkts        = []
+		self.sell_mkts       = []
 
-		# Get From Database
-		tp = db_view_trade_perf_get_by_prod_id(prod_id)
-		tp = dec_2_float(tp)
-		tp = AttrDictConv(in_dict=tp)
-		if tp:
-			for k in tp:
-				if tp[k]:
-					trade_perf[k] = tp[k]
+		if self.mode in ('buy', 'full'):
+			self.buy_mkts = self.mkts_lists_buy_get()
+			hmsg = f'buy mkts ({len(self.buy_mkts)}) :'
+			chart_mid(in_str=hmsg, len_cnt=177)
+			self.prt_cols(self.buy_mkts, cols=10)
+			chart_bottom(len_cnt=177)
+			print_adv()
 
-		# Get elapsed minues since last buy
-		r = db_mkt_elapsed_get(prod_id)
-		trade_perf.bo_elapsed   = r[0]
-		trade_perf.pos_elapsed  = r[1]
-		trade_perf.last_elapsed = r[2]
+		if self.mode in ('sell', 'full'):
+			self.sell_mkts = self.mkts_lists_sell_get()
+			hmsg = f'sell mkts ({len(self.sell_mkts)}) :'
+			chart_mid(in_str=hmsg, len_cnt=177)
+			self.prt_cols(self.sell_mkts, cols=10)
+			chart_bottom(len_cnt=177)
+			print_adv()
 
-		# Get count of open positions
-		open_poss = db_pos_open_get_by_prod_id(prod_id)
-		trade_perf.open_poss_cnt = len(open_poss)
+		self.loop_mkts.extend(self.buy_mkts)
+		self.loop_mkts.extend(self.sell_mkts)
+
+		stable_mkts           = self.st.spot.mkts.stable_mkts
+		err_mkts              = self.st.spot.mkts.err_mkts
+		mkts                  = db_mkts_loop_get(mode=self.mode, loop_mkts=self.loop_mkts, stable_mkts=stable_mkts, err_mkts=err_mkts)
+		# Iterates through the mkts returned from MySQL and converts all decimals to floats
+		# This is faster than making everything be done in decimals (which I would prefer)
+		mkts                  = dec_2_float(mkts)
+		self.loop_mkts        = mkts
+
+#		# Display the markets that will be looped
+#		disp_mkts = []
+#		for m in self.loop_mkts:
+#			disp_mkts.append(m['prod_id'])
+#		hmsg = f'loop mkts ({len(self.loop_mkts)}) :'
+#		chart_mid(in_str=hmsg, len_cnt=177)
+#		self.prt_cols(disp_mkts, cols=10)
+
+		# # Display the markets that will be looped
+		# if self.mode in ('full', 'buy'):
+
+		# # Display the markets that will be looped
+		# if self.mode in ('full', 'sell'):
 
 		func_end(fnc)
-		return trade_perf
+
+	#<=====>#
+
+	def mkts_lists_buy_get(self):
+		func_name = 'mkts_lists_buy_get'
+		func_str = f'{lib_name}.{func_name}()'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#		G(func_str)
+
+		buy_mkts = []
+
+		chart_top(in_str='Buy Market Collection', len_cnt=177)
+
+		# get mkts from settings
+		spot_mkts  = self.st.spot.mkts.trade_mkts
+		if spot_mkts:
+			mkts = list(set(spot_mkts))
+			buy_mkts.extend(mkts)
+
+		# Get The Markets with the best performance on the bot so far
+		# By Gain Loss Percen Per Hour
+		# Settings how many of these we will look at
+		pct_min    = self.st.spot.mkts.extra_mkts_top_bot_perf_pct_min
+		lmt_cnt    = self.st.spot.mkts.extra_mkts_top_bot_perf_cnt
+		mkts       = db_mkts_loop_top_perfs_prod_ids_get(lmt=lmt_cnt, pct_min=pct_min)
+		if mkts:
+			if self.st.spot.mkts.extra_mkts_top_bot_perf_yn == 'Y':
+				hmsg = f'adding mkts top bot gain loss percent per day performers ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='WoG')
+				buy_mkts.extend(mkts)
+			elif self.st.spot.mkts.extra_mkts_top_bot_perf_cnt > 0:
+				hmsg = f'skipping mkts top bot gain loss percent per day performers ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='GoW')
+
+		# Get The Markets with the best performance on the bot so far
+		# By Gain Loss Amount Total
+		# Settings how many of these we will look at
+		lmt_cnt    = self.st.spot.mkts.extra_mkts_top_bot_gains_cnt
+		mkts       = db_mkts_loop_top_gains_prod_ids_get(lmt=lmt_cnt)
+		if mkts:
+			if self.st.spot.mkts.extra_mkts_top_bot_gains_yn == 'Y':
+				hmsg = f'adding mkts top bot gain loss performers ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='WoG')
+				buy_mkts.extend(mkts)
+			elif self.st.spot.mkts.extra_mkts_top_bot_gains_cnt > 0:
+				hmsg = f'skipping mkts top bot gain loss performers ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='GoW')
+
+		# Get The Markets with the top 24h price increase
+		# Settings how many of these we will look at
+		pct_min    = self.st.spot.mkts.extra_mkts_prc_pct_chg_24h_pct_min
+		lmt_cnt    = self.st.spot.mkts.extra_mkts_prc_pct_chg_24h_cnt
+		mkts       = db_mkts_loop_top_prc_chg_prod_ids_get(lmt=lmt_cnt, pct_min=pct_min)
+		if mkts:
+			if self.st.spot.mkts.extra_mkts_prc_pct_chg_24h_yn == 'Y':
+				hmsg = f'adding mkts top price increases ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='WoG')
+				buy_mkts.extend(mkts)
+			elif self.st.spot.mkts.extra_mkts_prc_pct_chg_24h_cnt > 0:
+				hmsg = f'skipping mkts top price increases ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='GoW')
+
+		# Get The Markets with the top 24h volume increase
+		# Settings how many of these we will look at
+		lmt_cnt    = self.st.spot.mkts.extra_mkts_vol_quote_24h_cnt
+		mkts       = db_mkts_loop_top_vol_chg_prod_ids_get(lmt=lmt_cnt)
+		if mkts:
+			if self.st.spot.mkts.extra_mkts_vol_quote_24h_yn == 'Y':
+				hmsg = f'adding mkts highest volume ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='WoG')
+				buy_mkts.extend(mkts)
+			elif self.st.spot.mkts.extra_mkts_vol_quote_24h_cnt > 0:
+				hmsg = f'skipping mkts highest volume ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='GoW')
+
+		# Get The Markets with the top 24h volume percent increase
+		# Settings how many of these we will look at
+		lmt_cnt    = self.st.spot.mkts.extra_mkts_vol_pct_chg_24h_cnt
+		mkts       = db_mkts_loop_top_vol_chg_pct_prod_ids_get(lmt=lmt_cnt)
+		if mkts:
+			if self.st.spot.mkts.extra_mkts_vol_pct_chg_24h_yn == 'Y':
+				hmsg = f'adding mkts highest volume increase ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='WoG')
+				buy_mkts.extend(mkts)
+			elif self.st.spot.mkts.extra_mkts_vol_pct_chg_24h_cnt > 0:
+				hmsg = f'skipping mkts highest volume increase ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='GoW')
+
+		# Get The Markets that are marked as favorites on Coinbase
+		mkts       = db_mkts_loop_watched_prod_ids_get()
+		if mkts:
+			if self.st.spot.mkts.extra_mkts_watched_yn == 'Y':
+				hmsg = f'adding watched markets ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='WoG')
+				buy_mkts.extend(mkts)
+			else:
+				hmsg = f'skipping watched markets ({len(mkts)}) :'
+				chart_mid(in_str=hmsg, len_cnt=177)
+				self.prt_cols(mkts, cols=10, clr='GoW')
+
+		func_end(fnc)
+		return buy_mkts
+
+	#<=====>#
+
+	def mkts_lists_sell_get(self):
+		func_name = 'mkts_lists_sell_get'
+		func_str = f'{lib_name}.{func_name}()'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#		G(func_str)
+
+		chart_top(in_str='Sell Market Collection', len_cnt=177)
+
+		sell_mkts = []
+
+		# Get The Markets with Open Positions
+		# They all need to be looped through buy/sell logic
+		mkts       = db_mkts_loop_poss_open_prod_ids_get()
+		if mkts:
+			mkts = list(set(mkts))
+			hmsg = f'adding markets with open positions ({len(mkts)}) :'
+			chart_mid(in_str=hmsg, len_cnt=177)
+			self.prt_cols(mkts, cols=10)
+
+			sell_mkts.extend(mkts)
+
+		func_end(fnc)
+		return sell_mkts
+
+	#<=====>#
+
+	def mkts_loop(self):
+		func_name = 'mkts_loop'
+		func_str = f'{lib_name}.{func_name}()'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#		G(func_str)
+
+		print_adv(3)
+		WoM(f"{'Markets Loop':^200}")
+		print_adv(1)
+
+		self.mkts_lists_get()
+
+		cnt = 0
+		# loop through all mkts for buy/sell logic
+		t0 = time.perf_counter()
+
+		dttm_start_loop = dttm_get()	
+		t_loop = time.perf_counter()
+
+		self.ohlcv_tables_check()
+
+		for m in self.loop_mkts:
+			cnt += 1
+			t00 = time.perf_counter()
+
+			m = AttrDictConv(in_dict=m)
+
+			prod_id = m.prod_id
+			first_letter = left(prod_id,1).lower()
+
+			if self.mode == 'sell':
+#				print_adv()
+#				print_adv()
+
+#				print(f'm.check_mkt_dttm : {m.check_mkt_dttm} ({type(m.check_mkt_dttm)})')
+				check_mkt_dttm = db_poss_check_mkt_dttm_get(prod_id)
+#				print(f'check_mkt_dttm   : {check_mkt_dttm} ({type(check_mkt_dttm)})')
+
+				if check_mkt_dttm > m.check_mkt_dttm:
+#					YoM(f'another bot with mode sell has updated {prod_id} market since starting... skipping...')
+					print_adv(2)
+					MoW(f'another bot with mode sell has updated {prod_id} market since starting..., old : {m.check_mkt_dttm}, new : {check_mkt_dttm} skipping...')
+#					YoM(f'another bot with mode sell has updated {prod_id} market since starting... skipping...')
+#					print_adv()
+#					print_adv()
+					continue
+
+				db_poss_check_mkt_dttm_upd(prod_id)
+				check_mkt_dttm = db_poss_check_mkt_dttm_get(prod_id)
+				m.check_mkt_dttm = check_mkt_dttm
+
+				# if self.mode_sub == 1:
+				# 	if first_letter not in ('a','c','e','g','i','k','m','o','q','s','u','w','y','1','3','5','7','9'):
+				# 		continue
+				# 	# # check if cnt is divisible by 2
+				# 	# if cnt % 2 == 0:
+				# 	# 	continue
+				# if self.mode_sub == 2:
+				# 	if first_letter not in ('b','d','f','h','j','l','n','p','r','t','v','x','z','0','2','4','6','8'):
+				# 		continue
+				# 	# # check if cnt is divisible by 2
+				# 	# if cnt % 2 != 0:
+				# 	# 	continue
+
+			# formatting the mkt
+			prod_id = m['prod_id']
+			m = dec_2_float(m)
+			m = AttrDictConv(in_dict=m)
+
+			# This is only for disp_mkt
+			m.cnt = cnt
+			m.mkts_tot = len(self.loop_mkts)
+
+			# lets Avoid Trading Stable Coins Against One Another
+			if m.base_curr_symb in self.st.stable_coins:
+				continue
+
+			# refresh settings each loop for hot changes
+			self.st = settings.reload()
+			self.wallet_refresh()
+
+			t_now = time.perf_counter()
+			t_elapse = t_now - t_loop
+			loop_age = format_disp_age2(t_elapse)
+
+			# build Out Everything We Will Need in the Market
+			print_adv(3)
+
+			title_msg = f'* Market Summary * {prod_id} * {dttm_get()} * {dttm_start_loop} * {loop_age} * {cnt}/{len(self.loop_mkts)} *'
+			chart_top(len_cnt=240, bold=True)
+			chart_mid(in_str=title_msg, len_cnt=240, bold=True)
+
+			# build the market
+			mkt, trade_perf, trade_strat_perfs = self.mkt_build(m)
+
+			# process the market
+			mkt = self.mkt_logic(mkt, trade_perf, trade_strat_perfs)
+
+			# end of Performance Timer for ind mkt
+			t11 = time.perf_counter()
+			secs = round(t11 - t00, 3)
+			if secs > lib_secs_max:
+				msg = f'mkt_loop for {prod_id} - took {secs} seconds...'
+				in_str_len = len(msg)
+				msg = cs(msg, font_color='white', bg_color='orangered')
+				print(msg)
+
+			chart_bottom(len_cnt=240, bold=True)
+
+		# end of Performance Timer for mkt loop
+		t1 = time.perf_counter()
+		secs = round(t1 - t0, 3)
+		if secs > lib_secs_max:
+			cp(f'mkt_loops - took {secs} seconds to complete...', font_color='white', bg_color='orangered')
+
+		func_end(fnc)
+
+# 	#<=====>#
+
+# 	def mkts_loop_buy_only(self):
+# 		func_name = 'mkts_loop_buy_only'
+# 		func_str = f'{lib_name}.{func_name}()'
+# 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+# #		G(func_str)
+
+# 		t0 = time.perf_counter()
+
+# 		print_adv(3)
+# 		WoM(f"{'Markets Loop':^200}")
+# 		print_adv(1)
+
+# 		self.mkts_lists_get()
+# 		self.ohlcv_tables_check()
+
+# 		cnt = 0
+# 		# loop through all mkts for buy/sell logic
+
+# 		dttm_start_loop = dttm_get()	
+# 		t_loop = time.perf_counter()
+
+
+# 		for m in self.loop_mkts:
+# 			prod_id = m['prod_id']
+# 			db_check_ohlcv_prod_id_table(prod_id)
+
+
+# 		for m in self.loop_mkts:
+# 			cnt += 1
+# 			t00 = time.perf_counter()
+
+# 			prod_id = m['prod_id']
+# 			first_letter = left(prod_id,1).lower()
+
+# 			if self.mode == 'sell':
+# 				if self.mode_sub == 1:
+# 					if first_letter not in ('a','c','e','g','i','k','m','o','q','s','u','w','y','1','3','5','7','9'):
+# 						continue
+# 					# # check if cnt is divisible by 2
+# 					# if cnt % 2 == 0:
+# 					# 	continue
+# 				if self.mode_sub == 2:
+# 					if first_letter not in ('b','d','f','h','j','l','n','p','r','t','v','x','z','0','2','4','6','8'):
+# 						continue
+# 					# # check if cnt is divisible by 2
+# 					# if cnt % 2 != 0:
+# 					# 	continue
+
+
+# 			# formatting the mkt
+# 			prod_id = m['prod_id']
+# 			m = dec_2_float(m)
+# 			m = AttrDictConv(in_dict=m)
+# 			# This is only for disp_mkt
+# 			m.cnt = cnt
+# 			m.mkts_tot = len(self.loop_mkts)
+
+# 			# lets Avoid Trading Stable Coins Against One Another
+# 			if m.base_curr_symb in self.st.stable_coins:
+# 				continue
+
+# 			# refresh settings each loop for hot changes
+# 			self.st = settings.reload()
+# 			self.wallet_refresh()
+
+# 			t_now = time.perf_counter()
+# 			t_elapse = t_now - t_loop
+# 			loop_age = format_disp_age2(t_elapse)
+
+# 			# build Out Everything We Will Need in the Market
+# 			print_adv(3)
+
+# 			title_msg = f'* Market Summary * {prod_id} * {dttm_get()} * {dttm_start_loop} * {loop_age} * {cnt}/{len(self.loop_mkts)} *'
+# 			chart_top(len_cnt=240, bold=True)
+# 			chart_mid(in_str=title_msg, len_cnt=240, bold=True)
+
+# 			# build the market
+# 			mkt, trade_perf, trade_strat_perfs = self.mkt_build(m)
+
+# 			# process the mkt
+# 			mkt = self.mkt_logic(mkt, trade_perf, trade_strat_perfs)
+
+# 			# end of Performance Timer for ind mkt
+# 			t11 = time.perf_counter()
+# 			secs = round(t11 - t00, 3)
+# 			if secs > lib_secs_max:
+# 				msg = f'mkt_loop for {prod_id} - took {secs} seconds...'
+# 				in_str_len = len(msg)
+# 				msg = cs(msg, font_color='white', bg_color='orangered')
+# 				print(msg)
+
+# 			chart_bottom(len_cnt=240, bold=True)
+
+# 		# end of Performance Timer for mkt loop
+# 		t1 = time.perf_counter()
+# 		secs = round(t1 - t0, 3)
+# 		if secs > lib_secs_max:
+# 			cp(f'mkt_loops - took {secs} seconds to complete...', font_color='white', bg_color='orangered')
+
+# 		func_end(fnc)
+
+	#<=====>#
+
+# 	def mkts_loop_sell_only(self):
+# 		func_name = 'mkts_loop_sell_only'
+# 		func_str = f'{lib_name}.{func_name}()'
+# 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+# #		G(func_str)
+
+# 		t0 = time.perf_counter()
+
+# 		print_adv(3)
+# 		WoM(f"{'Markets Loop':^200}")
+# 		print_adv(1)
+
+# 		self.mkts_lists_get()
+# 		self.ohlcv_tables_check()
+
+# 		cnt = 0
+# 		# loop through all mkts for buy/sell logic
+
+# 		dttm_start_loop = dttm_get()	
+# 		t_loop = time.perf_counter()
+
+
+# 		for m in self.loop_mkts:
+# 			cnt += 1
+# 			t00 = time.perf_counter()
+
+# 			prod_id = m['prod_id']
+# 			first_letter = left(prod_id,1).lower()
+
+# 			if self.mode == 'sell':
+# 				if self.mode_sub == 1:
+# 					if first_letter not in ('a','c','e','g','i','k','m','o','q','s','u','w','y','1','3','5','7','9'):
+# 						continue
+# 					# # check if cnt is divisible by 2
+# 					# if cnt % 2 == 0:
+# 					# 	continue
+# 				if self.mode_sub == 2:
+# 					if first_letter not in ('b','d','f','h','j','l','n','p','r','t','v','x','z','0','2','4','6','8'):
+# 						continue
+# 					# # check if cnt is divisible by 2
+# 					# if cnt % 2 != 0:
+# 					# 	continue
+
+
+# 			# formatting the mkt
+# 			prod_id = m['prod_id']
+# 			m = dec_2_float(m)
+# 			m = AttrDictConv(in_dict=m)
+# 			# This is only for disp_mkt
+# 			m.cnt = cnt
+# 			m.mkts_tot = len(self.loop_mkts)
+
+# 			# lets Avoid Trading Stable Coins Against One Another
+# 			if m.base_curr_symb in self.st.stable_coins:
+# 				continue
+
+# 			# refresh settings each loop for hot changes
+# 			self.st = settings.reload()
+# 			self.wallet_refresh()
+
+# 			t_now = time.perf_counter()
+# 			t_elapse = t_now - t_loop
+# 			loop_age = format_disp_age2(t_elapse)
+
+# 			# build Out Everything We Will Need in the Market
+# 			print_adv(3)
+
+# 			title_msg = f'* Market Summary * {prod_id} * {dttm_get()} * {dttm_start_loop} * {loop_age} * {cnt}/{len(self.loop_mkts)} *'
+# 			chart_top(len_cnt=240, bold=True)
+# 			chart_mid(in_str=title_msg, len_cnt=240, bold=True)
+
+# 			# build the market
+# 			mkt, trade_perf, trade_strat_perfs = self.mkt_build(m)
+
+# 			# process the mkt
+# 			mkt = self.mkt_logic(mkt, trade_perf, trade_strat_perfs)
+
+# 			# end of Performance Timer for ind mkt
+# 			t11 = time.perf_counter()
+# 			secs = round(t11 - t00, 3)
+# 			if secs > lib_secs_max:
+# 				msg = f'mkt_loop for {prod_id} - took {secs} seconds...'
+# 				in_str_len = len(msg)
+# 				msg = cs(msg, font_color='white', bg_color='orangered')
+# 				print(msg)
+
+# 			chart_bottom(len_cnt=240, bold=True)
+
+# 		# end of Performance Timer for mkt loop
+# 		t1 = time.perf_counter()
+# 		secs = round(t1 - t0, 3)
+# 		if secs > lib_secs_max:
+# 			cp(f'mkt_loops - took {secs} seconds to complete...', font_color='white', bg_color='orangered')
+
+# 		func_end(fnc)
 
 	#<=====>#
 
@@ -834,46 +1196,48 @@ class BOT():
 				chart_mid(len_cnt=240)
 
 
-			# Market Buy Logic
-			t0 = time.perf_counter()
-			if self.st.spot.buy.buying_on_yn == 'Y' and prod_id in self.buy_mkts:
-				try:
-					mkt = self.buy_logic(self.buy_mkts, mkt, trade_perf, trade_strat_perfs, ta)
-				except Exception as e:
-					print(f'{dttm_get()} {func_name} - Buy Logic ==> {prod_id} = Error : ({type(e)}){e}')
-					traceback.print_exc()
-					pprint(mkt)
-					print_adv(3)
-					beep(3)
-					pass
-			t1 = time.perf_counter()
-			secs = round(t1 - t0, 2)
-			if secs >= 5:
-				msg = cs(f'buy_logic for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
-				chart_row(msg, len_cnt=240)
-				chart_mid(len_cnt=240)
+			if self.mode in ('buy','full'):
+				# Market Buy Logic
+				t0 = time.perf_counter()
+				if self.st.spot.buy.buying_on_yn == 'Y' and prod_id in self.buy_mkts:
+					try:
+						mkt = self.buy_logic(self.buy_mkts, mkt, trade_perf, trade_strat_perfs, ta)
+					except Exception as e:
+						print(f'{dttm_get()} {func_name} - Buy Logic ==> {prod_id} = Error : ({type(e)}){e}')
+						traceback.print_exc()
+						pprint(mkt)
+						print_adv(3)
+						beep(3)
+						pass
+				t1 = time.perf_counter()
+				secs = round(t1 - t0, 2)
+				if secs >= 5:
+					msg = cs(f'buy_logic for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
+					chart_row(msg, len_cnt=240)
+					chart_mid(len_cnt=240)
 
 
-			# Market Sell Logic
-			t0 = time.perf_counter()
-			if self.st.spot.sell.selling_on_yn == 'Y':
-				try:
-					open_poss = db_pos_open_get_by_prod_id(prod_id)
-					if len(open_poss) > 0:
-						mkt = self.sell_logic(mkt, ta, open_poss)
-				except Exception as e:
-					print(f'{dttm_get()} {func_name} - Sell Logic ==> {prod_id} = Error : ({type(e)}){e}')
-					traceback.print_exc()
-					pprint(mkt)
-					print_adv(3)
-					beep(3)
-					pass
-			t1 = time.perf_counter()
-			secs = round(t1 - t0, 2)
-			if secs >= 2:
-				msg = cs(f'sell_logic for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
-				chart_row(msg, len_cnt=240)
-				chart_mid(len_cnt=240)
+			if self.mode in ('sell','full'):
+				# Market Sell Logic
+				t0 = time.perf_counter()
+				if self.st.spot.sell.selling_on_yn == 'Y':
+					try:
+						open_poss = db_pos_open_get_by_prod_id(prod_id)
+						if len(open_poss) > 0:
+							mkt = self.sell_logic(mkt, ta, open_poss)
+					except Exception as e:
+						print(f'{dttm_get()} {func_name} - Sell Logic ==> {prod_id} = Error : ({type(e)}){e}')
+						traceback.print_exc()
+						pprint(mkt)
+						print_adv(3)
+						beep(3)
+						pass
+				t1 = time.perf_counter()
+				secs = round(t1 - t0, 2)
+				if secs >= 2:
+					msg = cs(f'sell_logic for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
+					chart_row(msg, len_cnt=240)
+					chart_mid(len_cnt=240)
 
 
 			t0 = time.perf_counter()
@@ -911,164 +1275,6 @@ class BOT():
 
 		func_end(fnc)
 		return mkt
-
-	#<=====>#
-
-	# Function to fetch current positions
-	def wallet_refresh(self, force_tf=False):
-		func_name = 'wallet_refresh'
-		func_str = f'{lib_name}.{func_name}(self.refresh_wallet_tf={self.refresh_wallet_tf}, force_tf={force_tf})'
-		fnc = func_begin(func_name=func_name, func_str=func_str,  logname=log_name, secs_max=1.5)
-#		G(func_str)
-
-		if self.refresh_wallet_tf or force_tf:
-			cb_wallet_refresh()
-			self.refresh_wallet_tf = False
-
-			self.reserve_amts     = {}
-			self.bal_avails       = {}
-			self.spendable_amts   = {}
-			self.open_trade_amts   = {}
-
-			# when/if we start trading  against btc, eth, sol and not just usdc
-			# we will need to add a deduction for the amount outstanding on trades 
-			# that used other currencies
-			open_trade_amts = {}
-			open_trade_amts = AttrDictConv(in_dict=open_trade_amts)
-			r = db_open_trade_amts_get()
-
-			for x in r:
-				x = AttrDictConv(in_dict=x)
-				x = dec_2_float(x)
-				if x['base_curr_symb'] in ('BTC', 'ETH', 'USDT', 'USDC'):
-					open_trade_amts[x['base_curr_symb']] = x['open_trade_amt']
-
-			bals = db_bals_get()
-			for bal in bals:
-				bal = dec_2_float(bal)
-				bal = AttrDictConv(in_dict=bal)
-				curr = bal.curr
-				bal_avail = bal.bal_avail
-				if curr in self.trade_currs:
-					reserve_amt   = self.calc_reserve_amt(trade_curr=curr)
-					self.reserve_amts[curr]   = reserve_amt
-					self.bal_avails[curr]     = bal_avail
-					spendable_amt = self.bal_avails[curr] - self.reserve_amts[curr] 
-					if curr in open_trade_amts:
-						open_trade_amt = open_trade_amts[curr]
-						spendable_amt -= open_trade_amt
-						self.open_trade_amts[curr] = open_trade_amts[curr]
-					else:
-						open_trade_amt = 0
-						self.open_trade_amts[curr] = 0
-					self.spendable_amts[curr] = spendable_amt
-
-		func_end(fnc)
-
-	#<=====>#
-
-	def calc_reserve_amt(self, trade_curr):
-		func_name = 'calc_reserve_amt'
-		func_str = f'{lib_name}.{func_name}(st, reserve_locked_tf={self.reserve_locked_tf}, trade_curr={trade_curr})'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#		G(func_str)
-
-		day = dt.now().day
-		min_reserve_amt                = settings.get_ovrd(in_dict=self.st.spot.buy.reserve_amt, in_key=trade_curr)
-		daily_reserve_amt              = settings.get_ovrd(in_dict=self.st.spot.buy.reserve_addtl_daily_amt, in_key=trade_curr)
-		tot_daily_reserve_amt          = day * daily_reserve_amt
-
-		if self.reserve_locked_tf:
-	#		reserve_amt                = max(tot_daily_reserve_amt, min_reserve_amt)
-			reserve_amt                = tot_daily_reserve_amt + min_reserve_amt
-		else:
-			reserve_amt                = min_reserve_amt
-
-		func_end(fnc)
-		return reserve_amt
-
-	#<=====>#
-
-	def trade_strat_perf_get(self, mkt, buy_strat_type, buy_strat_name, buy_strat_freq):
-		func_name = 'trade_strat_perf_get'
-		func_str = f'{lib_name}.{func_name}(mkt, buy_strat_type={buy_strat_type}, buy_strat_name={buy_strat_name}, buy_strat_freq={buy_strat_freq})'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#		G(func_str)
-
-		prod_id = mkt.prod_id
-
-		trade_strat_perf = {}
-		trade_strat_perf['prod_id']             = prod_id
-		trade_strat_perf['buy_strat_type']      = buy_strat_type
-		trade_strat_perf['buy_strat_name']      = buy_strat_name
-		trade_strat_perf['buy_strat_freq']      = buy_strat_freq
-		trade_strat_perf['tot_cnt']             = 0
-		trade_strat_perf['open_cnt']            = 0
-		trade_strat_perf['close_cnt']           = 0
-		trade_strat_perf['win_cnt']             = 0
-		trade_strat_perf['lose_cnt']            = 0
-		trade_strat_perf['win_pct']             = 0
-		trade_strat_perf['lose_pct']            = 0
-		trade_strat_perf['age_hours']           = 0
-		trade_strat_perf['tot_out_cnt']         = 0
-		trade_strat_perf['tot_in_cnt']          = 0
-		trade_strat_perf['fees_cnt_tot']        = 0
-		trade_strat_perf['val_curr']            = 0
-		trade_strat_perf['val_tot']             = 0
-		trade_strat_perf['gain_loss_amt']       = 0
-		trade_strat_perf['gain_loss_pct']       = 0
-		trade_strat_perf['gain_loss_pct_hr']    = 0
-		trade_strat_perf['gain_loss_pct_day']   = 0
-		trade_strat_perf['strat_bo_elapsed']    = 9999
-		trade_strat_perf['strat_pos_elapsed']   = 9999
-		trade_strat_perf['strat_last_elapsed']  = 9999
-
-		trade_strat_perf['all_sells']           = []
-		trade_strat_perf['all_hodls']           = []
-		trade_strat_perf['all_passes']          = []
-		trade_strat_perf['all_fails']           = []
-		trade_strat_perf['pass_cnt']            = 0
-		trade_strat_perf['fail_cnt']            = 0
-		trade_strat_perf['pass_pct']            = 0
-
-		trade_strat_perf = AttrDictConv(in_dict=trade_strat_perf)
-
-		msp = db_trade_strat_perf_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_freq)
-		if msp:
-			for k in msp:
-				if msp[k]:
-					trade_strat_perf[k] = msp[k]
-
-		trade_strat_perf.restricts_buy_strat_delay_minutes = settings.get_ovrd(in_dict=self.st.spot.buy.buy_strat_delay_minutes, in_key=buy_strat_freq)
-		r = db_mkt_strat_elapsed_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_freq)
-		trade_strat_perf.strat_bo_elapsed   = r[0]
-		trade_strat_perf.strat_pos_elapsed  = r[1]
-		trade_strat_perf.strat_last_elapsed = r[2]
-
-		func_end(fnc)
-		return trade_strat_perf
-
-	#<=====>#
-
-	def buy_live(self, mkt, trade_strat_perf):
-		func_name = 'buy_live'
-		func_str = f'{lib_name}.{func_name}(mkt)'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-		# G(func_str)
-
-		if self.st.spot.buy.buy_limit_yn == 'Y':
-			try:
-				self.ord_lmt_buy_open(mkt, trade_strat_perf)
-			except Exception as e:
-				print(f'{func_name} ==> buy limit order failed, attempting market... {e}')
-				play_beep(reps=3)
-				self.ord_mkt_buy(mkt, trade_strat_perf)
-				self.ord_mkt_buy_orig(mkt, trade_strat_perf)
-		else:
-			self.ord_mkt_buy(mkt, trade_strat_perf)
-			self.ord_mkt_buy_orig(mkt, trade_strat_perf)
-
-		func_end(fnc)
 
 	#<=====>#
 
@@ -1558,6 +1764,249 @@ class BOT():
 		func_end(fnc)
 		return guid
 
+	#<=====>#
+
+	# Function to fetch current positions
+	def wallet_refresh(self, force_tf=False):
+		func_name = 'wallet_refresh'
+		func_str = f'{lib_name}.{func_name}(self.refresh_wallet_tf={self.refresh_wallet_tf}, force_tf={force_tf})'
+		fnc = func_begin(func_name=func_name, func_str=func_str,  logname=log_name, secs_max=1.5)
+#		G(func_str)
+
+		if self.refresh_wallet_tf or force_tf:
+			cb_wallet_refresh()
+			self.refresh_wallet_tf = False
+
+			self.reserve_amts     = {}
+			self.bal_avails       = {}
+			self.spendable_amts   = {}
+			self.open_trade_amts   = {}
+
+			# when/if we start trading  against btc, eth, sol and not just usdc
+			# we will need to add a deduction for the amount outstanding on trades 
+			# that used other currencies
+			open_trade_amts = {}
+			open_trade_amts = AttrDictConv(in_dict=open_trade_amts)
+			r = db_open_trade_amts_get()
+
+			for x in r:
+				x = AttrDictConv(in_dict=x)
+				x = dec_2_float(x)
+				if x['base_curr_symb'] in ('BTC', 'ETH', 'USDT', 'USDC'):
+					open_trade_amts[x['base_curr_symb']] = x['open_trade_amt']
+
+			bals = db_bals_get()
+			for bal in bals:
+				bal = dec_2_float(bal)
+				bal = AttrDictConv(in_dict=bal)
+				curr = bal.curr
+				bal_avail = bal.bal_avail
+				if curr in self.trade_currs:
+					reserve_amt   = self.calc_reserve_amt(trade_curr=curr)
+					self.reserve_amts[curr]   = reserve_amt
+					self.bal_avails[curr]     = bal_avail
+					spendable_amt = self.bal_avails[curr] - self.reserve_amts[curr] 
+					if curr in open_trade_amts:
+						open_trade_amt = open_trade_amts[curr]
+						spendable_amt -= open_trade_amt
+						self.open_trade_amts[curr] = open_trade_amts[curr]
+					else:
+						open_trade_amt = 0
+						self.open_trade_amts[curr] = 0
+					self.spendable_amts[curr] = spendable_amt
+
+		func_end(fnc)
+
+	#<=====>#
+
+	def calc_reserve_amt(self, trade_curr):
+		func_name = 'calc_reserve_amt'
+		func_str = f'{lib_name}.{func_name}(st, reserve_locked_tf={self.reserve_locked_tf}, trade_curr={trade_curr})'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#		G(func_str)
+
+		day = dt.now().day
+		min_reserve_amt                = settings.get_ovrd(in_dict=self.st.spot.buy.reserve_amt, in_key=trade_curr)
+		daily_reserve_amt              = settings.get_ovrd(in_dict=self.st.spot.buy.reserve_addtl_daily_amt, in_key=trade_curr)
+		tot_daily_reserve_amt          = day * daily_reserve_amt
+
+		if self.reserve_locked_tf:
+	#		reserve_amt                = max(tot_daily_reserve_amt, min_reserve_amt)
+			reserve_amt                = tot_daily_reserve_amt + min_reserve_amt
+		else:
+			reserve_amt                = min_reserve_amt
+
+		func_end(fnc)
+		return reserve_amt
+
+	#<=====>#
+
+	def mkt_trade_perf_get(self, mkt):
+		func_name = 'mkt_trade_perf_get'
+		func_str = f'{lib_name}.{func_name}(mkt)'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#		G(func_str)
+
+		prod_id = mkt.prod_id
+
+		# Build to Defaults
+		trade_perf = {}
+		trade_perf['prod_id']                       = prod_id
+		trade_perf['tot_cnt']                       = 0
+		trade_perf['win_cnt']                       = 0
+		trade_perf['lose_cnt']                      = 0
+		trade_perf['win_pct']                       = 0
+		trade_perf['lose_pct']                      = 0
+		trade_perf['age_mins']                      = 0
+		trade_perf['age_hours']                     = 0
+		trade_perf['bo_elapsed']                    = 9999
+		trade_perf['pos_elapsed']                   = 9999
+		trade_perf['last_elapsed']                  = 0
+		trade_perf['tot_out_cnt']                   = 0
+		trade_perf['tot_in_cnt']                    = 0
+		trade_perf['buy_fees_cnt']                  = 0
+		trade_perf['sell_fees_cnt_tot']             = 0
+		trade_perf['fees_cnt_tot']                  = 0
+		trade_perf['buy_cnt']                       = 0
+		trade_perf['sell_cnt_tot']                  = 0
+		trade_perf['hold_cnt']                      = 0
+		trade_perf['pocket_cnt']                    = 0
+		trade_perf['clip_cnt']                      = 0
+		trade_perf['sell_order_cnt']                = 0
+		trade_perf['sell_order_attempt_cnt']        = 0
+		trade_perf['val_curr']                      = 0
+		trade_perf['val_tot']                       = 0
+		trade_perf['win_amt']                       = 0
+		trade_perf['lose_amt']                      = 0
+		trade_perf['gain_loss_amt']                 = 0
+		trade_perf['gain_loss_amt_net']             = 0
+		trade_perf['gain_loss_pct']                 = 0
+		trade_perf['gain_loss_pct_hr']              = 0
+		trade_perf['gain_loss_pct_day']             = 0
+		trade_perf = AttrDictConv(in_dict=trade_perf)
+
+		# Get From Database
+		tp = db_view_trade_perf_get_by_prod_id(prod_id)
+		tp = dec_2_float(tp)
+		tp = AttrDictConv(in_dict=tp)
+		if tp:
+			for k in tp:
+				if tp[k]:
+					trade_perf[k] = tp[k]
+
+		# Get elapsed minues since last buy
+		r = db_mkt_elapsed_get(prod_id)
+		trade_perf.bo_elapsed   = r[0]
+		trade_perf.pos_elapsed  = r[1]
+		trade_perf.last_elapsed = r[2]
+
+		# Get count of open positions
+		open_poss = db_pos_open_get_by_prod_id(prod_id)
+		trade_perf.open_poss_cnt = len(open_poss)
+
+		func_end(fnc)
+		return trade_perf
+
+	#<=====>#
+
+	def trade_strat_perf_get(self, mkt, buy_strat_type, buy_strat_name, buy_strat_freq):
+		func_name = 'trade_strat_perf_get'
+		func_str = f'{lib_name}.{func_name}(mkt, buy_strat_type={buy_strat_type}, buy_strat_name={buy_strat_name}, buy_strat_freq={buy_strat_freq})'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#		G(func_str)
+
+		prod_id = mkt.prod_id
+
+		trade_strat_perf = {}
+		trade_strat_perf['prod_id']             = prod_id
+		trade_strat_perf['buy_strat_type']      = buy_strat_type
+		trade_strat_perf['buy_strat_name']      = buy_strat_name
+		trade_strat_perf['buy_strat_freq']      = buy_strat_freq
+		trade_strat_perf['tot_cnt']             = 0
+		trade_strat_perf['open_cnt']            = 0
+		trade_strat_perf['close_cnt']           = 0
+		trade_strat_perf['win_cnt']             = 0
+		trade_strat_perf['lose_cnt']            = 0
+		trade_strat_perf['win_pct']             = 0
+		trade_strat_perf['lose_pct']            = 0
+		trade_strat_perf['age_hours']           = 0
+		trade_strat_perf['tot_out_cnt']         = 0
+		trade_strat_perf['tot_in_cnt']          = 0
+		trade_strat_perf['fees_cnt_tot']        = 0
+		trade_strat_perf['val_curr']            = 0
+		trade_strat_perf['val_tot']             = 0
+		trade_strat_perf['gain_loss_amt']       = 0
+		trade_strat_perf['gain_loss_pct']       = 0
+		trade_strat_perf['gain_loss_pct_hr']    = 0
+		trade_strat_perf['gain_loss_pct_day']   = 0
+		trade_strat_perf['strat_bo_elapsed']    = 9999
+		trade_strat_perf['strat_pos_elapsed']   = 9999
+		trade_strat_perf['strat_last_elapsed']  = 9999
+
+		trade_strat_perf['all_sells']           = []
+		trade_strat_perf['all_hodls']           = []
+		trade_strat_perf['all_passes']          = []
+		trade_strat_perf['all_fails']           = []
+		trade_strat_perf['pass_cnt']            = 0
+		trade_strat_perf['fail_cnt']            = 0
+		trade_strat_perf['pass_pct']            = 0
+
+		trade_strat_perf = AttrDictConv(in_dict=trade_strat_perf)
+
+		msp = db_trade_strat_perf_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_freq)
+		if msp:
+			for k in msp:
+				if msp[k]:
+					trade_strat_perf[k] = msp[k]
+
+		trade_strat_perf.restricts_buy_strat_delay_minutes = settings.get_ovrd(in_dict=self.st.spot.buy.buy_strat_delay_minutes, in_key=buy_strat_freq)
+		r = db_mkt_strat_elapsed_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_freq)
+		trade_strat_perf.strat_bo_elapsed   = r[0]
+		trade_strat_perf.strat_pos_elapsed  = r[1]
+		trade_strat_perf.strat_last_elapsed = r[2]
+
+		func_end(fnc)
+		return trade_strat_perf
+
+	#<=====>#
+
+	def buy_live(self, mkt, trade_strat_perf):
+		func_name = 'buy_live'
+		func_str = f'{lib_name}.{func_name}(mkt)'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+		# G(func_str)
+
+		if self.st.spot.buy.buy_limit_yn == 'Y':
+			try:
+				self.ord_lmt_buy_open(mkt, trade_strat_perf)
+			except Exception as e:
+				print(f'{func_name} ==> buy limit order failed, attempting market... {e}')
+				play_beep(reps=3)
+				# self.ord_mkt_buy(mkt, trade_strat_perf)
+				self.ord_mkt_buy_orig(mkt, trade_strat_perf)
+		else:
+			# self.ord_mkt_buy(mkt, trade_strat_perf)
+			self.ord_mkt_buy_orig(mkt, trade_strat_perf)
+
+		func_end(fnc)
+
+#<=====>#
+
+	def ohlcv_tables_check(self):
+		func_name = 'ohlcv_tables_check'
+		func_str = f'{lib_name}.{func_name}()'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+	#	G(func_str)
+
+		table_names = db_table_names_get()
+		for m in self.loop_mkts:
+			prod_id = m['prod_id']
+			table_name = f'ohlcv_{prod_id}'.replace('-','_')
+			if table_name not in table_names:
+				db_check_ohlcv_prod_id_table(prod_id)
+
+		func_end(fnc)
+
 #<=====>#
 
 	def prt_cols(self, l, cols=10, clr='WoG'):
@@ -1584,260 +2033,6 @@ class BOT():
 				s += ' | '
 		if col_cnt > 0 and col_cnt < cols:
 			chart_row(s, len_cnt=177)
-
-		func_end(fnc)
-
-	#<=====>#
-
-	def disp_mkt(self, mkt, trade_perf, trade_strat_perfs):
-		func_name = 'disp_mkt'
-		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
-#		G(func_str)
-
-		self.disp_mkt_summary(mkt, trade_perf, trade_strat_perfs)
-		self.disp_mkt_stats(mkt, trade_perf, trade_strat_perfs)
-		self.disp_mkt_performance(mkt, trade_perf, trade_strat_perfs)
-
-		func_end(fnc)
-		return mkt, trade_perf, trade_strat_perfs
-
-	#<=====>#
-
-	def disp_mkt_summary(self, mkt, trade_perf, trade_strat_perfs):
-		func_name = 'disp_mkt_summary'
-		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
-#		G(func_str)
-
-		# Market Basics
-		prod_id = mkt.prod_id
-
-		# Prices & Balances
-		hmsg = ""
-		hmsg += f"$ {'price':^14} | "
-		hmsg += f"{'prc_chg':^10} % | "
-		hmsg += f"$ {'buy_prc':^14} | "
-		hmsg += f"$ {'sell_prc':^14} | "
-		hmsg += f"{'buy_var':^10} % | "
-		hmsg += f"{'sell_var':^10} % | "
-		hmsg += f"{'spread_pct':^10} % | "
-		hmsg += f"$ {'usdc bal':^9} | "
-		hmsg += f"$ {'reserve':^9} | "
-		hmsg += f"$ {'available':^9} | "
-		hmsg += f"{'reserves state':^14} | "
-
-		msg = ""
-		if mkt.prc_pct_chg_24h < 0:
-			msg += cs(f"$ {mkt.prc_mkt:>14.8f}", 'white', 'red') + " | "
-			msg += cs(f"{mkt.prc_pct_chg_24h:>10.4f} %", 'white', 'red') + " | "
-		elif mkt.prc_pct_chg_24h > 0:
-			msg += cs(f"$ {mkt.prc_mkt:>14.8f}", 'white', 'green') + " | "
-			msg += cs(f"{mkt.prc_pct_chg_24h:>10.4f} %", 'white', 'green') + " | "
-		else:
-			msg += f"$ {mkt.prc_mkt:>14.8f} | "
-			msg += f"{mkt.prc_pct_chg_24h:>10.4f} % | "
-
-		msg += f"$ {mkt.prc_buy:>14.8f} | "
-		msg += f"$ {mkt.prc_sell:>14.8f} | "
-		msg += f"{mkt.prc_buy_diff_pct:>10.4f} % | "
-		msg += f"{mkt.prc_sell_diff_pct:>10.4f} % | "
-
-		if mkt.prc_range_pct < 0:
-			msg += cs(f"{mkt.prc_range_pct:>10.4f} %", 'white', 'red') + " | "
-		elif mkt.prc_range_pct > 0:
-			msg += cs(f"{mkt.prc_range_pct:>10.4f} %", 'white', 'green') + " | "
-		else:
-			msg += f"{mkt.prc_range_pct:>10.4f} %" + " | "
-
-		msg += cs(f"$ {mkt.bal_avail:>9.2f}", "white", "green") + " | "
-		msg += cs(f"$ {mkt.reserve_amt:>9.2f}", "white", "green") + " | "
-		msg += cs(f"$ {mkt.spendable_amt:>9.2f}", "white", "green") + " | "
-		if self.reserve_locked_tf:
-			msg += cs(f"{'LOCKED':^14}", "yellow", "magenta") + " | "
-		else:
-			msg += cs(f"{'UNLOCKED':^14}", "magenta", "yellow") + " | "
-		chart_headers(in_str=hmsg, len_cnt=240, bold=True)
-		chart_row(in_str=msg, len_cnt=240)
-		chart_mid(len_cnt=240, bold=True)
-
-		func_end(fnc)
-		return mkt, trade_perf, trade_strat_perfs
-
-	#<=====>#
-
-	def disp_mkt_stats(self, mkt, trade_perf, trade_strat_perfs):
-		func_name = 'disp_mkt_stats'
-		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
-#		G(func_str)
-
-		# Market Basics
-		prod_id = mkt.prod_id
-
-
-		hmsg = ""
-		hmsg += f"{'trades':^9} | "
-		hmsg += f"{'wins':^9} | "
-		hmsg += f"{'lose':^9} | "
-		hmsg += f"{'win_pct':^9} % | "
-		hmsg += f"{'lose_pct':^9} % | "
-		hmsg += f"$ {'win_amt':^9} | "
-		hmsg += f"$ {'lose_amt':^9} | "
-		hmsg += f"$ {'spent':^9} | "
-		hmsg += f"$ {'recv':^9} | "
-		hmsg += f"$ {'hold':^9} | "
-		hmsg += f"$ {'val':^9} | "
-		hmsg += f"$ {'gain_amt':^9} | "
-		hmsg += f"{'gain_pct':^9} % | "
-		hmsg += f"{'gain_hr':^9} % | "
-		hmsg += f"{'gain_day':^9} % | "
-		hmsg += f"{'elapsed':^9} | "
-
-		msg = ''
-		msg += f'{trade_perf.tot_cnt:>9}' + ' | '
-		msg += cs(f'{trade_perf.win_cnt:>9}', font_color='white', bg_color='green') + ' | '
-		msg += cs(f'{trade_perf.lose_cnt:>9}', font_color='white', bg_color='red') + ' | '
-		msg += cs(f'{trade_perf.win_pct:>9.2f} %', font_color='white', bg_color='green') + ' | '
-		msg += cs(f'{trade_perf.lose_pct:>9.2f} %', font_color='white', bg_color='red') + ' | '
-		msg += cs(f'$ {trade_perf.win_amt:>9.4f}', font_color='white', bg_color='green') + ' | '
-		msg += cs(f'$ {trade_perf.lose_amt:>9.4f}', font_color='white', bg_color='red') + ' | '
-		msg += f'$ {trade_perf.tot_out_cnt:>9.4f}' + ' | '
-		msg += f'$ {trade_perf.tot_in_cnt:>9.4f}' + ' | '
-		msg += f'$ {trade_perf.val_curr:>9.4f}' + ' | '
-		msg += f'$ {trade_perf.val_tot:>9.4f}' + ' | '
-		if trade_perf.gain_loss_amt > 0:
-			msg += cs(f'$ {trade_perf.gain_loss_amt:>9.4f}', font_color='white', bg_color='green') + ' | '
-			msg += cs(f'{trade_perf.gain_loss_pct:>9.4f} %', font_color='white', bg_color='green') + ' | '
-			msg += cs(f'{trade_perf.gain_loss_pct_hr:>9.4f} %', font_color='white', bg_color='green') + ' | '
-			msg += cs(f'{trade_perf.gain_loss_pct_day:>9.4f} %', font_color='white', bg_color='green') + ' | '
-		else:
-			msg += cs(f'$ {trade_perf.gain_loss_amt:>9.4f}', font_color='white', bg_color='red') + ' | '
-			msg += cs(f'{trade_perf.gain_loss_pct:>9.4f} %', font_color='white', bg_color='red') + ' | '
-			msg += cs(f'{trade_perf.gain_loss_pct_hr:>9.4f} %', font_color='white', bg_color='red') + ' | '
-			msg += cs(f'{trade_perf.gain_loss_pct_day:>9.4f} %', font_color='white', bg_color='red') + ' | '
-		msg += f'{trade_perf.last_elapsed:>9}' + ' | '
-
-		title_msg = f'* Market Stats * {prod_id} *'
-		chart_mid(in_str=title_msg, len_cnt=240, bold=True)
-		chart_headers(in_str=hmsg, len_cnt=240, bold=True)
-		chart_row(msg, len_cnt=240)
-
-		chart_mid(len_cnt=240, bold=True)
-
-		func_end(fnc)
-		return mkt, trade_perf, trade_strat_perfs
-
-	#<=====>#
-
-	def disp_mkt_performance(self, mkt, trade_perf, trade_strat_perfs):
-		func_name = 'disp_mkt_performance'
-		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
-#		G(func_str)
-
-		# Market Basics
-		prod_id = mkt.prod_id
-
-		hmsg = ""
-		hmsg += f"{'strat':<15} | "
-		hmsg += f"{'freq':<15} | "
-		hmsg += f"{'total':^5} | "
-		hmsg += f"{'open':^5} | "
-		hmsg += f"{'close':^5} | "
-		hmsg += f"{'wins':^5} | "
-		hmsg += f"{'lose':^5} | "
-		hmsg += f"{'win':^6} % | "
-		hmsg += f"{'lose':^6} % | "
-		hmsg += f"{'gain_amt':^10} | "
-		hmsg += f"{'gain_pct':^10} % | "
-		hmsg += f"{'gain_hr':^10} % | "
-		hmsg += f"{'gain_day':^10} % | "
-		hmsg += f"{'elapsed':^7} | "
-
-		title_msg = '* Buy Strategy Past Performance *'
-		chart_mid(in_str=title_msg, len_cnt=240, bold=True)
-		chart_headers(hmsg, len_cnt=240, bold=True)
-
-		for x in trade_strat_perfs:
-			x = dec_2_float(x)
-			x = AttrDictConv(in_dict=x)
-
-			if x.tot_cnt > 0:
-				msg = ''
-				msg += f'{x.buy_strat_name:<15} | '
-				msg += f'{x.buy_strat_freq:<15} | '
-				msg += f'{int(x.tot_cnt):>5} | '
-				msg += f'{int(x.open_cnt):>5} | '
-				msg += f'{int(x.close_cnt):>5} | '
-				msg += f'{int(x.win_cnt):>5} | '
-				msg += f'{int(x.lose_cnt):>5} | '
-				msg += f'{x.win_pct:>6.2f} % | '
-				msg += f'{x.lose_pct:>6.2f} % | '
-				msg += f'{x.gain_loss_amt:>10.2f} | '
-				msg += f'{x.gain_loss_pct:>10.2f} % | '
-				msg += f'{x.gain_loss_pct_hr:>10.2f} % | '
-				msg += f'{x.gain_loss_pct_day:>10.2f} % | '
-				msg += f'{x.strat_last_elapsed:>7}' + ' | '
-				msg  = cs_pct_color_50(pct=x.win_pct, msg=msg)
-				chart_row(in_str=msg, len_cnt=240)
-		chart_mid(len_cnt=240, bold=True)
-
-		func_end(fnc)
-		return mkt, trade_perf, trade_strat_perfs
-
-	#<=====>#
-
-	def before_start(self):
-		func_name = 'before_loop'
-		func_str = f'{lib_name}.{func_name}()'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#		G(func_str)
-
-		# this is here just to proof that sounds alerts will be heard
-		if self.st.speak_yn == 'Y': speak_async('Coinbase Trade Bot Online')
-
-		self.wallet_refresh(force_tf=True)
-
-		report_buys_recent(cnt=20)
-		report_sells_recent(cnt=20)
-		report_open_by_age()
-		db_table_csvs_dump()
-
-		func_end(fnc)
-
-	#<=====>#
-
-	def before_loop(self):
-		func_name = 'before_loop'
-		func_str = f'{lib_name}.{func_name}()'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#		G(func_str)
-
-		self.sell_ords_check()
-		self.buy_ords_check()
-		cb_mkts_refresh()
-		self.wallet_refresh(force_tf=True)
-
-		func_end(fnc)
-
-	#<=====>#
-
-	def after_loop(self):
-		func_name = 'after_loop'
-		func_str = f'{lib_name}.{func_name}()'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#		G(func_str)
-
-		self.sell_ords_check()
-		self.buy_ords_check()
-
-		report_buys_recent(cnt=20)
-		report_sells_recent(cnt=20)
-		report_open_by_age()
-
-#		# End of Market Loop Balance Display
-		self.wallet_refresh()
 
 		func_end(fnc)
 

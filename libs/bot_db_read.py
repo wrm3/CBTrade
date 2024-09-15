@@ -9,6 +9,9 @@
 
 import_all_func_list = []
 
+import_all_func_list.append("db_poss_check_mkt_dttm_get")
+import_all_func_list.append("db_poss_check_last_dttm_get")
+
 import_all_func_list.append("db_ohlcv_prod_id_freqs")
 import_all_func_list.append("db_ohlcv_freq_get")
 
@@ -90,7 +93,6 @@ if local_libs_path not in sys.path:
 	sys.path.append(local_libs_path)
 
 from cls_db_mysql                  import db_mysql
-from cls_db_duckdb                 import db_duckdb
 
 from lib_common                    import *
 from lib_colors                    import *
@@ -149,6 +151,40 @@ def db_safe_string(in_str):
 
 #<=====>#
 
+def db_poss_check_mkt_dttm_get(prod_id):
+	func_name = 'db_poss_check_mkt_dttm_get'
+	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "select max(p.check_mkt_dttm) "
+	sql += f"  from cbtrade.poss p "
+	sql += f"  where p.prod_id = '{prod_id}'"
+	check_mkt_dttm = db.sel(sql)
+
+	func_end(fnc)
+	return check_mkt_dttm
+
+#<=====>#
+
+def db_poss_check_last_dttm_get(pos_id):
+	func_name = 'db_poss_check_last_dttm_get'
+	func_str = f'{lib_name}.{func_name}(pos_id={pos_id})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "select p.check_last_dttm "
+	sql += f"  from cbtrade.poss p "
+	sql += f"  where p.pos_id = {pos_id}"
+	check_last_dttm = db.sel(sql)
+
+	func_end(fnc)
+	return check_last_dttm
+
+#<=====>#
+
 def db_ohlcv_prod_id_freqs(prod_id):
 	func_name = 'db_ohlcv_prod_id_freqs'
 	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
@@ -197,9 +233,9 @@ def db_ohlcv_freq_get(prod_id, freq, lmt=500):
 
 #<=====>#
 
-def db_mkts_loop_get(loop_mkts=None, stable_mkts=None, err_mkts=None):
+def db_mkts_loop_get(mode='full', loop_mkts=None, stable_mkts=None, err_mkts=None):
 	func_name = 'db_mkts_loop_get'
-	func_str = '{}.{}(mkts, stable_mkts, err_mkts)'.format(lib_name, func_name)
+	func_str = f'{lib_name}.{func_name}(mode={mode}, mkts, stable_mkts, err_mkts)'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 	if verbosity >= 2: print_func_name(func_str, adv=2)
@@ -284,6 +320,9 @@ def db_mkts_loop_get(loop_mkts=None, stable_mkts=None, err_mkts=None):
 	sql += "   , m.dlm "
 
 	sql += "   , vmp.test_tf "
+
+	sql += "   , (select max(p.check_mkt_dttm) from cbtrade.poss p where p.prod_id = m.prod_id) as check_mkt_dttm "
+
 	sql += "  from cbtrade.mkts m "
 	sql += "  left outer join cbtrade.view_mkt_perf vmp on vmp.prod_id = m.prod_id "
 	sql += "  where 1=1 "
@@ -301,7 +340,10 @@ def db_mkts_loop_get(loop_mkts=None, stable_mkts=None, err_mkts=None):
 		err_mkts_str = "'" + "', '".join(err_mkts) + "'"
 		sql += "   and m.prod_id not in ({}) ".format(err_mkts_str)
 
-	sql += "   order by vmp.gain_loss_pct_hr desc "
+	if mode == 'sell':
+		sql += "   order by (select max(p.check_mkt_dttm) from cbtrade.poss p where p.prod_id = m.prod_id), vmp.gain_loss_pct_hr desc "
+	else:
+		sql += "   order by vmp.gain_loss_pct_hr desc "
 
 #	print(sql)
 
