@@ -1121,12 +1121,12 @@ def beep_old():
 #<=====>#
 
 def beep(reps=1):
-	for _ in range(0, reps-1, 1):
+	for _ in range(0, reps, 1):
 		cprint('beep()!!!', 'white', 'on_red')
-		cprint('beep()!!!', 'white', 'on_red')
-		cprint('beep()!!!', 'white', 'on_red')
+#		cprint('beep()!!!', 'white', 'on_red')
+#		cprint('beep()!!!', 'white', 'on_red')
 #		print('\a', end='', flush=True)
-		play_beep(frequency=2500,duration=1000, reps=reps)
+	play_beep(frequency=2500,duration=1000, reps=reps)
 
 #<=====>#
 
@@ -1146,7 +1146,7 @@ def play_beep(frequency=1000, duration=1000, reps=1):
 	if winsound is None:
 		print(f'play_beep(frequnecy={frequency}, duration={duration}, reps={reps}')
 		return
-	for _ in range(0, reps-1, 1):
+	for _ in range(0, reps, 1):
 		winsound.Beep(frequency, duration)
 
 #<=====>#

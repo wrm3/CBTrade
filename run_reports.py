@@ -65,7 +65,7 @@ lib_name      = 'run_report'
 log_name      = 'run_report'
 lib_verbosity = 1
 lib_debug_lvl = 1
-lib_secs_max  = 0
+lib_secs_max  = 2
 
 
 #<=====>#

@@ -4,7 +4,7 @@
 import_all_func_list = []
 import_all_func_list.append("calc_chg_pct")
 import_all_func_list.append("cb_buy_base_size_calc")
-import_all_func_list.append("cb_sell_base_size_calc")
+#import_all_func_list.append("cb_sell_base_size_calc")
 import_all_func_list.append("trade_perf_get")
 import_all_func_list.append("trade_strat_perf_get")
 import_all_func_list.append("freqs_get")
@@ -76,8 +76,7 @@ lib_name      = 'bot_common'
 log_name      = 'bot_common'
 lib_verbosity = 0
 lib_debug_lvl = 0
-lib_secs_max  = 0.33
-lib_secs_max  = 10
+lib_secs_max  = 2
 
 #<=====>#
 # Assignments Pre
@@ -139,82 +138,6 @@ def cb_buy_base_size_calc(buy_prc, spend_amt, base_size_incr, base_size_min, bas
 
 	func_end(fnc)
 	return str(trade_size)
-
-#<=====>#
-
-def cb_sell_base_size_calc(sell_cnt, prc_chg_pct, base_size_incr, base_size_min, base_size_max, bal_cnt=0, hold_cnt=0, pocket_pct=0, clip_pct=0):
-	func_name = 'cb_sell_base_size_calc'
-	func_str = ''
-	func_str += f'{lib_name}.{func_name}('
-	func_str += f'sell_cnt={sell_cnt:>.8f}, '
-	func_str += f'prc_chg_pct={prc_chg_pct:>.8f}, '
-	func_str += f'base_size_incr={base_size_incr:>.8f}, '
-	func_str += f'base_size_min={base_size_min:>.8f}, '
-	func_str += f'base_size_max={base_size_max:>.8f}, '
-	func_str += f'bal_cnt={bal_cnt:>.8f}, '
-	func_str += f'hold_cnt={hold_cnt:>.8f}, '
-	func_str += f'pocket_pct={pocket_pct:>.4f}, '
-	func_str += f'clip_pct={clip_pct:>.4f}'
-	func_str += ')'
-#	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
-
-	sell_cnt_max     = dec(sell_cnt)
-#	print(f'sell_cnt_max : {sell_cnt_max:>.8f} passed in...')
-
-	if sell_cnt_max > dec(hold_cnt):
-		print(f'...selling more {sell_cnt_max:>.8f} than we are position is holding {hold_cnt:>.8f} onto...exiting...')
-		beep()
-		beep()
-		beep()
-		func_end(fnc)
-		return 0
-#	print(f'sell_cnt_max : {sell_cnt_max:>.8f} after hold_cnt check...')
-
-	if sell_cnt_max > dec(bal_cnt):
-		print(f'...selling more {sell_cnt_max:>.8f} than we the wallet balance {bal_cnt:>.8f}...exiting...')
-		beep()
-		beep()
-		beep()
-		func_end(fnc)
-		return 0
-#	print(f'sell_cnt_max : {sell_cnt_max:>.8f} after bal_cnt check...')
-
-	if prc_chg_pct > 0 and pocket_pct > 0:
-		sell_cnt_max -= sell_cnt_max * (dec(pocket_pct) / 100) * (dec(prc_chg_pct)/100)
-#	print(f'sell_cnt_max : {sell_cnt_max:>.8f} after pocket_pct {pocket_pct:>.2f}% calc...')
-
-	if prc_chg_pct < 0 and clip_pct > 0:
-		sell_cnt_max -= sell_cnt_max * (dec(clip_pct) / 100) * (abs(dec(prc_chg_pct))/100)
-#	print(f'sell_cnt_max : {sell_cnt_max:>.8f} after clip_pct {clip_pct:>.2f}% calc...')
-
-	sell_blocks = int(sell_cnt_max / dec(base_size_incr))
-	sell_cnt_max = sell_blocks * dec(base_size_incr)
-#	print(f'sell_cnt_max : {sell_cnt_max:>.8f} after sell_block {sell_blocks} increments of {base_size_incr:>.8f}...')
-
-	if sell_cnt_max < dec(base_size_min):
-		print(f'...selling less {sell_cnt_max:>.8f} than coinbase allows {base_size_min}...exiting...')
-		beep()
-		beep()
-		beep()
-		func_end(fnc)
-		return 0
-#	print(f'sell_cnt_max : {sell_cnt_max:>.8f} after base_size_min {base_size_min:>.8f} check...')
-
-	if sell_cnt_max > dec(base_size_max):
-		sell_cnt_max = dec(base_size_max)
-#	print(f'sell_cnt_max : {sell_cnt_max:>.8f} after base_size_max {base_size_max:>.8f} check...')
-
-	sell_cnt = sell_cnt_max
-
-#	print(f'sell_cnt before : {sell_cnt}')
-#	prc_dec = cb_mkt_prc_dec_calc(base_size_incr, base_size_incr)
-#	sell_cnt = round(sell_cnt, prc_dec)
-#	print(f'sell_cnt after  : {sell_cnt}')
-
-	func_end(fnc)
-	return sell_cnt
 
 #<=====>#
 

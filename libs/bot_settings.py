@@ -237,6 +237,8 @@ settings_template_json = {
 		"sell": {
 			"selling_on_yn": "Y",
 			"force_all_tests_yn": "Y",
+			"show_blocks_yn": "Y",
+			"show_forces_yn": "Y",
 			"show_tests_yn": "N",
 			"show_tests_min": 101,
 			"save_files_yn": "N",

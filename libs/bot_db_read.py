@@ -47,8 +47,13 @@ import_all_func_list.append("db_poss_open_get")
 import_all_func_list.append("db_poss_open_max_trade_size_get")
 import_all_func_list.append("db_poss_open_get")
 import_all_func_list.append("db_poss_open_recent_get")
+
+import_all_func_list.append("db_poss_sell_order_problems_get")
+
 import_all_func_list.append("db_sell_ords_open_get")
 import_all_func_list.append("db_sell_ords_get_by_uuid")
+import_all_func_list.append("db_sell_ords_get_by_pos_id")
+
 import_all_func_list.append("db_strats_perf_get_all")
 import_all_func_list.append("db_strats_w_stats_get_all")
 import_all_func_list.append("db_view_trade_perf_get_by_prod_id")
@@ -109,8 +114,7 @@ lib_verbosity = 1
 lib_debug_lvl = 1
 verbosity     = 1
 debug_lvl     = 1
-lib_secs_max  = 0.33
-lib_secs_max  = 5
+lib_secs_max  = 2
 
 #<=====>#
 # Assignments Pre
@@ -1319,6 +1323,46 @@ def db_mkts_open_cnt_get():
 
 #<=====>#
 
+def db_poss_sell_order_problems_get():
+	func_name = 'db_poss_sell_order_problems_get'
+	func_str = f'{lib_name}.{func_name}()'
+#	G(func_str)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+	if verbosity >= 2: print_func_name(func_str, adv=2)
+
+	sql = ""
+	sql += "select 'pos.pos_stat = SELL but no OPEN sell orders on sell_ords' as reason "
+	sql += "  , p.* "
+	sql += "  from poss p "
+	sql += "  where 1=1 "
+#	sql += f"  where prod_id = '{prod_id}' "
+	sql += "  and p.ignore_tf = 0 "
+	sql += "  and p.pos_stat = 'SELL' "
+	sql += "  and not exists (select * from cbtrade.sell_ords so where so.pos_id = p.pos_id) "
+	sql += "union "
+	sql += "select 'pos.pos_stat = OPEN but there is a sell order(s) on sell_ords' as reason "
+	sql += "  , p.* "
+	sql += "  from poss p "
+	sql += "  where 1=1 "
+#	sql += f"  where prod_id = '{prod_id}' "
+	sql += "  and p.ignore_tf = 0 "
+	sql += "  and p.pos_stat = 'OPEN' "
+	sql += "  and exists (select * from cbtrade.sell_ords so where so.pos_id = p.pos_id) "
+	sql += "union "
+	sql += "select 'multiple sell orders' as reason "
+	sql += "  , p.* "
+	sql += "  from poss p "
+	sql += "  where 1=1 "
+##	sql += f"  where prod_id = '{prod_id}' "
+	sql += "  and p.ignore_tf = 0 "
+	sql += "  and (select count(*) from cbtrade.sell_ords so where so.pos_id = p.pos_id) > 1 "
+	poss = db.seld(sql)
+
+	func_end(fnc)
+	return poss
+
+#<=====>#
+
 def db_poss_open_get(prod_id=None, include_test_yn='N'):
 	func_name = 'db_poss_open_get'
 	func_str = f'{lib_name}.{func_name}()'
@@ -1355,10 +1399,33 @@ def db_sell_ords_open_get():
 	if verbosity >= 2: print_func_name(func_str, adv=2)
 
 	sql = ""
+	sql += "select so.* "
+	sql += "  from sell_ords so "
+	sql += "  join poss p on p.pos_id = so.pos_id "
+	sql += "  where 1=1 "
+	sql += "  and (so.ord_stat = 'OPEN' or p.pos_stat = 'SELL') "
+	sql += "  and so.ignore_tf = 0 "
+	sql += "  and p.ignore_tf = 0 "
+	sql += "  order by so_id "
+	sos = db.seld(sql)
+
+	func_end(fnc)
+	return sos
+
+#<=====>#
+
+def db_sell_ords_get_by_pos_id(pos_id):
+	func_name = 'db_sell_ords_get_by_pos_id'
+	func_str = f'{lib_name}.{func_name}(pos_id={pos_id})'
+#	G(func_str)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+	if verbosity >= 2: print_func_name(func_str, adv=2)
+
+	sql = ""
 	sql += "select * "
 	sql += "  from sell_ords  "
 	sql += "  where 1=1 "
-	sql += "  and ord_stat = 'OPEN' "
+	sql += f"  and pos_id = {pos_id} "
 	sql += "  and ignore_tf = 0 "
 	sql += "  order by so_id "
 	sos = db.seld(sql)

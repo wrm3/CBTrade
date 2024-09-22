@@ -53,7 +53,8 @@ from libs.bot_db_write                 import *
 from libs.bot_logs                     import *
 from libs.bot_secrets                  import secrets
 from libs.bot_settings                 import settings
-from libs.bot_strats                   import *
+from libs.bot_strats_buy               import *
+from libs.bot_strats_sell              import *
 from libs.bot_ta                       import *
 from libs.bot_theme                    import *
 
@@ -67,10 +68,9 @@ from libs.bot_reports                  import report_sells_recent
 #<=====>#
 # Variables
 #<=====>#
-lib_name      = 'bot'
-log_name      = 'bot'
-lib_secs_max  = 0.33
-lib_secs_max  = 10
+lib_name      = 'bot_cls_main'
+log_name      = 'bot_cls_main'
+lib_secs_max  = 2
 
 #<=====>#
 # Assignments Pre
@@ -93,11 +93,12 @@ class BOT():
 		self.spendable_amts            = {}
 		self.reserve_amts              = {}
 		self.reserve_locked_tf         = True
+#		print('calling cb_mkts_refresh')
 		cb_mkts_refresh()
 		self.refresh_wallet_tf         = True
 		self.wallet_refresh(force_tf=True)
 		self.show_buy_header_tf        = True
-		self.show_sell_header_tf       = True
+#		self.show_sell_header_tf       = True
 		# don't change this value, need more codiging for USDT or USD, someday integrae USDT/USD/BTC/ETH
 		self.quote_curr_symb           = 'USDC'
 		self.mode                      = 'full' # full, auto, buy, sell
@@ -117,26 +118,26 @@ class BOT():
 	ord_mkt_buy                    = ord_mkt_buy
 	ord_mkt_buy_orig               = ord_mkt_buy_orig
 	ord_lmt_buy_open               = ord_lmt_buy_open
-	sell_logic                     = sell_logic
-	sell_pos_logic                 = sell_pos_logic
-	sell_pos_blocks                = sell_pos_blocks
-	sell_logic_forced              = sell_logic_forced
-	sell_logic_hard_profit         = sell_logic_hard_profit
-	sell_logic_hard_stop           = sell_logic_hard_stop
-	sell_logic_trailing_profit     = sell_logic_trailing_profit
-	sell_logic_trailing_stop       = sell_logic_trailing_stop
-	sell_logic_atr_stop            = sell_logic_atr_stop
-	sell_logic_trailing_atr_stop   = sell_logic_trailing_atr_stop
-	sell_logic_deny_all_green      = sell_logic_deny_all_green
-	sell_header                    = sell_header
-	disp_sell                      = disp_sell
-	disp_sell_tests                = disp_sell_tests
-	sell_log                       = sell_log
-	sell_sign_rec                  = sell_sign_rec
-	ord_mkt_sell                   = ord_mkt_sell
-	ord_mkt_sell_orig              = ord_mkt_sell_orig
-	ord_lmt_sell_open              = ord_lmt_sell_open
-	sell_ords_check                = sell_ords_check
+	# sell_logic                     = sell_logic
+	# sell_pos_logic                 = sell_pos_logic
+	# sell_pos_blocks                = sell_pos_blocks
+	# sell_logic_forced              = sell_logic_forced
+	# sell_logic_hard_profit         = sell_logic_hard_profit
+	# sell_logic_hard_stop           = sell_logic_hard_stop
+	# sell_logic_trailing_profit     = sell_logic_trailing_profit
+	# sell_logic_trailing_stop       = sell_logic_trailing_stop
+	# sell_logic_atr_stop            = sell_logic_atr_stop
+	# sell_logic_trailing_atr_stop   = sell_logic_trailing_atr_stop
+	# sell_logic_deny_all_green      = sell_logic_deny_all_green
+	# sell_header                    = sell_header
+	# disp_sell                      = disp_sell
+	# disp_sell_tests                = disp_sell_tests
+	# sell_log                       = sell_log
+	# sell_sign_rec                  = sell_sign_rec
+	# ord_mkt_sell                   = ord_mkt_sell
+	# ord_mkt_sell_orig              = ord_mkt_sell_orig
+	# ord_lmt_sell_open              = ord_lmt_sell_open
+	# sell_ords_check                = sell_ords_check
 
 
 	#<=====>#
@@ -144,7 +145,7 @@ class BOT():
 	def before_start(self):
 		func_name = 'before_start'
 		func_str = f'{lib_name}.{func_name}()'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=30)
 #		G(func_str)
 
 		# this is here just to proof that sounds alerts will be heard
@@ -176,9 +177,12 @@ class BOT():
 
 				self.st = settings.reload()
 
+#				print('calling cb_mkts_refresh')
 				cb_mkts_refresh()
 
 				if self.mode in ('buy'):
+					# intentionaly here, keep single threaded
+#					self.sell_ords_check()
 					self.buy_ords_check()
 					report_buys_recent(cnt=20)
 				elif self.mode in ('sell'):
@@ -194,6 +198,8 @@ class BOT():
 				self.mkts_loop()
 
 				if self.mode in ('buy'):
+					# intentionaly here, keep single threaded
+#					self.sell_ords_check()
 					self.buy_ords_check()
 					report_buys_recent(cnt=20)
 				elif self.mode in ('sell'):
@@ -274,6 +280,7 @@ class BOT():
 
 				self.sell_ords_check()
 				self.buy_ords_check()
+#				print('calling cb_mkts_refresh')
 				cb_mkts_refresh()
 				self.wallet_refresh(force_tf=True)
 
@@ -347,7 +354,7 @@ class BOT():
 	def mkt_build(self, m):
 		func_name = 'mkt_build'
 		func_str = f'{lib_name}.{func_name}(m)'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
 #		G(func_str)
 
 		prod_id = m.prod_id
@@ -364,7 +371,7 @@ class BOT():
 			if max_poss_open_trade_size > pricing_cnt:
 				pricing_cnt = max_poss_open_trade_size
 		mkt.prc_mkt                              = m.prc
-		bid_prc, ask_prc                         = cb_bid_ask_by_amt_get(prod_id=prod_id, buy_sell_size=pricing_cnt)
+		bid_prc, ask_prc                         = cb_bid_ask_by_amt_get(mkt=m, buy_sell_size=pricing_cnt)
 		mkt.prc_bid                              = bid_prc
 		mkt.prc_ask                              = ask_prc
 		mkt.prc_dec                              = cb_mkt_prc_dec_calc(mkt.prc_bid, mkt.prc_ask)
@@ -809,7 +816,7 @@ class BOT():
 	def mkts_loop(self):
 		func_name = 'mkts_loop'
 		func_str = f'{lib_name}.{func_name}()'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=12)
 #		G(func_str)
 
 		print_adv(3)
@@ -847,7 +854,7 @@ class BOT():
 				if check_mkt_dttm > m.check_mkt_dttm:
 #					YoM(f'another bot with mode sell has updated {prod_id} market since starting... skipping...')
 					print_adv(2)
-					MoW(f'another bot with mode sell has updated {prod_id} market since starting..., old : {m.check_mkt_dttm}, new : {check_mkt_dttm} skipping...')
+					YoK(f'another bot with mode sell has updated {prod_id} market since starting..., old : {m.check_mkt_dttm}, new : {check_mkt_dttm} skipping...')
 #					YoM(f'another bot with mode sell has updated {prod_id} market since starting... skipping...')
 #					print_adv()
 #					print_adv()
@@ -1129,7 +1136,7 @@ class BOT():
 	def mkt_logic(self, mkt, trade_perf, trade_strat_perfs):
 		func_name = 'mkt_logic'
 		func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perfs)'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=10)
 #		G(func_str)
 
 		mkt_logic_t0 = time.perf_counter()
@@ -1150,13 +1157,11 @@ class BOT():
 				traceback.print_exc()
 				pprint(mkt)
 				print_adv(3)
-				beep()
-				beep()
-				beep()
+				beep(3)
 				pass
 			t1 = time.perf_counter()
 			secs = round(t1 - t0, 3)
-			if secs >= 2:
+			if secs >= 5:
 				msg = cs(f'disp_mkt for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
 				chart_row(msg, len_cnt=240)
 				chart_mid(len_cnt=240)
@@ -1164,36 +1169,38 @@ class BOT():
 
 			# Market Technical Analysis
 			ta = None
-			t0 = time.perf_counter()
-			try:
-				ta = mkt_ta_main_new(mkt, self.st)
-				if not ta:
-					WoR(f'{dttm_get()} {func_name} - Get TA ==> TA Errored and is None')
-					WoR(f'{dttm_get()} {func_name} - Get TA ==> TA Errored and is None')
-					WoR(f'{dttm_get()} {func_name} - Get TA ==> TA Errored and is None')
-					beep()
-					func_end(fnc)
-					return mkt
-				if ta == 'Error!':
-					WoR(f'{dttm_get()} {func_name} - Get TA ==> {prod_id} - close prices do not match')
-					WoR(f'{dttm_get()} {func_name} - Get TA ==> {prod_id} - close prices do not match')
-					WoR(f'{dttm_get()} {func_name} - Get TA ==> {prod_id} - close prices do not match')
-					beep()
-					func_end(fnc)
-					return mkt
-			except Exception as e:
-				print(f'{dttm_get()} {func_name} - Get TA ==> {prod_id} = Error : ({type(e)}){e}')
-				traceback.print_exc()
-				pprint(mkt)
-				print_adv(3)
-				beep(3)
-				pass
-			t1 = time.perf_counter()
-			secs = round(t1 - t0, 2)
-			if secs >= 2:
-				msg = cs(f'mkt_ta_main_new for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
-				chart_row(msg, len_cnt=240)
-				chart_mid(len_cnt=240)
+			# adding this to attempt to speed up sell loop, by not calling for TA when we are not going to sell
+			if self.mode in ('buy','full'):
+				t0 = time.perf_counter()
+				try:
+					ta = mkt_ta_main_new(mkt, self.st)
+					if not ta:
+						WoR(f'{dttm_get()} {func_name} - Get TA ==> TA Errored and is None')
+						WoR(f'{dttm_get()} {func_name} - Get TA ==> TA Errored and is None')
+						WoR(f'{dttm_get()} {func_name} - Get TA ==> TA Errored and is None')
+	#					beep(3)
+						func_end(fnc)
+						return mkt
+					if ta == 'Error!':
+						WoR(f'{dttm_get()} {func_name} - Get TA ==> {prod_id} - close prices do not match')
+						WoR(f'{dttm_get()} {func_name} - Get TA ==> {prod_id} - close prices do not match')
+						WoR(f'{dttm_get()} {func_name} - Get TA ==> {prod_id} - close prices do not match')
+	#					beep(3)
+						func_end(fnc)
+						return mkt
+				except Exception as e:
+					print(f'{dttm_get()} {func_name} - Get TA ==> {prod_id} = Error : ({type(e)}){e}')
+					traceback.print_exc()
+					pprint(mkt)
+					print_adv(3)
+					beep(3)
+					pass
+				t1 = time.perf_counter()
+				secs = round(t1 - t0, 2)
+				if secs >= 5:
+					msg = cs(f'mkt_ta_main_new for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
+					chart_row(msg, len_cnt=240)
+					chart_mid(len_cnt=240)
 
 
 			if self.mode in ('buy','full'):
@@ -1234,7 +1241,7 @@ class BOT():
 						pass
 				t1 = time.perf_counter()
 				secs = round(t1 - t0, 2)
-				if secs >= 2:
+				if secs >= 5:
 					msg = cs(f'sell_logic for {prod_id} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
 					chart_row(msg, len_cnt=240)
 					chart_mid(len_cnt=240)
@@ -1259,9 +1266,7 @@ class BOT():
 			print(f'prod_id : {mkt.prod_id}')
 			pprint(mkt)
 			print_adv(3)
-			beep()
-			beep()
-			beep()
+			beep(3)
 			pass
 
 		mkt_logic_t1 = time.perf_counter()
@@ -1278,13 +1283,35 @@ class BOT():
 
 	#<=====>#
 
+	def buy_live(self, mkt, trade_strat_perf):
+		func_name = 'buy_live'
+		func_str = f'{lib_name}.{func_name}(mkt)'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+		# G(func_str)
+
+		if self.st.spot.buy.buy_limit_yn == 'Y':
+			try:
+				self.ord_lmt_buy_open(mkt, trade_strat_perf)
+			except Exception as e:
+				print(f'{func_name} ==> buy limit order failed, attempting market... {e}')
+				beep(3)
+				# self.ord_mkt_buy(mkt, trade_strat_perf)
+				self.ord_mkt_buy_orig(mkt, trade_strat_perf)
+		else:
+			# self.ord_mkt_buy(mkt, trade_strat_perf)
+			self.ord_mkt_buy_orig(mkt, trade_strat_perf)
+
+		func_end(fnc)
+
+	#<=====>#
+
 	def buy_test(self, mkt, trade_strat_perf):
 		func_name = 'buy_test'
 		func_str = f'{lib_name}.{func_name}(mkt, trade_strat_perf)'
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 		# G(func_str)
 
-		beep()
+#		beep()
 
 		bo = AttrDict()
 		bo.test_tf               = 1
@@ -1319,7 +1346,7 @@ class BOT():
 	def buy_ords_check(self):
 		func_name = 'buy_ords_check'
 		func_str = f'{lib_name}.{func_name}()'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=3)
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=5)
 #		G(func_str)
 
 		try:
@@ -1347,9 +1374,7 @@ class BOT():
 							if o.prod_id != bo.prod_id:
 								print(func_str)
 								print('error #1 !')
-								beep()
-								beep()
-								beep()
+#								beep(3)
 								sys.exit()
 
 							if o.ord_status == 'FILLED' or o.ord_completion_percentage == '100.0' or o.ord_completion_percentage == 100.0:
@@ -1371,12 +1396,12 @@ class BOT():
 							elif o.ord_status == 'OPEN':
 								print(o)
 								print('WE NEED CODE HERE!!!')
-								beep()
+#								beep()
 
 							else:
 								print(func_str)
 								print('error #2 !')
-								beep(3)
+#								beep(3)
 								db_buy_ords_stat_upd(bo_id=bo.bo_id, ord_stat='ERR')
 
 					elif test_tf == 1:
@@ -1477,7 +1502,7 @@ class BOT():
 		func_name = 'pos_upd'
 		func_str = f'{lib_name}.{func_name}(pos, mkt, so)'
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#		G(func_str)
+		G(func_str)
 
 		st         = settings.settings_load()
 		prod_id    = pos.prod_id
@@ -1501,8 +1526,14 @@ class BOT():
 			print('we have neither so or mkt!!!')
 			sys.exit()
 
+
+		if pos.pos_stat not in ('OPEN'):
+			print(f'pos.pos_stat : {pos.pos_stat}')
+
+
 		# If we have a sell order we are closing the position
 		if so:
+
 			pos.pos_stat                              = 'CLOSE'
 			pos.pos_end_dttm                          = so.sell_end_dttm
 			pos.sell_order_cnt                        += 1
@@ -1513,6 +1544,16 @@ class BOT():
 			pos.fees_cnt_tot                          += so.fees_cnt_act
 			pos.sell_fees_cnt_tot                     += so.fees_cnt_act
 			pos.prc_sell_avg                          = round((pos.tot_in_cnt / pos.sell_cnt_tot), 8)
+
+
+		if pos.pos_stat == 'SELL' and not so:
+			print('pos_stat = SELL and no SO was given, so we cannot close the position...')
+			beep()
+
+
+		if pos.pos_stat not in ('OPEN'):
+			print(f'pos.pos_stat : {pos.pos_stat}')
+
 
 		# Update Sell Price Highs & Lows
 		if pos.prc_curr > pos.prc_high: pos.prc_high = pos.prc_curr
@@ -1574,80 +1615,88 @@ class BOT():
 
 	#<=====>#
 
-	def sell_live(self, mkt, pos):
-		func_name = 'sell_live'
-		func_str = f'{lib_name}.{func_name}(mkt, pos)'
+	def pos_close(self, pos_id, sell_order_uuid):
+		func_name = 'pos_close'
+		func_str = f'{lib_name}.{func_name}(pos_id={pos_id}, sell_order_uuid={sell_order_uuid})'
 		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #		G(func_str)
 
-		if self.st.spot.sell.sell_limit_yn == 'N' and mkt.mkt_limit_only_tf == 1:
-			print(f'{mkt.prod_id} has been set to limit orders only, we cannot market buy/sell right now!!!')
-			pos = self.ord_mkt_sell_orig(mkt, pos)
-		elif self.st.spot.sell.sell_limit_yn == 'Y':
-			try:
-				pos = self.ord_lmt_sell_open(mkt, pos) 
-			except Exception as e:
-				print(f'{func_name} ==> sell limit order failed, attempting market... {e}')
-				play_beep(reps=3)
-				pos = self.ord_mkt_sell_orig(mkt, pos)
-		else:
-			pos = self.ord_mkt_sell_orig(mkt, pos)
+		pos = db_pos_get_by_pos_id(pos_id)
+		pos = dec_2_float(pos)
+		pos = AttrDictConv(in_dict=pos)
+
+		so  = db_sell_ords_get_by_uuid(sell_order_uuid)
+		so  = dec_2_float(so)
+		so  = AttrDictConv(in_dict=so)
+
+		pos = self.pos_upd(mkt=None, pos=pos, so=so)
 
 		func_end(fnc)
-		return pos
 
 	#<=====>#
 
-	def sell_test(self, mkt, pos):
-		func_name = 'sell_test'
-		func_str = f'{lib_name}.{func_name}(pos)'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#		G(func_str)
+	def sell_logic(self, mkt, ta, open_poss):
+		func_name = 'sell_logic'
+		func_str = f'{lib_name}.{func_name}(mkt, ta, open_poss)'
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=6)
+		# G(func_str)
 
-		beep()
+		prod_id = mkt.prod_id
+		st = settings.settings_load()
 
-		so = AttrDict()
-		so.test_tf                     = pos.test_tf
-		so.prod_id                     = pos.prod_id
-		so.mkt_name                    = pos.mkt_name
-		so.pos_id                      = pos.pos_id
-		so.sell_seq_nbr                = 1
-		so.sell_order_uuid             = self.gen_guid()	
-		so.pos_type                    = 'SPOT'
-		so.ord_stat                    = 'OPEN'
-		so.sell_strat_type             = pos.sell_strat_type
-		so.sell_strat_name             = pos.sell_strat_name
-		so.sell_strat_freq             = pos.sell_strat_freq
-		so.sell_begin_dttm             = dt.now()	
-		so.sell_end_dttm               = dt.now()	
-		so.sell_curr_symb              = pos.sell_curr_symb
-		so.recv_curr_symb              = pos.recv_curr_symb	
-		so.fees_curr_symb              = pos.fees_curr_symb
-		so.sell_cnt_est                = pos.hold_cnt
-		so.sell_cnt_act                = pos.hold_cnt
-		so.fees_cnt_act                = (pos.hold_cnt * mkt.prc_sell) * 0.004
-		so.tot_in_cnt                  = (pos.hold_cnt * mkt.prc_sell) * 0.996
-		so.prc_sell_est                = mkt.prc_sell
-		so.prc_sell_act                = mkt.prc_sell
-		so.tot_prc_buy                 = mkt.prc_sell
-		so.prc_sell_slip_pct           = 0
+		mkt.show_sell_header_tf = True
 
-		db_tbl_sell_ords_insupd(so)
-		time.sleep(.33)
+		if not open_poss:
+			print(f'{prod_id} has no open positions...')
+			func_end(fnc)
+			return mkt
+
+		db_poss_check_mkt_dttm_upd(prod_id)
+		mkt.check_mkt_dttm = db_poss_check_mkt_dttm_get(prod_id)
+
+		for pos in open_poss:
+			pos = dec_2_float(pos)
+			pos = AttrDictConv(in_dict=pos)
+			pos_id = pos.pos_id
+			if pos.pos_stat == 'OPEN':
+				try:
+					pos = self.pos_upd(mkt=mkt, pos=pos)
+					pos = POS(mkt, pos, ta)
+					mkt, pos, ta = pos.sell_pos_logic()
+				except Exception as e:
+					print(f'{dttm_get()} {func_name} {prod_id} {pos_id}==> errored : ({type(e)}) {e}')
+					traceback.print_exc()
+					pass
+
+		chart_mid(len_cnt=240, bold=True)
 
 		func_end(fnc)
-		return pos
+		return mkt
 
 	#<=====>#
 
 	def sell_ords_check(self):
 		func_name = 'sell_ords_check'
 		func_str = f'{lib_name}.{func_name}()'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#		G(func_str)
+		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=5)
+		G(func_str)
 
 		try:
 			cnt = 0
+
+			iss = db_poss_sell_order_problems_get()
+			if iss:
+				for i in iss:
+					print(i)
+				beep(10)
+				sys.exit()
+
+#			x = db_poss_fix_stat_upd()
+#			if x > 0:
+#				print(f'marked OPEN the pos_stat of {x} positions in SELL stat but no OPEN sell_ords were found...')
+#				beep(10)
+#				sys.exit()
+
 			sos = db_sell_ords_open_get()
 			if sos:
 				print_adv(2)
@@ -1658,6 +1707,8 @@ class BOT():
 					cnt += 1
 					so = dec_2_float(so)
 					so = AttrDictConv(in_dict=so)
+
+					print(so)
 
 					test_tf = so.test_tf
 					ord_id = so.sell_order_uuid
@@ -1672,6 +1723,8 @@ class BOT():
 							print(f'so : {so}')
 							beep()
 							continue
+
+						print(o)
 
 						if o:
 							o = dec_2_float(o)
@@ -1691,7 +1744,10 @@ class BOT():
 								self.pos_close(so.pos_id, so.sell_order_uuid)
 							elif o.ord_status == 'OPEN':
 								print(o)
-								print('WE NEED CODE HERE!!!')
+								print('WE NEED CODE HERE #1 !!!')
+								beep(10)
+								sys.exit()
+
 								if o.ord_filled_size > 0:
 									so.sell_cnt_act                    = o.ord_filled_size
 									so.fees_cnt_act                    = o.ord_total_fees
@@ -1701,6 +1757,10 @@ class BOT():
 									so.tot_prc_buy                     = round(o.ord_total_value_after_fees / o.ord_filled_size, 8)
 									so.prc_sell_slip_pct               = round((so.prc_sell_act - so.prc_sell_est) / so.prc_sell_est, 8)
 									print(f'{cnt:^4} / {sos_cnt:^4}, prod_id : {so.prod_id:<16}, pos_id : {so.pos_id:>7}, so_id : {so.so_id:>7}, so_uuid : {so.sell_order_uuid:<60}')
+									beep(10)
+									sys.exit()
+
+
 									db_tbl_sell_ords_insupd(so)
 		# this needs to be added when we add in support for limit orders
 		#						else:
@@ -1708,8 +1768,10 @@ class BOT():
 		#							db_sell_ords_stat_upd(so_id=so.so_id, ord_stat='CANC')
 		#							db_poss_err_upd(pos_id=so.pos_id, pos_stat='OPEN')
 							else:
-								beep(3)
 								pprint(o)
+								print('WE NEED CODE HERE #1 !!!')
+								beep(10)
+								sys.exit()
 								db_sell_ords_stat_upd(so_id=so.so_id, ord_stat='ERR')
 								db_poss_err_upd(pos_id=so.pos_id, pos_stat='OPEN')
 
@@ -1728,26 +1790,6 @@ class BOT():
 			print(f'ord_id : {ord_id}')
 			print(f'o : {o}')
 			sys.exit()
-
-		func_end(fnc)
-
-	#<=====>#
-
-	def pos_close(self, pos_id, sell_order_uuid):
-		func_name = 'pos_close'
-		func_str = f'{lib_name}.{func_name}(pos_id={pos_id}, sell_order_uuid={sell_order_uuid})'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#		G(func_str)
-
-		pos = db_pos_get_by_pos_id(pos_id)
-		pos = dec_2_float(pos)
-		pos = AttrDictConv(in_dict=pos)
-
-		so  = db_sell_ords_get_by_uuid(sell_order_uuid)
-		so  = dec_2_float(so)
-		so  = AttrDictConv(in_dict=so)
-
-		pos = self.pos_upd(pos=pos, mkt=None, so=so)
 
 		func_end(fnc)
 
@@ -1835,6 +1877,12 @@ class BOT():
 			reserve_amt                = tot_daily_reserve_amt + min_reserve_amt
 		else:
 			reserve_amt                = min_reserve_amt
+
+		# print(f'min_reserve_amt       : {min_reserve_amt}')
+		# print(f'day                   : {day}')
+		# print(f'daily_reserve_amt     : {daily_reserve_amt}')
+		# print(f'tot_daily_reserve_amt : {tot_daily_reserve_amt}')
+		# print(f'reserve_amt           : {reserve_amt}')
 
 		func_end(fnc)
 		return reserve_amt
@@ -1967,28 +2015,6 @@ class BOT():
 
 		func_end(fnc)
 		return trade_strat_perf
-
-	#<=====>#
-
-	def buy_live(self, mkt, trade_strat_perf):
-		func_name = 'buy_live'
-		func_str = f'{lib_name}.{func_name}(mkt)'
-		fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-		# G(func_str)
-
-		if self.st.spot.buy.buy_limit_yn == 'Y':
-			try:
-				self.ord_lmt_buy_open(mkt, trade_strat_perf)
-			except Exception as e:
-				print(f'{func_name} ==> buy limit order failed, attempting market... {e}')
-				play_beep(reps=3)
-				# self.ord_mkt_buy(mkt, trade_strat_perf)
-				self.ord_mkt_buy_orig(mkt, trade_strat_perf)
-		else:
-			# self.ord_mkt_buy(mkt, trade_strat_perf)
-			self.ord_mkt_buy_orig(mkt, trade_strat_perf)
-
-		func_end(fnc)
 
 #<=====>#
 

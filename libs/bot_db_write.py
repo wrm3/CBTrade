@@ -14,9 +14,10 @@ import_all_func_list.append("db_tbl_ohlcv_prod_id_insupd")
 import_all_func_list.append("db_tbl_ohlcv_prod_id_insupd_many")
 
 import_all_func_list.append("db_safe_string")
-import_all_func_list.append("db_curr_prc_mkt_upd")
-import_all_func_list.append("db_curr_prc_stable_upd")
-import_all_func_list.append("db_curr_prc_upd")
+import_all_func_list.append("db_bals_prc_mkt_upd")
+import_all_func_list.append("db_currs_prc_mkt_upd")
+import_all_func_list.append("db_currs_prc_stable_upd")
+import_all_func_list.append("db_currs_prc_upd")
 import_all_func_list.append("db_buy_ords_stat_upd")
 import_all_func_list.append("db_poss_err_upd")
 import_all_func_list.append("db_poss_stat_upd")
@@ -25,13 +26,17 @@ import_all_func_list.append("db_sell_ords_stat_upd")
 import_all_func_list.append("db_poss_check_mkt_dttm_upd")
 import_all_func_list.append("db_poss_check_last_dttm_upd")
 
+import_all_func_list.append("db_poss_fix_stat_upd")
+
 import_all_func_list.append("db_tbl_del")
 import_all_func_list.append("db_tbl_insupd")
 import_all_func_list.append("db_tbl_bals_insupd")
+import_all_func_list.append("db_tbl_bals_bal_insupd")
 import_all_func_list.append("db_tbl_buy_ords_insupd")
 import_all_func_list.append("db_tbl_buy_signs_insupd")
 import_all_func_list.append("db_tbl_buy_signals_insupd")
 import_all_func_list.append("db_tbl_currs_insupd")
+import_all_func_list.append("db_tbl_currs_curr_insupd")
 import_all_func_list.append("db_tbl_mkts_insupd")
 import_all_func_list.append("db_tbl_ords_insupd")
 import_all_func_list.append("db_tbl_poss_insupd")
@@ -97,8 +102,7 @@ lib_verbosity = 1
 lib_debug_lvl = 1
 verbosity     = 1
 debug_lvl     = 1
-lib_secs_max  = 0.5
-lib_secs_max  = 0.5
+lib_secs_max  = 2
 
 #<=====>#
 # Assignments Pre
@@ -327,7 +331,7 @@ def db_tbl_ohlcv_prod_id_insupd_many(prod_id, in_dfs):
 
 #<=====>#
 
-def db_curr_prc_upd(prc_usd, symb):
+def db_currs_prc_upd(prc_usd, symb):
 	func_name = 'db_curr_prc_upd'
 	func_str = f'{lib_name}.{func_name}()'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
@@ -343,8 +347,8 @@ def db_curr_prc_upd(prc_usd, symb):
 
 #<=====>#
 
-def db_curr_prc_stable_upd(stable_symbs=None):
-	func_name = 'db_curr_prc_stable_upd'
+def db_currs_prc_stable_upd(stable_symbs=None):
+	func_name = 'db_currs_prc_stable_upd'
 	func_str = '{}.{}(stable_symbs={})'.format(lib_name, func_name, stable_symbs)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
@@ -366,13 +370,15 @@ def db_curr_prc_stable_upd(stable_symbs=None):
 	sql += "update cbtrade.currs c "
 	sql += "  set c.prc_usd = 1 "
 	sql += "  where c.symb in ({}) ".format(stable_symbs_str)
-	db.execute(sql)
+#	print(sql)
+	x = db.upd(sql)
+#	print(f'rows updated : {x}')
 
 	func_end(fnc)
 
 #<=====>#
 
-def db_curr_prc_mkt_upd():
+def db_currs_prc_mkt_upd():
 	func_name = 'db_curr_prc_mkt_upd'
 	func_str = f'{lib_name}.{func_name}()'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
@@ -384,7 +390,33 @@ def db_curr_prc_mkt_upd():
 	sql += "                              from cbtrade.mkts m "
 	sql += "                              where m.base_curr_symb = c.symb"
 	sql += "                              and m.quote_curr_symb = 'USDC'),0)"
-	db.execute(sql)
+#	print(sql)
+	x = db.upd(sql)
+#	print(f'rows updated : {x}')
+
+	func_end(fnc)
+
+#<=====>#
+
+def db_bals_prc_mkt_upd():
+	func_name = 'db_bals_prc_mkt_upd'
+	func_str = f'{lib_name}.{func_name}()'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "update cbtrade.bals b "
+	sql += "  set b.curr_prc_usd = coalesce((select m.prc "
+	sql += "                                   from cbtrade.mkts m "
+	sql += "                                   where m.base_curr_symb = b.symb "
+	sql += "                                   and m.quote_curr_symb = 'USDC'),0) "
+	sql += "	, b.curr_val_usd = b.bal_tot * coalesce((select m.prc "
+	sql += "                                   from cbtrade.mkts m "
+	sql += "                                   where m.base_curr_symb = b.symb "
+	sql += "                                   and m.quote_curr_symb = 'USDC'),0) "
+#	print(sql)
+	x = db.upd(sql)
+#	print(f'rows updated : {x}')
 
 	func_end(fnc)
 
@@ -426,6 +458,25 @@ def db_poss_stat_upd(pos_id, pos_stat):
 	db.execute(sql)
 
 	func_end(fnc)
+
+#<=====>#
+
+def db_poss_fix_stat_upd():
+	func_name = 'db_poss_fix_stat_upd'
+	func_str = '{}.{}()'.format(lib_name, func_name)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "update cbtrade.poss p "
+	sql += "  set p.pos_stat = 'ERR', reason = 'pos_stat was SELL but no sell_ord found' "
+	sql += "  where 1=1 "
+	sql += "  and pos_stat = 'SELL' "
+	sql += "  and not exists (select * from cbtrade.sell_ords so where so.pos_id = p.pos_id and ord_stat = 'OPEN') "
+	x = db.upd(sql)
+
+	func_end(fnc)
+	return x
 
 #<=====>#
 
@@ -569,6 +620,19 @@ def db_tbl_bals_insupd(in_data):
 
 #<=====>#
 
+def db_tbl_bals_bal_insupd(in_data):
+	func_name = 'db_tbl_bals_bal_insupd'
+	func_str = '{}.{}(in_data)'.format(lib_name, func_name)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	table_name = 'bals'
+	db_tbl_insupd(table_name, in_data)
+
+	func_end(fnc)
+
+#<=====>#
+
 def db_tbl_buy_ords_insupd(in_data):
 	func_name = 'db_tbl_buy_ords_insupd'
 	func_str = '{}.{}(in_data)'.format(lib_name, func_name)
@@ -616,6 +680,20 @@ def db_tbl_currs_insupd(in_data):
 
 	table_name = 'currs'
 	db_tbl_del(table_name=table_name)
+	db_tbl_insupd(table_name, in_data)
+
+	func_end(fnc)
+
+#<=====>#
+
+def db_tbl_currs_curr_insupd(in_data):
+	func_name = 'db_tbl_currs_curr_insupd'
+	func_str = '{}.{}(in_data)'.format(lib_name, func_name)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	table_name = 'currs'
+#	db_tbl_del(table_name=table_name)
 	db_tbl_insupd(table_name, in_data)
 
 	func_end(fnc)
@@ -755,13 +833,13 @@ def db_tbl_poss_insupd(in_data):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	rem_cols = []	
-	rem_cols.append('sell_yn')
-	rem_cols.append('sell_block_yn')
-	rem_cols.append('hodl_yn')
-	for k in rem_cols:
-		if k in in_data:
-			del in_data[k]
+	# rem_cols = []	
+	# rem_cols.append('sell_yn')
+	# rem_cols.append('sell_block_yn')
+	# rem_cols.append('hodl_yn')
+	# for k in rem_cols:
+	# 	if k in in_data:
+	# 		del in_data[k]
 
 	table_name = 'poss'
 	db_tbl_insupd(table_name, in_data)
@@ -812,7 +890,7 @@ def db_tbl_sell_signals_insupd(in_data):
 def db_table_csvs_dump():
 	func_name = 'db_table_csvs_dump'
 	func_str = f'{lib_name}.{func_name}()'
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=6)
 #	G(func_str)
 
 	tbls_list = db_table_names_get()

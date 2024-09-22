@@ -59,8 +59,7 @@ lib_name      = 'lib_charts'
 log_name      = 'lib_charts'
 lib_verbosity = 1
 lib_debug_lvl = 1
-lib_secs_max  = 0.33
-lib_secs_max  = 10
+lib_secs_max  = 2
 
 #<=====>#
 # Assignments Pre

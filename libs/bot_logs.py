@@ -64,8 +64,7 @@ lib_name      = 'bot_logs'
 log_name      = 'bot_logs'
 lib_verbosity = 0
 lib_debug_lvl = 0
-lib_secs_max  = 0.33
-lib_secs_max  = 10
+lib_secs_max  = 2
 
 #<=====>#
 # Assignments Pre

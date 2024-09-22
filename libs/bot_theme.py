@@ -59,8 +59,7 @@ lib_name      = 'bot_theme'
 log_name      = 'bot_theme'
 lib_verbosity = 1
 lib_debug_lvl = 1
-lib_secs_max  = 0.33
-lib_secs_max  = 10
+lib_secs_max  = 2
 
 #<=====>#
 # Assignments Pre

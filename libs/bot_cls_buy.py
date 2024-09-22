@@ -96,8 +96,7 @@ from bot_theme                    import *
 #<=====>#
 lib_name      = 'bot_cls_buy'
 log_name      = 'bot_cls_buy'
-lib_secs_max  = 0.33
-lib_secs_max  = 10
+lib_secs_max  = 2
 
 #<=====>#
 # Assignments Pre
@@ -477,7 +476,7 @@ def buy_logic_mkt_deny(self, mkt, trade_perf):
 	if prod_id in self.st.spot.sell.force_sell.prod_ids:
 		RoW(f'    * CANCEL BUY MKT : {mkt.prod_id} is in the forced_sell.prod_ids settings, and would instantly sell...')
 		buy_deny_yn = 'Y'
-		beep(3)
+#		beep(3)
 	else:
 		if debug_yn == 'Y':
 			BoW(f'    * ALLOW BUY MKT : {mkt.prod_id} is in the forced_sell.prod_ids settings, and would instantly sell...')
@@ -486,7 +485,7 @@ def buy_logic_mkt_deny(self, mkt, trade_perf):
 	if mkt.mkt_limit_only_tf == 1:
 		RoW(f'    * CANCEL BUY MKT : {mkt.prod_id} has been set to limit orders only, we cannot market buy/sell right now!!!')
 		buy_deny_yn = 'Y'
-		beep(3)
+#		beep(3)
 	else:
 		if debug_yn == 'Y':
 			BoW(f'    * ALLOW BUY MKT : {mkt.prod_id} has been set to limit orders only, we cannot market buy/sell right now!!!')
@@ -495,7 +494,7 @@ def buy_logic_mkt_deny(self, mkt, trade_perf):
 	if mkt.prc_range_pct >= 2:
 		RoW(f'    * CANCEL BUY MKT : {mkt.prod_id} has a price range variance of {mkt.prc_range_pct}, this price range looks like trouble... skipping buy')
 		buy_deny_yn = 'Y'
-		beep(3)
+#		beep(3)
 	else:
 		if debug_yn == 'Y':
 			BoW(f'    * ALLOW BUY MKT : {mkt.prod_id} has a price range variance of {mkt.prc_range_pct}, this price range looks like trouble... skipping buy')
@@ -552,7 +551,7 @@ def buy_logic_strat_deny(self, mkt, trade_strat_perf):
 			msg += f'with a gain loss pct per day of  {trade_strat_perf.gain_loss_pct_day} % < 0 % '
 			BoW(msg)
 			buy_deny_yn = 'Y'
-			beep(3)
+#			beep(3)
 		else:
 			if debug_yn == 'Y':
 				msg = ''
@@ -656,9 +655,7 @@ def buy_ords_check(self):
 						if o.prod_id != bo.prod_id:
 							print(func_str)
 							print('error #1 !')
-							beep()
-							beep()
-							beep()
+							beep(2)
 							sys.exit()
 
 						if o.ord_status == 'FILLED' or o.ord_completion_percentage == '100.0' or o.ord_completion_percentage == 100.0:
@@ -680,12 +677,12 @@ def buy_ords_check(self):
 						elif o.ord_status == 'OPEN':
 							print(o)
 							print('WE NEED CODE HERE!!!')
-							beep()
+							beep(2)
 
 						else:
 							print(func_str)
 							print('error #2 !')
-							beep(3)
+							beep(2)
 							db_buy_ords_stat_upd(bo_id=bo.bo_id, ord_stat='ERR')
 
 				elif test_tf == 1:

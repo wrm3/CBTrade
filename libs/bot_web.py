@@ -191,7 +191,7 @@ lib_name      = 'bot_web'
 log_name      = 'bot_web'
 lib_verbosity = 1
 lib_debug_lvl = 1
-lib_secs_max  = 0
+lib_secs_max  = 2
 
 #<=====>#
 # Assignments Pre
@@ -618,17 +618,13 @@ def build_data_display(data, table_id='first'):
 				elif k in ('buy_strat_freq','sell_strat_freq'):
 					html += build_td_important(v, align='center')
 
-				# integer
-				elif isinstance(v, int):
-					html += build_td_int(v)
+				# USD
+				elif k[-4:].lower() == '_usd':
+					html += build_td_usd(v)
 
-				# decimal
-				elif isinstance(v, (float,decimal.Decimal)):
-					html += build_td_dec(v)
-
-				# datetime
-				elif isinstance(v, datetime):
-					html += build_td_str(str(v))
+				# USD
+				elif isinstance(v, str) and k[-4:].lower() == '_usd' or str(v).find('$') >= 0:
+					html += build_td_usd(v)
 
 				# Logo Img
 				elif isinstance(v, str) and v[-4:].lower() in ('.png','.jpg','.jpeg','.gif'):
@@ -642,13 +638,28 @@ def build_data_display(data, table_id='first'):
 				elif isinstance(v, str) and v[:4].lower() in ('www.'):
 					html += build_td_url(v)
 
-				# USD
-				elif isinstance(v, str) and k[-4:].lower() == '_usd' or str(v).find('$') >= 0:
-					html += build_td_usd(v)
-
 				# PERCENT
 				elif isinstance(v, str) and k[-4:].lower() == '_pct' or str(v).find('%') >= 0:
 					html += build_td_pct(v)
+
+
+				# BOLD
+				elif k in ('symb','prod_id', 'mkt'):
+					html += build_td_important(v)
+
+				# integer
+				elif isinstance(v, int):
+					html += build_td_int(v)
+
+				# decimal
+				elif isinstance(v, (float,decimal.Decimal)):
+					html += build_td_dec(v)
+
+
+				# datetime
+				elif isinstance(v, datetime):
+					html += build_td_str(str(v))
+
 
 				# BOLD
 				elif isinstance(v, str) and re_prod_id.match(str(v)):
@@ -2174,174 +2185,79 @@ def ext_balances() -> str:
 
 	m, u, d = add_bals_total(t='Total Balance', m=m, u=u, d=d)
 
-	t = 'Current Balances - Order by Balance'
-	sql = "  "
-	sql += "select b.symb "
-	sql += "  , coalesce(p.open_cnt, 0) as open_cnt "
-	sql += "  , coalesce(p.close_cnt, 0) as close_cnt  "
-	sql += "  , b.bal_avail as bal_cnt "
-	sql += "  , coalesce(p.need_open_cnt, 0) as need_open_cnt "
-	sql += "  , coalesce(p.need_hold_cnt, 0) as need_hold_cnt "
-	sql += "  , case when b.symb in ('USD','USDC') then 1 else m.prc end as prc "
-	sql += "  , coalesce((p.need_open_cnt + p.need_hold_cnt),0) as need_cnt_tot "
-	sql += "  , b.bal_avail - coalesce((p.need_open_cnt + p.need_hold_cnt),0) as unknown_cnt "
-	sql += "  , concat('$',' ', round(b.bal_avail * m.prc, 2)) as bal_val "
-	sql += "  , concat('$',' ', coalesce(round(p.gain_loss_amt, 2), 0)) as gain_loss_amt "
-	sql += "  , concat('$',' ', coalesce(round((p.need_open_cnt * m.prc), 2), 0)) as need_open_val "
-	sql += "  , concat('$',' ', coalesce(round((p.need_hold_cnt * m.prc), 2), 0)) as need_hold_val "
-	sql += "  , concat('$',' ', (b.bal_avail - coalesce((p.need_open_cnt + p.need_hold_cnt),0)) * m.prc) as unknown_val "
-	sql += "  from cbtrade.bals b "
-	sql += "  left outer join (select p.prod_id "
-	sql += "                     , p.base_curr_symb "
-	sql += "                       , p.quote_curr_symb "
-	sql += "                       , sum(case when p.pos_stat = 'OPEN' then 1 else 0 end) as open_cnt "
-	sql += "                       , sum(case when p.pos_stat = 'OPEN' and gain_loss_amt_est >= 0 then 1 else 0 end) as win_open_cnt "
-	sql += "                       , sum(case when p.pos_stat = 'OPEN' and gain_loss_amt_est < 0 then 1 else 0 end) as lose_open_cnt "
-	sql += "                       , sum(case when p.pos_stat = 'CLOSE' then 1 else 0 end) as close_cnt "
-#	sql += "--                     , sum(case when p.pos_stat = 'CLOSE' and gain_loss_amt_est > 0  then 1 else 0 end) as win_close_cnt "
-#	sql += "--                     , sum(case when p.pos_stat = 'CLOSE' and gain_loss_amt_est < 0 then 1 else 0 end) as lose_close_cnt "
-#	sql += "--                     , count(p.age_mins) as age_mins "
-	sql += "                       , sum(case when p.pos_stat = 'OPEN' then p.buy_cnt else 0 end) as need_open_cnt "
-	sql += "                       , sum(case when p.pos_stat = 'CLOSE' then p.hold_cnt else 0 end) as need_hold_cnt "
-	sql += "                       , sum(p.pocket_cnt) as pocket_cnt "
-	sql += "                       , sum(p.clip_cnt) as clip_cnt "
-	sql += "                       , sum(p.gain_loss_amt) as gain_loss_amt "
-	sql += "                       , sum(p.hold_cnt) * m.prc as hold_val "
-	sql += "                       , sum(p.pocket_cnt) * m.prc as pocket_val "
-	sql += "                       , sum(p.clip_cnt) * m.prc as clip_val "
-	sql += "                       from cbtrade.poss p  "
-	sql += "                       left outer join (select m.prod_id, m.base_curr_symb as symb, m.prc from cbtrade.mkts m where m.quote_curr_symb = 'USDC' "
-	sql += "                                        union  "
-	sql += "                                        select m.prod_id, 'ETH2' as symb, m.prc from cbtrade.mkts m where m.quote_curr_symb = 'USDC' and m.base_curr_symb = 'ETH' "
-	sql += "                                        ) m on m.prod_id = p.prod_id "
-	sql += "                       where 1=1 "
-	sql += "                       and p.ignore_tf = 0 "
-	sql += "                       and test_tf = 0 "
-	sql += "                       group by p.prod_id, p.base_curr_symb, p.quote_curr_symb "
-	sql += "                       order by p.prod_id, p.base_curr_symb, p.quote_curr_symb "
-	sql += "                       ) p on p.base_curr_symb = b.symb  "
-	sql += "  left outer join (select m.base_curr_symb as symb, m.prc from cbtrade.mkts m where m.quote_curr_symb = 'USDC' "
-	sql += "                   union select 'USDC' as symb, 1 as prc "
-	sql += "                   union select 'USD' as symb, 1 as prc "
-	sql += "                   union select 'ETH2' as symb, m.prc from cbtrade.mkts m where m.quote_curr_symb = 'USDC' and m.base_curr_symb = 'ETH' "
-	sql += "                   ) m on m.symb = b.symb "
+	sql = ""
+	sql += "select z.* from ( "
+	sql += "select x.symb "
+	sql += "  , x.open_cnt "
+	sql += "  , x.sell_cnt "
+	sql += "  , x.close_cnt "
+	sql += "  , x.open_hold_cnt "
+	sql += "  , round(x.open_hold_cnt * x.curr_prc_usd, 3) as open_hold_usd "
+	sql += "  , x.sell_hold_cnt "
+	sql += "  , round(x.sell_hold_cnt * x.curr_prc_usd, 3) as sell_hold_usd "
+	sql += "  , x.close_hold_cnt "
+	sql += "  , round(x.close_hold_cnt * x.curr_prc_usd, 3) as close_hold_usd "
+	sql += "  , round(x.curr_prc_usd,5) as curr_prc_usd "
+	sql += "  , x.bal_tot "
+	sql += "  , round(x.curr_val_usd,3) as bal_usd "
+	sql += "  , x.open_hold_cnt + x.sell_hold_cnt + x.close_hold_cnt as need_cnt_tot "
+	sql += "  , round((x.open_hold_cnt + x.sell_hold_cnt + x.close_hold_cnt) * x.curr_prc_usd, 3) as need_val_usd "
+	sql += "  , x.bal_tot - (x.open_hold_cnt + x.close_hold_cnt) as over_under_cnt "
+	sql += "  , round((x.bal_tot - (x.open_hold_cnt + x.close_hold_cnt)) * x.curr_prc_usd, 3) as over_under_usd "
+	sql += "from ( "
+	sql += "select distinct p.buy_curr_symb as symb "
+	sql += "  , sum(case when p.pos_stat in ( 'OPEN' ) then 1 else 0 end) as open_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'OPEN' ) then p.hold_cnt else 0 end) as open_hold_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'OPEN' ) then p.pocket_cnt else 0 end) as open_pocket_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'OPEN' ) then p.clip_cnt else 0 end) as open_clip_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'OPEN' ) then p.buy_cnt else 0 end) as open_buy_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'OPEN' ) then p.sell_cnt_tot else 0 end) as open_sell_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'OPEN' ) then p.buy_cnt else 0 end) - sum(case when p.pos_stat = 'OPEN' then p.sell_cnt_tot else 0 end) - sum(case when p.pos_stat in ( 'OPEN' ) then p.hold_cnt else 0 end) as open_buy_sell_diff "
+	sql += "  , sum(case when p.pos_stat in ( 'SELL' ) then 1 else 0 end) as sell_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'SELL' ) then p.buy_cnt else 0 end) as sell_hold_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'SELL' ) then p.pocket_cnt else 0 end) as sell_pocket_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'SELL' ) then p.clip_cnt else 0 end) as sell_clip_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'SELL' ) then p.buy_cnt else 0 end) as sell_buy_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'SELL' ) then p.sell_cnt_tot else 0 end) as selln_sell_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'SELL' ) then p.buy_cnt else 0 end) - sum(case when p.pos_stat = 'OPEN' then p.sell_cnt_tot else 0 end)  as sell_buy_sell_diff "
+	sql += "  , sum(case when p.pos_stat in ( 'CLOSE' ) then 1 else 0 end) as close_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'CLOSE' ) then p.hold_cnt else 0 end) as close_hold_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'CLOSE' ) then p.pocket_cnt else 0 end) as close_pocket_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'CLOSE' ) then p.clip_cnt else 0 end) as close_clip_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'CLOSE' ) then p.buy_cnt else 0 end) as close_buy_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'CLOSE' ) then p.sell_cnt_tot else 0 end) as close_sell_cnt "
+	sql += "  , sum(case when p.pos_stat in ( 'CLOSE' ) then p.buy_cnt else 0 end) - sum(case when p.pos_stat = 'OPEN' then p.sell_cnt_tot else 0 end)  as close_buy_sell_diff "
+	sql += "  , sum(p.hold_cnt) as hold_cnt "
+	sql += "  , b.bal_tot "
+	sql += "  , b.curr_prc_usd "
+	sql += "  , b.curr_val_usd "
+	sql += "  , ((b.bal_tot - sum(case when p.pos_stat in ( 'CLOSE' ) then p.hold_cnt else 0 end)) * b.curr_prc_usd) as var_usd "
+	sql += "  from cbtrade.poss p "
+	sql += "  join cbtrade.bals b on b.symb = p.buy_curr_symb "
 	sql += "  where 1=1 "
-	sql += "  order by b.bal_avail * m.prc desc "
-	h = build_sql_display(sql,'first')
+	sql += "  and p.ignore_tf = 0 "
+	sql += "  group by p.prod_id "
+#	sql += "  having b.bal_tot <> sum(p.hold_cnt) "
+	sql += "  order by 1 "
+	sql += ") x "
+	sql += ") z "
+	sql += "where 1=1 "
+
+	t = 'Current Balances - Order by Balance'
+	sql1 = sql + "  order by z.bal_usd desc "
+	h = build_sql_display(sql1,'first')
 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
 	m, u, d = html_add(more=h, m=m, u=u, d=d)
 
 	t = 'Current Balance - Order by Symbol'
-	sql = "  "
-	sql += "select b.symb "
-	sql += "  , coalesce(p.open_cnt, 0) as open_cnt "
-	sql += "  , coalesce(p.close_cnt, 0) as close_cnt  "
-	sql += "  , b.bal_avail as bal_cnt "
-	sql += "  , coalesce(p.need_open_cnt, 0) as need_open_cnt "
-	sql += "  , coalesce(p.need_hold_cnt, 0) as need_hold_cnt "
-	sql += "  , case when b.symb in ('USD','USDC') then 1 else m.prc end as prc "
-	sql += "  , coalesce((p.need_open_cnt + p.need_hold_cnt),0) as need_cnt_tot "
-	sql += "  , b.bal_avail - coalesce((p.need_open_cnt + p.need_hold_cnt),0) as unknown_cnt "
-	sql += "  , concat('$',' ', round(b.bal_avail * m.prc, 2)) as bal_val "
-	sql += "  , concat('$',' ', coalesce(round(p.gain_loss_amt, 2), 0)) as gain_loss_amt "
-	sql += "  , concat('$',' ', coalesce(round((p.need_open_cnt * m.prc), 2), 0)) as need_open_val "
-	sql += "  , concat('$',' ', coalesce(round((p.need_hold_cnt * m.prc), 2), 0)) as need_hold_val "
-	sql += "  , concat('$',' ', (b.bal_avail - coalesce((p.need_open_cnt + p.need_hold_cnt),0)) * m.prc) as unknown_val "
-	sql += "  from cbtrade.bals b "
-	sql += "  left outer join (select p.prod_id "
-	sql += "                     , p.base_curr_symb "
-	sql += "                       , p.quote_curr_symb "
-	sql += "                       , sum(case when p.pos_stat = 'OPEN' then 1 else 0 end) as open_cnt "
-	sql += "                       , sum(case when p.pos_stat = 'OPEN' and gain_loss_amt_est >= 0 then 1 else 0 end) as win_open_cnt "
-	sql += "                       , sum(case when p.pos_stat = 'OPEN' and gain_loss_amt_est < 0 then 1 else 0 end) as lose_open_cnt "
-	sql += "                       , sum(case when p.pos_stat = 'CLOSE' then 1 else 0 end) as close_cnt "
-#	sql += "--                     , sum(case when p.pos_stat = 'CLOSE' and gain_loss_amt_est > 0  then 1 else 0 end) as win_close_cnt "
-#	sql += "--                     , sum(case when p.pos_stat = 'CLOSE' and gain_loss_amt_est < 0 then 1 else 0 end) as lose_close_cnt "
-#	sql += "--                     , count(p.age_mins) as age_mins "
-	sql += "                       , sum(case when p.pos_stat = 'OPEN' then p.buy_cnt else 0 end) as need_open_cnt "
-	sql += "                       , sum(case when p.pos_stat = 'CLOSE' then p.hold_cnt else 0 end) as need_hold_cnt "
-	sql += "                       , sum(p.pocket_cnt) as pocket_cnt "
-	sql += "                       , sum(p.clip_cnt) as clip_cnt "
-	sql += "                       , sum(p.gain_loss_amt) as gain_loss_amt "
-	sql += "                       , sum(p.hold_cnt) * m.prc as hold_val "
-	sql += "                       , sum(p.pocket_cnt) * m.prc as pocket_val "
-	sql += "                       , sum(p.clip_cnt) * m.prc as clip_val "
-	sql += "                       from cbtrade.poss p  "
-	sql += "                       left outer join (select m.prod_id, m.base_curr_symb as symb, m.prc from cbtrade.mkts m where m.quote_curr_symb = 'USDC' "
-	sql += "                                        union  "
-	sql += "                                        select m.prod_id, 'ETH2' as symb, m.prc from cbtrade.mkts m where m.quote_curr_symb = 'USDC' and m.base_curr_symb = 'ETH' "
-	sql += "                                        ) m on m.prod_id = p.prod_id "
-	sql += "                       where 1=1 "
-	sql += "                       and p.ignore_tf = 0 "
-	sql += "                       and test_tf = 0 "
-	sql += "                       group by p.prod_id, p.base_curr_symb, p.quote_curr_symb "
-	sql += "                       order by p.prod_id, p.base_curr_symb, p.quote_curr_symb "
-	sql += "                       ) p on p.base_curr_symb = b.symb  "
-	sql += "  left outer join (select m.base_curr_symb as symb, m.prc from cbtrade.mkts m where m.quote_curr_symb = 'USDC' "
-	sql += "                   union select 'USDC' as symb, 1 as prc "
-	sql += "                   union select 'USD' as symb, 1 as prc "
-	sql += "                   union select 'ETH2' as symb, m.prc from cbtrade.mkts m where m.quote_curr_symb = 'USDC' and m.base_curr_symb = 'ETH' "
-	sql += "                   ) m on m.symb = b.symb "
-	sql += "  where 1=1 "
-	sql += "  order by b.symb "
-	h = build_sql_display(sql,'first')
+	sql2 = sql + "  order by z.symb "
+	h = build_sql_display(sql2,'second')
 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
 	m, u, d = html_add(more=h, m=m, u=u, d=d)
 
 	t = 'Current Balances - Order by Free Balance'
-	sql = "  "
-	sql += "select b.symb "
-	sql += "  , coalesce(p.open_cnt, 0) as open_cnt "
-	sql += "  , coalesce(p.close_cnt, 0) as close_cnt  "
-	sql += "  , b.bal_avail as bal_cnt "
-	sql += "  , coalesce(p.need_open_cnt, 0) as need_open_cnt "
-	sql += "  , coalesce(p.need_hold_cnt, 0) as need_hold_cnt "
-	sql += "  , case when b.symb in ('USD','USDC') then 1 else m.prc end as prc "
-	sql += "  , coalesce((p.need_open_cnt + p.need_hold_cnt),0) as need_cnt_tot "
-	sql += "  , b.bal_avail - coalesce((p.need_open_cnt + p.need_hold_cnt),0) as unknown_cnt "
-	sql += "  , concat('$',' ', round(b.bal_avail * m.prc, 2)) as bal_val "
-	sql += "  , concat('$',' ', coalesce(round(p.gain_loss_amt, 2), 0)) as gain_loss_amt "
-	sql += "  , concat('$',' ', coalesce(round((p.need_open_cnt * m.prc), 2), 0)) as need_open_val "
-	sql += "  , concat('$',' ', coalesce(round((p.need_hold_cnt * m.prc), 2), 0)) as need_hold_val "
-	sql += "  , concat('$',' ', (b.bal_avail - coalesce((p.need_open_cnt + p.need_hold_cnt),0)) * m.prc) as unknown_val "
-	sql += "  from cbtrade.bals b "
-	sql += "  left outer join (select p.prod_id "
-	sql += "                     , p.base_curr_symb "
-	sql += "                       , p.quote_curr_symb "
-	sql += "                       , sum(case when p.pos_stat = 'OPEN' then 1 else 0 end) as open_cnt "
-	sql += "                       , sum(case when p.pos_stat = 'OPEN' and gain_loss_amt_est >= 0 then 1 else 0 end) as win_open_cnt "
-	sql += "                       , sum(case when p.pos_stat = 'OPEN' and gain_loss_amt_est < 0 then 1 else 0 end) as lose_open_cnt "
-	sql += "                       , sum(case when p.pos_stat = 'CLOSE' then 1 else 0 end) as close_cnt "
-#	sql += "--                     , sum(case when p.pos_stat = 'CLOSE' and gain_loss_amt_est > 0  then 1 else 0 end) as win_close_cnt "
-#	sql += "--                     , sum(case when p.pos_stat = 'CLOSE' and gain_loss_amt_est < 0 then 1 else 0 end) as lose_close_cnt "
-#	sql += "--                     , count(p.age_mins) as age_mins "
-	sql += "                       , sum(case when p.pos_stat = 'OPEN' then p.buy_cnt else 0 end) as need_open_cnt "
-	sql += "                       , sum(case when p.pos_stat = 'CLOSE' then p.hold_cnt else 0 end) as need_hold_cnt "
-	sql += "                       , sum(p.pocket_cnt) as pocket_cnt "
-	sql += "                       , sum(p.clip_cnt) as clip_cnt "
-	sql += "                       , sum(p.gain_loss_amt) as gain_loss_amt "
-	sql += "                       , sum(p.hold_cnt) * m.prc as hold_val "
-	sql += "                       , sum(p.pocket_cnt) * m.prc as pocket_val "
-	sql += "                       , sum(p.clip_cnt) * m.prc as clip_val "
-	sql += "                       from cbtrade.poss p  "
-	sql += "                       left outer join (select m.prod_id, m.base_curr_symb as symb, m.prc from cbtrade.mkts m where m.quote_curr_symb = 'USDC' "
-	sql += "                                        union  "
-	sql += "                                        select m.prod_id, 'ETH2' as symb, m.prc from cbtrade.mkts m where m.quote_curr_symb = 'USDC' and m.base_curr_symb = 'ETH' "
-	sql += "                                        ) m on m.prod_id = p.prod_id "
-	sql += "                       where 1=1 "
-	sql += "                       and p.ignore_tf = 0 "
-	sql += "                       and test_tf = 0 "
-	sql += "                       group by p.prod_id, p.base_curr_symb, p.quote_curr_symb "
-	sql += "                       order by p.prod_id, p.base_curr_symb, p.quote_curr_symb "
-	sql += "                       ) p on p.base_curr_symb = b.symb  "
-	sql += "  left outer join (select m.base_curr_symb as symb, m.prc from cbtrade.mkts m where m.quote_curr_symb = 'USDC' "
-	sql += "                   union select 'USDC' as symb, 1 as prc "
-	sql += "                   union select 'USD' as symb, 1 as prc "
-	sql += "                   union select 'ETH2' as symb, m.prc from cbtrade.mkts m where m.quote_curr_symb = 'USDC' and m.base_curr_symb = 'ETH' "
-	sql += "                   ) m on m.symb = b.symb "
-	sql += "  where 1=1 "
-	sql += "  order by (b.bal_avail - coalesce((p.need_open_cnt + p.need_hold_cnt),0)) * m.prc desc "
-	h = build_sql_display(sql,'first')
+	sql3 = sql + "  order by z.over_under_usd desc "
+	h = build_sql_display(sql3,'third')
 	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
 	m, u, d = html_add(more=h, m=m, u=u, d=d)
 

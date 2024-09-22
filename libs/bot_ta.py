@@ -99,8 +99,7 @@ lib_name      = 'bot_ta'
 log_name      = 'bot_ta'
 lib_verbosity = 1
 lib_debug_lvl = 1
-lib_secs_max  = 0.33
-lib_secs_max  = 10
+lib_secs_max  = 2
 
 #<=====>#
 # Assignments Pre
@@ -294,7 +293,7 @@ def mkt_ta_main_new(mkt, st):
 	func_name = 'mkt_ta_main_new'
 	func_str = f'{lib_name}.{func_name}(mkt, st)'
 #	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=5)
 
 	try:
 
@@ -390,7 +389,7 @@ def mkt_ta_ohlcv(mkt, st):
 	func_name = 'mkt_ta_ohlcv'
 	func_str = f'{lib_name}.{func_name}(mkt, st)'
 #	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=2)
 
 	try:
 

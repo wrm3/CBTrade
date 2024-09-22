@@ -48,7 +48,7 @@ from libs.bot_cls_main import BOT
 # <=====>#
 lib_name = 'run_bot'
 log_name = 'run_bot'
-lib_secs_max = 10
+lib_secs_max = 1
 
 # <=====>#
 # Assignments Pre

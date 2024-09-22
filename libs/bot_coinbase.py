@@ -61,6 +61,16 @@ import re
 import time
 # import traceback
 
+import uuid
+
+# import threading
+# import time
+# import json
+# import os
+# from datetime import datetime as dt
+# from filelock import FileLock
+
+
 #import warnings
 #warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
@@ -90,6 +100,7 @@ from bot_common                    import *
 from bot_db_read                   import *
 from bot_db_write                  import *
 from bot_secrets                   import secrets
+from lib_colors                    import *
 
 #<=====>#
 # Variables
@@ -98,8 +109,7 @@ lib_name      = 'bot_coinbase'
 log_name      = 'bot_coinbase'
 lib_verbosity = 1
 lib_debug_lvl = 1
-lib_secs_max  = 1
-lib_secs_max  = 10
+lib_secs_max  = 2
 
 #<=====>#
 # Assignments Pre
@@ -110,6 +120,13 @@ sc = secrets.settings_load()
 
 cb = cbclient(api_key=sc.coinbase.api_key, api_secret=sc.coinbase.api_secret)
 
+# # Initialize a lock for thread safety within the same process
+# thread_lock = threading.Lock()
+
+# # Path to the counter file and its lock
+# counter_file = 'client_order_id_counter.txt'
+# lock_file = 'client_order_id_counter.lock'
+
 #<=====>#
 # Classes
 #<=====>#
@@ -117,6 +134,144 @@ cb = cbclient(api_key=sc.coinbase.api_key, api_secret=sc.coinbase.api_secret)
 
 #<=====>#
 # Functions
+#<=====>#
+
+
+
+def cb_client_order_id():
+	func_name = 'cb_client_order_id'
+	func_str = f'{lib_name}.{func_name}()'
+#	G(func_str)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+
+	client_order_id = str(uuid.uuid4())
+
+	func_end(fnc)
+	return client_order_id
+
+
+
+# def cb_client_order_id():
+# 	func_name = 'cb_client_order_id'
+# 	func_str = f'{lib_name}.{func_name}()'
+# #	G(func_str)
+# 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+# 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+
+# 	# fix to prevent client _order_id from creating duplicates
+# 	time.sleep(0.25)
+# 	unixtime = int(dt.now().timestamp())
+# 	# 1716634739
+# #	client_order_id = mid(str(unixtime), 1, 8)
+# 	client_order_id = unixtime - 1700000000
+# 	client_order_id = str(client_order_id)
+
+
+# 	func_end(fnc)
+# 	return client_order_id
+
+
+#chatgpt 01-mini's solution... 
+#will repeat and overlap every 115 days 
+# def load_state():
+# 	if os.path.exists(state_file):
+# 		with open(state_file, 'r') as f:
+# 			return json.load(f)
+# 	return {"last_time": 0, "counter": 0}
+# def save_state(state):
+# 	with open(state_file, 'w') as f:
+# 		json.dump(state, f)
+# def cb_client_order_id():
+# 	func_name = 'cb_client_order_id'
+# 	func_str = f'{lib_name}.{func_name}()'
+# 	# G(func_str)
+# 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+# 	if lib_verbosity >= 2:
+# 		print_func_name(func_str, adv=2)
+
+# 	global cb_client_order_id_last_time
+# 	global cb_client_order_id_counter
+
+# 	with cb_client_order_id_lock:
+# 		# Load the last state
+# 		state = load_state()
+# 		last_time = state["last_time"]
+# 		counter = state["counter"]
+
+# 		# Get current time in tenths of a second
+# 		unixtime_tenths = int(time.time() * 10)
+
+# 		if unixtime_tenths == last_time:
+# 			counter += 1
+# 			if counter >= 10:
+# 				# If counter exceeds, wait for the next tenth of a second
+# 				while unixtime_tenths == last_time:
+# 					time.sleep(0.01)  # Sleep for 10ms
+# 					unixtime_tenths = int(time.time() * 10)
+# 				counter = 0
+# 		else:
+# 			last_time = unixtime_tenths
+# 			counter = 0
+
+# 		# Update the state
+# 		state["last_time"] = last_time
+# 		state["counter"] = counter
+# 		save_state(state)
+
+# 		# Generate 8-digit ID
+# 		# Adjust the base subtraction to fit your specific epoch needs
+# 		base_unixtime = 170000000  # Example base to keep the ID within 8 digits
+# 		client_order_id_num = (unixtime_tenths - base_unixtime) * 10 + counter
+
+# 		# Ensure it's 8 digits by taking the last 8 characters
+# 		client_order_id = str(client_order_id_num).zfill(8)[-8:]
+
+# 	func_end(fnc)
+# 	return client_order_id
+
+#<=====>#
+
+# def cb_client_order_id():
+#     func_name = 'cb_client_order_id'
+#     func_str = f'{lib_name}.{func_name}()'
+#     # G(func_str)
+#     fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#     if lib_verbosity >= 2:
+#         print_func_name(func_str, adv=2)
+
+#     with thread_lock:
+#         # Use FileLock for process-safe locking
+#         with FileLock(lock_file):
+#             # If the counter file does not exist, initialize it
+#             if not os.path.exists(counter_file):
+#                 with open(counter_file, 'w') as f:
+#                     f.write('0')
+
+#             # Read the current counter value
+#             with open(counter_file, 'r') as f:
+#                 try:
+#                     counter = int(f.read().strip())
+#                 except ValueError:
+#                     counter = 0  # Reset counter if file is corrupted
+
+#             # Increment the counter
+#             counter += 1
+
+#             # Ensure the counter wraps around if it exceeds 99,999,999
+#             if counter > 99999999:
+#                 counter = 1  # Reset to 1 or any other desired behavior
+
+#             # Write the updated counter back to the file
+#             with open(counter_file, 'w') as f:
+#                 f.write(str(counter))
+
+#     # Format the counter as an 8-digit string with leading zeros
+#     client_order_id = str(counter).zfill(8)
+
+#     func_end(fnc)
+#     return client_order_id
+
 #<=====>#
 
 # Function to fetch current positions
@@ -127,8 +282,25 @@ def cb_bal_get(symb):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
-	cb_wallet_refresh()
-	bal = db_bal_get_by_symbol(symb)
+	accts = []
+	has_next = True
+	cursor = None
+	while has_next:
+		if cursor:
+			time.sleep(0.25)
+			r = cb.get_accounts(limit=250, cursor=cursor)
+		else:
+			time.sleep(0.25)
+			r = cb.get_accounts(limit=250)
+		more_accts = r['accounts']
+		accts.extend(more_accts)
+		has_next = r['has_next']
+		cursor = r['cursor']
+
+	bal = 0
+	for acct in accts:
+		if acct['currency'] == symb:
+			bal = float(acct['available_balance']['value'])
 
 	func_end(fnc)
 	return bal
@@ -150,96 +322,108 @@ product_ids (str or list of str) List of product IDs to return.
 
 '''
 
-def cb_bid_ask_by_amt_get(prod_id, buy_sell_size):
+def cb_bid_ask_by_amt_get(mkt, buy_sell_size):
 	func_name = 'cb_bid_ask_by_amt_get'
-	func_str = f'{lib_name}.{func_name}(prod_id={prod_id}, buy_sell_size={buy_sell_size})'
+	func_str = f'{lib_name}.{func_name}(mkt, buy_sell_size={buy_sell_size})'
 #	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
-	bid_prc, ask_prc = cb_bid_ask_get(prod_id)
-	cum_bids_size = 0
-	cum_asks_size = 0
+	prod_id = mkt.prod_id
+	bid_prc = mkt.prc
+	ask_prc = mkt.prc
 
-	limit = 60
-	max_attempts = 3
-	attempts = 0
-	r = None
-	while r == None:
-		try:
-			attempts += 1
-			time.sleep(0.25)
-			r = cb.get_product_book(product_id=prod_id, limit=limit)
-			bids = r['pricebook']['bids']
-			asks = r['pricebook']['asks']
-#		except Exception as e:
-		except Exception:
-#			traceback.print_exc()
-#			print(type(e))
-#			print(e)
-#			print(dttm_get())
-			if attempts >= 3:
-				print(f'errored => cb.get_product_book(product_id={prod_id}, limit={limit})')
-				print(f'attempt {attempts} of {max_attempts}, sleeping 1 seconds and then retrying')
-			time.sleep(1)
-#			break
+	try:
 
-#	pprint(r)
-#	https://api.coinbase.com/api/v3/brokerage/product_book
-#	{
-#		'pricebook': {
-#			'asks': [
-#				{'price': '3.1597', 'size': '62.38'},
-#				{'price': '3.1598', 'size': '1330.2'},
-#				{'price': '3.16', 'size': '1520.5'},
-#				{'price': '3.166', 'size': '13.53'},
-#				{'price': '3.1661', 'size': '0.47'},
-#				{'price': '3.1667', 'size': '1.5'},
-#				{'price': '3.1682', 'size': '0.03'},
-#				{'price': '3.1683', 'size': '0.03'},
-#				{'price': '3.1684', 'size': '0.03'},
-#				{'price': '3.1685', 'size': '0.03'},
-#				...
-#				],
-#			'bids': [
-#				{'price': '3.1284', 'size': '0.47'},
-#				{'price': '3.1283', 'size': '0.03'},
-#				{'price': '3.1282', 'size': '0.03'},
-#				{'price': '3.1281', 'size': '0.03'},
-#				{'price': '3.128', 'size': '0.03'},
-#				{'price': '3.1279', 'size': '0.03'},
-#				{'price': '3.1278', 'size': '0.03'},
-#				{'price': '3.1277', 'size': '0.03'},
-#				{'price': '3.1276', 'size': '62.74'},
-#				{'price': '3.1275', 'size': '0.03'},
-#				...
-#				],
-#			'product_id': 'BIT-USDC',
-#			'time': '2024-07-12T14:07:16.804930Z'
+		bid_prc, ask_prc = cb_bid_ask_get(prod_id)
+		cum_bids_size = 0
+		cum_asks_size = 0
+
+		limit = 60
+		max_attempts = 3
+		attempts = 0
+		r = None
+		while r == None:
+			try:
+				attempts += 1
+				time.sleep(0.25)
+				r = cb.get_product_book(product_id=prod_id, limit=limit)
+				bids = r['pricebook']['bids']
+				asks = r['pricebook']['asks']
+#			except Exception as e:
+			except Exception:
+#				traceback.print_exc()
+#				print(type(e))
+#				print(e)
+#				print(dttm_get())
+				if attempts >= 3:
+					print(f'errored => cb.get_product_book(product_id={prod_id}, limit={limit})')
+					print(f'attempt {attempts} of {max_attempts}, sleeping 1 seconds and then retrying')
+				time.sleep(1)
+#				break
+
+#		pprint(r)
+#		https://api.coinbase.com/api/v3/brokerage/product_book
+#		{
+#			'pricebook': {
+#				'asks': [
+#					{'price': '3.1597', 'size': '62.38'},
+#					{'price': '3.1598', 'size': '1330.2'},
+#					{'price': '3.16', 'size': '1520.5'},
+#					{'price': '3.166', 'size': '13.53'},
+#					{'price': '3.1661', 'size': '0.47'},
+#					{'price': '3.1667', 'size': '1.5'},
+#					{'price': '3.1682', 'size': '0.03'},
+#					{'price': '3.1683', 'size': '0.03'},
+#					{'price': '3.1684', 'size': '0.03'},
+#					{'price': '3.1685', 'size': '0.03'},
+#					...
+#					],
+#				'bids': [
+#					{'price': '3.1284', 'size': '0.47'},
+#					{'price': '3.1283', 'size': '0.03'},
+#					{'price': '3.1282', 'size': '0.03'},
+#					{'price': '3.1281', 'size': '0.03'},
+#					{'price': '3.128', 'size': '0.03'},
+#					{'price': '3.1279', 'size': '0.03'},
+#					{'price': '3.1278', 'size': '0.03'},
+#					{'price': '3.1277', 'size': '0.03'},
+#					{'price': '3.1276', 'size': '62.74'},
+#					{'price': '3.1275', 'size': '0.03'},
+#					...
+#					],
+#				'product_id': 'BIT-USDC',
+#				'time': '2024-07-12T14:07:16.804930Z'
+#				}
 #			}
-#		}
 
-	# if I believed that all the micro amounts before my target size 
-	# might not be consumed before me, I would do a weighted average price
-	for bid in bids:
-		this_bid_size  = float(bid['size'])
-		this_bid_prc   = float(bid['price'])
-		cum_bids_size += this_bid_size
-#		print(f"cum_bids_size : {cum_bids_size}, this_bid_size : {this_bid_size}', this_bid_prc : {this_bid_prc}")
-		if cum_bids_size > buy_sell_size:
-			bid_prc = this_bid_prc
-			break
+		# if I believed that all the micro amounts before my target size 
+		# might not be consumed before me, I would do a weighted average price
+		for bid in bids:
+			this_bid_size  = float(bid['size'])
+			this_bid_prc   = float(bid['price'])
+			cum_bids_size += this_bid_size
+#			print(f"cum_bids_size : {cum_bids_size}, this_bid_size : {this_bid_size}', this_bid_prc : {this_bid_prc}")
+			if cum_bids_size > buy_sell_size:
+				bid_prc = this_bid_prc
+				break
 
-	for ask in asks:
-		this_ask_size  = float(bid['size'])
-		this_ask_prc   = float(ask['price'])
-		cum_asks_size += this_ask_size
-#		print(f"cum_asks_size : {cum_asks_size}, this_ask_size : {this_ask_size}', this_ask_prc : {this_ask_prc}")
-		if cum_asks_size > buy_sell_size:
-			ask_prc = this_ask_prc
-			break
+		for ask in asks:
+			this_ask_size  = float(bid['size'])
+			this_ask_prc   = float(ask['price'])
+			cum_asks_size += this_ask_size
+#			print(f"cum_asks_size : {cum_asks_size}, this_ask_size : {this_ask_size}', this_ask_prc : {this_ask_prc}")
+			if cum_asks_size > buy_sell_size:
+				ask_prc = this_ask_prc
+				break
 
-#	print(f'{prod_id} ==> bid : {bid_prc:>.8f}, ask : {ask_prc:>.8f}, buy_sell_size : {buy_sell_size:>.8f}')
+#		print(f'{prod_id} ==> bid : {bid_prc:>.8f}, ask : {ask_prc:>.8f}, buy_sell_size : {buy_sell_size:>.8f}')
+
+	except Exception as e:
+		print(f'{dttm_get()} {func_name} - Market Summary ==> {prod_id} = Error : ({type(e)}){e}')
+		traceback.print_exc()
+#		beep(3)
+		pass
 
 	func_end(fnc)
 	return bid_prc, ask_prc
@@ -533,26 +717,6 @@ def cb_candles_get(product_id, start = None, end = None, rfreq = None, granulari
 
 #<=====>#
 
-def cb_client_order_id():
-	func_name = 'cb_client_order_id'
-	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
-
-	# fix to prevent client _order_id from creating duplicates
-	time.sleep(0.25)
-	unixtime = int(dt.now().timestamp())
-	# 1716634739
-#	client_order_id = mid(str(unixtime), 1, 8)
-	client_order_id = unixtime - 1700000000
-	client_order_id = str(client_order_id)
-
-	func_end(fnc)
-	return client_order_id
-
-#<=====>#
-
 def cb_curr_shaper(in_acct):
 	func_name = 'cb_curr_shaper'
 	func_str = f'{lib_name}.{func_name}()'
@@ -665,8 +829,7 @@ def cb_mkt_refresh(prod_id, stable_coins=None):
 		mkt = cb_mkt_shaper(prod)
 
 	db_tbl_mkts_insupd(mkt)
-
-	db_curr_prc_mkt_upd()
+	db_currs_prc_mkt_upd()
 
 	if stable_coins:
 		if isinstance(stable_coins, str):
@@ -674,9 +837,10 @@ def cb_mkt_refresh(prod_id, stable_coins=None):
 			temp.append(stable_coins)
 			stable_coins = temp
 		if isinstance(stable_coins, list):
-			db_curr_prc_stable_upd(stable_symbs=stable_coins)
+			db_currs_prc_stable_upd(stable_symbs=stable_coins)
 
-	db_curr_prc_mkt_upd()
+	db_currs_prc_mkt_upd()
+	db_bals_prc_mkt_upd()
 
 	t1 = time.perf_counter()
 	elapsed_seconds = round(t1 - t0, 2)
@@ -815,7 +979,7 @@ def cb_mkts_refresh(stable_coins=None):
 	func_name = 'cb_mkts_refresh'
 	func_str = f'{lib_name}.{func_name}()'
 #	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=1.5)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=2)
 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
 
 	t0 = time.perf_counter()
@@ -839,7 +1003,8 @@ def cb_mkts_refresh(stable_coins=None):
 
 	db_tbl_mkts_insupd(all_mkts)
 
-	db_curr_prc_mkt_upd()
+	db_currs_prc_mkt_upd()
+	db_bals_prc_mkt_upd()
 
 	if stable_coins:
 		if isinstance(stable_coins, str):
@@ -847,9 +1012,10 @@ def cb_mkts_refresh(stable_coins=None):
 			temp.append(stable_coins)
 			stable_coins = temp
 		if isinstance(stable_coins, list):
-			db_curr_prc_stable_upd(stable_symbs=stable_coins)
+			db_currs_prc_stable_upd(stable_symbs=stable_coins)
 
-	db_curr_prc_mkt_upd()
+	db_currs_prc_mkt_upd()
+	db_bals_prc_mkt_upd()
 
 	t1 = time.perf_counter()
 	elapsed_seconds = round(t1 - t0, 2)
@@ -1125,6 +1291,9 @@ def cb_wallet_refresh():
 
 	db_tbl_bals_insupd(all_bals)
 	db_tbl_currs_insupd(all_currs)
+
+	db_currs_prc_mkt_upd()
+	db_bals_prc_mkt_upd()
 
 	t1 = time.perf_counter()
 	elapsed_seconds = round(t1 - t0, 2)
