@@ -1,6 +1,7 @@
 drop database if exists cbtrade;
 create database cbtrade;
 
+
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
@@ -73,6 +74,17 @@ create table bals(
 	, dlm                                         timestamp default current_timestamp on update current_timestamp
 	, unique(curr_uuid)
 	);
+
+
+
+use cbtrade;
+drop table if exists ohlcv_prod_id_freqs;
+create table if not exists ohlcv_prod_id_freqs(
+    prod_id           varchar(64) 
+  , freq              varchar(64) 
+  , last_upd_dttm     timestamp default current_timestamp 
+  , dlm               timestamp default current_timestamp on update current_timestamp 
+  );
 
 
 
@@ -234,10 +246,14 @@ create table buy_ords(
 	, add_dttm                                    timestamp default current_timestamp
 	, upd_dttm                                    timestamp default current_timestamp on update current_timestamp
 	, dlm                                         timestamp default current_timestamp on update current_timestamp
-	, unique(buy_order_uuid)
+	, unique(buy_order_uuid, buy_client_order_id, prod_id)
 	);
 
 
+/*
+ALTER TABLE cbtrade.buy_ords ADD CONSTRAINT unique_buy_order UNIQUE (buy_order_uuid, buy_client_order_id, prod_id);
+ALTER TABLE cbtrade.buy_ords drop index buy_order_uuid;
+*/
 
 use cbtrade;
 drop table if exists sell_ords;
@@ -286,11 +302,14 @@ create table sell_ords(
 	, add_dttm                                    timestamp default current_timestamp
 	, upd_dttm                                    timestamp default current_timestamp on update current_timestamp
 	, dlm                                         timestamp default current_timestamp on update current_timestamp
-	, unique(sell_order_uuid)
+	, unique(sell_order_uuid, sell_client_order_id, pos_id)
 	);
 
-
-
+/*
+ALTER TABLE cbtrade.sell_ords ADD CONSTRAINT unique_sell_order UNIQUE (sell_order_uuid, sell_client_order_id, pos_id);
+ALTER TABLE cbtrade.sell_ords drop index sell_order_uuid;
+sell_ords
+*/
 
 use cbtrade;
 drop table if exists poss;
@@ -356,9 +375,14 @@ create table poss(
 	, quote_size_incr                             decimal(36,12)
 	, quote_size_min                              decimal(36,12)
 	, quote_size_max                              decimal(36,12)
+    , sell_yn                                     char(1) 
+    , hodl_yn                                     char(1) 
+    , sell_block_yn                               char(1) default 'N'
+    , sell_force_yn                               char(1) default 'N'
 	, test_tf                                     tinyint default 0
 	, force_sell_tf                               tinyint default 0
 	, ignore_tf                                   tinyint default 0
+	, error_tf                                    tinyint default 0
 	, reason                                      varchar(1024)
 	, note1                                       varchar(1024)
 	, note2                                       varchar(1024)
@@ -367,12 +391,70 @@ create table poss(
 	, mkt_venue                                   varchar(64)
 	, pos_type                                    varchar(64)
 	, buy_asset_type                              varchar(64)
+	, check_mkt_dttm                              timestamp default current_timestamp
+	, check_last_dttm                             timestamp default current_timestamp
 	, add_dttm                                    timestamp default current_timestamp
 	, upd_dttm                                    timestamp default current_timestamp on update current_timestamp
 	, del_dttm                                    timestamp default current_timestamp on update current_timestamp
 	, dlm                                         timestamp default current_timestamp on update current_timestamp
 	, unique(bo_uuid)
 	);
+
+-- alter table cbtrade.poss add column error_tf tinyint default 0 after ignore_tf;
+-- alter table cbtrade.poss add column sell_yn char(1) after quote_size_max;
+-- alter table cbtrade.poss add column sell_block_yn char(1) after sell_yn;
+-- alter table cbtrade.poss add column hodl_yn char(1) after sell_block_yn;
+-- alter table cbtrade.poss add column sell_force_yn char(1) default 'N' after sell_block_yn;
+-- alter table cbtrade.poss modify column sell_block_yn char(1) default 'N';
+-- alter table cbtrade.poss modify column hodl_yn char(1) after sell_yn;
+
+use cbtrade;
+drop table if exists buy_signals;
+create table buy_signals(
+	sid                                           int(11) primary key AUTO_INCREMENT
+	, test_tf                                     tinyint default 0
+	, prod_id                                     varchar(64)
+	, buy_strat_type                              varchar(64)
+	, buy_strat_name                              varchar(64)
+	, buy_strat_freq                              varchar(64)
+    , buy_yn                                      char(1)
+    , buy_deny_yn                                 char(1)
+    , wait_yn                                     char(1)
+	, actv_dttm                                   timestamp default current_timestamp
+	, note1                                       varchar(1024)
+	, note2                                       varchar(1024)
+	, note3                                       varchar(1024)
+	, add_dttm                                    timestamp default current_timestamp
+	, upd_dttm                                    timestamp default current_timestamp on update current_timestamp
+	, dlm                                         timestamp default current_timestamp on update current_timestamp
+	);
+
+
+use cbtrade;
+drop table if exists sell_signals;
+create table sell_signals(
+	sid                                           int(11) primary key AUTO_INCREMENT
+	, test_tf                                     tinyint default 0
+	, prod_id                                     varchar(64)
+	, pos_id                                      int(11)
+	, buy_strat_type                              varchar(64)
+	, buy_strat_name                              varchar(64)
+	, buy_strat_freq                              varchar(64)
+	, sell_strat_type                             varchar(64)
+	, sell_strat_name                             varchar(64)
+	, sell_strat_freq                             varchar(64)
+    , sell_yn                                     char(1)
+    , sell_block_yn                               char(1)
+    , hodl_yn                                     char(1)
+	, actv_dttm                                   timestamp default current_timestamp
+	, note1                                       varchar(1024)
+	, note2                                       varchar(1024)
+	, note3                                       varchar(1024)
+	, add_dttm                                    timestamp default current_timestamp
+	, upd_dttm                                    timestamp default current_timestamp on update current_timestamp
+	, dlm                                         timestamp default current_timestamp on update current_timestamp
+	);
+
 
 use cbtrade;
 drop table if exists buy_signs;
