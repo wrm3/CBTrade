@@ -3,35 +3,20 @@
 #<=====>#
 
 
+
 #<=====>#
 # Known To Do List
 #<=====>#
 
 
+
 #<=====>#
-# Imports - Common Modules
+# Imports
 #<=====>#
 import json
-import os
-import sys
-import traceback
-from pprint import pprint
 from datetime import datetime as dt
-#from pathlib import Path
-
-#<=====>#
-# Imports - Download Modules
-#<=====>#
-
-
-#<=====>#
-# Imports - Shared Library
-#<=====>#
-
-
-#<=====>#
-# Imports - Local Library
-#<=====>#
+import os
+import traceback
 
 
 #<=====>#
@@ -161,10 +146,6 @@ class Settings():
 	def file_read(self):
 		func_name = f'{lib_name}.file_read()'
 		try:
-#			f = Path(self.file_path)
-#			st = json.load(f)
-#			return st
-
 			with open(self.file_path) as f:
 				st = json.load(f)
 				f.close()
@@ -200,6 +181,36 @@ class Settings():
 						out_val = in_dict[in_key]
 					else:
 						out_val = in_dict['***']
+
+		except Exception as e:
+			print(f'{func_name} ==> errored... {type(e)} {e}')
+			traceback.print_exc()
+			traceback.print_stack()
+			exit()
+
+		return out_val
+
+	#<=====>#
+
+	def get_ovrd2(self, in_dict, in_key, in_key2, def_val=None):
+		func_name = f'{lib_name}.get_ovrd(in_dict, in_key={in_key}, in_key2={in_key2}, def_val={def_val})'
+
+		try:
+			out_val = def_val
+
+			if isinstance(in_dict, (dict, AttrDict)):
+				if in_key in in_dict or '***' in in_dict:
+					if in_key in in_dict:
+						out_val = in_dict[in_key]
+					else:
+						out_val = in_dict['***']
+
+			if isinstance(out_val, (dict, AttrDict)):
+				if in_key2 in out_val or '***' in out_val:
+					if in_key2 in out_val:
+						out_val = out_val[in_key2]
+					else:
+						out_val = out_val['***']
 
 		except Exception as e:
 			print(f'{func_name} ==> errored... {type(e)} {e}')
@@ -247,9 +258,11 @@ class Settings():
 def test_main():
 	pass
 
+
 #<=====>#
 # Post Variables
 #<=====>#
+
 
 
 #<=====>#

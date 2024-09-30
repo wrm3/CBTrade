@@ -1,66 +1,24 @@
 #<=====>#
-# Import All Scope
+# Description
 #<=====>#
-import_all_func_list = []
-import_all_func_list.append("AttrDict")
-import_all_func_list.append("AttrDictConv")
-import_all_func_list.append("AttrDictUpd")
-import_all_func_list.append("DictContainsKeys")
-import_all_func_list.append("DictKeyValIfElse")
-import_all_func_list.append("DictKeyValFill")
-import_all_func_list.append("DictKeyVal")
-import_all_func_list.append("DictKeyValMult")
-import_all_func_list.append("DictKeyDel")
-import_all_func_list.append("DictValCheck")
-import_all_func_list.append("dec_2_float")
-import_all_func_list.append("dict_of_dicts_sort")
-__all__ = import_all_func_list
+
+
 
 #<=====>#
-# Imports - Common Modules
+# Known To Do List
 #<=====>#
-from datetime            import datetime as dt
-from pprint              import pformat
-from pprint              import pprint
-from termcolor           import colored
-from termcolor           import cprint
-import beepy
-import concurrent.futures
-import datetime
+
+
+
+#<=====>#
+# Imports
+#<=====>#
+from datetime import datetime
 import decimal
-import errno
-import json
-import os
-import pyttsx3
+from libs.cls_settings import AttrDict
+from pprint import pprint
 import sys
-import sys, os
-import time
 import traceback
-import winsound
-
-#<=====>#
-# Imports - Download Modules
-#<=====>#
-
-#<=====>#
-# Imports - Unsure if used/needed
-#<=====>#
-
-#<=====>#
-# Imports - Recently Removed
-#<=====>#
-
-#<=====>#
-# Imports - Shared Library
-#<=====>#
-# shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
-# if shared_libs_path not in sys.path:
-# 	sys.path.append(shared_libs_path)
-
-
-#<=====>#
-# Imports - Local Library
-#<=====>#
 
 
 #<=====>#
@@ -69,9 +27,11 @@ import winsound
 lib_name            = 'lib_dicts'
 log_name            = 'lib_dicts'
 
+
 #<=====>#
 # Assignments Pre
 #<=====>#
+
 
 
 #<=====>#
@@ -83,6 +43,7 @@ class AttrDict(dict):
 		return self[item]
 	def __setattr__(self, key, value):
 		self[key] = value
+
 
 #<=====>#
 # Functions
@@ -160,9 +121,6 @@ def DictContainsKeys(in_dict={}, ks=[]):
 	ks - either a single key or list of keys
 	DOES NOT check values of those keys, just if keys are present
 	'''
-#	print('DictContainsKeys(in_dict, ks={})'.format(ks))
-#	resp = in_dict.keys() >= ks
-#	print(resp)
 	s = set(ks)
 	resp = s.issubset(in_dict.keys())
 	return resp
@@ -230,11 +188,6 @@ def DictKeyVal(in_dict, k):
 	Returns Boolean if key in in_dict and has value using HaveValue function
 	'''
 	try:
-#		if not isinstance(in_dict, dict):
-#			print(func_name)
-#			print('k : {} ({})'.format(k, type(k)))
-#			print('in_dict : ({})'.format(type(in_dict)))
-#			pprint(in_dict)
 		resp = False
 		if k in in_dict:
 			if HasVal(in_dict[k]):
@@ -297,7 +250,6 @@ def DictValCheck(in_dict={}, ks=[], show_yn='N'):
 	ks - allows specified keys to be returned
 	'''
 	if HasVal(ks):
-#		print('DictValCheck(in_dict, ks={}, show_yn={})'.format(ks, show_yn))
 		resp = True
 		if isinstance(ks, list):
 			for k in ks:
@@ -351,33 +303,21 @@ def dec_2_float(in_data):
 #<=====>#
 
 def dict_of_dicts_sort(d:dict, k:str, typ='float', rev=False):
-	# m = 'dict_of_dicts_sort(d=d, k={}, rev={})'
-	# msg =m.format(k, rev)
-#	print(msg)
 	sorted_d  = {}
 	vals_list = []
 	pks_list  = []
 	for pk in d:
 		val = str(d[pk][k])
-#		print('dict_of_dicts_sort => Step 1 - pk of all dicts in dict => : {}'.format(val))
 		vals_list.append(val)
 	sorted_vals_list = sorted(vals_list, reverse=rev)
-#	print(sorted_vals_list)
 	for val_tgt in sorted_vals_list:
 		if typ == 'float': val_tgt = float(val_tgt)
 		if typ == 'str': val_tgt = str(val_tgt)
 		if typ == 'int': val_tgt = int(val_tgt)
-#		print('dict_of_dicts_sort => Step 2 - val_tgt in sorted_vals_list => : {}'.format(val_tgt))
 		for pk in d:
-#			print('dict_of_dicts_sort => Step 3 - pk in d => : {}'.format(pk))
 			val = d[pk][k]
-#			print('dict_of_dicts_sort => Step 4 - val in d[pk][k] => : {}'.format(val))
 			if val == val_tgt:
-#				print('dict_of_dicts_sort => Step 5A - val : {} ({}) == val_tgt : {}  ({})'.format(val, val_tgt, type(val), type(val_tgt)))
 				pks_list.append(pk)
-#			else:
-#				print('dict_of_dicts_sort => Step 5B - val : {} ({}) != val_tgt : {}  ({})'.format(val, type(val), val_tgt, type(val_tgt)))
-#	print(pks_list)
 	for pk in pks_list:
 		sorted_d[pk] = d[pk]
 	return sorted_d

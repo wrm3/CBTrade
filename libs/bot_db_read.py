@@ -3,147 +3,58 @@
 #<=====>#
 
 
-#<=====>#
-# Import All
-#<=====>#
-
-import_all_func_list = []
-
-import_all_func_list.append("db_poss_check_mkt_dttm_get")
-import_all_func_list.append("db_poss_check_last_dttm_get")
-
-import_all_func_list.append("db_ohlcv_prod_id_freqs")
-import_all_func_list.append("db_ohlcv_freq_get")
-
-import_all_func_list.append("db_safe_string")
-import_all_func_list.append("db_mkts_loop_get")
-import_all_func_list.append("db_mkts_loop_top_perfs_prod_ids_get")
-import_all_func_list.append("db_mkts_loop_top_gains_prod_ids_get")
-import_all_func_list.append("db_mkts_loop_top_prc_chg_prod_ids_get")
-import_all_func_list.append("db_mkts_loop_top_vol_chg_prod_ids_get")
-import_all_func_list.append("db_mkts_loop_top_vol_chg_pct_prod_ids_get")
-import_all_func_list.append("db_mkts_loop_poss_open_prod_ids_get")
-import_all_func_list.append("db_mkts_loop_watched_prod_ids_get")
-import_all_func_list.append("db_mkt_elapsed_get")
-import_all_func_list.append("db_mkt_strat_elapsed_get")
-import_all_func_list.append("db_open_trade_amts_get")
-import_all_func_list.append("db_bals_get")
-import_all_func_list.append("db_bal_get_by_symbol")
-import_all_func_list.append("db_buy_ords_open_get")
-import_all_func_list.append("db_buy_ords_get_by_uuid")
-import_all_func_list.append("db_trade_perf_get")
-import_all_func_list.append("db_mkts_open_cnt_get")
-import_all_func_list.append("db_mkt_prc_get_by_prod_id")
-import_all_func_list.append("db_mkt_sizing_data_get_by_uuid")
-import_all_func_list.append("db_trade_strat_perf_get")
-import_all_func_list.append("db_mkt_strats_stats_open_get")
-import_all_func_list.append("db_mkt_strats_used_get")
-import_all_func_list.append("db_perf_summaries_get")
-import_all_func_list.append("db_pos_get_by_pos_id")
-import_all_func_list.append("db_pos_open_get_by_prod_id")
-import_all_func_list.append("db_poss_close_recent_get")
-import_all_func_list.append("db_poss_open_cnt_get_by_prod_id")
-import_all_func_list.append("db_poss_open_get")
-import_all_func_list.append("db_poss_open_max_trade_size_get")
-import_all_func_list.append("db_poss_open_get")
-import_all_func_list.append("db_poss_open_recent_get")
-
-import_all_func_list.append("db_poss_sell_order_problems_get")
-
-import_all_func_list.append("db_sell_ords_open_get")
-import_all_func_list.append("db_sell_ords_get_by_uuid")
-import_all_func_list.append("db_sell_ords_get_by_pos_id")
-
-import_all_func_list.append("db_strats_perf_get_all")
-import_all_func_list.append("db_strats_w_stats_get_all")
-import_all_func_list.append("db_view_trade_perf_get_by_prod_id")
-import_all_func_list.append("db_table_names_get")
-__all__ = import_all_func_list
 
 #<=====>#
 # Known To Do List
 #<=====>#
 
 
+
 #<=====>#
-# Imports - Common Modules
+# Imports
 #<=====>#
-# import pandas as pd
-import sys
+from dotenv import load_dotenv
+from libs.bot_settings import debug_settings_get, get_lib_func_secs_max
+from libs.cls_db_mysql import db_mysql
+from libs.lib_common import func_begin, func_end, print_func_name
 import os
 import re
-import time
-from pprint import pprint
-import sqlparse
 
-
-#<=====>#
-# Imports - Download Modules
-#<=====>#
-
-
-#<=====>#
-# Imports - Shared Library
-#<=====>#
-# shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
-# if shared_libs_path not in sys.path:
-# 	sys.path.append(shared_libs_path)
-
-
-#<=====>#
-# Imports - Local Library
-#<=====>#
-local_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '', 'libs'))
-if local_libs_path not in sys.path:
-	sys.path.append(local_libs_path)
-
-from cls_db_mysql                  import db_mysql
-
-from lib_common                    import *
-from lib_colors                    import *
-
-#from bot_common                    import *
-from bot_secrets                   import secrets
 
 #<=====>#
 # Variables
 #<=====>#
 lib_name      = 'bot_db_read'
 log_name      = 'bot_db_read'
-lib_verbosity = 1
-lib_debug_lvl = 1
-verbosity     = 1
-debug_lvl     = 1
-lib_secs_max  = 2
 
-#<=====>#
+
+# <=====>#
 # Assignments Pre
-#<=====>#
+# <=====>#
 
-sc = secrets.settings_load()
-db = db_mysql(sc.mysql.host, sc.mysql.port, sc.mysql.db, sc.mysql.user, sc.mysql.pw)
+dst, debug_settings = debug_settings_get()
+lib_secs_max = get_lib_func_secs_max(lib_name=lib_name)
+
+# Load environment variables from .env file
+load_dotenv()
+# Access environment variables
+db_host = os.getenv('DB_HOST')
+db_port = os.getenv('DB_PORT')
+db_name = os.getenv('DB_NAME')
+db_user = os.getenv('DB_USER')
+db_pw   = os.getenv('DB_PW')
+
+db = db_mysql(db_host=db_host, db_port=int(db_port), db_name=db_name, db_user=db_user, db_pw=db_pw)
+
 
 #<=====>#
 # Classes
 #<=====>#
 
 
+
 #<=====>#
 # Functions
-#<=====>#
-
-'''
-
-drop view if exists cbtrade.view_mkt_perf;
-create view cbtrade.view_mkt_perf as 
-  from cbtrade.poss p
-  where ignore_tf = 0
-  group by p.prod_id
-  order by gain_loss_pct_day desc
-  ;
-
-'''
-
 #<=====>#
 
 def db_safe_string(in_str):
@@ -152,6 +63,263 @@ def db_safe_string(in_str):
 	# Replace characters not in the allowed set with an empty string
 	out_str = re.sub(allowed_chars_pattern, '', in_str)
 	return out_str
+
+#<=====>#
+
+def db_bot_spent(quote_curr_symb=None):
+	func_name = 'db_bot_spent'
+	func_str = f'{lib_name}.{func_name}()'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "select x.symb "
+	sql += "  , x.open_cnt "
+	sql += "  , x.open_up_cnt "
+	sql += "  , x.open_dn_cnt "
+	sql += "  , round((x.open_up_cnt / (x.open_up_cnt + x.open_dn_cnt)) * 100, 2) as open_up_pct "
+	sql += "  , round((x.open_dn_cnt / (x.open_up_cnt + x.open_dn_cnt)) * 100, 2) as open_dn_pct "
+	sql += "  , x.spent_amt "
+	sql += "  , x.spent_up_amt "
+	sql += "  , x.spent_dn_amt "
+	sql += "  , round((x.spent_up_amt / (x.spent_up_amt + x.spent_dn_amt)) * 100, 2) as spent_up_pct "
+	sql += "  , round((x.spent_dn_amt / (x.spent_up_amt + x.spent_dn_amt)) * 100, 2) as spent_dn_pct "
+	sql += "  from ( "
+	sql += "select p.quote_curr_symb as symb  "
+	sql += "  , p.prod_id "
+	sql += "  , count(*) as open_cnt "
+	sql += "  , sum(case when p.buy_strat_type = 'up' then 1 else 0 end) as open_up_cnt "
+	sql += "  , sum(case when p.buy_strat_type = 'dn' then 1 else 0 end) as open_dn_cnt "
+	sql += "  , sum(p.tot_out_cnt) as spent_amt "
+	sql += "  , sum(case when p.buy_strat_type = 'up' then p.tot_out_cnt else 0 end) as spent_up_amt "
+	sql += "  , sum(case when p.buy_strat_type = 'dn' then p.tot_out_cnt else 0 end) as spent_dn_amt "
+	sql += "  from cbtrade.poss p "
+	sql += "  where p.pos_stat in ('OPEN','SELL') "
+	if quote_curr_symb:
+		sql += "  and p.quote_curr_symb = '{quote_curr_symb}' "
+	sql += "  group by p.quote_curr_symb "
+	sql += "  ) x "
+	sql += "  order by x.symb "
+
+	spent = db.seld(sql)
+
+	if not spent:
+		spent = {}
+
+	func_end(fnc)
+	return spent
+
+#<=====>#
+
+def db_pair_spent(prod_id=None):
+	func_name = 'db_pair_spent'
+	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "select x.symb "
+	sql += "  , x.prod_id "
+	sql += "  , x.open_cnt "
+	sql += "  , x.open_up_cnt "
+	sql += "  , x.open_dn_cnt "
+	sql += "  , round((x.open_up_cnt / (x.open_up_cnt + x.open_dn_cnt)) * 100, 2) as open_up_pct "
+	sql += "  , round((x.open_dn_cnt / (x.open_up_cnt + x.open_dn_cnt)) * 100, 2) as open_dn_pct "
+	sql += "  , x.spent_amt "
+	sql += "  , x.spent_up_amt "
+	sql += "  , x.spent_dn_amt "
+	sql += "  , round((x.spent_up_amt / (x.spent_up_amt + x.spent_dn_amt)) * 100, 2) as spent_up_pct "
+	sql += "  , round((x.spent_dn_amt / (x.spent_up_amt + x.spent_dn_amt)) * 100, 2) as spent_dn_pct "
+	sql += "  from ( "
+	sql += "select p.quote_curr_symb as symb  "
+	sql += "  , p.prod_id "
+	sql += "  , count(*) as open_cnt "
+	sql += "  , sum(case when p.buy_strat_type = 'up' then 1 else 0 end) as open_up_cnt "
+	sql += "  , sum(case when p.buy_strat_type = 'dn' then 1 else 0 end) as open_dn_cnt "
+	sql += "  , sum(p.tot_out_cnt) as spent_amt "
+	sql += "  , sum(case when p.buy_strat_type = 'up' then p.tot_out_cnt else 0 end) as spent_up_amt "
+	sql += "  , sum(case when p.buy_strat_type = 'dn' then p.tot_out_cnt else 0 end) as spent_dn_amt "
+	sql += "  from cbtrade.poss p "
+	sql += "  where p.pos_stat in ('OPEN','SELL') "
+	if prod_id:
+		sql += f"  and p.prod_id = '{prod_id}' "
+	sql += "  group by p.quote_curr_symb, p.prod_id "
+	sql += "  ) x "
+	sql += "  order by x.symb, x.prod_id "
+
+	pair_spent = db.seld(sql)
+
+	if not pair_spent:
+		pair_spent = {}
+	else:
+		pair_spent = pair_spent[0]
+
+	func_end(fnc)
+	return pair_spent
+
+#<=====>#
+
+def db_pair_spent(prod_id=None):
+	func_name = 'db_pair_spent'
+	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "select x.symb "
+	sql += "  , x.prod_id "
+	sql += "  , x.open_cnt "
+	sql += "  , x.open_up_cnt "
+	sql += "  , x.open_dn_cnt "
+	sql += "  , round((x.open_up_cnt / (x.open_up_cnt + x.open_dn_cnt)) * 100, 2) as open_up_pct "
+	sql += "  , round((x.open_dn_cnt / (x.open_up_cnt + x.open_dn_cnt)) * 100, 2) as open_dn_pct "
+	sql += "  , x.spent_amt "
+	sql += "  , x.spent_up_amt "
+	sql += "  , x.spent_dn_amt "
+	sql += "  , round((x.spent_up_amt / (x.spent_up_amt + x.spent_dn_amt)) * 100, 2) as spent_up_pct "
+	sql += "  , round((x.spent_dn_amt / (x.spent_up_amt + x.spent_dn_amt)) * 100, 2) as spent_dn_pct "
+	sql += "  from ( "
+	sql += "select p.quote_curr_symb as symb  "
+	sql += "  , p.prod_id "
+	sql += "  , count(*) as open_cnt "
+	sql += "  , sum(case when p.buy_strat_type = 'up' then 1 else 0 end) as open_up_cnt "
+	sql += "  , sum(case when p.buy_strat_type = 'dn' then 1 else 0 end) as open_dn_cnt "
+	sql += "  , sum(p.tot_out_cnt) as spent_amt "
+	sql += "  , sum(case when p.buy_strat_type = 'up' then p.tot_out_cnt else 0 end) as spent_up_amt "
+	sql += "  , sum(case when p.buy_strat_type = 'dn' then p.tot_out_cnt else 0 end) as spent_dn_amt "
+	sql += "  from cbtrade.poss p "
+	sql += "  where p.pos_stat in ('OPEN','SELL') "
+	if prod_id:
+		sql += f"  and p.prod_id = '{prod_id}' "
+	sql += "  group by p.quote_curr_symb, p.prod_id "
+	sql += "  ) x "
+	sql += "  order by x.symb, x.prod_id "
+
+	pair_spent = db.seld(sql)
+
+	if not pair_spent:
+		pair_spent = {}
+	else:
+		pair_spent = pair_spent[0]
+
+	func_end(fnc)
+	return pair_spent
+
+#<=====>#
+
+def db_pair_strat_spent(prod_id=None, buy_strat_type=None, buy_strat_name=None):
+	func_name = 'db_pair_strat_spent'
+	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "select x.symb "
+	sql += "  , x.prod_id "
+	sql += "  , x.buy_strat_type "
+	sql += "  , x.buy_strat_name "
+	sql += "  , x.open_cnt "
+	sql += "  , x.open_up_cnt "
+	sql += "  , x.open_dn_cnt "
+	sql += "  , round((x.open_up_cnt / (x.open_up_cnt + x.open_dn_cnt)) * 100, 2) as open_up_pct "
+	sql += "  , round((x.open_dn_cnt / (x.open_up_cnt + x.open_dn_cnt)) * 100, 2) as open_dn_pct "
+	sql += "  , x.spent_amt "
+	sql += "  , x.spent_up_amt "
+	sql += "  , x.spent_dn_amt "
+	sql += "  , round((x.spent_up_amt / (x.spent_up_amt + x.spent_dn_amt)) * 100, 2) as spent_up_pct "
+	sql += "  , round((x.spent_dn_amt / (x.spent_up_amt + x.spent_dn_amt)) * 100, 2) as spent_dn_pct "
+	sql += "  from ( "
+	sql += "select p.quote_curr_symb as symb  "
+	sql += "  , p.prod_id "
+	sql += "  , p.buy_strat_type "
+	sql += "  , p.buy_strat_name "
+	sql += "  , count(*) as open_cnt "
+	sql += "  , sum(case when p.buy_strat_type = 'up' then 1 else 0 end) as open_up_cnt "
+	sql += "  , sum(case when p.buy_strat_type = 'dn' then 1 else 0 end) as open_dn_cnt "
+	sql += "  , sum(p.tot_out_cnt) as spent_amt "
+	sql += "  , sum(case when p.buy_strat_type = 'up' then p.tot_out_cnt else 0 end) as spent_up_amt "
+	sql += "  , sum(case when p.buy_strat_type = 'dn' then p.tot_out_cnt else 0 end) as spent_dn_amt "
+	sql += "  from cbtrade.poss p "
+	sql += "  where p.pos_stat in ('OPEN','SELL') "
+	if prod_id:
+		sql += f"  and p.prod_id = '{prod_id}' "
+	if buy_strat_type:
+		sql += f"  and p.buy_strat_type = '{buy_strat_type}' "
+	if buy_strat_name:
+		sql += f"  and p.buy_strat_name = '{buy_strat_name}' "
+	sql += "  group by p.quote_curr_symb, p.prod_id, p.buy_strat_type, p.buy_strat_name "
+	sql += "  ) x "
+	sql += "  order by x.symb, x.prod_id, x.buy_strat_type, x.buy_strat_name "
+
+	pair_strat_spent = db.seld(sql)
+
+	if not pair_strat_spent:
+		pair_strat_spent = {}
+	else:
+		pair_strat_spent = pair_strat_spent[0]
+
+	func_end(fnc)
+	return pair_strat_spent
+
+#<=====>#
+
+def db_pair_strat_freq_spent(prod_id=None, buy_strat_type=None, buy_strat_name=None, buy_strat_freq=None):
+	func_name = 'db_pair_strat_freq_spent'
+	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "select x.symb "
+	sql += "  , x.prod_id "
+	sql += "  , x.buy_strat_type "
+	sql += "  , x.buy_strat_name "
+	sql += "  , x.buy_strat_freq "
+	sql += "  , x.open_cnt "
+	sql += "  , x.open_up_cnt "
+	sql += "  , x.open_dn_cnt "
+	sql += "  , round((x.open_up_cnt / (x.open_up_cnt + x.open_dn_cnt)) * 100, 2) as open_up_pct "
+	sql += "  , round((x.open_dn_cnt / (x.open_up_cnt + x.open_dn_cnt)) * 100, 2) as open_dn_pct "
+	sql += "  , x.spent_amt "
+	sql += "  , x.spent_up_amt "
+	sql += "  , x.spent_dn_amt "
+	sql += "  , round((x.spent_up_amt / (x.spent_up_amt + x.spent_dn_amt)) * 100, 2) as spent_up_pct "
+	sql += "  , round((x.spent_dn_amt / (x.spent_up_amt + x.spent_dn_amt)) * 100, 2) as spent_dn_pct "
+	sql += "  from ( "
+	sql += "select p.quote_curr_symb as symb  "
+	sql += "  , p.prod_id "
+	sql += "  , p.buy_strat_type "
+	sql += "  , p.buy_strat_name "
+	sql += "  , p.buy_strat_freq "
+	sql += "  , count(*) as open_cnt "
+	sql += "  , sum(case when p.buy_strat_type = 'up' then 1 else 0 end) as open_up_cnt "
+	sql += "  , sum(case when p.buy_strat_type = 'dn' then 1 else 0 end) as open_dn_cnt "
+	sql += "  , sum(p.tot_out_cnt) as spent_amt "
+	sql += "  , sum(case when p.buy_strat_type = 'up' then p.tot_out_cnt else 0 end) as spent_up_amt "
+	sql += "  , sum(case when p.buy_strat_type = 'dn' then p.tot_out_cnt else 0 end) as spent_dn_amt "
+	sql += "  from cbtrade.poss p "
+	sql += "  where p.pos_stat in ('OPEN','SELL') "
+	if prod_id:
+		sql += f"  and p.prod_id = '{prod_id}' "
+	if buy_strat_type:
+		sql += f"  and p.buy_strat_type = '{buy_strat_type}' "
+	if buy_strat_name:
+		sql += f"  and p.buy_strat_name = '{buy_strat_name}' "
+	if buy_strat_freq:
+		sql += f"  and p.buy_strat_freq = '{buy_strat_freq}' "
+	sql += "  group by p.quote_curr_symb, p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq "
+	sql += "  ) x "
+	sql += "  order by x.symb, x.prod_id, x.buy_strat_type, x.buy_strat_name, x.buy_strat_freq "
+
+	pair_strat_spent = db.seld(sql)
+
+	if not pair_strat_spent:
+		pair_strat_spent = {}
+	else:
+		pair_strat_spent = pair_strat_spent[0]
+
+	func_end(fnc)
+	return pair_strat_spent
 
 #<=====>#
 
@@ -165,6 +333,7 @@ def db_poss_check_mkt_dttm_get(prod_id):
 	sql += "select max(p.check_mkt_dttm) "
 	sql += f"  from cbtrade.poss p "
 	sql += f"  where p.prod_id = '{prod_id}'"
+
 	check_mkt_dttm = db.sel(sql)
 
 	func_end(fnc)
@@ -182,6 +351,7 @@ def db_poss_check_last_dttm_get(pos_id):
 	sql += "select p.check_last_dttm "
 	sql += f"  from cbtrade.poss p "
 	sql += f"  where p.pos_id = {pos_id}"
+
 	check_last_dttm = db.sel(sql)
 
 	func_end(fnc)
@@ -192,8 +362,8 @@ def db_poss_check_last_dttm_get(pos_id):
 def db_ohlcv_prod_id_freqs(prod_id):
 	func_name = 'db_ohlcv_prod_id_freqs'
 	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
 
 	prod_id = prod_id.replace('-','_')
 
@@ -203,8 +373,9 @@ def db_ohlcv_prod_id_freqs(prod_id):
 	sql += f"  from ohlcv_{prod_id} x "
 	sql += "  where 1=1 "
 	sql += "  group by x.freq "
-#	print(sql)
+
 	last_dttms = db.seld(sql)
+
 	if not last_dttms:
 		last_dttms = {}
 
@@ -216,8 +387,8 @@ def db_ohlcv_prod_id_freqs(prod_id):
 def db_ohlcv_freq_get(prod_id, freq, lmt=500):
 	func_name = 'db_ohlcv_freq_get'
 	func_str = f'{lib_name}.{func_name}(prod_id={prod_id}, freq={freq})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
 
 	prod_id = prod_id.replace('-','_')
 
@@ -227,8 +398,9 @@ def db_ohlcv_freq_get(prod_id, freq, lmt=500):
 	sql += f"  where freq = '{freq}' "
 	sql += "   order by x.timestamp desc "
 	sql += f"  limit {lmt} "
-#	print(sql)
+
 	ohlcv = db.seld(sql)
+
 	if not ohlcv:
 		ohlcv = []
 
@@ -237,12 +409,38 @@ def db_ohlcv_freq_get(prod_id, freq, lmt=500):
 
 #<=====>#
 
-def db_mkts_loop_get(mode='full', loop_mkts=None, stable_mkts=None, err_mkts=None):
-	func_name = 'db_mkts_loop_get'
-	func_str = f'{lib_name}.{func_name}(mode={mode}, mkts, stable_mkts, err_mkts)'
-#	G(func_str)
+def db_sell_double_check(pos_id):
+	func_name = 'db_sell_double_check'
+	func_str = f'{lib_name}.{func_name}(pos_id={pos_id})'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
+
+	sell_data = None
+
+	# products in settings
+	sql = ""
+	sql += " select p.pos_stat "
+	sql += "   , so.so_id "
+	sql += "  from cbtrade.poss p "
+	sql += "  left outer join cbtrade.sell_ords so on so.pos_id = p.pos_id "
+	sql += "  where 1=1 "
+	sql += f" and p.pos_id = {pos_id} "
+
+	sell_data = db.seld(sql)
+
+	if sell_data:
+		sell_data = sell_data[0]
+
+	func_end(fnc)
+	return sell_data
+
+#<=====>#
+
+def db_pairs_loop_get(mode='full', loop_pairs=None, stable_pairs=None, err_pairs=None, quote_curr_symb=None):
+	func_name = 'db_pairs_loop_get'
+	func_str = f'{lib_name}.{func_name}(mode={mode}, mkts, stable_pairs, err_pairs)'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
 
 	# products in settings
 	sql = ""
@@ -261,7 +459,6 @@ def db_mkts_loop_get(mode='full', loop_mkts=None, stable_mkts=None, err_mkts=Non
 	sql += "   , m.vol_quote_24h "
 	sql += "   , m.vol_pct_chg_24h "
 
-#	sql += "   , vmp.prod_id "
 	sql += "   , vmp.tot_cnt "
 	sql += "   , vmp.win_cnt "
 	sql += "   , vmp.lose_cnt "
@@ -289,9 +486,6 @@ def db_mkts_loop_get(mode='full', loop_mkts=None, stable_mkts=None, err_mkts=Non
 	sql += "   , vmp.gain_loss_amt_net "
 	sql += "   , vmp.gain_loss_pct "
 	sql += "   , vmp.gain_loss_pct_hr "
-
-#	sql += "   , m.mkt_venue "
-#	sql += "   , m.ignore_tf "
 
 	sql += "   , m.base_curr_symb "
 	sql += "   , m.base_curr_name "
@@ -330,26 +524,23 @@ def db_mkts_loop_get(mode='full', loop_mkts=None, stable_mkts=None, err_mkts=Non
 	sql += "  from cbtrade.mkts m "
 	sql += "  left outer join cbtrade.view_mkt_perf vmp on vmp.prod_id = m.prod_id "
 	sql += "  where 1=1 "
+	if quote_curr_symb:
+		sql += f"  and .quote_curr_symb = '{quote_curr_symb}' "
 	sql += "  and m.mkt_limit_only_tf = 0 "
-	if loop_mkts:
-		loop_mkts_str = "'" + "', '".join(loop_mkts) + "'"
-
-#		print(f'loop_mkts_str : {loop_mkts_str}')
-
-		sql += "   and m.prod_id in ({}) ".format(loop_mkts_str)
-	if stable_mkts:
-		stable_mkts_str = "'" + "', '".join(stable_mkts) + "'"
-		sql += "   and m.prod_id not in ({}) ".format(stable_mkts_str)
-	if err_mkts:
-		err_mkts_str = "'" + "', '".join(err_mkts) + "'"
-		sql += "   and m.prod_id not in ({}) ".format(err_mkts_str)
+	if loop_pairs:
+		loop_pairs_str = "'" + "', '".join(loop_pairs) + "'"
+		sql += "   and m.prod_id in ({}) ".format(loop_pairs_str)
+	if stable_pairs:
+		stable_pairs_str = "'" + "', '".join(stable_pairs) + "'"
+		sql += "   and m.prod_id not in ({}) ".format(stable_pairs_str)
+	if err_pairs:
+		err_pairs_str = "'" + "', '".join(err_pairs) + "'"
+		sql += "   and m.prod_id not in ({}) ".format(err_pairs_str)
 
 	if mode == 'sell':
 		sql += "   order by (select max(p.check_mkt_dttm) from cbtrade.poss p where p.prod_id = m.prod_id), vmp.gain_loss_pct_hr desc "
 	else:
 		sql += "   order by vmp.gain_loss_pct_hr desc "
-
-#	print(sql)
 
 	mkts = db.seld(sql)
 
@@ -358,17 +549,18 @@ def db_mkts_loop_get(mode='full', loop_mkts=None, stable_mkts=None, err_mkts=Non
 
 #<=====>#
 
-def db_mkts_loop_top_perfs_prod_ids_get(lmt=None, pct_min=0):
-	func_name = 'db_mkts_loop_top_perfs_prod_ids_get'
+def db_pairs_loop_top_perfs_prod_ids_get(lmt=None, pct_min=0, quote_curr_symb=None):
+	func_name = 'db_pairs_loop_top_perfs_prod_ids_get'
 	func_str = f'{lib_name}.{func_name}(lmt={lmt}, pct_min={pct_min})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = " "
 	sql += "select x.prod_id "
 	sql += "  from cbtrade.view_mkt_perf x "
-	sql += "  where 1=1 "
+	sql += "   where 1=1  "
+	if quote_curr_symb:
+		sql += f"  and quote_curr_symb = '{quote_curr_symb}' "
 	if pct_min > 0:
 		sql += f"  and x.gain_loss_pct_day > {pct_min} "
 	else:
@@ -376,70 +568,65 @@ def db_mkts_loop_top_perfs_prod_ids_get(lmt=None, pct_min=0):
 	sql += "  order by x.gain_loss_pct_day desc "
 	if lmt:
 		sql += "  limit {} ".format(lmt)
-	mkts = db.sel(sql)
 
-#	print(f'top mkts by perf : {mkts}')
+	mkts = db.sel(sql)
 
 	func_end(fnc)
 	return mkts
 
 #<=====>#
 
-def db_mkts_loop_top_gains_prod_ids_get(lmt=None):
-	func_name = 'db_mkts_loop_top_gains_prod_ids_get'
+def db_pairs_loop_top_gains_prod_ids_get(lmt=None, quote_curr_symb=None):
+	func_name = 'db_pairs_loop_top_gains_prod_ids_get'
 	func_str = '{lib_name}.{func_name}(lmt={lmt})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = " "
 	sql += "select x.prod_id "
 	sql += "  from cbtrade.view_mkt_perf x "
-	sql += "  where 1=1 "
+	sql += "   where 1=1  "
+	if quote_curr_symb:
+		sql += f"  and quote_curr_symb = '{quote_curr_symb}' "
 	sql += "  and x.gain_loss_amt > 0 "
 	sql += "  order by x.gain_loss_amt desc "
 	if lmt:
 		sql += "  limit {} ".format(lmt)
-	mkts = db.sel(sql)
 
-#	print(f'top mkts by perf : {mkts}')
+	mkts = db.sel(sql)
 
 	func_end(fnc)
 	return mkts
 
 #<=====>#
 
-def db_mkts_loop_top_prc_chg_prod_ids_get(lmt=None, pct_min=0):
-	func_name = 'db_mkts_loop_top_prc_chg_prod_ids_get'
+def db_pairs_loop_top_prc_chg_prod_ids_get(lmt=None, pct_min=0, quote_curr_symb=None):
+	func_name = 'db_pairs_loop_top_prc_chg_prod_ids_get'
 	func_str = '{}.{}(lmt={})'.format(lib_name, func_name, lmt)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += " select prod_id "
 	sql += "   from mkts m  "
-	sql += "   where quote_curr_symb = 'USDC'  "
-#	sql += "   and base_curr_symb not in ('USDT','GUSD','PYUSD','PAX')  "
-#	sql += "   and m.prod_id not in ({})".format(stable_mkts_str)
-#	sql += "   and m.prod_id not in ({})".format(err_mkts_str)
+	sql += "   where 1=1  "
+	if quote_curr_symb:
+		sql += f"  and quote_curr_symb = '{quote_curr_symb}' "
 	sql += "   and m.prc_pct_chg_24h > 0 "
 	sql += f"   and m.prc_pct_chg_24h > {pct_min} "
-#	sql += "   and prc_pct_chg_24h > 0 "
-#	sql += "   and TIMESTAMPDIFF(HOUR, add_dttm, NOW()) > 24 "
 	sql += "   and mkt_status_tf             = 'online' " # varchar(64)
 	sql += "   and mkt_view_only_tf          = 0 " # tinyint default 0
-#	sql += "   and mkt_watched_tf            = 0 " # tinyint default 0
 	sql += "   and mkt_is_disabled_tf        = 0 " # tinyint default 0
-#	sql += "   and mkt_new_tf                = 0 " # tinyint default 0
 	sql += "   and mkt_cancel_only_tf        = 0 " # tinyint default 0
 	sql += "   and mkt_limit_only_tf         = 0 " # tinyint default 0
 	sql += "   and mkt_post_only_tf          = 0 " # tinyint default 0
 	sql += "   and mkt_trading_disabled_tf   = 0 " # tinyint default 0
 	sql += "   and mkt_auction_mode_tf       = 0 " # tinyint default 0
 	sql += "   order by prc_pct_chg_24h desc "
+
 	if lmt:
 		sql += f"  limit {lmt} "
+
 	mkts = db.sel(sql)
 
 	func_end(fnc)
@@ -447,27 +634,21 @@ def db_mkts_loop_top_prc_chg_prod_ids_get(lmt=None, pct_min=0):
 
 #<=====>#
 
-def db_mkts_loop_top_vol_chg_prod_ids_get(lmt=None):
-	func_name = 'db_mkts_loop_top_vol_chg_prod_ids_get'
+def db_pairs_loop_top_vol_chg_prod_ids_get(lmt=None, quote_curr_symb=None):
+	func_name = 'db_pairs_loop_top_vol_chg_prod_ids_get'
 	func_str = '{}.{}(lmt={})'.format(lib_name, func_name, lmt)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += " select prod_id  "
 	sql += "   from mkts m "
-	sql += "   where quote_curr_symb = 'USDC'  "
-#	sql += "   and m.prod_id not in ({})".format(stable_mkts_str)
-#	sql += "   and m.prod_id not in ({})".format(err_mkts_str)
-#	sql += "   and base_curr_symb not in ('USDT','GUSD','PYUSD','PAX')  "
-#	sql += "   and prc_pct_chg_24h > 0 " # intentional
-#	sql += "   and TIMESTAMPDIFF(HOUR, add_dttm, NOW()) > 24 "
+	sql += "   where 1=1  "
+	if quote_curr_symb:
+		sql += f"  and quote_curr_symb = '{quote_curr_symb}' "
 	sql += "   and mkt_status_tf             = 'online' " # varchar(64)
 	sql += "   and mkt_view_only_tf          = 0 " # tinyint default 0
-#	sql += "   and mkt_watched_tf            = 0 " # tinyint default 0
 	sql += "   and mkt_is_disabled_tf        = 0 " # tinyint default 0
-#	sql += "   and mkt_new_tf                = 0 " # tinyint default 0
 	sql += "   and mkt_cancel_only_tf        = 0 " # tinyint default 0
 	sql += "   and mkt_limit_only_tf         = 0 " # tinyint default 0
 	sql += "   and mkt_post_only_tf          = 0 " # tinyint default 0
@@ -477,6 +658,7 @@ def db_mkts_loop_top_vol_chg_prod_ids_get(lmt=None):
 
 	if lmt:
 		sql += "  limit {} ".format(lmt)
+
 	mkts = db.sel(sql)
 
 	func_end(fnc)
@@ -484,36 +666,31 @@ def db_mkts_loop_top_vol_chg_prod_ids_get(lmt=None):
 
 #<=====>#
 
-def db_mkts_loop_top_vol_chg_pct_prod_ids_get(lmt=None):
-	func_name = 'db_mkts_loop_top_vol_chg_pct_prod_ids_get'
+def db_pairs_loop_top_vol_chg_pct_prod_ids_get(lmt=None, quote_curr_symb=None):
+	func_name = 'db_pairs_loop_top_vol_chg_pct_prod_ids_get'
 	func_str = '{}.{}(lmt={})'.format(lib_name, func_name, lmt)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += " select prod_id  "
 	sql += "   from mkts m "
-	sql += "   where quote_curr_symb = 'USDC'  "
-#	sql += "   and base_curr_symb not in ('USDT','GUSD','PYUSD','PAX')  "
-#	sql += "   and m.prod_id not in ({})".format(stable_mkts_str)
-#	sql += "   and m.prod_id not in ({})".format(err_mkts_str)
-#	sql += "   and prc_pct_chg_24h > 0 " # intentional
-#	sql += "   and vol_pct_chg_24h > 0 "
-#	sql += "   and TIMESTAMPDIFF(HOUR, add_dttm, NOW()) > 24 "
+	sql += "   where 1=1  "
+	if quote_curr_symb:
+		sql += f"  and quote_curr_symb = '{quote_curr_symb}' "
 	sql += "   and mkt_status_tf             = 'online' " # varchar(64)
 	sql += "   and mkt_view_only_tf          = 0 " # tinyint default 0
-#	sql += "   and mkt_watched_tf            = 0 " # tinyint default 0
 	sql += "   and mkt_is_disabled_tf        = 0 " # tinyint default 0
-#	sql += "   and mkt_new_tf                = 0 " # tinyint default 0
 	sql += "   and mkt_cancel_only_tf        = 0 " # tinyint default 0
 	sql += "   and mkt_limit_only_tf         = 0 " # tinyint default 0
 	sql += "   and mkt_post_only_tf          = 0 " # tinyint default 0
 	sql += "   and mkt_trading_disabled_tf   = 0 " # tinyint default 0
 	sql += "   and mkt_auction_mode_tf       = 0 " # tinyint default 0
 	sql += "   order by vol_pct_chg_24h desc "
+
 	if lmt:
 		sql += "  limit {} ".format(lmt)
+
 	mkts = db.sel(sql)
 
 	func_end(fnc)
@@ -521,19 +698,21 @@ def db_mkts_loop_top_vol_chg_pct_prod_ids_get(lmt=None):
 
 #<=====>#
 
-def db_mkts_loop_watched_prod_ids_get():
-	func_name = 'db_mkts_loop_watched_prod_ids_get'
+def db_pairs_loop_watched_prod_ids_get(quote_curr_symb=None):
+	func_name = 'db_pairs_loop_watched_prod_ids_get'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += " select m.prod_id "
 	sql += "   from cbtrade.mkts m "
 	sql += "   where m.ignore_tf = 0 "
+	if quote_curr_symb:
+		sql += f"  and m.quote_curr_symb = '{quote_curr_symb}' "
 	sql += "   and m.mkt_watched_tf = 1 "
 	sql += "   order by m.prod_id "
+
 	mkts = db.sel(sql)
 
 	func_end(fnc)
@@ -541,19 +720,21 @@ def db_mkts_loop_watched_prod_ids_get():
 
 #<=====>#
 
-def db_mkts_loop_poss_open_prod_ids_get():
-	func_name = 'db_mkts_loop_poss_open_prod_ids_get'
+def db_pairs_loop_poss_open_prod_ids_get(quote_curr_symb=None):
+	func_name = 'db_pairs_loop_poss_open_prod_ids_get'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += " select prod_id "
 	sql += "   from cbtrade.poss "
 	sql += "   where ignore_tf = 0 "
 	sql += "   and test_tf = 0 "
+	if quote_curr_symb:
+		sql += f"  and quote_curr_symb = '{quote_curr_symb}' "
 	sql += "   and pos_stat in ('OPEN','SELL') "
+
 	mkts = db.sel(sql)
 
 	func_end(fnc)
@@ -564,15 +745,13 @@ def db_mkts_loop_poss_open_prod_ids_get():
 def db_open_trade_amts_get():
 	func_name = 'db_open_trade_amts_get'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select p.base_curr_symb, sum(p.buy_cnt) as open_trade_amt"
 	sql += "  from cbtrade.poss p"
 	sql += "  where 1=1"
-#	sql += f"  and p.base_curr_symb = '{symb}}'"
 	sql += "  and p.ignore_tf = 0"
 	sql += "  and p.test_tf = 0 "
 	sql += "  and p.pos_stat in ('OPEN','SELL')"
@@ -588,16 +767,14 @@ def db_open_trade_amts_get():
 def db_bals_get():
 	func_name = 'db_bals_get'
 	func_str = '{}.{}()'.format(lib_name, func_name)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select symb as curr, bal_avail from cbtrade.bals"
 	bals = db.seld(sql)
 	if not bals:
 		bals = {}
-#	print(f'{symb} bal : {bal:>.8f}')
 
 	func_end(fnc)
 	return bals
@@ -607,9 +784,8 @@ def db_bals_get():
 def db_bal_get_by_symbol(symb):
 	func_name = 'db_bal_get_by_symbol'
 	func_str = '{}.{}(symb={})'.format(lib_name, func_name, symb)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select bal_avail from cbtrade.bals where symb = '{}'".format(symb)
@@ -617,7 +793,6 @@ def db_bal_get_by_symbol(symb):
 	if not bal:
 		bal = 0
 	bal = float(bal)
-#	print(f'{symb} bal : {bal:>.8f}')
 
 	func_end(fnc)
 	return bal
@@ -627,9 +802,8 @@ def db_bal_get_by_symbol(symb):
 def db_buy_ords_open_get():
 	func_name = 'db_buy_ords_open_get'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select * "
@@ -637,6 +811,7 @@ def db_buy_ords_open_get():
 	sql += "  where 1=1 "
 	sql += "  and ord_stat = 'OPEN'  "
 	sql += "  and ignore_tf = 0"
+
 	bos = db.seld(sql)
 
 	func_end(fnc)
@@ -647,9 +822,8 @@ def db_buy_ords_open_get():
 def db_buy_ords_get_by_uuid(buy_order_uuid):
 	func_name = 'db_buy_ords_get_by_uuid'
 	func_str = '{}.{}(buy_order_uuid={})'.format(lib_name, func_name, buy_order_uuid)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select bo.* "
@@ -657,7 +831,9 @@ def db_buy_ords_get_by_uuid(buy_order_uuid):
 	sql += "  where 1=1 "
 	sql += "  and bo.buy_order_uuid = '{}' ".format(buy_order_uuid)
 	sql += "  and bo.ignore_tf = 0 "
+
 	bo = db.seld(sql)
+
 	if isinstance(bo, list) and len(bo) == 1:
 		bo = bo[0]
 
@@ -670,9 +846,8 @@ def db_buy_ords_get_by_uuid(buy_order_uuid):
 def db_mkt_elapsed_get(prod_id):
 	func_name = 'db_mkt_elapsed_get'
 	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	bo_elapsed_def = 9999
 	pos_elapsed_def = 9999
@@ -684,7 +859,9 @@ def db_mkt_elapsed_get(prod_id):
 	sql += "  and bo.test_tf = 0 "
 	sql += f" and bo.prod_id = '{prod_id}' "
 	sql += "  and bo.ord_stat in ('OPEN','FILL') "
+
 	bo_elapsed = db.sel(sql)
+
 	if not bo_elapsed:
 		bo_elapsed = bo_elapsed_def
 
@@ -695,7 +872,9 @@ def db_mkt_elapsed_get(prod_id):
 	sql += "  and p.test_tf = 0 "
 	sql += f" and p.prod_id = '{prod_id}' "
 	sql += "  and p.pos_stat in ('OPEN','SELL') "
+
 	pos_elapsed = db.sel(sql)
+
 	if not pos_elapsed:
 		pos_elapsed = pos_elapsed_def
 
@@ -710,9 +889,8 @@ def db_mkt_elapsed_get(prod_id):
 def db_mkt_strat_elapsed_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_freq):
 	func_name = 'db_mkt_elapsed_get'
 	func_str = f'{lib_name}.{func_name}(prod_id={prod_id}, buy_strat_name={buy_strat_name}, buy_strat_freq={buy_strat_freq})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	strat_bo_elapsed_def = 9999
 	strat_pos_elapsed_def = 9999
@@ -727,7 +905,9 @@ def db_mkt_strat_elapsed_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_
 	sql += f" and bo.buy_strat_name = '{buy_strat_name}' "
 	sql += f" and bo.buy_strat_freq = '{buy_strat_freq}' "
 	sql += "  and bo.ord_stat in ('OPEN','FILL') "
+
 	strat_bo_elapsed = db.sel(sql)
+
 	if not strat_bo_elapsed:
 		strat_bo_elapsed = strat_bo_elapsed_def
 
@@ -741,7 +921,9 @@ def db_mkt_strat_elapsed_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_
 	sql += f" and p.buy_strat_name = '{buy_strat_name}' "
 	sql += f" and p.buy_strat_freq = '{buy_strat_freq}' "
 	sql += "  and p.pos_stat in ('OPEN','SELL') "
+
 	strat_pos_elapsed = db.sel(sql)
+
 	if not strat_pos_elapsed:
 		strat_pos_elapsed = strat_pos_elapsed_def
 
@@ -756,9 +938,8 @@ def db_mkt_strat_elapsed_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_
 def db_trade_perf_get(pos_stat=None):
 	func_name = 'db_trade_perf_get'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	if pos_stat == 'OPEN':
 		stat_sql = "  and p.pos_stat in ('OPEN','SELL') "
@@ -798,6 +979,7 @@ def db_trade_perf_get(pos_stat=None):
 	sql += stat_sql
 	sql += "  group by p.prod_id, p.pos_stat  "
 	sql += "  order by p.prod_id, p.pos_stat desc "
+
 	mkts = db.seld(sql)
 
 	func_end(fnc)
@@ -809,9 +991,8 @@ def db_trade_perf_get(pos_stat=None):
 def db_trade_strat_perf_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_freq):
 	func_name = 'db_trade_strat_perf_get'
 	func_str = '{}.{}(prod_id={}, buy_strat_type={}, buy_strat_name={}, buy_strat_freq={})'.format(lib_name, func_name, prod_id, buy_strat_type, buy_strat_name, buy_strat_freq)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select x.prod_id "
@@ -883,8 +1064,9 @@ def db_trade_strat_perf_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_f
 	sql += "          ) x "
 	sql += "  where 1=1 "
 	sql += "  order by x.gain_loss_pct_hr desc "
-#	print(sql)
+
 	mkt_strat_perf = db.seld(sql)
+
 	if mkt_strat_perf:
 		mkt_strat_perf = mkt_strat_perf[0]
 
@@ -896,12 +1078,12 @@ def db_trade_strat_perf_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_f
 def db_mkt_prc_get_by_prod_id(prod_id):
 	func_name = 'db_mkt_prc_get_by_prod_id'
 	func_str = '{}.{}(prod_id={})'.format(lib_name, func_name, prod_id)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select prc from mkts where prod_id = '{}'".format(prod_id)
+
 	mkt_prc = db.sel(sql)
 
 	func_end(fnc)
@@ -912,9 +1094,8 @@ def db_mkt_prc_get_by_prod_id(prod_id):
 def db_mkt_sizing_data_get_by_uuid(buy_order_uuid):
 	func_name = 'db_mkt_sizing_data_get_by_uuid'
 	func_str = '{}.{}(buy_order_uuid={})'.format(lib_name, func_name, buy_order_uuid)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select bo.* "
@@ -931,6 +1112,7 @@ def db_mkt_sizing_data_get_by_uuid(buy_order_uuid):
 	sql += "  where 1=1 "
 	sql += "  and bo.buy_order_uuid = '{}' ".format(buy_order_uuid)
 	sql += "  and bo.ignore_tf = 0 "
+
 	bos = db.seld(sql)
 
 	func_end(fnc)
@@ -941,9 +1123,8 @@ def db_mkt_sizing_data_get_by_uuid(buy_order_uuid):
 def db_mkt_strats_stats_open_get(prod_id):
 	func_name = 'db_mkt_strats_stats_open_get'
 	func_str = '{}.{}(prod_id={})'.format(lib_name, func_name, prod_id)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += " select distinct buy_strat_type, buy_strat_name "
@@ -998,6 +1179,7 @@ def db_mkt_strats_stats_open_get(prod_id):
 	sql += "   and p.prod_id = '{}' ".format(prod_id)
 	sql += "   and p.pos_stat in ('OPEN','SELL') "
 	sql += "   order by buy_strat_type, buy_strat_name "
+
 	strats_stats = db.seld(sql)
 
 	func_end(fnc)
@@ -1009,9 +1191,8 @@ def db_mkt_strats_stats_open_get(prod_id):
 def db_mkt_strats_used_get(min_trades):
 	func_name = 'db_mkt_strats_used_get'
 	func_str = f'{lib_name}.{func_name}(min_trades={min_trades})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	# products in settings
 	sql = ""
@@ -1027,6 +1208,7 @@ def db_mkt_strats_used_get(min_trades):
 	sql += "  group by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq "
 	sql += f"  having count(*) >= {min_trades} "
 	sql += "  order by cnt desc "
+
 	mkts = db.seld(sql)
 
 	func_end(fnc)
@@ -1038,9 +1220,8 @@ def db_mkt_strats_used_get(min_trades):
 def db_perf_summaries_get(prod_id=None, pos_stat=None, pos_id=None):
 	func_name = 'db_mkt_perf_summaries_get'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	if pos_stat == 'OPEN':
 		stat_sql = "  and p.pos_stat in ('OPEN','SELL') "
@@ -1057,74 +1238,54 @@ def db_perf_summaries_get(prod_id=None, pos_stat=None, pos_id=None):
 	sql += "  , p.prod_id as mkt "
 	sql += "  , p.pos_stat "
 	sql += "  , count(p.pos_id)                                                                     as tot_cnt  "
-#	sql += "  , sum(case when p.gain_loss_amt > 0 then 1 else 0 end)                                as win_cnt "
-#	sql += "  , sum(case when p.gain_loss_amt <= 0 then 1 else 0 end)                               as loss_cnt "
 	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end)                          as win_cnt  "
 	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end)                          as lose_cnt  "
-
 	sql += "  , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) "
 	sql += "  ,   / count(p.pos_id) * 100, 2),0)                                                    as win_pct  "
 	sql += "  , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) "
 	sql += "  ,   / count(p.pos_id) * 100, 2),0)                                                    as lose_pct  "
-
 	sql += "  , sum(p.age_mins)                                                                     as age_mins "
 	sql += "  , sum(p.age_mins) / 60                                                                as age_hours "
-
 	sql += "  , sum(p.sell_order_cnt)                                                               as sell_cnt "
 	sql += "  , sum(p.sell_order_cnt)                                                               as sell_order_cnt "
-
 	sql += "  , sum(p.sell_order_attempt_cnt)                                                       as sell_attempts "
 	sql += "  , sum(p.sell_order_attempt_cnt)                                                       as sell_order_attempt_cnt "
-
 	sql += "  , sum(p.buy_cnt)                                                                      as buy_cnt "
 	sql += "  , sum(p.sell_cnt_tot)                                                                 as sell_cnt_tot "
-
 	sql += "  , round(sum(p.tot_out_cnt),2)                                                         as spent_amt "
 	sql += "  , round(sum(p.tot_in_cnt),2)                                                          as recv_amt "
 	sql += "  , round(sum(p.tot_out_cnt), 2)                                                        as tot_out_cnt "
 	sql += "  , round(sum(p.tot_in_cnt), 2)                                                         as tot_in_cnt "
-
 	sql += "  , round(sum(case when p.gain_loss_amt > 0  then p.gain_loss_amt else 0 end),2)        as win_amt "
 	sql += "  , round(sum(case when p.gain_loss_amt <= 0 then p.gain_loss_amt else 0 end),2)        as loss_amt "
-
 	sql += "  , sum(p.hold_cnt)                                                                     as hold_cnt "
 	sql += "  , sum(p.pocket_cnt)                                                                   as pocket_cnt "
 	sql += "  , sum(p.clip_cnt)                                                                     as clip_cnt "
-
 	sql += "  , round(sum(p.hold_cnt) * m.prc,2)                                                    as hold_amt "
 	sql += "  , round(sum(p.pocket_cnt) * m.prc,2)                                                  as pocket_amt "
 	sql += "  , round(sum(p.clip_cnt) * m.prc,2)                                                    as clip_amt "
-
 	sql += "  , round(sum(p.buy_fees_cnt),2)                                                        as fees_buy "
 	sql += "  , round(sum(p.buy_fees_cnt), 2)                                                       as buy_fees_cnt "
 	sql += "  , round(sum(p.sell_fees_cnt_tot),2)                                                   as fees_sell "
 	sql += "  , round(sum(p.sell_fees_cnt_tot), 2)                                                  as sell_fees_cnt_tot "
 	sql += "  , round(sum(p.fees_cnt_tot),2)                                                        as fees_tot "
 	sql += "  , round(sum(p.fees_cnt_tot), 2)                                                       as fees_cnt_tot "
-
 	sql += "  , round(sum(p.val_curr),2)                                                            as val_curr "
 	sql += "  , round(sum(p.val_tot),2)                                                             as val_tot "
-
 	sql += "  , round(sum(case when p.val_tot > p.tot_out_cnt  "
 	sql += "                   then p.gain_loss_amt else 0 end), 2)                                 as win_amt  "
 	sql += "  , round(sum(case when p.val_tot < p.tot_out_cnt  "
 	sql += "                   then p.gain_loss_amt else 0 end), 2)                                 as lose_amt "
-
 	sql += "  , round(sum(p.gain_loss_amt), 2)                                                      as gain_loss_amt "
 	sql += "  , round(sum(p.gain_loss_amt_net), 2)                                                  as gain_loss_amt_net "
 	sql += "  , round(sum(p.gain_loss_amt_est_high),2)                                              as gain_loss_amt_est_high "
-
 	sql += "  , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt)  "
 	sql += "          * 100, 2)                                                                     as gain_loss_pct "
 	sql += "  , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt)  "
 	sql += "          * 100 / (sum(p.age_mins) / 60), 8)                                            as gain_loss_pct_hr "
 	sql += "  , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt)  "
 	sql += "          * 100/ (sum(p.age_mins) / 60) * 24, 8)                                        as gain_loss_pct_day "
-
-
-
 	sql += "  from cbtrade.poss p "
-#	sql += "  join cbtrade.mkts m on m.prod_id = p.prod_id "
 	sql += "  where 1=1 "
 	sql += "  and p.ignore_tf = 0 "
 
@@ -1143,6 +1304,7 @@ def db_perf_summaries_get(prod_id=None, pos_stat=None, pos_id=None):
 	sql += "  order by p.prod_id, p.pos_stat desc "
 	if pos_id:
 		sql += f"  ,p.pos_id "
+
 	mkts = db.seld(sql)
 
 	func_end(fnc)
@@ -1154,9 +1316,8 @@ def db_perf_summaries_get(prod_id=None, pos_stat=None, pos_id=None):
 def db_pos_get_by_pos_id(pos_id):
 	func_name = 'db_pos_get_by_pos_id'
 	func_str = '{}.{}(pos_id={})'.format(lib_name, func_name, pos_id)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select p.* "
@@ -1164,7 +1325,9 @@ def db_pos_get_by_pos_id(pos_id):
 	sql += "  where 1=1 "
 	sql += "  and p.pos_id = '{}' ".format(pos_id)
 	sql += "  and p.ignore_tf = 0 "
+
 	pos = db.seld(sql)
+
 	if isinstance(pos, list) and len(pos) == 1:
 		pos = pos[0]
 
@@ -1176,9 +1339,8 @@ def db_pos_get_by_pos_id(pos_id):
 def db_poss_open_recent_get(lmt=None, test_yn='N'):
 	func_name = 'db_poss_open_recent_get'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select p.* "
@@ -1194,6 +1356,7 @@ def db_poss_open_recent_get(lmt=None, test_yn='N'):
 	poss = db.seld(sql)
 	if lmt:
 		sql += "limit {}".format(lmt)
+
 	poss = db.seld(sql)
 
 	func_end(fnc)
@@ -1204,9 +1367,8 @@ def db_poss_open_recent_get(lmt=None, test_yn='N'):
 def db_poss_close_recent_get(lmt=None, test_yn='N'):
 	func_name = 'db_poss_close_recent_get'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select p.* "
@@ -1222,6 +1384,7 @@ def db_poss_close_recent_get(lmt=None, test_yn='N'):
 	poss = db.seld(sql)
 	if lmt:
 		sql += "limit {}".format(lmt)
+
 	poss = db.seld(sql)
 
 	func_end(fnc)
@@ -1232,9 +1395,8 @@ def db_poss_close_recent_get(lmt=None, test_yn='N'):
 def db_poss_open_cnt_get_by_prod_id(prod_id):
 	func_name = 'db_poss_open_cnt_get_by_prod_id'
 	func_str = '{}.{}(prod_id={})'.format(lib_name, func_name, prod_id)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += " select count(p.pos_id) as pos_cnt "
@@ -1247,6 +1409,7 @@ def db_poss_open_cnt_get_by_prod_id(prod_id):
 	sql += "   and p.pos_stat in ('OPEN','SELL') "
 #	sql += "   order by p.buy_strat_name, p.buy_strat_freq "
 	sql += "   order by p.pos_id "
+
 	pos_cnt = db.sel(sql)
 
 	func_end(fnc)
@@ -1257,9 +1420,8 @@ def db_poss_open_cnt_get_by_prod_id(prod_id):
 def db_pos_open_get_by_prod_id(prod_id):
 	func_name = 'db_pos_open_get_by_prod_id'
 	func_str = '{}.{}(prod_id={})'.format(lib_name, func_name, prod_id)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += " select p.*"
@@ -1272,6 +1434,7 @@ def db_pos_open_get_by_prod_id(prod_id):
 	sql += "   and p.pos_stat in ('OPEN','SELL') "
 #	sql += "   order by p.buy_strat_name, p.buy_strat_freq "
 	sql += "   order by p.pos_id "
+
 	poss = db.seld(sql)
 
 	func_end(fnc)
@@ -1282,9 +1445,8 @@ def db_pos_open_get_by_prod_id(prod_id):
 def db_poss_open_max_trade_size_get(prod_id):
 	func_name = 'db_poss_open_max_trade_size_get'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select max(p.buy_cnt) "
@@ -1295,19 +1457,22 @@ def db_poss_open_max_trade_size_get(prod_id):
 	sql += "  and p.test_tf = 0 "
 	sql += "  and pos_stat in ('OPEN','SELL') "
 	sql += "  order by p.prod_id, p.pos_id "
+
 	trade_size = db.sel(sql)
 
 	func_end(fnc)
-	return trade_size
+	if trade_size:
+		return trade_size
+	else:
+		return 0
 
 #<=====>#
 
 def db_mkts_open_cnt_get():
 	func_name = 'db_mkts_open_cnt_get'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select count(distinct p.prod_id) "
@@ -1316,6 +1481,7 @@ def db_mkts_open_cnt_get():
 	sql += "  and p.pos_stat in ('OPEN','SELL') "
 	sql += "  and p.ignore_tf = 0 "
 	sql += "  and p.test_tf = 0 "
+
 	mkt_open_cnt = db.sel(sql)
 
 	func_end(fnc)
@@ -1326,16 +1492,14 @@ def db_mkts_open_cnt_get():
 def db_poss_sell_order_problems_get():
 	func_name = 'db_poss_sell_order_problems_get'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select 'pos.pos_stat = SELL but no OPEN sell orders on sell_ords' as reason "
 	sql += "  , p.* "
 	sql += "  from poss p "
 	sql += "  where 1=1 "
-#	sql += f"  where prod_id = '{prod_id}' "
 	sql += "  and p.ignore_tf = 0 "
 	sql += "  and p.pos_stat = 'SELL' "
 	sql += "  and not exists (select * from cbtrade.sell_ords so where so.pos_id = p.pos_id) "
@@ -1344,7 +1508,6 @@ def db_poss_sell_order_problems_get():
 	sql += "  , p.* "
 	sql += "  from poss p "
 	sql += "  where 1=1 "
-#	sql += f"  where prod_id = '{prod_id}' "
 	sql += "  and p.ignore_tf = 0 "
 	sql += "  and p.pos_stat = 'OPEN' "
 	sql += "  and exists (select * from cbtrade.sell_ords so where so.pos_id = p.pos_id) "
@@ -1353,9 +1516,9 @@ def db_poss_sell_order_problems_get():
 	sql += "  , p.* "
 	sql += "  from poss p "
 	sql += "  where 1=1 "
-##	sql += f"  where prod_id = '{prod_id}' "
 	sql += "  and p.ignore_tf = 0 "
 	sql += "  and (select count(*) from cbtrade.sell_ords so where so.pos_id = p.pos_id) > 1 "
+
 	poss = db.seld(sql)
 
 	func_end(fnc)
@@ -1366,9 +1529,8 @@ def db_poss_sell_order_problems_get():
 def db_poss_open_get(prod_id=None, include_test_yn='N'):
 	func_name = 'db_poss_open_get'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select p.* "
@@ -1384,6 +1546,7 @@ def db_poss_open_get(prod_id=None, include_test_yn='N'):
 		sql += "  order by p.prod_id, p.pos_id "
 	else:
 		sql += "  order by p.pos_begin_dttm desc "
+
 	poss = db.seld(sql)
 
 	func_end(fnc)
@@ -1394,9 +1557,8 @@ def db_poss_open_get(prod_id=None, include_test_yn='N'):
 def db_sell_ords_open_get():
 	func_name = 'db_sell_ords_open_get'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select so.* "
@@ -1407,6 +1569,7 @@ def db_sell_ords_open_get():
 	sql += "  and so.ignore_tf = 0 "
 	sql += "  and p.ignore_tf = 0 "
 	sql += "  order by so_id "
+
 	sos = db.seld(sql)
 
 	func_end(fnc)
@@ -1417,9 +1580,8 @@ def db_sell_ords_open_get():
 def db_sell_ords_get_by_pos_id(pos_id):
 	func_name = 'db_sell_ords_get_by_pos_id'
 	func_str = f'{lib_name}.{func_name}(pos_id={pos_id})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select * "
@@ -1428,6 +1590,7 @@ def db_sell_ords_get_by_pos_id(pos_id):
 	sql += f"  and pos_id = {pos_id} "
 	sql += "  and ignore_tf = 0 "
 	sql += "  order by so_id "
+
 	sos = db.seld(sql)
 
 	func_end(fnc)
@@ -1438,9 +1601,8 @@ def db_sell_ords_get_by_pos_id(pos_id):
 def db_sell_ords_get_by_uuid(sell_order_uuid):
 	func_name = 'db_sell_ords_get_by_uuid'
 	func_str = '{}.{}(sell_order_uuid={})'.format(lib_name, func_name, sell_order_uuid)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select so.* "
@@ -1448,7 +1610,9 @@ def db_sell_ords_get_by_uuid(sell_order_uuid):
 	sql += "  where 1=1 "
 	sql += "  and so.sell_order_uuid = '{}' ".format(sell_order_uuid)
 	sql += "  and so.ignore_tf = 0 "
+
 	so = db.seld(sql)
+
 	if isinstance(so, list) and len(so) == 1:
 		so = so[0]
 
@@ -1461,9 +1625,8 @@ def db_sell_ords_get_by_uuid(sell_order_uuid):
 def db_strats_perf_get_all(buy_strat_type=None, buy_strat_name=None, buy_strat_freq=None):
 	func_name = 'db_strats_perf_get_all'
 	func_str = '{}.{}(buy_strat_type={}, buy_strat_name={}, buy_strat_freq={})'.format(lib_name, func_name, buy_strat_type, buy_strat_name, buy_strat_freq)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = "select p.prod_id as mkt "
 	sql += "  , p.pos_stat "
@@ -1492,7 +1655,6 @@ def db_strats_perf_get_all(buy_strat_type=None, buy_strat_name=None, buy_strat_f
 	sql += "  join cbtrade.mkts m on m.prod_id = p.prod_id "
 	sql += "  where 1=1 "
 	sql += "  and p.ignore_tf = 0 "
-#	sql += "  and p.test_tf = 0 "
 	if buy_strat_type:
 		sql = " and p.buy_strat_type = '{}'.format(buy_strat_type) "
 	if buy_strat_name:
@@ -1501,6 +1663,7 @@ def db_strats_perf_get_all(buy_strat_type=None, buy_strat_name=None, buy_strat_f
 		sql = " and p.buy_strat_freq = '{}'.format(buy_strat_freq) "
 	sql += "  group by p.prod_id, p.pos_stat  "
 	sql += "  order by p.prod_id, p.pos_stat desc "
+
 	mkts = db.seld(sql)
 
 	func_end(fnc)
@@ -1512,15 +1675,15 @@ def db_strats_perf_get_all(buy_strat_type=None, buy_strat_name=None, buy_strat_f
 def db_strats_w_stats_get_all():
 	func_name = 'db_strats_w_stats_get_all'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = ""
 	sql += "select distinct buy_strat_type, buy_strat_name, buy_strat_freq "
 	sql += "  from cbtrade.poss "
 	sql += "  where ignore_tf = 0"
 	sql += "  order by buy_strat_type, buy_strat_name, buy_strat_freq "
+
 	strats = db.seld(sql)
 
 	func_end(fnc)
@@ -1532,16 +1695,16 @@ def db_strats_w_stats_get_all():
 def db_view_trade_perf_get_by_prod_id(prod_id):
 	func_name = 'db_view_trade_perf_get_by_prod_id'
 	func_str = '{}.{}(prod_id={})'.format(lib_name, func_name, prod_id)
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sql = "select x.* "
 	sql += "  from cbtrade.view_mkt_perf x "
 	sql += "  where 1=1 "
-#	sql += "  and x.ignore_tf = 0 "
 	sql += "  and x.prod_id = '{}' ".format(prod_id)
+
 	mkt_perf = db.seld(sql)
+
 	if mkt_perf:
 		mkt_perf = mkt_perf[0]
 
@@ -1562,6 +1725,7 @@ def db_table_names_get():
 	sql += "FROM information_schema.TABLES x "
 	sql += "WHERE x.table_schema = 'cbtrade' "
 	sql += "GROUP BY x.table_schema, x.table_name "
+
 	table_names = db.sel(sql)
 
 	func_end(fnc)
@@ -1572,9 +1736,11 @@ def db_table_names_get():
 #<=====>#
 
 
+
 #<=====>#
 # Default Run
 #<=====>#
+
 
 
 #<=====>#

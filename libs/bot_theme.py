@@ -1,19 +1,7 @@
 #<=====>#
-# Import All Scope
-#<=====>#
-
-import_all_func_list =  []
-import_all_func_list.append("cp_pct_color")
-import_all_func_list.append("cs_pct_color")
-import_all_func_list.append("cp_pct_color_50")
-import_all_func_list.append("cs_pct_color_50")
-import_all_func_list.append("cp_pct_color_100")
-import_all_func_list.append("cs_pct_color_100")
-__all__ = import_all_func_list
-
-#<=====>#
 # Description
 #<=====>#
+
 
 
 #<=====>#
@@ -21,49 +9,28 @@ __all__ = import_all_func_list
 #<=====>#
 
 
-#<=====>#
-# Imports - Common Modules
-#<=====>#
-import sys
-import os
-import re
 
 #<=====>#
-# Imports - Download Modules
+# Imports
 #<=====>#
+from libs.bot_settings import debug_settings_get, get_lib_func_secs_max
+from libs.lib_colors import cp, cs
+from libs.lib_common import func_begin, func_end
 
-
-#<=====>#
-# Imports - Shared Library
-#<=====>#
-# shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
-# if shared_libs_path not in sys.path:
-# 	sys.path.append(shared_libs_path)
-
-
-#<=====>#
-# Imports - Local Library
-#<=====>#
-local_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '', 'libs'))
-if local_libs_path not in sys.path:
-	sys.path.append(local_libs_path)
-
-from lib_common                    import *
-#from lib_common                    import lpad, rpad, cpad
-from lib_colors                    import cs, cp
 
 #<=====>#
 # Variables
 #<=====>#
 lib_name      = 'bot_theme'
 log_name      = 'bot_theme'
-lib_verbosity = 1
-lib_debug_lvl = 1
-lib_secs_max  = 2
 
-#<=====>#
+
+# <=====>#
 # Assignments Pre
-#<=====>#
+# <=====>#
+
+dst, debug_settings = debug_settings_get()
+lib_secs_max = get_lib_func_secs_max(lib_name=lib_name)
 
 
 #<=====>#
@@ -252,7 +219,7 @@ lib_secs_max  = 2
 def cp_pct_color(pct, msg):
 	# func_name = 'cp_pct_color'
 	# func_str = f'{lib_name}.{func_name}(pct={pct}, msg)'
-#	G(func_str)
+	# G(func_str)
 
 	print(cs_pct_color(pct,msg))
 
@@ -261,7 +228,7 @@ def cp_pct_color(pct, msg):
 def cs_pct_color(pct, msg):
 	# func_name = 'cs_pct_color'
 	# func_str = f'{lib_name}.{func_name}(pct={pct}, msg)'
-#	G(func_str)
+	# G(func_str)
 
 	if pct >= 22:       # >= 8
 		r = WoG6(msg, print_yn='N')
@@ -299,7 +266,7 @@ def cs_pct_color(pct, msg):
 def cp_pct_color_50(pct, msg):
 	# func_name = 'cp_pct_color_50'
 	# func_str = f'{lib_name}.{func_name}(pct={pct}, msg)'
-#	G(func_str)
+	# G(func_str)
 
 	print(cs_pct_color_50(pct,msg))
 
@@ -308,9 +275,7 @@ def cp_pct_color_50(pct, msg):
 def cs_pct_color_50(pct, msg):
 	# func_name = 'cs_pct_color_50'
 	# func_str = f'{lib_name}.{func_name}(pct={pct}, msg)'
-#	G(func_str)
-
-#	print(f'msg: {msg}')
+	# G(func_str)
 
 	if pct >= 90:
 		r = WoG6(msg, print_yn='N')
@@ -346,7 +311,7 @@ def cs_pct_color_50(pct, msg):
 def cp_pct_color_100(pct, msg):
 	# func_name = 'cp_pct_color_100'
 	# func_str = f'{lib_name}.{func_name}(pct={pct}, msg)'
-#	G(func_str)
+	# G(func_str)
 
 	print(cs_pct_color_100(pct,msg))
 
@@ -355,9 +320,7 @@ def cp_pct_color_100(pct, msg):
 def cs_pct_color_100(pct, msg):
 	# func_name = 'cs_pct_color_100'
 	# func_str = f'{lib_name}.{func_name}(pct={pct}, msg)'
-#	G(func_str)
-
-#	print(f'msg: {msg}')
+	# G(func_str)
 
 	if pct >= 90:
 		r = WoG6(msg, print_yn='N')
@@ -430,15 +393,6 @@ def good3(text, font_color='#FFFFFF', bg_color='#008000', bold=True, italic=True
 
 #<=====>#
 
-#def WoR4(text, font_color='#FFFFFF', bg_color='#FF1100', bold=False, italic=False, length=200, align='center'):
-#	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-#def WoR3(text, font_color='#FFFFFF', bg_color='#DD3300', bold=False, italic=False, length=200, align='center'):
-#	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-#def WoR2(text, font_color='#FFFFFF', bg_color='#BB5500', bold=False, italic=False, length=200, align='center'):
-#	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-#def WoR1(text, font_color='#FFFFFF', bg_color='#997700', bold=False, italic=False, length=200, align='center'):
-#	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-
 def WoR6(text, font_color='#FFFFFF', bg_color='#FF0000', bold=False, italic=False, length=0, align='left', print_yn='Y'):
 	if print_yn == 'Y':
 		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
@@ -488,15 +442,6 @@ def WoR1(text, font_color='#FFA500', bg_color='#000000', bold=False, italic=Fals
 
 #<=====>#
 
-#def WoG1(text, font_color='#FFFFFF', bg_color='#779900', bold=False, italic=False, length=200, align='center'):
-#	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-#def WoG2(text, font_color='#FFFFFF', bg_color='#55BB00', bold=False, italic=False, length=200, align='center'):
-#	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-#def WoG3(text, font_color='#FFFFFF', bg_color='#33DD00', bold=False, italic=False, length=200, align='center'):
-#	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-#def WoG4(text, font_color='#FFFFFF', bg_color='#11FF00', bold=False, italic=False, length=200, align='center'):
-#	cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-
 def WoG1(text, font_color='#9ACD32', bg_color='#000000', bold=False, italic=False, length=0, align='left', print_yn='Y'):
 	if print_yn == 'Y':
 		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
@@ -532,31 +477,6 @@ def WoG6(text, font_color='#FFFFFF', bg_color='#32CD32', bold=False, italic=Fals
 		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
 	else:
 		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
-
-#	# Greens
-#	pallette["greenyellow"]           = "#ADFF2F"      # greenyellow                           #ADFF2F  173  255   47  475
-#	pallette["chartreuse"]            = "#7FFF00"      # chartreuse                            #7FFF00  127  255    0  382
-#	pallette["lawngreen"]             = "#7CFC00"      # lawngreen                             #7CFC00  124  252    0  376
-#	pallette["lime"]                  = "#00FF00"      # lime                                  #00FF00    0  255    0  255
-#	pallette["limegreen"]             = "#32CD32"      # limegreen                             #32CD32   50  205   50  305
-#	pallette["palegreen"]             = "#98FB98"      # palegreen                             #98FB98  152  251  152  555
-#	pallette["lightgreen"]            = "#90EE90"      # lightgreen                            #90EE90  144  238  144  526
-#	pallette["mediumspringgreen"]     = "#00FA9A"      # mediumspringgreen                     #00FA9A    0  250  154  404
-#	pallette["springgreen"]           = "#00FF7F"      # springgreen                           #00FF7F    0  255  127  382
-#	pallette["mediumseagreen"]        = "#3CB371"      # mediumseagreen                        #3CB371   60  179  113  352
-#	pallette["seagreen"]              = "#2E8B57"      # seagreen                              #2E8B57   46  139   87  272
-#	pallette["forestgreen"]           = "#228B22"      # forestgreen                           #228B22   34  139   34  207
-#	pallette["green"]                 = "#008000"      # green                                 #008000    0  128    0  128
-#	pallette["darkgreen"]             = "#006400"      # darkgreen                             #006400    0  100    0  100
-#	pallette["yellowgreen"]           = "#9ACD32"      # yellowgreen                           #9ACD32  154  205   50  409
-#	pallette["olivedrab"]             = "#6B8E23"      # olivedrab                             #6B8E23  107  142   35  284
-#	pallette["olive"]                 = "#808000"      # olive                                 #808000  128  128    0  256
-#	pallette["darkolivegreen"]        = "#556B2F"      # darkolivegreen                        #556B2F   85  107   47  239
-#	pallette["mediumaquamarine"]      = "#66CDAA"      # mediumaquamarine                      #66CDAA  102  205  170  477
-#	pallette["darkseagreen"]          = "#8FBC8F"      # darkseagreen                          #8FBC8F  143  188  143  474
-#	pallette["lightseagreen"]         = "#20B2AA"      # lightseagreen                         #20B2AA   32  178  170  380
-#	pallette["darkcyan"]              = "#008B8B"      # darkcyan                              #008B8B    0  139  139  278
-#	pallette["teal"]                  = "#008080"      # teal                                  #008080    0  128  128  256
 
 #<=====>#
 # Post Variables

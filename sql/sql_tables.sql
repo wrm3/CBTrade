@@ -251,6 +251,8 @@ create table buy_ords(
 
 
 /*
+alter table cbtrade.buy_ords add column symb varchar(64) after test_tf;
+update cbtrade.buy_ords set symb = 'USDC';
 ALTER TABLE cbtrade.buy_ords ADD CONSTRAINT unique_buy_order UNIQUE (buy_order_uuid, buy_client_order_id, prod_id);
 ALTER TABLE cbtrade.buy_ords drop index buy_order_uuid;
 */
@@ -260,7 +262,7 @@ drop table if exists sell_ords;
 create table sell_ords(
 	so_id                                         int(11) primary key AUTO_INCREMENT
 	, test_tf                                     tinyint        default 0
-
+	, symb                                        varchar(64)
 	, prod_id                                     varchar(64)
 	, mkt_name                                    varchar(64)
 	, mkt_venue                                   varchar(64)
@@ -306,6 +308,8 @@ create table sell_ords(
 	);
 
 /*
+alter table cbtrade.sell_ords add column symb varchar(64) after test_tf;
+update cbtrade.sell_ords set symb = 'USDC';
 ALTER TABLE cbtrade.sell_ords ADD CONSTRAINT unique_sell_order UNIQUE (sell_order_uuid, sell_client_order_id, pos_id);
 ALTER TABLE cbtrade.sell_ords drop index sell_order_uuid;
 sell_ords
@@ -399,6 +403,10 @@ create table poss(
 	, dlm                                         timestamp default current_timestamp on update current_timestamp
 	, unique(bo_uuid)
 	);
+
+-- alter table cbtrade.poss add column symb varchar(64) after pos_id;
+-- update cbtrade.poss set symb = 'USDC';
+
 
 -- alter table cbtrade.poss add column error_tf tinyint default 0 after ignore_tf;
 -- alter table cbtrade.poss add column sell_yn char(1) after quote_size_max;
@@ -716,6 +724,7 @@ select p.pos_id
 drop view if exists cbtrade.view_mkt_perf;
 create view cbtrade.view_mkt_perf as 
 select p.prod_id
+  , p.quote_curr_symb
   , count(p.pos_id) as tot_cnt 
   , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt 
   , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt 

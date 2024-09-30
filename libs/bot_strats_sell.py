@@ -1,21 +1,7 @@
 #<=====>#
-# Import All Scope
-#<=====>#
-
-import_all_func_list = []
-#import_all_func_list.append("sell_strats_get")
-import_all_func_list.append("sell_strats_avail_get")
-import_all_func_list.append("sell_strats_check")
-__all__ = import_all_func_list
-
-#<=====>#
 # Description
 #<=====>#
 
-
-#<=====>#
-# Description
-#<=====>#
 
 
 #<=====>#
@@ -23,68 +9,37 @@ __all__ = import_all_func_list
 #<=====>#
 
 
+
 #<=====>#
-# Imports - Common Modules
+# Imports
 #<=====>#
-import sys
-import os
-import pandas as pd 
 import traceback
-import warnings
+from libs.bot_settings import debug_settings_get, get_lib_func_secs_max
+from libs.lib_charts import chart_row
+from libs.lib_colors import cs
+from libs.lib_common import dttm_get, func_begin, func_end, print_adv
+from libs.lib_colors import BoW
 
-warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
-
-#<=====>#
-# Imports - Download Modules
-#<=====>#
-
-
-#<=====>#
-# Imports - Shared Library
-#<=====>#
-# shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
-# if shared_libs_path not in sys.path:
-# 	sys.path.append(shared_libs_path)
-
-
-#<=====>#
-# Imports - Local Library
-#<=====>#
-local_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '', 'libs'))
-if local_libs_path not in sys.path:
-	sys.path.append(local_libs_path)
-
-from libs.lib_charts                   import *
-from libs.lib_common                   import *
-from libs.lib_colors                   import *
-
-from bot_coinbase                  import *
-from bot_common                    import *
-from bot_db_read                   import *
-from bot_db_write                  import *
-from bot_logs                     import *
-# from bot_secrets                   import secrets
-from bot_settings                  import settings
-from bot_ta                        import *
-from bot_theme                     import *
 
 #<=====>#
 # Variables
 #<=====>#
 lib_name      = 'bot_strats'
 log_name      = 'bot_strats'
-lib_verbosity = 0
-lib_debug_lvl = 0
-lib_secs_max  = 2
 
-#<=====>#
+
+# <=====>#
 # Assignments Pre
-#<=====>#
+# <=====>#
+
+dst, debug_settings = debug_settings_get()
+lib_secs_max = get_lib_func_secs_max(lib_name=lib_name)
 
 
 #<=====>#
 # Classes
 #<=====>#
+
 
 
 #<=====>#
@@ -94,9 +49,8 @@ lib_secs_max  = 2
 def sell_strats_avail_get(mkt):
 	func_name = 'sell_strats_avail_get'
 	func_str = f'{lib_name}.{func_name}(mkt)'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	func_end(fnc)
 	return mkt
@@ -106,9 +60,8 @@ def sell_strats_avail_get(mkt):
 def sell_strats_check(mkt, pos, ta):
 	func_name = 'sell_strats_check'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 
 	# Strategy Exit - Smoothed Heikin Ashi
@@ -145,10 +98,10 @@ def disp_sell_tests(msg, mkt, pos, all_sells, all_hodls):
 
 	prod_id = pos.prod_id
 
-	if (pos.sell_yn == 'Y' and pos.sell_block_yn == 'N') or pos.st.show_tests_yn in ('Y','F'):
+	if (pos.sell_yn == 'Y' and pos.sell_block_yn == 'N') or pos.mst.show_tests_yn in ('Y','F'):
 		msg = '    ' + cs('==> ' + msg + f' * sell => {pos.sell_yn} * sell_block => {pos.sell_block_yn} * hodl => {pos.hodl_yn}', font_color='white', bg_color='blue')
 		chart_row(msg, len_cnt=240)
-		if (pos.sell_yn == 'Y' and pos.sell_block_yn == 'N') or pos.st.show_tests_yn in ('Y'):
+		if (pos.sell_yn == 'Y' and pos.sell_block_yn == 'N') or pos.mst.show_tests_yn in ('Y'):
 			for e in all_sells:
 				if pos.prc_chg_pct > 0:
 					e = '    ' + cs('* ' + e, font_color='green')
@@ -171,9 +124,8 @@ def disp_sell_tests(msg, mkt, pos, all_sells, all_hodls):
 def sell_strat_sha(mkt, pos, ta):
 	func_name = 'sell_strat_sha'
 	func_str = f'{lib_name}.{func_name}(mkt, pos, ta)'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	try:
 		# only_exit_if_profit_yn = 'Y'
@@ -219,7 +171,6 @@ def sell_strat_sha(mkt, pos, ta):
 			msg = f'HODL COND: {freq} sha slow body not shrinking - curr {sha_slow_body_curr:>.8f} >>> last {sha_slow_body_last:>.8f} >>>  prev {sha_slow_body_prev:>.8f}'
 			all_hodls.append(msg)
 
-
 		# check if sha fast upper wick larger than lower wick
 		sha_fast_upper_wick_weakening_tf = True
 		ago_list = ['ago0', 'ago1', 'ago2', 'ago3']
@@ -251,7 +202,6 @@ def sell_strat_sha(mkt, pos, ta):
 			all_hodls.append(msg)
 			for msg in temp_all_hodls:
 				all_hodls.append(msg)
-
 
 		# check if sha slow upper wick larger than lower wick
 		sha_slow_upper_wick_weakening_tf = True
@@ -285,7 +235,6 @@ def sell_strat_sha(mkt, pos, ta):
 			for msg in temp_all_hodls:
 				all_hodls.append(msg)
 
-
 		# check if the price is intersecting the sha fast candles
 		sha_fast_close = ta[freq]['sha_fast_close']['ago0']
 		if sell_prc < sha_fast_close:
@@ -296,7 +245,6 @@ def sell_strat_sha(mkt, pos, ta):
 			sell_prc_intersect_sha_fast_tf = False
 			msg = f'HODL COND: {freq} curr_price : {sell_prc:>.8f} is be above sha_fast_close {sha_fast_close:>.8f}'
 			all_hodls.append(msg)
-
 
 		# check if sha fast candles are reddening
 		sha_fast_color_curr = ta[freq]['sha_fast_color']['ago0']
@@ -312,7 +260,6 @@ def sell_strat_sha(mkt, pos, ta):
 			# YES!!! Allow the green candles to override the price touch above!
 			all_hodls.append(msg)
 
-
 		# check if sha slow candles are reddening
 		sha_slow_color_curr = ta[freq]['sha_slow_color']['ago0']
 		sha_slow_color_last = ta[freq]['sha_slow_color']['ago1']
@@ -327,15 +274,6 @@ def sell_strat_sha(mkt, pos, ta):
 			# YES!!! Allow the green candles to override the price touch above!
 			all_hodls.append(msg)
 
-
-#		sha_fast_body_shrinking_tf
-#		sha_slow_body_shrinking_tf
-#		sha_fast_upper_wick_weakening_tf
-#		sha_slow_upper_wick_weakening_tf
-#		sell_prc_intersect_sha_fast_tf
-#		sha_fast_reddening_tf
-#		sha_slow_reddening_tf
-
 		if sha_fast_body_shrinking_tf and sha_fast_upper_wick_weakening_tf:
 			pos.sell_yn  = 'Y'
 		elif sha_fast_body_shrinking_tf and sha_slow_body_shrinking_tf:
@@ -343,44 +281,25 @@ def sell_strat_sha(mkt, pos, ta):
 		elif sell_prc_intersect_sha_fast_tf and (sha_fast_body_shrinking_tf or sha_slow_body_shrinking_tf or sha_fast_reddening_tf):
 			pos.sell_yn  = 'Y'
 
-#		if sell_prc_intersect_sha_fast_tf and sha_fast_body_shrinking_tf:
-#			pos.sell_yn  = 'Y'
-
-		# if (pos.sell_yn == 'Y' and pos.sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
-		# 	msg = '    SELL TESTS - Smoothed Heikin Ashi'
-		# 	WoB(msg)
-		# 	if (pos.sell_yn == 'Y' and pos.sell_block_yn == 'N')  or show_tests_yn in ('Y'):
-		# 		for e in all_sells:
-		# 			if pos.prc_chg_pct > 0:
-		# 				G(e)
-		# 			else:
-		# 				R(e)
-		# 	for e in all_hodls:
-		# 		WoG(e)
-
 		if pos.sell_yn == 'Y': pos.hodl_yn = 'N'
 		msg = '    SELL TESTS - Smoothed Heikin Ashi'
 		mkt = disp_sell_tests(msg=msg, mkt=mkt, pos=pos, all_sells=all_sells, all_hodls=all_hodls)
-#		print(f'sell_yn : {pos.sell_yn}, hodl_yn : {pos.hodl_yn}')
 
-
-		exit_if_profit_yn      = pos.st.spot.sell.strats.sha.exit_if_profit_yn
-		exit_if_profit_pct_min = pos.st.spot.sell.strats.sha.exit_if_profit_pct_min
-		exit_if_loss_yn        = pos.st.spot.sell.strats.sha.exit_if_loss_yn
-		exit_if_loss_pct_max   = abs(pos.st.spot.sell.strats.sha.exit_if_loss_pct_max) * -1
+		exit_if_profit_yn      = pos.mst.sell.strats.sha.exit_if_profit_yn
+		exit_if_profit_pct_min = pos.mst.sell.strats.sha.exit_if_profit_pct_min
+		exit_if_loss_yn        = pos.mst.sell.strats.sha.exit_if_loss_yn
+		exit_if_loss_pct_max   = abs(pos.mst.sell.strats.sha.exit_if_loss_pct_max) * -1
 		if pos.sell_yn == 'Y':
 			if pos.prc_chg_pct > 0:
 				if exit_if_profit_yn == 'Y':
 					if pos.prc_chg_pct < exit_if_profit_pct_min:
 						msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % < exit_if_profit_pct_min : {exit_if_profit_pct_min}, cancelling sell...'
 						BoW(msg)
-#						if show_tests_yn == 'Y':
-#							BoW(msg)
 						pos.sell_yn = 'N'
 						pos.hodl_yn = 'Y'
 				elif exit_if_profit_yn == 'N':
 					msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...'
-					if pos.st.show_tests_yn == 'Y':
+					if pos.mst.show_tests_yn == 'Y':
 						BoW(msg)
 					pos.sell_yn = 'N'
 					pos.hodl_yn = 'Y'
@@ -389,17 +308,14 @@ def sell_strat_sha(mkt, pos, ta):
 					if pos.prc_chg_pct > exit_if_loss_pct_max:
 						msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % > exit_if_loss_pct_max : {exit_if_loss_pct_max}, cancelling sell...'
 						BoW(msg)
-#						if show_tests_yn == 'Y':
-#							BoW(msg)
 						pos.sell_yn = 'N'
 						pos.hodl_yn = 'Y'
 				elif exit_if_loss_yn == 'N':
 					msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...'
-					if pos.st.show_tests_yn == 'Y':
+					if pos.mst.show_tests_yn == 'Y':
 						BoW(msg)
 					pos.sell_yn = 'N'
 					pos.hodl_yn = 'Y'
-
 
 		if pos.sell_yn == 'Y':
 			pos.sell_strat_type = 'strat'
@@ -425,39 +341,30 @@ def sell_strat_sha(mkt, pos, ta):
 def sell_strat_imp_macd(mkt, pos, ta):
 	func_name = 'sell_strat_imp_macd'
 	func_str = f'{lib_name}.{func_name}(mkt, pos, ta)'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	try:
-		# only_exit_if_profit_yn = 'Y'
-		# sell_prc    = mkt.prc_sell
 		all_sells  = []
 		all_hodls   = []
 
 		freq = pos.buy_strat_freq
-#		print('buy_strat_type : {}'.format(pos.buy_strat_type))
-#		print('buy_strat_name : {}'.format(pos.buy_strat_name))
-#		print('buy_strat_freq : {}'.format(pos.buy_strat_freq))
 
 		# Impulse MACD + ATR
 		# MACD > Signal
 		imp_macd_curr      = ta[freq]['imp_macd']['ago0']
 		imp_macd_sign_curr = ta[freq]['imp_macd_sign']['ago0']
 		if imp_macd_curr < imp_macd_sign_curr:
-			# macd_under_signal_tf = True
 			msg = f'SELL COND: {freq} impulse macd < signal ==> macd : {imp_macd_curr:>5}, signal : {imp_macd_sign_curr:>5}'
 			all_sells.append(msg)
 		else:
 			msg = f'HODL COND: {freq} impulse macd > signal ==> macd : {imp_macd_curr:>5}, signal : {imp_macd_sign_curr:>5}'
-			# macd_under_signal_tf = False
 			all_hodls.append(msg)
 
 		# MACD Line Should Be Green or Lime
 		imp_macd_color = ta[freq]['imp_macd_color']['ago0']
 		if imp_macd_color in ('red','orange'):
 			imp_macd_color_ok_tf = True
-			#this is where it was erroring before
 			msg = f'SELL COND: {freq} impulse macd color must be lime or green ==> macd color : {imp_macd_color:>5}'
 			all_sells.append(msg)
 		else:
@@ -468,39 +375,25 @@ def sell_strat_imp_macd(mkt, pos, ta):
 		if imp_macd_curr and imp_macd_color_ok_tf:
 			pos.sell_yn  = 'Y'
 
-		# if (pos.sell_yn == 'Y' and pos.sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
-		# 	msg = '    SELL TESTS - Impluse MACD'
-		# 	WoB(msg)
-		# 	if (pos.sell_yn == 'Y' and pos.sell_block_yn == 'N') or show_tests_yn in ('Y'):
-		# 		for e in all_sells:
-		# 			if pos.prc_chg_pct > 0:
-		# 				G(e)
-		# 			else:
-		# 				R(e)
-		# 	for e in all_hodls:
-		# 		WoG(e)
 		if pos.sell_yn == 'Y': pos.hodl_yn = 'N'
 		msg = '    SELL TESTS - Impluse MACD'
 		mkt = disp_sell_tests(msg=msg, mkt=mkt, pos=pos, all_sells=all_sells, all_hodls=all_hodls)
-#		print(f'sell_yn : {pos.sell_yn}, hodl_yn : {pos.hodl_yn}')
 
-		exit_if_profit_yn      = pos.st.spot.sell.strats.imp_macd.exit_if_profit_yn
-		exit_if_profit_pct_min = pos.st.spot.sell.strats.imp_macd.exit_if_profit_pct_min
-		exit_if_loss_yn        = pos.st.spot.sell.strats.imp_macd.exit_if_loss_yn
-		exit_if_loss_pct_max   = abs(pos.st.spot.sell.strats.imp_macd.exit_if_loss_pct_max) * -1
+		exit_if_profit_yn      = pos.mst.sell.strats.imp_macd.exit_if_profit_yn
+		exit_if_profit_pct_min = pos.mst.sell.strats.imp_macd.exit_if_profit_pct_min
+		exit_if_loss_yn        = pos.mst.sell.strats.imp_macd.exit_if_loss_yn
+		exit_if_loss_pct_max   = abs(pos.mst.sell.strats.imp_macd.exit_if_loss_pct_max) * -1
 		if pos.sell_yn == 'Y':
 			if pos.prc_chg_pct > 0:
 				if exit_if_profit_yn == 'Y':
 					if pos.prc_chg_pct < exit_if_profit_pct_min:
 						msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % < exit_if_profit_pct_min : {exit_if_profit_pct_min}, cancelling sell...'
 						BoW(msg)
-#						if show_tests_yn == 'Y':
-#							BoW(msg)
 						pos.sell_yn = 'N'
 						pos.hodl_yn = 'Y'
 				elif exit_if_profit_yn == 'N':
 					msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...'
-					if pos.st.show_tests_yn == 'Y':
+					if pos.mst.show_tests_yn == 'Y':
 						BoW(msg)
 					pos.sell_yn = 'N'
 					pos.hodl_yn = 'Y'
@@ -509,13 +402,11 @@ def sell_strat_imp_macd(mkt, pos, ta):
 					if pos.prc_chg_pct > exit_if_loss_pct_max:
 						msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % > exit_if_loss_pct_max : {exit_if_loss_pct_max}, cancelling sell...'
 						BoW(msg)
-#						if show_tests_yn == 'Y':
-#							BoW(msg)
 						pos.sell_yn = 'N'
 						pos.hodl_yn = 'Y'
 				elif exit_if_loss_yn == 'N':
 					msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...'
-					if pos.st.show_tests_yn == 'Y':
+					if pos.mst.show_tests_yn == 'Y':
 						BoW(msg)
 					pos.sell_yn = 'N'
 					pos.hodl_yn = 'Y'
@@ -544,12 +435,10 @@ def sell_strat_imp_macd(mkt, pos, ta):
 def sell_strat_bb_bo(mkt, pos, ta):
 	func_name = 'sell_strat_bb_bo'
 	func_str = f'{lib_name}.{func_name}(mkt, pos, ta)'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	try:
-#		only_exit_if_profit_yn = 'Y'
 		sell_prc    = mkt.prc_sell
 		all_sells   = []
 		all_hodls   = []
@@ -575,39 +464,26 @@ def sell_strat_bb_bo(mkt, pos, ta):
 		else:
 			pos.sell_yn  = 'N'
 
-		# if (pos.sell_yn == 'Y' and pos.sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
-		# 	msg = '    SELL TESTS - Bollinger Band Breakout'
-		# 	WoB(msg)
-		# 	if (pos.sell_yn == 'Y' and pos.sell_block_yn == 'N')  or show_tests_yn in ('Y'):
-		# 		for e in all_sells:
-		# 			if pos.prc_chg_pct > 0:
-		# 				G(e)
-		# 			else:
-		# 				R(e)
-		# 	for e in all_hodls:
-		# 		WoG(e)
 		if pos.sell_yn == 'Y': pos.hodl_yn = 'N'
+
 		msg = '    SELL TESTS - Bollinger Band Breakout'
 		mkt = disp_sell_tests(msg=msg, mkt=mkt, pos=pos, all_sells=all_sells, all_hodls=all_hodls)
-#		print(f'sell_yn : {pos.sell_yn}, hodl_yn : {pos.hodl_yn}')
 
-		exit_if_profit_yn      = pos.st.spot.sell.strats.bb_bo.exit_if_profit_yn
-		exit_if_profit_pct_min = pos.st.spot.sell.strats.bb_bo.exit_if_profit_pct_min
-		exit_if_loss_yn        = pos.st.spot.sell.strats.bb_bo.exit_if_loss_yn
-		exit_if_loss_pct_max   = abs(pos.st.spot.sell.strats.bb_bo.exit_if_loss_pct_ma) * -1
+		exit_if_profit_yn      = pos.mst.sell.strats.bb_bo.exit_if_profit_yn
+		exit_if_profit_pct_min = pos.mst.sell.strats.bb_bo.exit_if_profit_pct_min
+		exit_if_loss_yn        = pos.mst.sell.strats.bb_bo.exit_if_loss_yn
+		exit_if_loss_pct_max   = abs(pos.mst.sell.strats.bb_bo.exit_if_loss_pct_ma) * -1
 		if pos.sell_yn == 'Y':
 			if pos.prc_chg_pct > 0:
 				if exit_if_profit_yn == 'Y':
 					if pos.prc_chg_pct < exit_if_profit_pct_min:
 						msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % < exit_if_profit_pct_min : {exit_if_profit_pct_min}, cancelling sell...'
 						BoW(msg)
-#						if show_tests_yn == 'Y':
-#							BoW(msg)
 						pos.sell_yn = 'N'
 						pos.hodl_yn = 'Y'
 				elif exit_if_profit_yn == 'N':
 					msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...'
-					if pos.st.show_tests_yn == 'Y':
+					if pos.mst.show_tests_yn == 'Y':
 						BoW(msg)
 					pos.sell_yn = 'N'
 					pos.hodl_yn = 'Y'
@@ -616,13 +492,11 @@ def sell_strat_bb_bo(mkt, pos, ta):
 					if pos.prc_chg_pct > exit_if_loss_pct_max:
 						msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % > exit_if_loss_pct_max : {exit_if_loss_pct_max}, cancelling sell...'
 						BoW(msg)
-#						if show_tests_yn == 'Y':
-#							BoW(msg)
 						pos.sell_yn = 'N'
 						pos.hodl_yn = 'Y'
 				elif exit_if_loss_yn == 'N':
 					msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...'
-					if pos.st.show_tests_yn == 'Y':
+					if pos.mst.show_tests_yn == 'Y':
 						BoW(msg)
 					pos.sell_yn = 'N'
 					pos.hodl_yn = 'Y'
@@ -651,12 +525,10 @@ def sell_strat_bb_bo(mkt, pos, ta):
 def sell_strat_bb(mkt, pos, ta):
 	func_name = 'sell_strat_bb'
 	func_str = f'{lib_name}.{func_name}(mkt, pos, ta)'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	try:
-		# only_exit_if_profit_yn = 'Y'
 		sell_prc    = mkt.prc_sell
 		all_sells   = []
 		all_hodls   = []
@@ -664,28 +536,6 @@ def sell_strat_bb(mkt, pos, ta):
 		rfreq = pos.buy_strat_freq
 		freq = pos.buy_strat_freq
 
-#		, bb_upper_inner
-#		, bb_lower_inner
-#		, bb_mid_inner
-#		, bb_width_inner
-#		, bb_pct_inner
-#		, bb_upper_roc_inner
-#		, bb_lower_roc_inner
-#		, bb_inner_expanding
-#		, bb_inner_contracting
-#	
-#		, bb_upper_outer
-#		, bb_lower_outer
-#		, bb_mid_outer
-#		, bb_width_outer
-#		, bb_pct_outer
-#		, bb_upper_roc_outer
-#		, bb_lower_roc_outer
-#		, bb_outer_expanding
-#		, bb_outer_contracting
-
-		# curr_bb_mid_inner     = ta[freq]['bb_mid_inner']['ago0']
-		# curr_bb_upper_inner   = ta[freq]['bb_upper_inner']['ago0']
 		curr_bb_lower_outer   = ta[freq]['bb_lower_outer']['ago0']
 		age_mins          = pos.age_mins
 		if freq == '15min':
@@ -713,40 +563,25 @@ def sell_strat_bb(mkt, pos, ta):
 		else:
 			pos.sell_yn  = 'N'
 
-		# if (pos.sell_yn == 'Y' and pos.sell_block_yn == 'N') or show_tests_yn in ('Y','F'):
-		# 	msg = '    SELL TESTS - Bollinger Band'
-		# 	WoB(msg)
-		# 	if (pos.sell_yn == 'Y' and pos.sell_block_yn == 'N')  or show_tests_yn in ('Y'):
-		# 		for e in all_sells:
-		# 			if pos.prc_chg_pct > 0:
-		# 				G(e)
-		# 			else:
-		# 				R(e)
-		# 	for e in all_hodls:
-		# 		WoG(e)
-#		print(f'sell_yn : {pos.sell_yn}, hodl_yn : {pos.hodl_yn}')
 		if pos.sell_yn == 'Y': pos.hodl_yn = 'N'
 		msg = '    SELL TESTS - Bollinger Band'
 		mkt = disp_sell_tests(msg=msg, mkt=mkt, pos=pos, all_sells=all_sells, all_hodls=all_hodls)
-#		print(f'sell_yn : {pos.sell_yn}, hodl_yn : {pos.hodl_yn}')
 
-		exit_if_profit_yn      = pos.st.spot.sell.strats.bb.exit_if_profit_yn
-		exit_if_profit_pct_min = pos.st.spot.sell.strats.bb.exit_if_profit_pct_min
-		exit_if_loss_yn        = pos.st.spot.sell.strats.bb.exit_if_loss_yn
-		exit_if_loss_pct_max   = abs(pos.st.spot.sell.strats.bb.exit_if_loss_pct_max) * -1
+		exit_if_profit_yn      = pos.mst.sell.strats.bb.exit_if_profit_yn
+		exit_if_profit_pct_min = pos.mst.sell.strats.bb.exit_if_profit_pct_min
+		exit_if_loss_yn        = pos.mst.sell.strats.bb.exit_if_loss_yn
+		exit_if_loss_pct_max   = abs(pos.mst.sell.strats.bb.exit_if_loss_pct_max) * -1
 		if pos.sell_yn == 'Y':
 			if pos.prc_chg_pct > 0:
 				if exit_if_profit_yn == 'Y':
 					if pos.prc_chg_pct < exit_if_profit_pct_min:
 						msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % < exit_if_profit_pct_min : {exit_if_profit_pct_min}, cancelling sell...'
 						BoW(msg)
-#						if show_tests_yn == 'Y':
-#							BoW(msg)
 						pos.sell_yn = 'N'
 						pos.hodl_yn = 'Y'
 				elif exit_if_profit_yn == 'N':
 					msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...'
-					if pos.st.show_tests_yn == 'Y':
+					if pos.mst.show_tests_yn == 'Y':
 						BoW(msg)
 					pos.sell_yn = 'N'
 					pos.hodl_yn = 'Y'
@@ -755,13 +590,11 @@ def sell_strat_bb(mkt, pos, ta):
 					if pos.prc_chg_pct > exit_if_loss_pct_max:
 						msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % > exit_if_loss_pct_max : {exit_if_loss_pct_max}, cancelling sell...'
 						BoW(msg)
-#						if show_tests_yn == 'Y':
-#							BoW(msg)
 						pos.sell_yn = 'N'
 						pos.hodl_yn = 'Y'
 				elif exit_if_loss_yn == 'N':
 					msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} -  cancelling sell...'
-					if pos.st.show_tests_yn == 'Y':
+					if pos.mst.show_tests_yn == 'Y':
 						BoW(msg)
 					pos.sell_yn = 'N'
 					pos.hodl_yn = 'Y'
@@ -792,15 +625,14 @@ def sell_strat_bb(mkt, pos, ta):
 # 	func_str = f'{lib_name}.{func_name}(mkt, ta, pos)'
 # #	G(func_str)
 # 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-# 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
-
+# 
 # 	prod_id     = mkt.prod_id
 # 	sell_prc    = mkt.prc_sell
 # 	all_sells   = []
 # 	all_hodls   = []
 # 	sell_yn     = 'N'
 # 	hodl_yn     = 'Y'
-# 	show_tests_yn         = pos.st.spot.sell.show_tests_yn
+# 	show_tests_yn         = pos.mst.sell.show_tests_yn
 
 # #	# Exponential Moving Average Crosses
 # #	if 1==1:
@@ -832,9 +664,11 @@ def sell_strat_bb(mkt, pos, ta):
 #<=====>#
 
 
+
 #<=====>#
 # Default Run
 #<=====>#
+
 
 
 #<=====>#

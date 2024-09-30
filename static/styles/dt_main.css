@@ -1,0 +1,169 @@
+table.dt {
+    color: #000000;
+    background: #ffffff;
+    border-width: 3px;
+    border-style: none;
+    border-color: white;
+}
+
+
+tr.dt {
+    color: #FFFFFF;
+    color: #000000;
+}
+
+
+th.dt_title {
+    font-family: 'times new roman', verdana, arial, serif;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: bold;
+    font-size: 1em;
+    color: #ffd700;
+    background: #000000;
+    word-spacing: normal;
+    letter-spacing: normal;
+    text-decoration: none;
+    text-transform: uppercase;
+    text-align: center;
+    border: white 1px solid;
+}
+
+
+/* DataTables specific styles */
+th.dt {
+    color: #ffffff;
+    background: #042d63;
+    border-width: thin;
+    border-style: solid;
+    border-color: gray;
+    font-family: 'times new roman', verdana, arial, serif;
+    font-size: small;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: bold;
+    letter-spacing: normal;
+    margin-top: 0pt;
+    margin-right: 0pt;
+    margin-bottom: 0pt;
+    margin-left: 0pt;
+    padding-top: 5px;
+    padding-right: 0px;
+    padding-bottom: 5px;
+    padding-left: 0px;
+    text-align: left;
+    text-decoration: none;
+    text-indent: 0pt;
+    text-transform: normal;
+    word-spacing: normal;
+    cursor: pointer;
+}
+
+
+td.dt {
+    color: #000000;
+    background: silver;
+    border-width: thin;
+    border-style: solid;
+    border-color: gray;
+    font-family: 'times new roman', verdana, arial, serif;
+    font-size: small;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    letter-spacing: normal;
+    margin-top: 0pt;
+    margin-right: 0pt;
+    margin-bottom: 0pt;
+    margin-left: 0pt;
+    padding-top: 5px;
+    padding-right: 0px;
+    padding-bottom: 5px;
+    padding-left: 0px;
+    text-align: left;
+    text-decoration: none;
+    text-indent: 0pt;
+    text-transform: normal;
+    word-spacing: normal;
+}
+
+
+table.dt th.dt:hover {
+    background-color: #1abc9c;
+    /* Optional: Change color on hover */
+}
+
+/* Add/Update Styles for Dropdown */
+select {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #2980b9;
+    padding: 5px;
+    border-radius: 4px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+/* Optional: Style the dropdown arrow */
+select::after {
+    content: '▼';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #000000;
+}
+
+/* Style for the dropdown options (limited browser support) */
+select option {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* Ensuring Select Elements Integrate with DataTables */
+.dataTables_length select {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #2980b9;
+}
+
+/* Optional: Adjust hover styles for options (may not work in all browsers) */
+select option:hover {
+    background-color: #1abc9c;
+    color: #ffffff;
+}
+
+/* Custom styles for DataTables sorting arrows */
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc:after {
+    color: #ffd700;
+    /* Change this to your desired color */
+}
+
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting:after {
+    content: "\f0dc";
+    /* FontAwesome icon for sorting */
+    font-family: FontAwesome;
+    opacity: 0.5;
+    /* Adjust opacity if needed */
+}
+
+table.dataTable thead .sorting_asc:before {
+    content: "\f0de";
+    /* FontAwesome icon for ascending sort */
+    font-family: FontAwesome;
+}
+
+table.dataTable thead .sorting_desc:before {
+    content: "\f0dd";
+    /* FontAwesome icon for descending sort */
+    font-family: FontAwesome;
+}

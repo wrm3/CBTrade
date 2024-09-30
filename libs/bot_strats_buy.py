@@ -1,22 +1,7 @@
 #<=====>#
-# Import All Scope
-#<=====>#
-
-import_all_func_list = []
-import_all_func_list.append("buy_strats_get")
-import_all_func_list.append("buy_strats_avail_get")
-import_all_func_list.append("buy_strats_check")
-import_all_func_list.append("buy_strats_deny")
-__all__ = import_all_func_list
-
-#<=====>#
 # Description
 #<=====>#
 
-
-#<=====>#
-# Description
-#<=====>#
 
 
 #<=====>#
@@ -24,97 +9,31 @@ __all__ = import_all_func_list
 #<=====>#
 
 
+
 #<=====>#
-# Imports - Common Modules
+# Imports
 #<=====>#
-
-# from datetime import date
-# from datetime import datetime
-# from datetime import datetime as dt
-# from datetime import timezone
-# from datetime import tzinfo
-# from datetime import timedelta
-# from dateutil import parser as dt_prsr
-# from pprint import pprint
-#from coinbase.rest import RESTClient as cbclient
-
-# https://github.com/rhettre/coinbase-advancedtrade-python/tree/main
-# from coinbase_advanced_trader.enhanced_rest_client import EnhancedRESTClient as cbclient
-
-#from rich import print as rprint
-#from rich import print
-
-#from rich.console import Console
-#from rich.panel import Panel
-#from rich.layout import Layout
-#from rich.live import Live
-
-# import ast
-# import configparser
-# import decimal
-# import json
-# import numpy as np
-import sys
-import os
-import pandas as pd 
-# import pandas_ta as pta 
-# import pytz
-# import re
-# import requests
-# import schedule
-# import sys
-# import time
+from libs.bot_common import freqs_get
+from libs.bot_settings import debug_settings_get, get_lib_func_secs_max
+from libs.lib_common import dttm_get, func_begin, func_end, print_adv, beep, speak
+from libs.lib_colors import BoW
+from libs.lib_colors import GoW
 import traceback
-import warnings
 
-warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
-
-#<=====>#
-# Imports - Download Modules
-#<=====>#
-
-
-#<=====>#
-# Imports - Shared Library
-#<=====>#
-# shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
-# if shared_libs_path not in sys.path:
-# 	sys.path.append(shared_libs_path)
-
-
-#<=====>#
-# Imports - Local Library
-#<=====>#
-local_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '', 'libs'))
-if local_libs_path not in sys.path:
-	sys.path.append(local_libs_path)
-
-from libs.lib_charts                   import *
-from libs.lib_common                   import *
-from libs.lib_colors                   import *
-
-from bot_coinbase                  import *
-from bot_common                    import *
-from bot_db_read                   import *
-from bot_db_write                  import *
-from bot_logs                     import *
-# from bot_secrets                   import secrets
-from bot_settings                  import settings
-from bot_ta                        import *
-from bot_theme                     import *
 
 #<=====>#
 # Variables
 #<=====>#
 lib_name      = 'bot_strats'
 log_name      = 'bot_strats'
-lib_verbosity = 0
-lib_debug_lvl = 0
-lib_secs_max  = 2
 
-#<=====>#
+
+# <=====>#
 # Assignments Pre
-#<=====>#
+# <=====>#
+
+dst, debug_settings = debug_settings_get()
+lib_secs_max = get_lib_func_secs_max(lib_name=lib_name)
 
 
 #<=====>#
@@ -129,9 +48,8 @@ lib_secs_max  = 2
 def buy_strats_get():
 	func_name = 'buy_strats_get'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	strats = {}
 	strats['sha_15min']        = {'prod_id': '', 'buy_strat_nick': 'sha_15min'      , 'buy_strat_type': 'up', 'buy_strat_name': 'sha',      'buy_strat_desc': 'Double Smoothed Heikin Ashi', 'buy_strat_freq': '15min'}
@@ -175,247 +93,186 @@ def buy_strats_get():
 
 #<=====>#
 
-def buy_strats_avail_get(mkt):
+def buy_strats_avail_get(pair):
 	func_name = 'buy_strats_avail_get'
-	func_str = f'{lib_name}.{func_name}(mkt)'
-#	G(func_str)
+	func_str = f'{lib_name}.{func_name}()'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
-	st         = settings.settings_load()
-	prod_id    = mkt.prod_id
+	prod_id = pair.prod_id
+	pst     = pair.pst
 
 	# New Strat Add Section
-	mkt.strat_sha_yn = 'N'
-	if not st.spot.buy.strats.sha.prod_ids:
-		mkt.strat_sha_yn = 'Y'
-	elif prod_id in st.spot.buy.strats.sha.prod_ids:
-		mkt.strat_sha_yn = 'Y'
-	if st.spot.buy.strats.sha.prod_ids_skip:
-		if prod_id in st.spot.buy.strats.sha.prod_ids_skip:
-			mkt.strat_sha_yn = 'N'
+	pair.strat_sha_yn = 'N'
+	if not pst.buy.strats.sha.prod_ids:
+		pair.strat_sha_yn = 'Y'
+	elif prod_id in pst.buy.strats.sha.prod_ids:
+		pair.strat_sha_yn = 'Y'
+	if pst.buy.strats.sha.prod_ids_skip:
+		if prod_id in pst.buy.strats.sha.prod_ids_skip:
+			pair.strat_sha_yn = 'N'
 
-	mkt.strat_imp_macd_yn = 'N'
-	if not st.spot.buy.strats.imp_macd.prod_ids:
-		mkt.strat_imp_macd_yn = 'Y'
-	elif prod_id in st.spot.buy.strats.imp_macd.prod_ids:
-		mkt.strat_imp_macd_yn = 'Y'
-	if st.spot.buy.strats.imp_macd.prod_ids_skip:
-		if prod_id in st.spot.buy.strats.imp_macd.prod_ids_skip:
-			mkt.strat_imp_macd_yn = 'N'
+	pair.strat_imp_macd_yn = 'N'
+	if not pst.buy.strats.imp_macd.prod_ids:
+		pair.strat_imp_macd_yn = 'Y'
+	elif prod_id in pst.buy.strats.imp_macd.prod_ids:
+		pair.strat_imp_macd_yn = 'Y'
+	if pst.buy.strats.imp_macd.prod_ids_skip:
+		if prod_id in pst.buy.strats.imp_macd.prod_ids_skip:
+			pair.strat_imp_macd_yn = 'N'
 
-	mkt.strat_emax_yn = 'N'
-	if not st.spot.buy.strats.emax.prod_ids:
-		mkt.strat_emax_yn = 'Y'
-	elif prod_id in st.spot.buy.strats.emax.prod_ids:
-		mkt.strat_emax_yn = 'Y'
-	if st.spot.buy.strats.emax.prod_ids_skip:
-		if prod_id in st.spot.buy.strats.emax.prod_ids_skip:
-			mkt.strat_emax_yn = 'N'
+	pair.strat_emax_yn = 'N'
+	if not pst.buy.strats.emax.prod_ids:
+		pair.strat_emax_yn = 'Y'
+	elif prod_id in pst.buy.strats.emax.prod_ids:
+		pair.strat_emax_yn = 'Y'
+	if pst.buy.strats.emax.prod_ids_skip:
+		if prod_id in pst.buy.strats.emax.prod_ids_skip:
+			pair.strat_emax_yn = 'N'
 
-	mkt.strat_drop_yn = 'N'
-	if not st.spot.buy.strats.drop.prod_ids:
-		mkt.strat_drop_yn = 'Y'
-	elif prod_id in st.spot.buy.strats.drop.prod_ids:
-		mkt.strat_drop_yn = 'Y'
-	if st.spot.buy.strats.drop.prod_ids_skip:
-		if prod_id in st.spot.buy.strats.drop.prod_ids_skip:
-			mkt.strat_drop_yn = 'N'
+	pair.strat_drop_yn = 'N'
+	if not pst.buy.strats.drop.prod_ids:
+		pair.strat_drop_yn = 'Y'
+	elif prod_id in pst.buy.strats.drop.prod_ids:
+		pair.strat_drop_yn = 'Y'
+	if pst.buy.strats.drop.prod_ids_skip:
+		if prod_id in pst.buy.strats.drop.prod_ids_skip:
+			pair.strat_drop_yn = 'N'
 
-	mkt.strat_bb_bo_yn = 'N'
-	if not st.spot.buy.strats.bb_bo.prod_ids:
-		mkt.strat_bb_bo_yn = 'Y'
-	elif prod_id in st.spot.buy.strats.bb_bo.prod_ids:
-		mkt.strat_bb_bo_yn = 'Y'
-	if st.spot.buy.strats.bb_bo.prod_ids_skip:
-		if prod_id in st.spot.buy.strats.bb_bo.prod_ids_skip:
-			mkt.strat_bb_bo_yn = 'N'
+	pair.strat_bb_bo_yn = 'N'
+	if not pst.buy.strats.bb_bo.prod_ids:
+		pair.strat_bb_bo_yn = 'Y'
+	elif prod_id in pst.buy.strats.bb_bo.prod_ids:
+		pair.strat_bb_bo_yn = 'Y'
+	if pst.buy.strats.bb_bo.prod_ids_skip:
+		if prod_id in pst.buy.strats.bb_bo.prod_ids_skip:
+			pair.strat_bb_bo_yn = 'N'
 
-	mkt.strat_bb_yn = 'N'
-	if not st.spot.buy.strats.bb.prod_ids:
-		mkt.strat_bb_yn = 'Y'
-	elif prod_id in st.spot.buy.strats.bb.prod_ids:
-		mkt.strat_bb_yn = 'Y'
-	if st.spot.buy.strats.bb.prod_ids_skip:
-		if prod_id in st.spot.buy.strats.bb.prod_ids_skip:
-			mkt.strat_bb_yn = 'N'
+	pair.strat_bb_yn = 'N'
+	if not pst.buy.strats.bb.prod_ids:
+		pair.strat_bb_yn = 'Y'
+	elif prod_id in pst.buy.strats.bb.prod_ids:
+		pair.strat_bb_yn = 'Y'
+	if pst.buy.strats.bb.prod_ids_skip:
+		if prod_id in pst.buy.strats.bb.prod_ids_skip:
+			pair.strat_bb_yn = 'N'
 
 	func_end(fnc)
-	return mkt
+	return pair
 
 #<=====>#
 
-def buy_strats_check(st, mkt, trade_perf, trade_strat_perf, ta, buy_signals, reserve_locked_tf):
+def buy_strats_check(buy):
 	func_name = 'buy_strats_check'
-	func_str = f'{lib_name}.{func_name}(st, mkt, trade_perf, trade_strat_perf, ta, reserve_locked_tf={reserve_locked_tf})'
-#	G(func_str)
+	func_str = f'{lib_name}.{func_name}(buy)'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
-#	show_buy_disp_yn     = 'Y'
-	buy_yn               = 'N'
-	wait_yn              = 'Y'
-	freq                 = trade_strat_perf.buy_strat_freq
+	buy.buy_yn               = 'N'
+	buy.wait_yn              = 'Y'
+	freq                 = buy.trade_strat_perf.buy_strat_freq
 
 	# Buy Strategy - Double Smoothed Heikin Ashi 
-	if trade_strat_perf.buy_strat_name == 'sha':
-		if st.spot.buy.strats.sha.use_yn == 'Y' and mkt.strat_sha_yn == 'Y':
-			if freq in st.spot.buy.strats.sha.freqs:
-				mkt, trade_perf, trade_strat_perf, buy_yn, wait_yn = buy_strat_sha(mkt, trade_perf, trade_strat_perf, ta)
-				buy_signal = {"prod_id": mkt.prod_id, "buy_strat_type": trade_strat_perf.buy_strat_type, "buy_strat_name": trade_strat_perf.buy_strat_name, "buy_strat_freq": trade_strat_perf.buy_strat_freq, "buy_yn": buy_yn, "wait_yn": wait_yn}
-				buy_signals.append(buy_signal)
+	if buy.trade_strat_perf.buy_strat_name == 'sha':
+		if buy.pst.buy.strats.sha.use_yn == 'Y' and buy.strat_sha_yn == 'Y':
+			if freq in buy.pst.buy.strats.sha.freqs:
+				buy = buy_strat_sha(buy)
+				buy_signal = {"prod_id": buy.prod_id, "buy_strat_type": buy.trade_strat_perf.buy_strat_type, "buy_strat_name": buy.trade_strat_perf.buy_strat_name, "buy_strat_freq": buy.trade_strat_perf.buy_strat_freq, "buy_yn": buy.buy_yn, "wait_yn": buy.wait_yn}
+				buy.buy_signals.append(buy_signal)
 
 	# Buy Strategy - Impulse MACD
-	elif trade_strat_perf.buy_strat_name == 'imp_macd':
-		if st.spot.buy.strats.imp_macd.use_yn == 'Y' and mkt.strat_imp_macd_yn == 'Y':
-			if freq in st.spot.buy.strats.imp_macd.freqs:
-				mkt, trade_perf, trade_strat_perf, buy_yn, wait_yn = buy_strat_imp_macd(mkt, trade_perf, trade_strat_perf, ta)
-				buy_signal = {"prod_id": mkt.prod_id, "buy_strat_type": trade_strat_perf.buy_strat_type, "buy_strat_name": trade_strat_perf.buy_strat_name, "buy_strat_freq": trade_strat_perf.buy_strat_freq, "buy_yn": buy_yn, "wait_yn": wait_yn}
-				buy_signals.append(buy_signal)
+	elif buy.trade_strat_perf.buy_strat_name == 'imp_macd':
+		if buy.pst.buy.strats.imp_macd.use_yn == 'Y' and buy.strat_imp_macd_yn == 'Y':
+			if freq in buy.pst.buy.strats.imp_macd.freqs:
+				buy = buy_strat_imp_macd(buy)
+				buy_signal = {"prod_id": buy.prod_id, "buy_strat_type": buy.trade_strat_perf.buy_strat_type, "buy_strat_name": buy.trade_strat_perf.buy_strat_name, "buy_strat_freq": buy.trade_strat_perf.buy_strat_freq, "buy_yn": buy.buy_yn, "wait_yn": buy.wait_yn}
+				buy.buy_signals.append(buy_signal)
 
 	# Buy Strategy - Bollinger Band Breakout
-	elif trade_strat_perf.buy_strat_name == 'bb_bo':
-		if st.spot.buy.strats.bb_bo.use_yn == 'Y' and mkt.strat_bb_bo_yn == 'Y':
-			if freq in st.spot.buy.strats.bb_bo.freqs:
-				mkt, trade_perf, trade_strat_perf, buy_yn, wait_yn = buy_strat_bb_bo(mkt, trade_perf, trade_strat_perf, ta)
-				buy_signal = {"prod_id": mkt.prod_id, "buy_strat_type": trade_strat_perf.buy_strat_type, "buy_strat_name": trade_strat_perf.buy_strat_name, "buy_strat_freq": trade_strat_perf.buy_strat_freq, "buy_yn": buy_yn, "wait_yn": wait_yn}
-				buy_signals.append(buy_signal)
+	elif buy.trade_strat_perf.buy_strat_name == 'bb_bo':
+		if buy.pst.buy.strats.bb_bo.use_yn == 'Y' and buy.strat_bb_bo_yn == 'Y':
+			if freq in buy.pst.buy.strats.bb_bo.freqs:
+				buy = buy_strat_bb_bo(buy)
+				buy_signal = {"prod_id": buy.prod_id, "buy_strat_type": buy.trade_strat_perf.buy_strat_type, "buy_strat_name": buy.trade_strat_perf.buy_strat_name, "buy_strat_freq": buy.trade_strat_perf.buy_strat_freq, "buy_yn": buy.buy_yn, "wait_yn": buy.wait_yn}
+				buy.buy_signals.append(buy_signal)
 
 	# Buy Strategy - Drop
-	elif trade_strat_perf.buy_strat_name == 'drop':
-		if st.spot.buy.strats.drop.use_yn == 'Y' and mkt.strat_drop_yn == 'Y':
-			if freq in st.spot.buy.strats.drop.freqs:
-				mkt, trade_perf, trade_strat_perf, buy_yn, wait_yn, reserve_locked_tf = buy_strat_drop(st, mkt, trade_perf, trade_strat_perf, ta, reserve_locked_tf)
-				buy_signal = {"prod_id": mkt.prod_id, "buy_strat_type": trade_strat_perf.buy_strat_type, "buy_strat_name": trade_strat_perf.buy_strat_name, "buy_strat_freq": trade_strat_perf.buy_strat_freq, "buy_yn": buy_yn, "wait_yn": wait_yn}
-				buy_signals.append(buy_signal)
+	elif buy.trade_strat_perf.buy_strat_name == 'drop':
+		if buy.pst.buy.strats.drop.use_yn == 'Y' and buy.strat_drop_yn == 'Y':
+			if freq in buy.pst.buy.strats.drop.freqs:
+				buy = buy_strat_drop(buy)
+				buy_signal = {"prod_id": buy.prod_id, "buy_strat_type": buy.trade_strat_perf.buy_strat_type, "buy_strat_name": buy.trade_strat_perf.buy_strat_name, "buy_strat_freq": buy.trade_strat_perf.buy_strat_freq, "buy_yn": buy.buy_yn, "wait_yn": buy.wait_yn}
+				buy.buy_signals.append(buy_signal)
 
 	# Buy Strategy - Bollinger Band
-	elif trade_strat_perf.buy_strat_name == 'bb':
-		if st.spot.buy.strats.bb.use_yn == 'Y' and mkt.strat_bb_yn == 'Y':
-			if freq in st.spot.buy.strats.bb.freqs:
-				mkt, trade_perf, trade_strat_perf, buy_yn, wait_yn = buy_strat_bb(mkt, trade_perf, trade_strat_perf, ta)
-				buy_signal = {"prod_id": mkt.prod_id, "buy_strat_type": trade_strat_perf.buy_strat_type, "buy_strat_name": trade_strat_perf.buy_strat_name, "buy_strat_freq": trade_strat_perf.buy_strat_freq, "buy_yn": buy_yn, "wait_yn": wait_yn}
-				buy_signals.append(buy_signal)
+	elif buy.trade_strat_perf.buy_strat_name == 'bb':
+		if buy.pst.buy.strats.bb.use_yn == 'Y' and buy.strat_bb_yn == 'Y':
+			if freq in buy.pst.buy.strats.bb.freqs:
+				buy = buy_strat_bb(buy)
+				buy_signal = {"prod_id": buy.prod_id, "buy_strat_type": buy.trade_strat_perf.buy_strat_type, "buy_strat_name": buy.trade_strat_perf.buy_strat_name, "buy_strat_freq": buy.trade_strat_perf.buy_strat_freq, "buy_yn": buy.buy_yn, "wait_yn": buy.wait_yn}
+				buy.buy_signals.append(buy_signal)
 
 	else:
-		buy_yn = 'N'
-		wait_yn = 'Y'
-		# show_buy_disp_yn = 'N'
+		buy.buy_yn = 'N'
+		buy.wait_yn = 'Y'
 
 	func_end(fnc)
-	return mkt, trade_perf, trade_strat_perf, buy_yn, wait_yn, buy_signals, reserve_locked_tf
+	return buy
 
 #<=====>#
 
-def buy_strats_deny(mkt, trade_strat_perf, buy_yn, wait_yn):
+def buy_strats_deny(buy):
 	func_name = 'buy_strats_deny'
-	func_str = f'{lib_name}.{func_name}(mkt, trade_strat_perf, buy_yn={buy_yn}, wait_yn={wait_yn})'
-#	G(func_str)
+	func_str = f'{lib_name}.{func_name}()'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
-	# buy_strat_type = trade_strat_perf.buy_strat_type
-	buy_deny_yn = 'N'
-	buy_strat_name = trade_strat_perf.buy_strat_name
-	# buy_strat_freq = trade_strat_perf.buy_strat_freq
-
-	if buy_strat_name == 'sha' and mkt.strat_sha_yn == 'N':
-#		BoW(f'this strat : {buy_strat_name} {buy_strat_freq} is not allowed by settings!!!')
-		buy_deny_yn = 'Y'
-	elif buy_strat_name == 'imp_macd' and mkt.strat_imp_macd_yn == 'N':
-#		BoW(f'this strat : {buy_strat_name} {buy_strat_freq} is not allowed by settings!!!')
-		buy_deny_yn = 'Y'
-	elif buy_strat_name == 'emax' and mkt.strat_emax_yn == 'N':
-#		BoW(f'this strat : {buy_strat_name} {buy_strat_freq} is not allowed by settings!!!')
-		buy_deny_yn = 'Y'
-	elif buy_strat_name == 'bb_bo' and mkt.strat_bb_bo_yn == 'N':
-#		BoW(f'this strat : {buy_strat_name} {buy_strat_freq} is not allowed by settings!!!')
-		buy_deny_yn = 'Y'
-	elif buy_strat_name == 'bb' and mkt.strat_bb_yn == 'N':
-#		BoW(f'this strat : {buy_strat_name} {buy_strat_freq} is not allowed by settings!!!')
-		buy_deny_yn = 'Y'
-	elif buy_strat_name == 'drop' and mkt.strat_drop_yn == 'N':
-#		BoW(f'this strat : {buy_strat_name} {buy_strat_freq} is not allowed by settings!!!')
-		buy_deny_yn = 'Y'
+	if buy.trade_strat_perf.buy_strat_name == 'sha' and buy.pair.strat_sha_yn == 'N':
+		buy.trade_strat_perf.buy_deny_yn = 'Y'
+	elif buy.trade_strat_perf.buy_strat_name == 'imp_macd' and buy.pair.strat_imp_macd_yn == 'N':
+		buy.trade_strat_perf.buy_deny_yn = 'Y'
+	elif buy.trade_strat_perf.buy_strat_name == 'emax' and buy.pair.strat_emax_yn == 'N':
+		buy.trade_strat_perf.buy_deny_yn = 'Y'
+	elif buy.trade_strat_perf.buy_strat_name == 'bb_bo' and buy.pair.strat_bb_bo_yn == 'N':
+		buy.trade_strat_perf.buy_deny_yn = 'Y'
+	elif buy.trade_strat_perf.buy_strat_name == 'bb' and buy.pair.strat_bb_yn == 'N':
+		buy.trade_strat_perf.buy_deny_yn = 'Y'
+	elif buy.trade_strat_perf.buy_strat_name == 'drop' and buy.pair.strat_drop_yn == 'N':
+		buy.trade_strat_perf.buy_deny_yn = 'Y'
 
 	func_end(fnc)
-	return buy_deny_yn
+	return buy
 
 #<=====>#
 
-# def sell_strats_get():
-# 	func_name = 'sell_strats_get'
-# 	func_str = f'{lib_name}.{func_name}()'
-# #	G(func_str)
-# 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-# 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
-
-# 	func_end(fnc)
-# 	return strats
-
-#<=====>#
-
-def buy_strat_sha(mkt, trade_perf, trade_strat_perf, ta):
+def buy_strat_sha(buy):
 	func_name = 'buy_strat_sha'
-	func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perf, ta)'
-#	G(func_str)
+	func_str = f'{lib_name}.{func_name}(buy)'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	try:
 
 		all_passes       = []
 		all_fails        = []
-		prod_id          = mkt.prod_id
-		curr_prc         = mkt.prc_buy
-		buy_yn           = 'Y'
-		wait_yn          = 'N'
-#		show_tests_yn    = st.spot.buy.show_tests_yn
-#		show_tests_min   = st.spot.buy.show_tests_min
+		prod_id          = buy.prod_id
+		buy.buy_yn       = 'Y'
+		buy.wait_yn      = 'N'
 
-		rfreq = trade_strat_perf.buy_strat_freq
-		r     = freqs_get(rfreq)
+		buy.rfreq = buy.trade_strat_perf.buy_strat_freq
+		r     = freqs_get(buy.rfreq)
 		freqs =r[0]
-
-#		if prod_id in ('DAR-USDC','IBEX-USDC'):
-#			pprint(ta[rfreq]['sma100'])
-#			pprint(ta[rfreq]['sma200'])
-
-#		# General Trend
-#		check_list = ['sma100']
-#		sma = ta['1d']['sma300']['ago0']
-#		msg = f'    * BUY REQUIRE : {rfreq} Current Price : {curr_prc:>.8f} must be above current 1d sma300 : {sma}'
-#		if not sma:
-#			buy_yn  = 'N'
-#			all_fails.append(msg)
-#		elif curr_prc > sma:
-#			all_passes.append(msg)
-#		else:
-#			buy_yn  = 'N'
-#			all_fails.append(msg)
-
-#		check_list = []
-#		check_list.append(['ema5','ema8'])
-#		check_list.append(['ema8','ema13'])
-#		check_list.append(['ema13','ema21'])
-#		for x, y in check_list:
-#			m = '    * BUY REQUIRE : current {} {} :{:>.8f} >>> {}:{:>.8f}'
-#			msg = m.format(rfreq, x, ta[rfreq][x]['ago0'], y, ta[rfreq][y]['ago0'])
-#			if ta[rfreq][x]['ago0'] > ta[rfreq][y]['ago0']:
-#				all_passes.append(msg)
-#			else:
-#				all_fails.append(msg)
 
 		# Smoothed Heikin Ashi Trend - Fast - Multi Timeframe Above Current Price
 		ago_list = ['ago0','ago1']
 		for freq in freqs:
 			for ago in ago_list:
 				m = '    * BUY REQUIRE : {} current price : {:>.8f} >>> {} SHA - FAST close {:>.8f} - {}'
-				msg = m.format(freq, curr_prc, freq, ta[freq]['sha_fast_close'][ago], ago)
-				if curr_prc > ta[freq]['sha_fast_close'][ago]:
+				msg = m.format(freq, buy.prc_buy, freq, buy.ta[freq]['sha_fast_close'][ago], ago)
+				if buy.prc_buy > buy.ta[freq]['sha_fast_close'][ago]:
 					all_passes.append(msg)
 				else:
-					buy_yn  = 'N'
+					buy.buy_yn  = 'N'
 					all_fails.append(msg)
 
 		# Smoothed Heikin Ashi Trend - Fast - Multi Timeframe - Candles Are Green
@@ -423,11 +280,11 @@ def buy_strat_sha(mkt, trade_perf, trade_strat_perf, ta):
 		for freq in freqs:
 			for ago in ago_list:
 				m = '    * BUY REQUIRE : {} SHA_FAST candles {} == green : {}'
-				msg = m.format(freq, ago, ta[freq]['sha_fast_color'][ago])
-				if ta[freq]['sha_fast_color'][ago] == 'green':
+				msg = m.format(freq, ago, buy.ta[freq]['sha_fast_color'][ago])
+				if buy.ta[freq]['sha_fast_color'][ago] == 'green':
 					all_passes.append(msg)
 				else:
-					buy_yn  = 'N'
+					buy.buy_yn  = 'N'
 					all_fails.append(msg)
 
 		# Smoothed Heikin Ashi Trend - Slow - Multi Timeframe Above Current Price
@@ -435,11 +292,11 @@ def buy_strat_sha(mkt, trade_perf, trade_strat_perf, ta):
 		for freq in freqs:
 			for ago in ago_list:
 				m = '    * BUY REQUIRE : {} current price : {:>.8f} >>> {} SHA - SLOW close {:>.8f} - {}'
-				msg = m.format(freq, curr_prc, freq, ta[freq]['sha_slow_close'][ago], ago)
-				if curr_prc > ta[freq]['sha_slow_close'][ago]:
+				msg = m.format(freq, buy.prc_buy, freq, buy.ta[freq]['sha_slow_close'][ago], ago)
+				if buy.prc_buy > buy.ta[freq]['sha_slow_close'][ago]:
 					all_passes.append(msg)
 				else:
-					buy_yn  = 'N'
+					buy.buy_yn  = 'N'
 					all_fails.append(msg)
 
 		# Smoothed Heikin Ashi Trend - Slow - Multi Timeframe - Candles Are Green
@@ -447,35 +304,35 @@ def buy_strat_sha(mkt, trade_perf, trade_strat_perf, ta):
 		for freq in freqs:
 			for ago in ago_list:
 				m = '    * BUY REQUIRE : {} SHA_SLOW candles {} == green : {}'
-				msg = m.format(freq, ago, ta[freq]['sha_slow_color'][ago])
-				if ta[freq]['sha_slow_color'][ago] == 'green':
+				msg = m.format(freq, ago, buy.ta[freq]['sha_slow_color'][ago])
+				if buy.ta[freq]['sha_slow_color'][ago] == 'green':
 					all_passes.append(msg)
 				else:
-					buy_yn  = 'N'
+					buy.buy_yn  = 'N'
 					all_fails.append(msg)
 
 		# Check to make sure the body is growing body
-		if ta[rfreq]['sha_fast_body']['ago0'] >= ta[rfreq]['sha_fast_body']['ago1'] >= ta[rfreq]['sha_fast_body']['ago2']:
+		if buy.ta[buy.rfreq]['sha_fast_body']['ago0'] >= buy.ta[buy.rfreq]['sha_fast_body']['ago1'] >= buy.ta[buy.rfreq]['sha_fast_body']['ago2']:
 			m = '    * BUY REQUIRE : {} growing body size TRUE - curr {:>.8f} >>> last {:>.8f} >>>  prev {:>.8f}'
-			msg = m.format(rfreq, ta[rfreq]['sha_fast_body']['ago0'], ta[rfreq]['sha_fast_body']['ago1'],  ta[rfreq]['sha_fast_body']['ago2'])
+			msg = m.format(buy.rfreq, buy.ta[buy.rfreq]['sha_fast_body']['ago0'], buy.ta[buy.rfreq]['sha_fast_body']['ago1'],  buy.ta[buy.rfreq]['sha_fast_body']['ago2'])
 			all_passes.append(msg)
 		else:
 			m = '    * BUY REQUIRE : {} growing body size FALSE - curr {:>.8f} >>> last {:>.8f} >>>  prev {:>.8f}'
-			msg = m.format(rfreq, ta[rfreq]['sha_fast_body']['ago0'], ta[rfreq]['sha_fast_body']['ago1'],  ta[rfreq]['sha_fast_body']['ago2'])
-			buy_yn  = 'N'
+			msg = m.format(buy.rfreq, buy.ta[buy.rfreq]['sha_fast_body']['ago0'], buy.ta[buy.rfreq]['sha_fast_body']['ago1'],  buy.ta[buy.rfreq]['sha_fast_body']['ago2'])
+			buy.buy_yn  = 'N'
 			all_fails.append(msg)
 
 		# Check Upper Wick Larger Than Lower Wick
 		ago_list = ['ago0', 'ago1', 'ago2']
 		for ago in ago_list:
-			if ta[rfreq]['sha_fast_wick_upper'][ago] >= ta[rfreq]['sha_fast_wick_lower'][ago]:
+			if buy.ta[buy.rfreq]['sha_fast_wick_upper'][ago] >= buy.ta[buy.rfreq]['sha_fast_wick_lower'][ago]:
 				m = '    * BUY REQUIRE : {} larger upper wick - upper {:>.8f} >>> lower {:>.8f} - {}'
-				msg = m.format(rfreq, ta[rfreq]['sha_fast_wick_upper'][ago], ta[rfreq]['sha_fast_wick_lower'][ago], ago)
+				msg = m.format(buy.rfreq, buy.ta[buy.rfreq]['sha_fast_wick_upper'][ago], buy.ta[buy.rfreq]['sha_fast_wick_lower'][ago], ago)
 				all_passes.append(msg)
 			else:
 				m = '    * BUY REQUIRE : {} growing body size - upper {:>.8f} <<< lower {:>.8f} - {}' 
-				msg = m.format(rfreq, ta[rfreq]['sha_fast_wick_upper'][ago], ta[rfreq]['sha_fast_wick_lower'][ago], ago)
-				buy_yn  = 'N'
+				msg = m.format(buy.rfreq, buy.ta[buy.rfreq]['sha_fast_wick_upper'][ago], buy.ta[buy.rfreq]['sha_fast_wick_lower'][ago], ago)
+				buy.buy_yn  = 'N'
 				all_fails.append(msg)
 
 		# Heikin Ashi Candles - Multi Timeframe - Candles Are Green
@@ -483,728 +340,589 @@ def buy_strat_sha(mkt, trade_perf, trade_strat_perf, ta):
 		for freq in freqs:
 			for ago in ago_list:
 				m = '    * BUY REQUIRE : {} HA candles {} == green : {}'
-				msg = m.format(freq, ago, ta[freq]['ha_color'][ago])
-				if ta[freq]['ha_color'][ago] == 'green':
+				msg = m.format(freq, ago, buy.ta[freq]['ha_color'][ago])
+				if buy.ta[freq]['ha_color'][ago] == 'green':
 					all_passes.append(msg)
 				else:
-					buy_yn  = 'N'
+					buy.buy_yn  = 'N'
 					all_fails.append(msg)
 
-		if buy_yn == 'Y':
-			wait_yn = 'N'
-			mkt.buy_strat_type  = 'up'
-			mkt.buy_strat_name  = 'sha'
-			mkt.buy_strat_freq  = rfreq
-		else:
-			wait_yn = 'Y'
+		# Nadaraya-Watson Estimator - Estimated Is Green
+		ago_list = ['ago0','ago1']
+		for ago in ago_list:
+			m = '    * BUY REQUIRE : {} Nadaraya-Watson Estimator color {} == green : {}'
+			msg = m.format(freq, ago, buy.ta[buy.rfreq]['nwe_color'][ago])
+			if buy.ta[freq]['ha_color'][ago] == 'green':
+				all_passes.append(msg)
+			else:
+				buy.buy_yn  = 'N'
+				all_fails.append(msg)
 
-		trade_strat_perf.pass_cnt     = len(all_passes)
-		trade_strat_perf.fail_cnt     = len(all_fails)
-		trade_strat_perf.total_cnt    = trade_strat_perf.pass_cnt + trade_strat_perf.fail_cnt
-		trade_strat_perf.pass_pct     = round((trade_strat_perf.pass_cnt / trade_strat_perf.total_cnt) * 100, 2)
-		trade_strat_perf.all_passes   = all_passes
-		trade_strat_perf.all_fails    = all_fails
-		trade_strat_perf.buy_yn       = buy_yn
-		trade_strat_perf.wait_yn      = wait_yn
+		if buy.buy_yn == 'Y':
+			buy.wait_yn = 'N'
+			buy.mkt.buy_strat_type  = 'up'
+			buy.mkt.buy_strat_name  = 'sha'
+			buy.mkt.buy_strat_freq  = buy.rfreq
+		else:
+			buy.wait_yn = 'Y'
+
+		buy.trade_strat_perf.pass_cnt     = len(all_passes)
+		buy.trade_strat_perf.fail_cnt     = len(all_fails)
+		buy.trade_strat_perf.total_cnt    = buy.trade_strat_perf.pass_cnt + buy.trade_strat_perf.fail_cnt
+		buy.trade_strat_perf.pass_pct     = round((buy.trade_strat_perf.pass_cnt / buy.trade_strat_perf.total_cnt) * 100, 2)
+		buy.trade_strat_perf.all_passes   = all_passes
+		buy.trade_strat_perf.all_fails    = all_fails
+		buy.trade_strat_perf.buy_yn       = buy.buy_yn
+		buy.trade_strat_perf.wait_yn      = buy.wait_yn
 
 	except Exception as e:
-		print(f'{dttm_get()} {func_name} {rfreq} {prod_id} ==> Error : ({type(e)}){e}')
+		print(f'{dttm_get()} {func_name} {buy.rfreq} {prod_id} ==> Error : ({type(e)}){e}')
 		traceback.print_exc()
 		print_adv(3)
 		beep()
-		buy_yn  = 'N'
-		wait_yn = 'Y'
+		buy.buy_yn  = 'N'
+		buy.wait_yn = 'Y'
 
-	# print(f'{func_name} * buy_yn : {buy_yn}  * wait_yn : {wait_yn}')
-	# if buy_yn == 'Y':
-	# 	speak(func_name)
-
-	trade_strat_perf.buy_yn  = buy_yn
-	trade_strat_perf.wait_yn = wait_yn
-
-#	buy_sign_rec(mkt)
+	buy.trade_strat_perf.buy_yn  = buy.buy_yn
+	buy.trade_strat_perf.wait_yn = buy.wait_yn
 
 	func_end(fnc)
-	return mkt, trade_perf, trade_strat_perf, buy_yn, wait_yn
+	return buy
 
 #<=====>#
 
-def buy_strat_imp_macd(mkt, trade_perf, trade_strat_perf, ta):
+def buy_strat_imp_macd(buy):
 	func_name = 'buy_strat_imp_macd'
-	func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perf, ta)'
-#	G(func_str)
+	func_str = f'{lib_name}.{func_name}(buy)'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	try:
 		all_passes       = []
 		all_fails        = []
-		prod_id          = mkt.prod_id
-		# curr_prc         = mkt.prc_buy
-		buy_yn           = 'Y'
-		wait_yn          = 'N'
+		prod_id          = buy.prod_id
+		buy.buy_yn       = 'Y'
+		buy.wait_yn      = 'N'
 
-		rfreq = trade_strat_perf.buy_strat_freq
-		freqs, faster_freqs     = freqs_get(rfreq)
-		# atr_rfreq        = "1d"
-
-#		# General Trend
-#		check_list = ['sma100']
-#		for x in check_list:
-#			sma = ta[rfreq][x]['ago0']
-#			msg = f'    * BUY REQUIRE : {rfreq} Current Price : {curr_prc:>.8f} must be above current {x} : {sma}'
-#			if not sma:
-#				buy_yn  = 'N'
-#				all_fails.append(msg)
-#			elif curr_prc > sma:
-#				all_passes.append(msg)
-#			else:
-#				buy_yn  = 'N'
-#				all_fails.append(msg)
+		buy.rfreq        = buy.trade_strat_perf.buy_strat_freq
+		freqs, faster_freqs     = freqs_get(buy.rfreq)
 
 		# Impulse MACD + ATR
 		# MACD > Signal
 		m = '    * BUY REQUIRE : {} impulse macd > signal ==> macd : {:>5}, signal : {:>5}'
-		msg = m.format(rfreq, ta[rfreq]['imp_macd']['ago0'], ta[rfreq]['imp_macd_sign']['ago0'])
-		if ta[rfreq]['imp_macd']['ago0'] > ta[rfreq]['imp_macd_sign']['ago0']:
+		msg = m.format(buy.rfreq, buy.ta[buy.rfreq]['imp_macd']['ago0'], buy.ta[buy.rfreq]['imp_macd_sign']['ago0'])
+		if buy.ta[buy.rfreq]['imp_macd']['ago0'] > buy.ta[buy.rfreq]['imp_macd_sign']['ago0']:
 			all_passes.append(msg)
 		else:
-			buy_yn  = 'N'
+			buy.buy_yn  = 'N'
 			all_fails.append(msg)
 
 		# MACD Line Should Be Green or Lime
 		m = '    * BUY REQUIRE : {} impulse macd color must be lime or green ==> macd color : {:>5}'
-		msg = m.format(rfreq, ta[rfreq]['imp_macd_color']['ago0'])
-		if ta[rfreq]['imp_macd_color']['ago0'] in ('lime','green'):
+		msg = m.format(buy.rfreq, buy.ta[buy.rfreq]['imp_macd_color']['ago0'])
+		if buy.ta[buy.rfreq]['imp_macd_color']['ago0'] in ('lime','green'):
 			all_passes.append(msg)
 		else:
-			buy_yn  = 'N'
+			buy.buy_yn  = 'N'
 			all_fails.append(msg)
 
-		# MACD > Signal - Last
-#		m = '    * BUY REQUIRE : {} last impulse macd > last signal ==> macd : {:>5}, signal : {:>5}'
-#		msg = m.format(rfreq, ta[rfreq]['imp_macd']['ago1'], ta[rfreq]['imp_macd_sign']['ago1'])
-#		if ta[rfreq]['imp_macd']['ago1'] > ta[rfreq]['imp_macd_sign']['ago1']:
-#			all_passes.append(msg)
-#		else:
-#			buy_yn  = 'N'
-#			all_fails.append(msg)
-
 		# MACD & Signal Should Be Sufficiently Appart and Not Hugging
-		spread = ta[rfreq]['imp_macd']['ago0'] - ta[rfreq]['imp_macd_sign']['ago0']
+		spread = buy.ta[buy.rfreq]['imp_macd']['ago0'] - buy.ta[buy.rfreq]['imp_macd_sign']['ago0']
 		min_spread_pct = 5
-		min_spread = ta[rfreq]['atr']['ago0'] * (min_spread_pct/100)
+		min_spread = buy.ta[buy.rfreq]['atr']['ago0'] * (min_spread_pct/100)
 		m = '    * BUY REQUIRE : {} impulse macd_signal > atr_low * 0.0{} ==> macd : {:>5}, sign : {:>5}, spread : {:>5}, min_spread_pct : {:>5}, min_spread : {:>5}'
-		msg = m.format(rfreq, min_spread_pct, ta[rfreq]['imp_macd']['ago0'], ta[rfreq]['imp_macd_sign']['ago0'], spread, min_spread_pct, min_spread)
+		msg = m.format(buy.rfreq, min_spread_pct, buy.ta[buy.rfreq]['imp_macd']['ago0'], buy.ta[buy.rfreq]['imp_macd_sign']['ago0'], spread, min_spread_pct, min_spread)
 		if spread > min_spread:
 			all_passes.append(msg)
 		else:
-			buy_yn  = 'N'
+			buy.buy_yn  = 'N'
 			all_fails.append(msg)
-
-#		if 1==1:
-#			atr_low = -1 * ta['1d']['atr']['ago0'] / 3
-#			m = '    * BUY REQUIRE : 1h impulse macd < atr_low (-1 * atr/3) ==> macd : {:>5}, atr_low : {:>5}'
-#			msg = m.format(ta['1h']['imp_macd']['ago0'], atr_low)
-#			if ta['1h']['imp_macd']['ago0'] < atr_low:
-#				all_passes.append(msg)
-#			else:
-#				buy_yn  = 'N'
-#				all_fails.append(msg)
-#		if 1==1:
-#			atr_low = -1 * ta['1d']['atr']['ago0'] / 3
-#			m = '    * BUY REQUIRE : 1h impulse macd_sign < atr_low (-1 * atr/3) ==> macd_sign : {:>5}, atr_low : {:>5}'
-#			msg = msg.format(ta['1h']['imp_macd_sign']['ago0'], atr_low)
-#			if ta['1h']['imp_macd_sign']['ago0'] < atr_low:
-#				all_passes.append(msg)
-#			else:
-#				buy_yn  = 'N'
-#				all_fails.append(msg)
 
 		# Current Candle is Green
 		ago_list = ['ago0']
 		for freq in freqs:
 			for ago in ago_list:
-				color = ta[freq]['color'][ago]
+				color = buy.ta[freq]['color'][ago]
 				msg = f'    * BUY REQUIRE : {freq} {ago} candles == green : {color}'
 				if color == 'green':
 					all_passes.append(msg)
 				else:
-					buy_yn  = 'N'
+					buy.buy_yn  = 'N'
 					all_fails.append(msg)
 
 		# Heikin Ashi Candles - Multi Timeframe - Candles Are Green
 		ago_list = ['ago0','ago1']
 		for freq in faster_freqs:
 			for ago in ago_list:
-#				print(f'freq : {freq}, ago : {ago}')
-				ha_color = ta[freq]['ha_color'][ago]
+				ha_color = buy.ta[freq]['ha_color'][ago]
 				msg = f'    * BUY REQUIRE : {freq} {ago} Heikin Ashi candles == green : {ha_color}'
 				if ha_color == 'green':
 					all_passes.append(msg)
 				else:
-					buy_yn  = 'N'
+					buy.buy_yn  = 'N'
 					all_fails.append(msg)
 
-		if buy_yn == 'Y':
-			wait_yn = 'N'
-			mkt.buy_strat_type  = 'up'
-			mkt.buy_strat_name  = 'imp_macd'
-			mkt.buy_strat_freq  = rfreq
-		else:
-			wait_yn = 'Y'
+		# Nadaraya-Watson Estimator - Estimated Is Green
+		ago_list = ['ago0','ago1']
+		for ago in ago_list:
+			m = '    * BUY REQUIRE : {} Nadaraya-Watson Estimator color {} == green : {}'
+			msg = m.format(freq, ago, buy.ta[buy.rfreq]['nwe_color'][ago])
+			if buy.ta[freq]['ha_color'][ago] == 'green':
+				all_passes.append(msg)
+			else:
+				buy.buy_yn  = 'N'
+				all_fails.append(msg)
 
-		trade_strat_perf.pass_cnt     = len(all_passes)
-		trade_strat_perf.fail_cnt     = len(all_fails)
-		trade_strat_perf.total_cnt    = trade_strat_perf.pass_cnt + trade_strat_perf.fail_cnt
-		trade_strat_perf.pass_pct     = round((trade_strat_perf.pass_cnt / trade_strat_perf.total_cnt) * 100, 2)
-		trade_strat_perf.all_passes   = all_passes
-		trade_strat_perf.all_fails    = all_fails
-		trade_strat_perf.buy_yn       = buy_yn
-		trade_strat_perf.wait_yn      = wait_yn
+		if buy.buy_yn == 'Y':
+			buy.wait_yn = 'N'
+			buy.mkt.buy_strat_type  = 'up'
+			buy.mkt.buy_strat_name  = 'imp_macd'
+			buy.mkt.buy_strat_freq  = buy.rfreq
+		else:
+			buy.wait_yn = 'Y'
+
+		buy.trade_strat_perf.pass_cnt     = len(all_passes)
+		buy.trade_strat_perf.fail_cnt     = len(all_fails)
+		buy.trade_strat_perf.total_cnt    = buy.trade_strat_perf.pass_cnt + buy.trade_strat_perf.fail_cnt
+		buy.trade_strat_perf.pass_pct     = round((buy.trade_strat_perf.pass_cnt / buy.trade_strat_perf.total_cnt) * 100, 2)
+		buy.trade_strat_perf.all_passes   = all_passes
+		buy.trade_strat_perf.all_fails    = all_fails
+		buy.trade_strat_perf.buy_yn       = buy.buy_yn
+		buy.trade_strat_perf.wait_yn      = buy.wait_yn
 
 	except Exception as e:
-		print(f'{dttm_get()} {func_name} {rfreq} {prod_id} ==> Error : ({type(e)}){e}')
+		print(f'{dttm_get()} {func_name} {buy.rfreq} {prod_id} ==> Error : ({type(e)}){e}')
 		traceback.print_exc()
 		print_adv(3)
 		beep()
-		buy_yn  = 'N'
-		wait_yn = 'Y'
+		buy.buy_yn  = 'N'
+		buy.wait_yn = 'Y'
 
-	# print(f'{func_name} * buy_yn : {buy_yn}  * wait_yn : {wait_yn}')
-	# if buy_yn == 'Y':
-	# 	speak(func_name)
-
-	trade_strat_perf.buy_yn  = buy_yn
-	trade_strat_perf.wait_yn = wait_yn
-
-#	buy_sign_rec(mkt)
+	buy.trade_strat_perf.buy_yn  = buy.buy_yn
+	buy.trade_strat_perf.wait_yn = buy.wait_yn
 
 	func_end(fnc)
-	return mkt, trade_perf, trade_strat_perf, buy_yn, wait_yn
+	return buy
 
 #<=====>#
 
 # Drop
-def buy_strat_drop(st, mkt, trade_perf, trade_strat_perf, ta, reserve_locked_tf):
+def buy_strat_drop(buy):
 	func_name = 'buy_strat_drop'
-	func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perf, ta, reserve_locked_tf={reserve_locked_tf})'
-#	G(func_str)
+	func_str = f'{lib_name}.{func_name}(buy)'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	try:
 		all_passes       = []
 		all_fails        = []
-		prod_id          = mkt.prod_id
-		curr_prc         = mkt.prc_buy
-		buy_yn           = 'Y'
-		wait_yn          = 'N'
-#		reserve_locked_tf = False
+		prod_id          = buy.prod_id
+		buy.buy_yn       = 'Y'
+		buy.wait_yn      = 'N'
 
-		rfreq = trade_strat_perf.buy_strat_freq
-		freqs, faster_freqs     = freqs_get(rfreq)
-
-#		# General Trend
-#		check_list = ['sma100']
-#		for x in check_list:
-#			sma = ta[rfreq][x]['ago0']
-#			msg = f'    * BUY REQUIRE : {rfreq} Current Price : {curr_prc:>.8f} must be above current {x} : {sma}'
-#			if not sma:
-#				buy_yn  = 'N'
-#				all_fails.append(msg)
-#			elif curr_prc > sma:
-#				all_passes.append(msg)
-#			else:
-#				buy_yn  = 'N'
-#				all_fails.append(msg)
+		buy.rfreq = buy.trade_strat_perf.buy_strat_freq
+		freqs, faster_freqs     = freqs_get(buy.rfreq)
 
 		# Price has recent x% drop below recent high
-#		max30 = ta['1d']['max30']['ago0']
-		max24 = ta['1h']['max24']['ago0']
-		drop_pct     = settings.get_ovrd(in_dict=st.spot.buy.strats.drop.drop_pct, in_key=prod_id)
+		max24 = buy.ta['1h']['max24']['ago0']
+		drop_pct     = buy.pst.buy.strats.drop.drop_pct
 		drop_pct_dec = (100-drop_pct) / 100
-#		target_prc   = max30 * drop_pct_dec
 		target_prc   = max24 * drop_pct_dec
 
-		if prod_id == 'BTC-USDC' and rfreq == '1h':
+		if prod_id == 'BTC-USDC' and buy.rfreq == '1h':
 			ago_list = ['ago0','ago1','ago2','ago3']
 			for ago in ago_list:
-				prc_drop_pct = round(((curr_prc - max24) / max24) * 100, 2)
-				if curr_prc < target_prc:
-					msg = f'    * RESERVES UNLOCKED * : recent ({ago}) current price {curr_prc:>.8f} below {drop_pct:>.2f}% below max24 : {max24:>.8f} target_prc : {target_prc:>.8f} prc_drop_pct : {prc_drop_pct:>.2f}%'
+				prc_drop_pct = round(((buy.prc_buy - max24) / max24) * 100, 2)
+				if buy.prc_buy < target_prc:
+					msg = f'    * RESERVES UNLOCKED * : recent ({ago}) current price {buy.prc_buy:>.8f} below {drop_pct:>.2f}% below max24 : {max24:>.8f} target_prc : {target_prc:>.8f} prc_drop_pct : {prc_drop_pct:>.2f}%'
 					BoW(msg)
-					if reserve_locked_tf:
-						buy_log('')
-						buy_log(msg)
-						reserve_locked_tf = False
-#						self.wallet_refresh(force_tf=True)
+					if buy.mkt.budget.reserve_locked_tf:
+						buy.mkt.budget.reserve_locked_tf = False
 						speak('UNLOCKING RESERVES')
 				else:
-					msg = f'    * RESERVES LOCKED * : recent ({ago}) current price {curr_prc:>.8f} below {drop_pct:>.2f}% below max24 : {max24:>.8f} target_prc : {target_prc:>.8f} prc_drop_pct : {prc_drop_pct:>.2f}%'
+					msg = f'    * RESERVES LOCKED * : recent ({ago}) current price {buy.prc_buy:>.8f} below {drop_pct:>.2f}% below max24 : {max24:>.8f} target_prc : {target_prc:>.8f} prc_drop_pct : {prc_drop_pct:>.2f}%'
 					GoW(msg)
-					if not reserve_locked_tf:
-						buy_log('')
-						buy_log(msg)
-						reserve_locked_tf = True
-#						self.wallet_refresh(force_tf=True)
-
-#		print(f'max30        : {max30:>.8f}, drop_pct     : {drop_pct:>.2f}, drop_pct_dec : {drop_pct_dec:>.4f}, target_prc   : {target_prc:>.8f}')
+					if not buy.mkt.budget.reserve_locked_tf:
+						buy.mkt.budget.reserve_locked_tf = True
 
 		ago_list = ['ago0','ago1','ago2','ago3']
 		for ago in ago_list:
-#			cls = ta[rfreq]['close'][ago]
-#			prc_drop_pct = round(((cls - max30) / max30) * 100, 2)
-#			msg = f'    * BUY REQUIRE : recent ({ago}) close {cls:>.8f} below {drop_pct:>.2f}% below max30 : {max30:>.8f} target_prc : {target_prc:>.8f} prc_drop_pct : {prc_drop_pct:>.2f}%'
-			prc_drop_pct = round(((curr_prc - max24) / max24) * 100, 2)
-			msg = f'    * BUY REQUIRE : recent ({ago}) current price {curr_prc:>.8f} below {drop_pct:>.2f}% below max30 : {max24:>.8f} target_prc : {target_prc:>.8f} prc_drop_pct : {prc_drop_pct:>.2f}%'
-#			print(msg)
-			if curr_prc < target_prc:
+			prc_drop_pct = round(((buy.prc_buy - max24) / max24) * 100, 2)
+			msg = f'    * BUY REQUIRE : recent ({ago}) current price {buy.prc_buy:>.8f} below {drop_pct:>.2f}% below max30 : {max24:>.8f} target_prc : {target_prc:>.8f} prc_drop_pct : {prc_drop_pct:>.2f}%'
+			if buy.prc_buy < target_prc:
 				all_passes.append(msg)
 			else:
-				buy_yn  = 'N'
+				buy.buy_yn  = 'N'
 				all_fails.append(msg)
 
 		# Current Candle is Green
 		ago_list = ['ago0']
 		for freq in freqs:
 			for ago in ago_list:
-				color = ta[freq]['color'][ago]
+				color = buy.ta[freq]['color'][ago]
 				msg = f'    * BUY REQUIRE : {freq} {ago} candles == green : {color}'
 				if color == 'green':
 					all_passes.append(msg)
 				else:
-					buy_yn  = 'N'
+					buy.buy_yn  = 'N'
 					all_fails.append(msg)
 
 		# Heikin Ashi Candles - Multi Timeframe - Candles Are Green
 		ago_list = ['ago0','ago1']
 		for freq in faster_freqs:
 			for ago in ago_list:
-				ha_color = ta[freq]['ha_color'][ago]
+				ha_color = buy.ta[freq]['ha_color'][ago]
 				msg = f'    * BUY REQUIRE : {freq} {ago} Heikin Ashi candles == green : {ha_color}'
 				if ha_color == 'green':
 					all_passes.append(msg)
 				else:
-					buy_yn  = 'N'
+					buy.buy_yn  = 'N'
 					all_fails.append(msg)
 
-		if buy_yn == 'Y':
-			wait_yn = 'N'
-			mkt.buy_strat_type  = 'dn'
-			mkt.buy_strat_name  = 'drop'
-			mkt.buy_strat_freq  = rfreq
+		if buy.buy_yn == 'Y':
+			buy.wait_yn = 'N'
+			buy.mkt.buy_strat_type  = 'dn'
+			buy.mkt.buy_strat_name  = 'drop'
+			buy.mkt.buy_strat_freq  = buy.rfreq
 		else:
-			wait_yn = 'Y'
+			buy.wait_yn = 'Y'
 
-		trade_strat_perf.pass_cnt     = len(all_passes)
-		trade_strat_perf.fail_cnt     = len(all_fails)
-		trade_strat_perf.total_cnt    = trade_strat_perf.pass_cnt + trade_strat_perf.fail_cnt
-		trade_strat_perf.pass_pct     = round((trade_strat_perf.pass_cnt / trade_strat_perf.total_cnt) * 100, 2)
-		trade_strat_perf.all_passes   = all_passes
-		trade_strat_perf.all_fails    = all_fails
-		trade_strat_perf.buy_yn       = buy_yn
-		trade_strat_perf.wait_yn      = wait_yn
+		buy.trade_strat_perf.pass_cnt     = len(all_passes)
+		buy.trade_strat_perf.fail_cnt     = len(all_fails)
+		buy.trade_strat_perf.total_cnt    = buy.trade_strat_perf.pass_cnt + buy.trade_strat_perf.fail_cnt
+		buy.trade_strat_perf.pass_pct     = round((buy.trade_strat_perf.pass_cnt / buy.trade_strat_perf.total_cnt) * 100, 2)
+		buy.trade_strat_perf.all_passes   = all_passes
+		buy.trade_strat_perf.all_fails    = all_fails
+		buy.trade_strat_perf.buy_yn       = buy.buy_yn
+		buy.trade_strat_perf.wait_yn      = buy.wait_yn
 
 	except Exception as e:
-		print(f'{dttm_get()} {func_name} {rfreq} {prod_id} ==> Error : ({type(e)}){e}')
+		print(f'{dttm_get()} {func_name} {buy.rfreq} {prod_id} ==> Error : ({type(e)}){e}')
 		traceback.print_exc()
 		print_adv(3)
 		beep()
-		buy_yn  = 'N'
-		wait_yn = 'Y'
+		buy.buy_yn  = 'N'
+		buy.wait_yn = 'Y'
 
-	# print(f'{func_name} * buy_yn : {buy_yn}  * wait_yn : {wait_yn}')
-	# if buy_yn == 'Y':
-	# 	speak(func_name)
-
-	trade_strat_perf.buy_yn  = buy_yn
-	trade_strat_perf.wait_yn = wait_yn
-
-#	buy_sign_rec(mkt)
+	buy.trade_strat_perf.buy_yn  = buy.buy_yn
+	buy.trade_strat_perf.wait_yn = buy.wait_yn
 
 	func_end(fnc)
-	return mkt, trade_perf, trade_strat_perf, buy_yn, wait_yn, reserve_locked_tf
+	return buy
 
 #<=====>#
 
 # Bollinger Band Breakout
-def buy_strat_bb_bo(mkt, trade_perf, trade_strat_perf, ta):
+def buy_strat_bb_bo(buy):
 	func_name = 'buy_strat_bb_bo'
-	func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perf, ta)'
-#	G(func_str)
+	func_str = f'{lib_name}.{func_name}(buy)'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	try:
 		all_passes       = []
 		all_fails        = []
-		prod_id          = mkt.prod_id
-		# curr_prc         = mkt.prc_buy
-		buy_yn           = 'Y'
-		wait_yn          = 'N'
+		prod_id          = buy.prod_id
+		buy.buy_yn           = 'Y'
+		buy.wait_yn          = 'N'
 
-		rfreq = trade_strat_perf.buy_strat_freq
-		freqs, faster_freqs     = freqs_get(rfreq)
+		buy.rfreq = buy.trade_strat_perf.buy_strat_freq
+		freqs, faster_freqs     = freqs_get(buy.rfreq)
 
 #		# General Trend
 #		check_list = ['sma100']
 #		for x in check_list:
 #			sma = ta[rfreq][x]['ago0']
-#			msg = f'    * BUY REQUIRE : {rfreq} Current Price : {curr_prc:>.8f} must be above current {x} : {sma}'
+#			msg = f'    * BUY REQUIRE : {rfreq} Current Price : {buy.prc_buy:>.8f} must be above current {x} : {sma}'
 #			if not sma:
-#				buy_yn  = 'N'
+#				buy.buy_yn  = 'N'
 #				all_fails.append(msg)
-#			elif curr_prc > sma:
+#			elif buy.prc_buy > sma:
 #				all_passes.append(msg)
 #			else:
-#				buy_yn  = 'N'
+#				buy.buy_yn  = 'N'
 #				all_fails.append(msg)
 
 		# Current High Above Inner BB Lower
 		m = '    * BUY REQUIRE : current {} high : {:>.8f} above bb upper : {:>.8f}'
-		msg = m.format(rfreq, ta[rfreq]['high']['ago0'], ta[rfreq]['bb_upper_bb_bo']['ago0'])
-		if ta[rfreq]['high']['ago0'] > ta[rfreq]['bb_upper_bb_bo']['ago0']:
+		msg = m.format(buy.rfreq, buy.ta[buy.rfreq]['high']['ago0'], buy.ta[buy.rfreq]['bb_upper_bb_bo']['ago0'])
+		if buy.ta[buy.rfreq]['high']['ago0'] > buy.ta[buy.rfreq]['bb_upper_bb_bo']['ago0']:
 			all_passes.append(msg)
 		else:
-			buy_yn  = 'N'
+			buy.buy_yn  = 'N'
 			all_fails.append(msg)
 
 		# Current Close Above Inner BB Lower
 		m = '    * BUY REQUIRE : pervious {} close : {:>.8f} above bb upper : {:>.8f}'
-		msg = m.format(rfreq, ta[rfreq]['close']['ago1'], ta[rfreq]['bb_upper_bb_bo']['ago1'])
-		if ta[rfreq]['close']['ago1'] > ta[rfreq]['bb_upper_bb_bo']['ago1']:
+		msg = m.format(buy.rfreq, buy.ta[buy.rfreq]['close']['ago1'], buy.ta[buy.rfreq]['bb_upper_bb_bo']['ago1'])
+		if buy.ta[buy.rfreq]['close']['ago1'] > buy.ta[buy.rfreq]['bb_upper_bb_bo']['ago1']:
 			all_passes.append(msg)
 		else:
-			buy_yn  = 'N'
+			buy.buy_yn  = 'N'
 			all_fails.append(msg)
 
 		# Current Candle is Green
 		ago_list = ['ago0']
 		for freq in freqs:
 			for ago in ago_list:
-				color = ta[freq]['color'][ago]
+				color = buy.ta[freq]['color'][ago]
 				msg = f'    * BUY REQUIRE : {freq} {ago} candles == green : {color}'
 				if color == 'green':
 					all_passes.append(msg)
 				else:
-					buy_yn  = 'N'
+					buy.buy_yn  = 'N'
 					all_fails.append(msg)
 
 		# Heikin Ashi Candles - Multi Timeframe - Candles Are Green
 		ago_list = ['ago0','ago1']
 		for freq in faster_freqs:
 			for ago in ago_list:
-				ha_color = ta[freq]['ha_color'][ago]
+				ha_color = buy.ta[freq]['ha_color'][ago]
 				msg = f'    * BUY REQUIRE : {freq} {ago} Heikin Ashi candles == green : {ha_color}'
 				if ha_color == 'green':
 					all_passes.append(msg)
 				else:
-					buy_yn  = 'N'
+					buy.buy_yn  = 'N'
 					all_fails.append(msg)
 
-		if buy_yn == 'Y':
-			wait_yn = 'N'
-			mkt.buy_strat_type  = 'up'
-			mkt.buy_strat_name  = 'bb_bo'
-			mkt.buy_strat_freq  = rfreq
+		if buy.buy_yn == 'Y':
+			buy.wait_yn = 'N'
+			buy.mkt.buy_strat_type  = 'up'
+			buy.mkt.buy_strat_name  = 'bb_bo'
+			buy.mkt.buy_strat_freq  = buy.rfreq
 		else:
-			wait_yn = 'Y'
+			buy.wait_yn = 'Y'
 
-		trade_strat_perf.pass_cnt     = len(all_passes)
-		trade_strat_perf.fail_cnt     = len(all_fails)
-		trade_strat_perf.total_cnt    = trade_strat_perf.pass_cnt + trade_strat_perf.fail_cnt
-		trade_strat_perf.pass_pct     = round((trade_strat_perf.pass_cnt / trade_strat_perf.total_cnt) * 100, 2)
-		trade_strat_perf.all_passes   = all_passes
-		trade_strat_perf.all_fails    = all_fails
-		trade_strat_perf.buy_yn       = buy_yn
-		trade_strat_perf.wait_yn      = wait_yn
+		buy.trade_strat_perf.pass_cnt     = len(all_passes)
+		buy.trade_strat_perf.fail_cnt     = len(all_fails)
+		buy.trade_strat_perf.total_cnt    = buy.trade_strat_perf.pass_cnt + buy.trade_strat_perf.fail_cnt
+		buy.trade_strat_perf.pass_pct     = round((buy.trade_strat_perf.pass_cnt / buy.trade_strat_perf.total_cnt) * 100, 2)
+		buy.trade_strat_perf.all_passes   = all_passes
+		buy.trade_strat_perf.all_fails    = all_fails
+		buy.trade_strat_perf.buy_yn       = buy.buy_yn
+		buy.trade_strat_perf.wait_yn      = buy.wait_yn
 
 	except Exception as e:
-		print(f'{dttm_get()} {func_name} {rfreq} {prod_id} ==> Error : ({type(e)}){e}')
+		print(f'{dttm_get()} {func_name} {buy.rfreq} {prod_id} ==> Error : ({type(e)}){e}')
 		traceback.print_exc()
 		print_adv(3)
 		beep()
-		buy_yn  = 'N'
-		wait_yn = 'Y'
+		buy.buy_yn  = 'N'
+		buy.wait_yn = 'Y'
 
-	# print(f'{func_name} * buy_yn : {buy_yn}  * wait_yn : {wait_yn}')
-	# if buy_yn == 'Y':
-	# 	speak(func_name)
-
-	trade_strat_perf.buy_yn  = buy_yn
-	trade_strat_perf.wait_yn = wait_yn
-
-#	buy_sign_rec(mkt)
+	buy.trade_strat_perf.buy_yn  = buy.buy_yn
+	buy.trade_strat_perf.wait_yn = buy.wait_yn
 
 	func_end(fnc)
-	return mkt, trade_perf, trade_strat_perf, buy_yn, wait_yn
+	return buy
 
 #<=====>#
 
 # Bollinger Band Bounce
-def buy_strat_bb(mkt, trade_perf, trade_strat_perf, ta):
+def buy_strat_bb(buy):
 	func_name = 'buy_strat_bb'
-	func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perf, ta)'
-#	G(func_str)
+	func_str = f'{lib_name}.{func_name}(buy)'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	try:
 		all_passes       = []
 		all_fails        = []
-		prod_id          = mkt.prod_id
-		# curr_prc         = mkt.prc_buy
-		buy_yn           = 'Y'
-		wait_yn          = 'N'
+		prod_id          = buy.prod_id
+		buy.buy_yn           = 'Y'
+		buy.wait_yn          = 'N'
 
-		rfreq = trade_strat_perf.buy_strat_freq
-		freqs, faster_freqs     = freqs_get(rfreq)
+		buy.rfreq = buy.trade_strat_perf.buy_strat_freq
+		freqs, faster_freqs     = freqs_get(buy.rfreq)
 
-		# curr_color             = ta[rfreq]['color']['ago0']
-		# curr_ha_color          = ta[rfreq]['ha_color']['ago0']
-		# curr_low               = ta[rfreq]['low']['ago0']
-		# curr_high              = ta[rfreq]['high']['ago0']
-		curr_close             = ta[rfreq]['close']['ago0']
-		# curr_bb_lower_outer    = ta[rfreq]['bb_lower_outer']['ago0']
-		# curr_bb_upper_outer    = ta[rfreq]['bb_upper_outer']['ago0']
-		curr_bb_lower_inner    = ta[rfreq]['bb_lower_inner']['ago0']
-		# curr_bb_upper_inner    = ta[rfreq]['bb_upper_inner']['ago0']
-
-		# last_color             = ta[rfreq]['color']['ago1']
-		# last_ha_color          = ta[rfreq]['ha_color']['ago1']
-		last_low               = ta[rfreq]['low']['ago1']
-		# last_high              = ta[rfreq]['high']['ago1']
-		# last_close             = ta[rfreq]['close']['ago1']
-		last_bb_lower_outer    = ta[rfreq]['bb_lower_outer']['ago1']
-		# last_bb_upper_outer    = ta[rfreq]['bb_upper_outer']['ago1']
-		# last_bb_lower_inner    = ta[rfreq]['bb_lower_inner']['ago1']
-		# last_bb_upper_inner    = ta[rfreq]['bb_upper_inner']['ago1']
-
-		# prev_color             = ta[rfreq]['color']['ago2']
-		# prev_ha_color          = ta[rfreq]['ha_color']['ago2']
-		prev_low               = ta[rfreq]['low']['ago2']
-		# prev_high              = ta[rfreq]['high']['ago2']
-		# prev_close             = ta[rfreq]['close']['ago2']
-		prev_bb_lower_outer    = ta[rfreq]['bb_lower_outer']['ago2']
-		# prev_bb_upper_outer    = ta[rfreq]['bb_upper_outer']['ago2']
-		# prev_bb_lower_inner    = ta[rfreq]['bb_lower_inner']['ago2']
-		# prev_bb_upper_inner    = ta[rfreq]['bb_upper_inner']['ago2']
-
-#		sma200                 = ta[rfreq]['sma200']['ago0']
-
-#		# General Trend
-#		check_list = ['sma100']
-#		for x in check_list:
-#			sma = ta[rfreq][x]['ago0']
-#			msg = f'    * BUY REQUIRE : {rfreq} Current Price : {curr_prc:>.8f} must be below current {x} : {sma}'
-#			if not sma:
-#				buy_yn  = 'N'
-#				all_fails.append(msg)
-#			elif curr_prc < sma:
-#				all_passes.append(msg)
-#			else:
-#				buy_yn  = 'N'
-#				all_fails.append(msg)
+		curr_close             = buy.ta[buy.rfreq]['close']['ago0']
+		curr_bb_lower_inner    = buy.ta[buy.rfreq]['bb_lower_inner']['ago0']
+		last_low               = buy.ta[buy.rfreq]['low']['ago1']
+		last_bb_lower_outer    = buy.ta[buy.rfreq]['bb_lower_outer']['ago1']
+		prev_low               = buy.ta[buy.rfreq]['low']['ago2']
+		prev_bb_lower_outer    = buy.ta[buy.rfreq]['bb_lower_outer']['ago2']
 
 		# Last Close Below Outer BB Lower
-		msg = f'    * BUY REQUIRE : {rfreq} last low : {last_low:>.8f} < bb lower outer : {last_bb_lower_outer:>.8f} or prev low : {prev_low:>.8f} < bb lower outer : {prev_bb_lower_outer:>.8f}'
+		msg = f'    * BUY REQUIRE : {buy.rfreq} last low : {last_low:>.8f} < bb lower outer : {last_bb_lower_outer:>.8f} or prev low : {prev_low:>.8f} < bb lower outer : {prev_bb_lower_outer:>.8f}'
 		if last_low < last_bb_lower_outer or prev_low < prev_bb_lower_outer:
 			all_passes.append(msg)
 		else:
-			buy_yn  = 'N'
+			buy.buy_yn  = 'N'
 			all_fails.append(msg)
 
 		# Current Close Above Inner BB Lower
-		msg = f'    * BUY REQUIRE : {rfreq} current close : {curr_close:>.8f} above inner bb lower : {curr_bb_lower_inner:>.8f}'
+		msg = f'    * BUY REQUIRE : {buy.rfreq} current close : {curr_close:>.8f} above inner bb lower : {curr_bb_lower_inner:>.8f}'
 		if curr_close > curr_bb_lower_inner:
 			all_passes.append(msg)
 		else:
-			buy_yn  = 'N'
+			buy.buy_yn  = 'N'
 			all_fails.append(msg)
 
 		# Current Candle is Green
 		ago_list = ['ago0']
 		for freq in freqs:
 			for ago in ago_list:
-				color = ta[freq]['color'][ago]
+				color = buy.ta[freq]['color'][ago]
 				msg = f'    * BUY REQUIRE : {freq} {ago} candles == green : {color}'
 				if color == 'green':
 					all_passes.append(msg)
 				else:
-					buy_yn  = 'N'
+					buy.buy_yn  = 'N'
 					all_fails.append(msg)
 
 		# Heikin Ashi Candles - Multi Timeframe - Candles Are Green
 		ago_list = ['ago0','ago1']
 		for freq in faster_freqs:
 			for ago in ago_list:
-				ha_color = ta[freq]['ha_color'][ago]
+				ha_color = buy.ta[freq]['ha_color'][ago]
 				msg = f'    * BUY REQUIRE : {freq} {ago} Heikin Ashi candles == green : {ha_color}'
 				if ha_color == 'green':
 					all_passes.append(msg)
 				else:
-					buy_yn  = 'N'
+					buy.buy_yn  = 'N'
 					all_fails.append(msg)
 
-		if buy_yn == 'Y':
-			wait_yn = 'N'
-			mkt.buy_strat_type  = 'dn'
-			mkt.buy_strat_name  = 'bb'
-			mkt.buy_strat_freq  = rfreq
-		else:
-			wait_yn = 'Y'
+		# Nadaraya-Watson Estimator - Estimated Is Green
+		ago_list = ['ago0','ago1']
+		for ago in ago_list:
+			m = '    * BUY REQUIRE : {} Nadaraya-Watson Estimator color {} == green : {}'
+			msg = m.format(freq, ago, buy.ta[buy.rfreq]['nwe_color'][ago])
+			if buy.ta[freq]['ha_color'][ago] == 'green':
+				all_passes.append(msg)
+			else:
+				buy.buy_yn  = 'N'
+				all_fails.append(msg)
 
-		trade_strat_perf.pass_cnt     = len(all_passes)
-		trade_strat_perf.fail_cnt     = len(all_fails)
-		trade_strat_perf.total_cnt    = trade_strat_perf.pass_cnt + trade_strat_perf.fail_cnt
-		trade_strat_perf.pass_pct     = round((trade_strat_perf.pass_cnt / trade_strat_perf.total_cnt) * 100, 2)
-		trade_strat_perf.all_passes   = all_passes
-		trade_strat_perf.all_fails    = all_fails
-		trade_strat_perf.buy_yn       = buy_yn
-		trade_strat_perf.wait_yn      = wait_yn
+		if buy.buy_yn == 'Y':
+			buy.wait_yn = 'N'
+			buy.mkt.buy_strat_type  = 'dn'
+			buy.mkt.buy_strat_name  = 'bb'
+			buy.mkt.buy_strat_freq  = buy.rfreq
+		else:
+			buy.wait_yn = 'Y'
+
+		buy.trade_strat_perf.pass_cnt     = len(all_passes)
+		buy.trade_strat_perf.fail_cnt     = len(all_fails)
+		buy.trade_strat_perf.total_cnt    = buy.trade_strat_perf.pass_cnt + buy.trade_strat_perf.fail_cnt
+		buy.trade_strat_perf.pass_pct     = round((buy.trade_strat_perf.pass_cnt / buy.trade_strat_perf.total_cnt) * 100, 2)
+		buy.trade_strat_perf.all_passes   = all_passes
+		buy.trade_strat_perf.all_fails    = all_fails
+		buy.trade_strat_perf.buy_yn       = buy.buy_yn
+		buy.trade_strat_perf.wait_yn      = buy.wait_yn
 
 	except Exception as e:
-		print(f'{dttm_get()} {func_name} {rfreq} {prod_id} ==> Error : ({type(e)}){e}')
+		print(f'{dttm_get()} {func_name} {buy.rfreq} {prod_id} ==> Error : ({type(e)}){e}')
 		traceback.print_exc()
 		print_adv(3)
 		beep()
-		buy_yn  = 'N'
-		wait_yn = 'Y'
+		buy.buy_yn  = 'N'
+		buy.wait_yn = 'Y'
 
-	# print(f'{func_name} * buy_yn : {buy_yn}  * wait_yn : {wait_yn}')
-	# if buy_yn == 'Y':
-	# 	speak(func_name)
-
-	trade_strat_perf.buy_yn  = buy_yn
-	trade_strat_perf.wait_yn = wait_yn
-
-#	buy_sign_rec(mkt)
+	buy.trade_strat_perf.buy_yn  = buy.buy_yn
+	buy.trade_strat_perf.wait_yn = buy.wait_yn
 
 	func_end(fnc)
-	return mkt, trade_perf, trade_strat_perf, buy_yn, wait_yn
+	return buy
 
 #<=====>#
 
-def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
+def buy_strat_emax(buy):
 	func_name = 'buy_strat_emax'
-	func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perf, ta)'
-#	G(func_str)
+	func_str = f'{lib_name}.{func_name}(buy)'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	try:
-		prod_id          = mkt.prod_id
-		# curr_prc         = mkt.prc_buy
-		buy_yn           = 'Y'
-		wait_yn          = 'N'
+		prod_id          = buy.prod_id
+		buy.buy_yn           = 'Y'
+		buy.wait_yn          = 'N'
 
 		all_passes       = []
 		all_fails        = []
 
-		rfreq = trade_strat_perf.buy_strat_freq
-		freqs, faster_freqs     = freqs_get(rfreq)
-
-#		# General Trend
-#		check_list = ['sma100']
-#		for x in check_list:
-#			sma = ta[rfreq][x]['ago0']
-#			msg = f'    * BUY REQUIRE : {rfreq} Current Price : {curr_prc:>.8f} must be above current {x} : {sma}'
-#			if not sma:
-#				buy_yn  = 'N'
-#				all_fails.append(msg)
-#			elif curr_prc > sma:
-#				all_passes.append(msg)
-#			else:
-#				buy_yn  = 'N'
-#				all_fails.append(msg)
+		buy.rfreq = buy.trade_strat_perf.buy_strat_freq
+		freqs, faster_freqs     = freqs_get(buy.rfreq)
 
 		# Exponential Moving Average Crosses
 		if 1==1:
 			m = '    * BUY REQUIRE : current 15min ema5 :{:>.8f} >>> ema8:{:>.8f}'
-			msg = m.format(ta['15min']['ema5']['ago0'], ta['15min']['ema8']['ago0'])
-			if ta['15min']['ema5']['ago0'] > ta['15min']['ema8']['ago0']:
+			msg = m.format(buy.ta['15min']['ema5']['ago0'], buy.ta['15min']['ema8']['ago0'])
+			if buy.ta['15min']['ema5']['ago0'] > buy.ta['15min']['ema8']['ago0']:
 				all_passes.append(msg)
 			else:
-				buy_yn  = 'N'
+				buy.buy_yn  = 'N'
 				all_fails.append(msg)
 		if 1==1:
 			m = '    * BUY REQUIRE : current 15min ema8 :{:>.8f} >>> ema13:{:>.8f}'
-			msg = m.format(ta['15min']['ema8']['ago0'], ta['15min']['ema13']['ago0'])
-			if ta['15min']['ema8']['ago0'] > ta['15min']['ema13']['ago0']:
+			msg = m.format(buy.ta['15min']['ema8']['ago0'], buy.ta['15min']['ema13']['ago0'])
+			if buy.ta['15min']['ema8']['ago0'] > buy.ta['15min']['ema13']['ago0']:
 				all_passes.append(msg)
 			else:
-				buy_yn  = 'N'
+				buy.buy_yn  = 'N'
 				all_fails.append(msg)
 		if 1==1:
 			m = '    * BUY REQUIRE : current 15min ema13 :{:>.8f} >>> ema21:{:>.8f}'
-			msg = m.format(ta['15min']['ema13']['ago0'], ta['15min']['ema21']['ago0'])
-			if ta['15min']['ema13']['ago0'] > ta['15min']['ema21']['ago0']:
+			msg = m.format(buy.ta['15min']['ema13']['ago0'], buy.ta['15min']['ema21']['ago0'])
+			if buy.ta['15min']['ema13']['ago0'] > buy.ta['15min']['ema21']['ago0']:
 				all_passes.append(msg)
 			else:
-				buy_yn  = 'N'
+				buy.buy_yn  = 'N'
 				all_fails.append(msg)
 
 		# Current Candle is Green
 		ago_list = ['ago0']
 		for freq in freqs:
 			for ago in ago_list:
-				color = ta[freq]['color'][ago]
+				color = buy.ta[freq]['color'][ago]
 				msg = f'    * BUY REQUIRE : {freq} {ago} candles == green : {color}'
 				if color == 'green':
 					all_passes.append(msg)
 				else:
-					buy_yn  = 'N'
+					buy.buy_yn  = 'N'
 					all_fails.append(msg)
 
 		# Heikin Ashi Candles - Multi Timeframe - Candles Are Green
 		ago_list = ['ago0','ago1']
 		for freq in faster_freqs:
 			for ago in ago_list:
-				ha_color = ta[freq]['ha_color'][ago]
+				ha_color = buy.ta[freq]['ha_color'][ago]
 				msg = f'    * BUY REQUIRE : {freq} {ago} Heikin Ashi candles == green : {ha_color}'
 				if ha_color == 'green':
 					all_passes.append(msg)
 				else:
-					buy_yn  = 'N'
+					buy.buy_yn  = 'N'
 					all_fails.append(msg)
 
-		if buy_yn == 'Y':
-			wait_yn = 'N'
-			mkt.buy_strat_type  = 'up'
-			mkt.buy_strat_name  = 'ema_cross'
-			mkt.buy_strat_freq  = rfreq
+		if buy.buy_yn == 'Y':
+			buy.wait_yn = 'N'
+			buy.mkt.buy_strat_type  = 'up'
+			buy.mkt.buy_strat_name  = 'ema_cross'
+			buy.mkt.buy_strat_freq  = buy.rfreq
 		else:
-			wait_yn = 'Y'
+			buy.wait_yn = 'Y'
 
-		trade_strat_perf.pass_cnt     = len(all_passes)
-		trade_strat_perf.fail_cnt     = len(all_fails)
-		trade_strat_perf.total_cnt    = trade_strat_perf.pass_cnt + trade_strat_perf.fail_cnt
-		trade_strat_perf.pass_pct     = round((trade_strat_perf.pass_cnt / trade_strat_perf.total_cnt) * 100, 2)
-		trade_strat_perf.all_passes   = all_passes
-		trade_strat_perf.all_fails    = all_fails
-		trade_strat_perf.buy_yn       = buy_yn
-		trade_strat_perf.wait_yn      = wait_yn
+		buy.trade_strat_perf.pass_cnt     = len(all_passes)
+		buy.trade_strat_perf.fail_cnt     = len(all_fails)
+		buy.trade_strat_perf.total_cnt    = buy.trade_strat_perf.pass_cnt + buy.trade_strat_perf.fail_cnt
+		buy.trade_strat_perf.pass_pct     = round((buy.trade_strat_perf.pass_cnt / buy.trade_strat_perf.total_cnt) * 100, 2)
+		buy.trade_strat_perf.all_passes   = all_passes
+		buy.trade_strat_perf.all_fails    = all_fails
+		buy.trade_strat_perf.buy_yn       = buy.buy_yn
+		buy.trade_strat_perf.wait_yn      = buy.wait_yn
 
 	except Exception as e:
-		print(f'{dttm_get()} {func_name} {rfreq} {prod_id} ==> Error : ({type(e)}){e}')
+		print(f'{dttm_get()} {func_name} {buy.rfreq} {prod_id} ==> Error : ({type(e)}){e}')
 		traceback.print_exc()
 		print_adv(3)
 		beep()
-		buy_yn  = 'N'
-		wait_yn = 'Y'
+		buy.buy_yn  = 'N'
+		buy.wait_yn = 'Y'
 
-	# print(f'{func_name} * buy_yn : {buy_yn}  * wait_yn : {wait_yn}')
-	# if buy_yn == 'Y':
-	# 	speak(func_name)
-
-	trade_strat_perf.buy_yn  = buy_yn
-	trade_strat_perf.wait_yn = wait_yn
-
-#	buy_sign_rec(mkt)
+	buy.trade_strat_perf.buy_yn  = buy.buy_yn
+	buy.trade_strat_perf.wait_yn = buy.wait_yn
 
 	func_end(fnc)
-	return mkt, trade_perf, trade_strat_perf, buy_yn, wait_yn
+	return buy
 
 #<=====>#
 
@@ -1213,8 +931,7 @@ def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
 # 	func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perf, ta)'
 # 	G(func_str)
 # 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-# 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
-
+# 
 # 	'''
 # 	buy discount, sell premium
 # 	https://www.youtube.com/watch?v=R8yLzmF_uPI
@@ -1239,11 +956,11 @@ def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
 # 	'''
 
 # 	prod_id          = mkt.prod_id
-# 	curr_prc         = mkt.prc_buy
-# 	buy_yn           = 'Y'
-# 	wait_yn          = 'N'
-# 	show_tests_yn    = st.spot.buy.show_tests_yn
-# 	show_tests_min   = st.spot.buy.show_tests_min
+# 	buy.prc_buy         = mkt.prc_buy
+# 	buy.buy_yn           = 'Y'
+# 	buy.wait_yn          = 'N'
+# 	show_tests_yn    = pst.buy.show_tests_yn
+# 	show_tests_min   = pst.buy.show_tests_min
 
 # 	all_passes       = []
 # 	all_fails        = []
@@ -1251,19 +968,19 @@ def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
 # 	# General Trend
 # 	if 1==1:
 # 		m = '    * BUY REQUIRE : Current Price : {:>.8f} must be above current 15min SMA_100 : {:>.8f}'
-# 		msg = m.format(curr_prc, ta['15min']['sma100']['ago0'])
-# 		if curr_prc > ta['15min']['sma100']['ago0']:
+# 		msg = m.format(buy.prc_buy, ta['15min']['sma100']['ago0'])
+# 		if buy.prc_buy > ta['15min']['sma100']['ago0']:
 # 			all_passes.append(msg)
 # 		else:
-# 			buy_yn  = 'N'
+# 			buy.buy_yn  = 'N'
 # 			all_fails.append(msg)
 # 	if 1==1:
 # 		m = '    * BUY REQUIRE : Current Price : {:>.8f} must be above current 15min SMA_200 : {:>.8f}'
-# 		msg = m.format(curr_prc, ta['15min']['sma200']['ago0'])
-# 		if curr_prc > ta['15min']['sma200']['ago0']:
+# 		msg = m.format(buy.prc_buy, ta['15min']['sma200']['ago0'])
+# 		if buy.prc_buy > ta['15min']['sma200']['ago0']:
 # 			all_passes.append(msg)
 # 		else:
-# 			buy_yn  = 'N'
+# 			buy.buy_yn  = 'N'
 # 			all_fails.append(msg)
 
 # 	# Current Candle is Green
@@ -1273,7 +990,7 @@ def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
 # 		if ta['5min']['color']['ago0'] == 'green':
 # 			all_passes.append(msg)
 # 		else:
-# 			buy_yn  = 'N'
+# 			buy.buy_yn  = 'N'
 # 			all_fails.append(msg)
 # 	if 1==1:
 # 		m = '    * BUY REQUIRE : 15min candle green ==> current : {:>5}'
@@ -1281,7 +998,7 @@ def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
 # 		if ta['15min']['color']['ago0'] == 'green':
 # 			all_passes.append(msg)
 # 		else:
-# 			buy_yn  = 'N'
+# 			buy.buy_yn  = 'N'
 # 			all_fails.append(msg)
 # 	if 1==1:
 # 		m = '    * BUY REQUIRE : 30min candle green ==> current : {:>5}'
@@ -1289,7 +1006,7 @@ def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
 # 		if ta['30min']['color']['ago0'] == 'green':
 # 			all_passes.append(msg)
 # 		else:
-# 			buy_yn  = 'N'
+# 			buy.buy_yn  = 'N'
 # 			all_fails.append(msg)
 
 # 	# Heikin Ashi Candles - Multi Timeframe - Candles Are Green
@@ -1299,7 +1016,7 @@ def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
 # 		if ta['5min']['ha_color']['ago0'] == 'green' and ta['5min']['ha_color']['ago1'] == 'green':
 # 			all_passes.append(msg)
 # 		else:
-# 			buy_yn  = 'N'
+# 			buy.buy_yn  = 'N'
 # 			all_fails.append(msg)
 # 	if 1==1:
 # 		m = '    * BUY REQUIRE : 15min HA candles green ==> current : {:>5}, last : {:>5}'
@@ -1307,7 +1024,7 @@ def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
 # 		if ta['15min']['ha_color']['ago0'] == 'green' and ta['15min']['ha_color']['ago1'] == 'green':
 # 			all_passes.append(msg)
 # 		else:
-# 			buy_yn  = 'N'
+# 			buy.buy_yn  = 'N'
 # 			all_fails.append(msg)
 # 	if 1==1:
 # 		m = '    * BUY REQUIRE : 30min HA candles green ==> current : {:>5}, last : {:>5}'
@@ -1315,7 +1032,7 @@ def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
 # 		if ta['30min']['ha_color']['ago0'] == 'green' and ta['30min']['ha_color']['ago1'] == 'green':
 # 			all_passes.append(msg)
 # 		else:
-# 			buy_yn  = 'N'
+# 			buy.buy_yn  = 'N'
 # 			all_fails.append(msg)
 # 	if 1==1:
 # 		m = '    * BUY REQUIRE : 15min HA candles green ==> current : {:>5}, last : {:>5}'
@@ -1323,7 +1040,7 @@ def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
 # 		if ta['15min']['ha_color']['ago0'] == 'green' and ta['15min']['ha_color']['ago1'] == 'green':
 # 			all_passes.append(msg)
 # 		else:
-# 			buy_yn  = 'N'
+# 			buy.buy_yn  = 'N'
 # 			all_fails.append(msg)
 
 # 	# Exponential Moving Average Crosses
@@ -1333,7 +1050,7 @@ def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
 # 		if ta['15min']['ema5']['ago0'] > ta['15min']['ema8']['ago0']:
 # 			all_passes.append(msg)
 # 		else:
-# 			buy_yn  = 'N'
+# 			buy.buy_yn  = 'N'
 # 			all_fails.append(msg)
 # 	if 1==1:
 # 		m = '    * BUY REQUIRE : current 15min ema8 :{:>.8f} >>> ema13:{:>.8f}'
@@ -1341,7 +1058,7 @@ def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
 # 		if ta['15min']['ema8']['ago0'] > ta['15min']['ema13']['ago0']:
 # 			all_passes.append(msg)
 # 		else:
-# 			buy_yn  = 'N'
+# 			buy.buy_yn  = 'N'
 # 			all_fails.append(msg)
 # 	if 1==1:
 # 		m = '    * BUY REQUIRE : current 15min ema13 :{:>.8f} >>> ema21:{:>.8f}'
@@ -1349,16 +1066,16 @@ def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
 # 		if ta['15min']['ema13']['ago0'] > ta['15min']['ema21']['ago0']:
 # 			all_passes.append(msg)
 # 		else:
-# 			buy_yn  = 'N'
+# 			buy.buy_yn  = 'N'
 # 			all_fails.append(msg)
 
 # 	if buy_yn == 'Y':
-# 		wait_yn = 'N'
+# 		buy.wait_yn = 'N'
 # 		mkt.buy_strat_type  = 'up'
 # 		mkt.buy_strat_name  = 'ema_cross'
 # 		mkt.buy_strat_freq  = rfreq
 # 	else:
-# 		wait_yn = 'Y'
+# 		buy.wait_yn = 'Y'
 
 # 	trade_strat_perf.pass_cnt = len(all_passes)
 # 	trade_strat_perf.fail_cnt = len(all_fails)
@@ -1412,10 +1129,9 @@ def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
 # 	func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perf, ta)'
 # #	G(func_str)
 # 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-# 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
-
-# 	show_tests_yn    = st.spot.buy.show_tests_yn
-# 	show_tests_min   = st.spot.buy.show_tests_min
+# 
+# 	show_tests_yn    = pst.buy.show_tests_yn
+# 	show_tests_min   = pst.buy.show_tests_min
 
 # 	'''
 # 	https://www.youtube.com/watch?v=wzUk3gBabvQ
@@ -1579,10 +1295,9 @@ def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
 # 	func_str = f'{lib_name}.{func_name}(mkt, trade_perf, trade_strat_perf, ta)'
 # #	G(func_str)
 # 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-# 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
-
-# 	show_tests_yn    = st.spot.buy.show_tests_yn
-# 	show_tests_min   = st.spot.buy.show_tests_min
+# 
+# 	show_tests_yn    = pst.buy.show_tests_yn
+# 	show_tests_min   = pst.buy.show_tests_min
 
 # 	'''
 # 	https://www.youtube.com/watch?v=cohyn6E0sXk
@@ -1671,9 +1386,11 @@ def buy_strat_emax(mkt, trade_perf, trade_strat_perf, ta):
 #<=====>#
 
 
+
 #<=====>#
 # Default Run
 #<=====>#
+
 
 
 #<=====>#

@@ -1,0 +1,130 @@
+table.nav {
+    color: #000000;
+    background: #ffffff;
+    border-width: 3px;
+    border-style: none;
+    border-color: white;
+}
+
+th.nav {
+    font-family: 'times new roman', verdana, arial, serif;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: bold;
+    font-size: large;
+    color: #ffd700;
+    background-color: #000000;
+    text-align: center;
+    vertical-align: top;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+}
+
+
+th.nav2 {
+    font-family: 'times new roman', verdana, arial, serif;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: bold;
+    font-size: x-large;
+    color: #ffd700;
+    background-color: #000000;
+    text-align: center;
+    vertical-align: top;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+}
+
+
+
+td.nav {
+    color: #000000;
+    background-color: #0000FF;
+    border-width: thin;
+    border-style: solid;
+    border-color: gray;
+    font-family: 'times new roman', verdana, arial, serif;
+    font-size: normal;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    letter-spacing: normal;
+    margin-top: 0pt;
+    margin-right: 0pt;
+    margin-bottom: 0pt;
+    margin-left: 0pt;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    text-align: left;
+    text-decoration: none;
+    text-indent: 0pt;
+    text-transform: normal;
+    word-spacing: normal;
+}
+
+td.dud {
+    color: #ffd700;
+    background-color: #000000;
+    border-width: thin;
+    border-style: solid;
+    border-color: gray;
+    font-family: 'times new roman', verdana, arial, serif;
+    font-size: normal;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    letter-spacing: normal;
+    margin-top: 0pt;
+    margin-right: 0pt;
+    margin-bottom: 0pt;
+    margin-left: 0pt;
+    padding-top: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    text-align: left;
+    text-decoration: none;
+    text-indent: 0pt;
+    text-transform: normal;
+    word-spacing: normal;
+}
+
+td.nav:hover {
+    background-color: #ffd700;
+}
+
+font.navs {
+	font-family : 'times new roman', verdana, arial, serif;
+	font-weight : bold;
+	font-size : small;
+	color : #ffffff;
+}
+
+font.nav_text {
+	font-family : 'times new roman', verdana, arial, serif;
+	font-weight : bold;
+	font-size : small;
+	color : #ffffff;
+}
+
+
+
+a {
+    color: #FFFFFF;
+    background-color: #0000FF;
+    font-size: large;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #0000FF;
+    background-color: #ffd700;
+    font-size: large;
+    text-decoration: none;
+}

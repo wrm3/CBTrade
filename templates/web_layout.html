@@ -1,94 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>{{ the_title }}</title>
-		<link rel="stylesheet" href="{{ url_for('static', filename='styles/web_main.css') }}"> 
-		<meta http-equiv="refresh" content="60">
-		<style>
-			body {
-				background-image: url({{ url_for('static', filename='images/bkg.jpg') }});
-				}
-		</style>
-		<!-- https://www.w3schools.com/howto/howto_js_sort_table.asp -->
-		<script language="JavaScript" type="text/javascript">
-				function sortTable(ele,n) {
-//					alert("sortTable()");
-					var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-//					table = document.getElementById("myTable2");
-					table = ele;
-					switching = true;
-					// Set the sorting direction to ascending:
-					dir = "asc";
-					/* Make a loop that will continue until
-					no switching has been done: */
-					while (switching) {
-						// Start by saying: no switching is done:
-						switching = false;
-						rows = table.rows;
-						/* Loop through all table rows (except the
-						first, which contains table headers): */
-						for (i = 1; i < (rows.length - 1); i++) {
-							// Start by saying there should be no switching:
-							shouldSwitch = false;
-							/* Get the two elements you want to compare,
-							one from current row and one from the next: */
-							x = rows[i].getElementsByTagName("TD")[n];
-							y = rows[i + 1].getElementsByTagName("TD")[n];
-							/* Check if the two rows should switch place,
-							based on the direction, asc or desc: */
-							if (dir == "asc") {
-								if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-									// If so, mark as a switch and break the loop:
-									shouldSwitch = true;
-									break;
-								}
-							} else if (dir == "desc") {
-								if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-									// If so, mark as a switch and break the loop:
-									shouldSwitch = true;
-									break;
-								}
-							}
-						}
-//						alert(shouldSwitch);
-						if (shouldSwitch) {
-							/* If a switch has been marked, make the switch
-							and mark that a switch has been done: */
-							rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-							switching = true;
-							// Each time a switch is done, increase this count by 1:
-							switchcount ++;
-						} else {
-							/* If no switching has been done AND the direction is "asc",
-							set the direction to "desc" and run the while loop again. */
-							if (switchcount == 0 && dir == "asc") {
-								dir = "desc";
-								switching = true;
-							}
-						}
+
+<head>
+	<title>{{ the_title }}</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='styles/web_main.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='styles/nav_main.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='styles/dt_main.css') }}">
+	<meta http-equiv="refresh" content="60">
+	<!-- https://www.w3schools.com/howto/howto_js_sort_table.asp -->
+
+	<!-- FontAwesome CSS -->
+	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> -->
+
+	<!-- DataTables CSS -->
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" />
+
+	<!-- jQuery -->
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+	<!-- DataTables JS -->
+	<script type="text/javascript" src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+	<!-- Initialize DataTables -->
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('table.dt').each(function () {
+				var table = $(this).DataTable({
+					"paging": true,
+					"ordering": true,
+					"info": true,
+					"pageLength": 100, // Default to display 50 entries
+					"orderMulti": true, // Enable multi-column sorting
+					"responsive": true, // Enable responsive design
+					"language": {
+						"search": "Filter records:"
 					}
-				}
-		</script>
-	</head>
-	<body>
-		<header>
+				});
+			});
+		});
+	</script>
 
+</head>
 
-		</header>
-		<div class="container">
-		<table border=0>
+<body>
+	<header>
+
+	</header>
+	<div class="container">
+		<table border=0 width='90%'>
 			<tr>
 				<td width='10%' style='vertical-align:top;text-align:center;'>
-				<nav>
-				{{ top_nav }}
-				</nav>
+					<nav>
+						{{ top_nav }}
+					</nav>
 				</td>
-				<td style='vertical-align:top;text-align:center;'>
+				<td style='vertical-align:top;text-align:left;'>
 					{% block body %}
 					{% endblock %}
 				</td>
 			</tr>
 		</table>
-		</div>
-	</body>
+	</div>
+</body>
+
 </html>

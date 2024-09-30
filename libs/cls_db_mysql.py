@@ -1,37 +1,24 @@
 #<=====>#
-# Imports - Common Modules
+# Description
 #<=====>#
-#import pymysql as mysql
-#from databases import Database
-from datetime import datetime
-# from pprint import pprint
+
+
+
+#<=====>#
+# Known To Do List
+#<=====>#
+
+
+
+#<=====>#
+# Imports
+#<=====>#
 import aiomysql
-# import asyncio
-import sys, os
 import pymysql as mysql
-# import ssl
+import sqlparse
+import datetime
 import sys
 import traceback
-import sqlparse
-
-#<=====>#
-# Imports - Download Modules
-#<=====>#
-
-
-#<=====>#
-# Imports - Unsure if used/needed
-#<=====>#
-
-
-#<=====>#
-# Imports - Recently Removed
-#<=====>#
-
-
-#<=====>#
-# Imports - Local Library
-#<=====>#
 
 
 #<=====>#
@@ -55,22 +42,22 @@ class db_mysql(object):
 
 #<=====>#
 
-	def __init__(self, dbhost, dbport, dbname, dbuser, dbpw):
-		self.dbhost = dbhost
-		self.dbport = dbport
-		self.dbname = dbname
-		self.dbuser = dbuser
-		self.dbpw   = dbpw
+	def __init__(self, db_host, db_port, db_name, db_user, db_pw):
+		self.db_host = db_host
+		self.db_port = db_port
+		self.db_name = db_name
+		self.db_user = db_user
+		self.db_pw   = db_pw
 		self.conn   = None
-#		self.conn   = mysql.connect(host=self.dbhost, port=self.dbport, db=self.dbname, user=self.dbuser, password=self.dbpw)
+#		self.conn   = mysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
 #		self.curs   = None
-#		self.conn   = mysql.connect(host=self.dbhost, port=self.dbport, db=self.dbname, user=self.dbuser, password=self.dbpw)
+#		self.conn   = mysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
 
 #<=====>#
 
 	def __open(self):
 		try:
-			self.conn = mysql.connect(host=self.dbhost, port=self.dbport, db=self.dbname, user=self.dbuser, password=self.dbpw)
+			self.conn = mysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
 			self.__connection = self.conn
 			self.__session = self.conn.cursor()
 		except (mysql.Error, mysql.Warning) as err:
@@ -81,7 +68,7 @@ class db_mysql(object):
 
 	def __opend(self):
 		try:
-			self.conn = mysql.connect(host=self.dbhost, port=self.dbport, db=self.dbname, user=self.dbuser, password=self.dbpw)
+			self.conn = mysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
 			self.__connection = self.conn
 			self.__session = self.conn.cursor(mysql.cursors.DictCursor)
 		except (mysql.Error, mysql.Warning) as err:
@@ -559,7 +546,7 @@ class db_mysql(object):
 	async def sel_async(self, sql, vals=None):
 		try:
 			r = None
-			conn = await aiomysql.connect(host=self.dbhost, port=self.dbport, db=self.dbname, user=self.dbuser, password=self.dbpw)
+			conn = await aiomysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
 			cur = await conn.cursor()
 			if vals:
 				await cur.execute(sql, vals)
@@ -640,7 +627,7 @@ class db_mysql(object):
 	async def seld_async(self, sql, vals=None):
 		try:
 			r = None
-			conn = await aiomysql.connect(host=self.dbhost, port=self.dbport, db=self.dbname, user=self.dbuser, password=self.dbpw)
+			conn = await aiomysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
 			cur = await conn.cursor(aiomysql.DictCursor)
 			if vals:
 				await cur.execute(sql, vals)
@@ -670,7 +657,7 @@ class db_mysql(object):
 	async def ins_one_async(self, sql, vals=None):
 		try:
 			r = None
-			conn = await aiomysql.connect(host=self.dbhost, port=self.dbport, db=self.dbname, user=self.dbuser, password=self.dbpw)
+			conn = await aiomysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
 			cur = await conn.cursor()
 			if vals:
 				await cur.execute(sql, vals)
@@ -693,7 +680,7 @@ class db_mysql(object):
 	async def ins_many_async(self, sql, vals):
 		try:
 			r = None
-			conn = await aiomysql.connect(host=self.dbhost, port=self.dbport, db=self.dbname, user=self.dbuser, password=self.dbpw)
+			conn = await aiomysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
 			cur = await conn.cursor()
 			if vals:
 				await cur.executemany(sql, vals)
@@ -716,7 +703,7 @@ class db_mysql(object):
 	async def upd_async(self, sql, vals=None):
 		try:
 			r = None
-			conn = await aiomysql.connect(host=self.dbhost, port=self.dbport, db=self.dbname, user=self.dbuser, password=self.dbpw)
+			conn = await aiomysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
 			cur = await conn.cursor()
 			if vals:
 				await cur.execute(sql, vals)
@@ -739,7 +726,7 @@ class db_mysql(object):
 	async def delete_async(self, sql, vals=None):
 		try:
 			r = None
-			conn = await aiomysql.connect(host=self.dbhost, port=self.dbport, db=self.dbname, user=self.dbuser, password=self.dbpw)
+			conn = await aiomysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
 			cur = await conn.cursor()
 			if vals:
 				await cur.execute(sql, vals)
@@ -762,7 +749,7 @@ class db_mysql(object):
 	async def execute_async(self, sql, vals=None):
 		try:
 			r = None
-			conn = await aiomysql.connect(host=self.dbhost, port=self.dbport, db=self.dbname, user=self.dbuser, password=self.dbpw)
+			conn = await aiomysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
 			cur = await conn.cursor()
 			if vals:
 				await cur.execute(sql, vals)

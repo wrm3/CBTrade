@@ -2,68 +2,37 @@
 # Description
 #<=====>#
 
+
+
 #<=====>#
 # Known To Do List
 #<=====>#
 
+
+
 #<=====>#
-# Imports - Common Modules
+# Imports
+#<=====>#
+#<=====>#
+# Imports
 #<=====>#
 from datetime import datetime
-import pytz
-# Get the current time in UTC with timezone awareness
-#utc_time = datetime.now(pytz.utc)
-
-from datetime import date
-from datetime import datetime
-from datetime import time
-from datetime import timedelta
-from flask import Flask
-#from flask import redirect
-from flask import render_template
-#from flask import request
-from markupsafe import Markup
-#from requests.exceptions import ConnectionError
-#from requests.exceptions import SSLError
-
-import calendar
-import decimal
-#import errno
-#import json
-#import logging
-# import os
-import pandas as pd
-#import pymysql as mysql
-import re
-#import requests
+from flask import Flask, render_template
 import sys
-import os
 import time
 import traceback
 import warnings
 
-warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
+from libs.bot_web import (
+    ext_all_reports_test, ext_balances, ext_buy_strats, ext_buys_recent,
+    ext_closed_positions, ext_db_size, ext_home, ext_market, ext_markets,
+    ext_mkt_buy_strats, ext_open_positions, ext_sales_all, ext_sales_all_test,
+    ext_sales_day_cntd, ext_sales_day_cntd_test, ext_sales_dt, ext_sales_dt_test,
+    ext_sales_month, ext_sales_month_test, ext_sales_today, ext_sales_today_test,
+    ext_sales_yesterday_test, ext_sales_yr, ext_sales_yr_test, ext_sells_recent
+)
+from libs.lib_common import dttm_get
 
-#<=====>#
-# Imports - Download Modules
-#<=====>#
-
-
-#<=====>#
-# Imports - Shared Library
-#<=====>#
-#shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
-#if shared_libs_path not in sys.path:
-#	sys.path.append(shared_libs_path)
-
-#<=====>#
-# Imports - Local Library
-#<=====>#
-local_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '', 'libs'))
-if local_libs_path not in sys.path:
-	sys.path.append(local_libs_path)
-
-from libs.bot_web                 import *
 
 #<=====>#
 # Variables

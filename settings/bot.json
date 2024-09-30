@@ -1,0 +1,11 @@
+{
+	"edited_yn": "Y",
+	"loop_secs": 15,
+	"auto_loop_secs": 180,
+	"speak_yn": "Y",
+	"trade_markets": {
+		"USDC": {
+			"settings_fpath": "market_usdc.json"
+		}
+	}
+}

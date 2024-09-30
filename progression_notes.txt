@@ -66,6 +66,42 @@ Modifications Log
         I will be adding more logic to speed up Buys
             For example switching to Sell mode if there are no available funds to spend
 
+    2024-09-22
+        Ran into many issues with the multiple bots selling functions.
+            Changed the client_order_id generation method to GUID, to prevent the time based id generation
+                the time based one, was causing the second+ order with the same # to not process
+                the selling function could not handle this and it broke many positions in the database
+                    double+ sellings of the same positions
+                    accounting nightmares that needed to be worked out
+                    almost reset the database, but didn't want to lose all the training data
+                I have been battling this off and on since the beginning, but it re-emerged while runnning multiple sell bots
+            While diagnosing, debugging the selling function... reorganized much code.
+                sell functionality is now its own POS class, which took considerable amount of time and accounting to get switched over
+        Split Strats file into Buy & Sell files during the POS class
+            reduced pass in parameter & return information
+            preparation for adding new strats
+        Added some new settings
+        Modified Read and Write SQLs for mainly related to sell functions
+        Modified Website, I think splitting the run_web.py and bot_reports.py library was this changes, but might have been last.
+
+    2024-09-30
+        Added gitc.bat to help speed up git commits
+        Working on timing messaging, put functionality into new debug_settings
+        Add new timings display for mkt_logic
+        Added in Nadaraya-Watson Estimator
+        Broke bot into multiple classes market, pair, buy, pos.  This was a significant rewrite and retest
+        added debug timing settings file
+        added markets settings file
+        added individual markets settings (usdc, btc, eth et cetera) - this functionality for trading other quote curr still in progress
+        attempted to clean up code
+        added budget features, spending cap, up & down strat % caps, individual pair caps, individual pair up & down caps
+        removed secrets.json file that behaved like settings library
+        added in .env functionality to replace secrets.json
+        changed multiple displays including adding new budget panel
+        further refined running multiple bots on sell -s mode without colliding
+        added an -a mode for clearing buy & sell orders, as well as refreshing market data
+        modes are now -a = auto, -b buy, -s sell, -f/none = full
+
 
 -------------------------------------------------
 To Do & Dreams list (tackle as they manifest)

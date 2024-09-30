@@ -1,58 +1,44 @@
-# <=====>#
+#<=====>#
 # Description
-# <=====>#
+#<=====>#
 
 
-# <=====>#
+
+#<=====>#
 # Known To Do List
-# <=====>#
+#<=====>#
 
 
-# <=====>#
-# Imports - Common Modules
-# <=====>#
-import os
+
+#<=====>#
+# Imports
+#<=====>#
+import argparse
+from libs.bot_cls_main import BOT
+from libs.bot_settings import debug_settings_get
+from libs.bot_settings import get_lib_func_secs_max
+from libs.lib_colors import cs
+from libs.lib_common import dttm_get
+from libs.lib_common import func_begin
+import pandas as pd
 import sys
 import traceback
-import argparse
-
-
-# <=====>#
-# Imports - Download Modules
-# <=====>#
-
-
-# <=====>#
-# Imports - Shared Library
-# <=====>#
-# shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
-# if shared_libs_path not in sys.path:
-# 	sys.path.append(shared_libs_path)
-
-
-# <=====>#
-# Imports - Local Library
-# <=====>#
-local_libs_path = os.path.abspath(
-	os.path.join(os.path.dirname(__file__), '', 'libs'))
-if local_libs_path not in sys.path:
-	sys.path.append(local_libs_path)
-
-from libs.lib_colors import *
-from libs.lib_common import *
-from libs.bot_cls_main import BOT
-
+import warnings
+warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
 # <=====>#
 # Variables
 # <=====>#
 lib_name = 'run_bot'
 log_name = 'run_bot'
-lib_secs_max = 1
 
 # <=====>#
 # Assignments Pre
 # <=====>#
+
+dst, debug_settings = debug_settings_get()
+lib_secs_max = get_lib_func_secs_max(lib_name=lib_name)
+# print(f'{lib_name}, lib_secs_max : {lib_secs_max}')
 
 
 # <=====>#
@@ -68,6 +54,7 @@ lib_secs_max = 1
 def main(bot):
 	func_name = 'main'
 	func_str = f'{lib_name}.{func_name}()'
+	dst
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 	# G(func_str)
 
@@ -79,8 +66,8 @@ def main(bot):
 	parser.add_argument(
 		'action', 
 		nargs='?', 
-		choices=['a', 'auto', 'b', 'buy', 'f', 'full', 's', 'sell', 's1', 'sell1', 's2', 'sell2'], 
-		help="Specify 'a', 'b', 'f', 's', 's1', 's2' for specific actions..."
+		choices=['a', 'auto', 'b', 'buy', 'f', 'full', 's', 'sell'], 
+		help="Specify 'a', 'b', 'f', 's' for specific actions..."
 		)
 
 	# Parse the arguments
@@ -90,22 +77,18 @@ def main(bot):
 	msg = cs(msg, font_color='purple')
 
 	# Perform actions based on the arguments
-	if args.action in ('s', 's1', 's2', 'sell', 'sell1', 'sell2'):
+	if args.action in ('s', 'sell'):
 		bot.mode = 'sell'
-		if args.action in ('s1', 'sell1'):
-			bot.mode_sub = 1
-		elif args.action in ('s2', 'sell2'):
-			bot.mode_sub = 2
-		bot.bot_loop()
+		bot.main_loop()
 	elif args.action in ('b', 'buy'):
 		bot.mode = 'buy'
-		bot.bot_loop()
+		bot.main_loop()
 	elif args.action in ('a', 'auto'):
 		bot.mode = 'auto'
 		bot.auto_loop()
 	else:
 		bot.mode = 'full'
-		bot.bot_loop()
+		bot.main_loop()
 
 
 # <=====>#

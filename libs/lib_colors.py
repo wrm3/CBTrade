@@ -1,344 +1,21 @@
-# lib_colors.py
-# https://youtu.be/fYSEsG2FPdU
-
 #<=====>#
-# Import All Scope
-#<=====>#
-import_all_func_list = []
-
-import_all_func_list.append("cs")
-import_all_func_list.append("cp")
-import_all_func_list.append("CLR")
-
-import_all_func_list.append("K")
-import_all_func_list.append("R")
-import_all_func_list.append("G")
-import_all_func_list.append("Y")
-import_all_func_list.append("B")
-import_all_func_list.append("M")
-import_all_func_list.append("C")
-import_all_func_list.append("W")
-
-import_all_func_list.append("LGy")
-import_all_func_list.append("DGy")
-import_all_func_list.append("LR")
-import_all_func_list.append("LG")
-import_all_func_list.append("LY")
-import_all_func_list.append("LB")
-import_all_func_list.append("LM")
-import_all_func_list.append("LC")
-
-import_all_func_list.append("BoB")
-import_all_func_list.append("BoC")
-import_all_func_list.append("BoDGy")
-import_all_func_list.append("BoG")
-import_all_func_list.append("BoK")
-import_all_func_list.append("BoLB")
-import_all_func_list.append("BoLC")
-import_all_func_list.append("BoLG")
-import_all_func_list.append("BoLGy")
-import_all_func_list.append("BoLM")
-import_all_func_list.append("BoLR")
-import_all_func_list.append("BoLY")
-import_all_func_list.append("BoM")
-import_all_func_list.append("BoR")
-import_all_func_list.append("BoW")
-import_all_func_list.append("BoY")
-
-import_all_func_list.append("CoB")
-import_all_func_list.append("CoC")
-import_all_func_list.append("CoDGy")
-import_all_func_list.append("CoG")
-import_all_func_list.append("CoK")
-import_all_func_list.append("CoLB")
-import_all_func_list.append("CoLC")
-import_all_func_list.append("CoLG")
-import_all_func_list.append("CoLGy")
-import_all_func_list.append("CoLM")
-import_all_func_list.append("CoLR")
-import_all_func_list.append("CoLY")
-import_all_func_list.append("CoM")
-import_all_func_list.append("CoR")
-import_all_func_list.append("CoW")
-import_all_func_list.append("CoY")
-
-import_all_func_list.append("DGyoB")
-import_all_func_list.append("DGyoC")
-import_all_func_list.append("DGyoDGy")
-import_all_func_list.append("DGyoG")
-import_all_func_list.append("DGyoK")
-import_all_func_list.append("DGyoLB")
-import_all_func_list.append("DGyoLC")
-import_all_func_list.append("DGyoLG")
-import_all_func_list.append("DGyoLGy")
-import_all_func_list.append("DGyoLM")
-import_all_func_list.append("DGyoLR")
-import_all_func_list.append("DGyoLY")
-import_all_func_list.append("DGyoM")
-import_all_func_list.append("DGyoR")
-import_all_func_list.append("DGyoW")
-import_all_func_list.append("DGyoY")
-
-import_all_func_list.append("GoB")
-import_all_func_list.append("GoC")
-import_all_func_list.append("GoDGy")
-import_all_func_list.append("GoG")
-import_all_func_list.append("GoK")
-import_all_func_list.append("GoLB")
-import_all_func_list.append("GoLC")
-import_all_func_list.append("GoLG")
-import_all_func_list.append("GoLGy")
-import_all_func_list.append("GoLM")
-import_all_func_list.append("GoLR")
-import_all_func_list.append("GoLY")
-import_all_func_list.append("GoM")
-import_all_func_list.append("GoR")
-import_all_func_list.append("GoW")
-import_all_func_list.append("GoY")
-
-import_all_func_list.append("KoB")
-import_all_func_list.append("KoC")
-import_all_func_list.append("KoDGy")
-import_all_func_list.append("KoG")
-import_all_func_list.append("KoK")
-import_all_func_list.append("KoLB")
-import_all_func_list.append("KoLC")
-import_all_func_list.append("KoLG")
-import_all_func_list.append("KoLGy")
-import_all_func_list.append("KoLM")
-import_all_func_list.append("KoLR")
-import_all_func_list.append("KoLY")
-import_all_func_list.append("KoM")
-import_all_func_list.append("KoR")
-import_all_func_list.append("KoW")
-import_all_func_list.append("KoY")
-
-import_all_func_list.append("LBoB")
-import_all_func_list.append("LBoC")
-import_all_func_list.append("LBoDGy")
-import_all_func_list.append("LBoG")
-import_all_func_list.append("LBoK")
-import_all_func_list.append("LBoLB")
-import_all_func_list.append("LBoLC")
-import_all_func_list.append("LBoLG")
-import_all_func_list.append("LBoLGy")
-import_all_func_list.append("LBoLM")
-import_all_func_list.append("LBoLR")
-import_all_func_list.append("LBoLY")
-import_all_func_list.append("LBoM")
-import_all_func_list.append("LBoR")
-import_all_func_list.append("LBoW")
-import_all_func_list.append("LBoY")
-
-import_all_func_list.append("LCoB")
-import_all_func_list.append("LCoC")
-import_all_func_list.append("LCoDGy")
-import_all_func_list.append("LCoG")
-import_all_func_list.append("LCoK")
-import_all_func_list.append("LCoLB")
-import_all_func_list.append("LCoLC")
-import_all_func_list.append("LCoLG")
-import_all_func_list.append("LCoLGy")
-import_all_func_list.append("LCoLM")
-import_all_func_list.append("LCoLR")
-import_all_func_list.append("LCoLY")
-import_all_func_list.append("LCoM")
-import_all_func_list.append("LCoR")
-import_all_func_list.append("LCoW")
-import_all_func_list.append("LCoY")
-
-import_all_func_list.append("LGoB")
-import_all_func_list.append("LGoC")
-import_all_func_list.append("LGoDGy")
-import_all_func_list.append("LGoG")
-import_all_func_list.append("LGoK")
-import_all_func_list.append("LGoLB")
-import_all_func_list.append("LGoLC")
-import_all_func_list.append("LGoLG")
-import_all_func_list.append("LGoLGy")
-import_all_func_list.append("LGoLM")
-import_all_func_list.append("LGoLR")
-import_all_func_list.append("LGoLY")
-import_all_func_list.append("LGoM")
-import_all_func_list.append("LGoR")
-import_all_func_list.append("LGoW")
-import_all_func_list.append("LGoY")
-
-import_all_func_list.append("LGyoB")
-import_all_func_list.append("LGyoC")
-import_all_func_list.append("LGyoDGy")
-import_all_func_list.append("LGyoG")
-import_all_func_list.append("LGyoK")
-import_all_func_list.append("LGyoLB")
-import_all_func_list.append("LGyoLC")
-import_all_func_list.append("LGyoLG")
-import_all_func_list.append("LGyoLGy")
-import_all_func_list.append("LGyoLM")
-import_all_func_list.append("LGyoLR")
-import_all_func_list.append("LGyoLY")
-import_all_func_list.append("LGyoM")
-import_all_func_list.append("LGyoR")
-import_all_func_list.append("LGyoW")
-import_all_func_list.append("LGyoY")
-
-import_all_func_list.append("LMoB")
-import_all_func_list.append("LMoC")
-import_all_func_list.append("LMoDGy")
-import_all_func_list.append("LMoG")
-import_all_func_list.append("LMoK")
-import_all_func_list.append("LMoLB")
-import_all_func_list.append("LMoLC")
-import_all_func_list.append("LMoLG")
-import_all_func_list.append("LMoLGy")
-import_all_func_list.append("LMoLM")
-import_all_func_list.append("LMoLR")
-import_all_func_list.append("LMoLY")
-import_all_func_list.append("LMoM")
-import_all_func_list.append("LMoR")
-import_all_func_list.append("LMoW")
-import_all_func_list.append("LMoY")
-
-import_all_func_list.append("LRoB")
-import_all_func_list.append("LRoC")
-import_all_func_list.append("LRoDGy")
-import_all_func_list.append("LRoG")
-import_all_func_list.append("LRoK")
-import_all_func_list.append("LRoLB")
-import_all_func_list.append("LRoLC")
-import_all_func_list.append("LRoLG")
-import_all_func_list.append("LRoLGy")
-import_all_func_list.append("LRoLM")
-import_all_func_list.append("LRoLR")
-import_all_func_list.append("LRoLY")
-import_all_func_list.append("LRoM")
-import_all_func_list.append("LRoR")
-import_all_func_list.append("LRoW")
-import_all_func_list.append("LRoY")
-
-import_all_func_list.append("LYoB")
-import_all_func_list.append("LYoC")
-import_all_func_list.append("LYoDGy")
-import_all_func_list.append("LYoG")
-import_all_func_list.append("LYoK")
-import_all_func_list.append("LYoLB")
-import_all_func_list.append("LYoLC")
-import_all_func_list.append("LYoLG")
-import_all_func_list.append("LYoLGy")
-import_all_func_list.append("LYoLM")
-import_all_func_list.append("LYoLR")
-import_all_func_list.append("LYoLY")
-import_all_func_list.append("LYoM")
-import_all_func_list.append("LYoR")
-import_all_func_list.append("LYoW")
-import_all_func_list.append("LYoY")
-
-import_all_func_list.append("MoB")
-import_all_func_list.append("MoC")
-import_all_func_list.append("MoDGy")
-import_all_func_list.append("MoG")
-import_all_func_list.append("MoK")
-import_all_func_list.append("MoLB")
-import_all_func_list.append("MoLC")
-import_all_func_list.append("MoLG")
-import_all_func_list.append("MoLGy")
-import_all_func_list.append("MoLM")
-import_all_func_list.append("MoLR")
-import_all_func_list.append("MoLY")
-import_all_func_list.append("MoM")
-import_all_func_list.append("MoR")
-import_all_func_list.append("MoW")
-import_all_func_list.append("MoY")
-
-import_all_func_list.append("RoB")
-import_all_func_list.append("RoC")
-import_all_func_list.append("RoDGy")
-import_all_func_list.append("RoG")
-import_all_func_list.append("RoK")
-import_all_func_list.append("RoLB")
-import_all_func_list.append("RoLC")
-import_all_func_list.append("RoLG")
-import_all_func_list.append("RoLGy")
-import_all_func_list.append("RoLM")
-import_all_func_list.append("RoLR")
-import_all_func_list.append("RoLY")
-import_all_func_list.append("RoM")
-import_all_func_list.append("RoR")
-import_all_func_list.append("RoW")
-import_all_func_list.append("RoY")
-
-import_all_func_list.append("WoB")
-import_all_func_list.append("WoC")
-import_all_func_list.append("WoDGy")
-import_all_func_list.append("WoG")
-import_all_func_list.append("WoK")
-import_all_func_list.append("WoLB")
-import_all_func_list.append("WoLC")
-import_all_func_list.append("WoLG")
-import_all_func_list.append("WoLGy")
-import_all_func_list.append("WoLM")
-import_all_func_list.append("WoLR")
-import_all_func_list.append("WoLY")
-import_all_func_list.append("WoM")
-import_all_func_list.append("WoR")
-import_all_func_list.append("WoW")
-import_all_func_list.append("WoY")
-
-import_all_func_list.append("YoB")
-import_all_func_list.append("YoC")
-import_all_func_list.append("YoDGy")
-import_all_func_list.append("YoG")
-import_all_func_list.append("YoK")
-import_all_func_list.append("YoLB")
-import_all_func_list.append("YoLC")
-import_all_func_list.append("YoLG")
-import_all_func_list.append("YoLGy")
-import_all_func_list.append("YoLM")
-import_all_func_list.append("YoLR")
-import_all_func_list.append("YoLY")
-import_all_func_list.append("YoM")
-import_all_func_list.append("YoR")
-import_all_func_list.append("YoW")
-import_all_func_list.append("YoY")
-__all__ = import_all_func_list
-
+# Description
 #<=====>#
 
+
+
+#<=====>#
+# Known To Do List
+#<=====>#
+
+
+
+#<=====>#
+# Imports
+#<=====>#
 import os
 import random
 import re
-# import sys
-
-
-#<=====>#
-# Imports - Common Modules
-#<=====>#
-from termcolor           import colored
-from termcolor           import cprint
-
-
-#<=====>#
-# Imports - Download Modules
-#<=====>#
-
-#<=====>#
-# Imports - Unsure if used/needed
-#<=====>#
-
-#<=====>#
-# Imports - Recently Removed
-#<=====>#
-
-#<=====>#
-# Imports - Shared Library
-#<=====>#
-# shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', bg_color='SHARED_LIBS'))
-# if shared_libs_path not in sys.path:
-# 	sys.path.append(shared_libs_path)
-
-
-#<=====>#
-# Imports - Local Library
-#<=====>#
 
 
 #<=====>#
@@ -346,13 +23,12 @@ from termcolor           import cprint
 #<=====>#
 lib_name            = 'lib_colors'
 log_name            = 'lib_colors'
-verbosity           = 1
-lib_debug_lvl       = 1
-lib_display_lvl     = 1
+
 
 #<=====>#
 # Assignments Pre
 #<=====>#
+
 
 
 #<=====>#
@@ -572,7 +248,6 @@ class CLR:
 	#<=====>#
 
 	def name2hex(self, color):
-#		print('name2hex(color={})'.format(color))
 		"""
 		Resolves named colors to their hexadecimal values.
 		:param color: The named color or hexadecimal value.
@@ -580,7 +255,6 @@ class CLR:
 		"""
 		# Convert color to lowercase for case-insensitive matching
 		color = color.lower()
-#		print(self.pallette[color])
 		# Return the hexadecimal value from the dictionary if available, otherwise assume it's already a hex code
 		return self.pallette.get(color, color)
 
@@ -638,16 +312,11 @@ class CLR:
 		g_new = self.int2hex(g_inv)
 		b_new = self.int2hex(b_inv)
 		inv_color = '#{}{}{}'.format(r_new, g_new, b_new)
-#		print('color_cd : {}, r : {}, g : {}, b : {}, r_inv : {}, g_inv : {}, b_inv : {}, r_new : {}, g_new : {}, b_new : {}, inv_color : {}'.format(color_cd, r, g, b, r_inv, g_inv, b_inv, r_new, g_new, b_new, inv_color))
 		return inv_color
 
 	#<=====>#
 
 	def color_string(self, text, font_color, bg_color='black', bold=False, italic=False, length=0, align='left'):
-#		print('color_string(self, text={}, font_color={}, bg_color={}, bold={}, italic={}, length={}, align={})'.format(text, font_color, bg_color, bold, italic, length, align))
-#		print('')
-#		print('color_string(text={}, font_color={}, bg_color={}, bold={}, italic={}, length={}, align={})'.format(text, font_color, bg_color, bold, italic, length, align))
-#		print('length : {} ({})'.format(length, type(length)))
 		if length: length = int(length)
 		"""
 		Returns a colorized string using ANSI escape sequences.
@@ -674,17 +343,11 @@ class CLR:
 
 		# Resolve named colors or validate hex codes
 
-#		print('font_color : {}, bg_color : {}'.format(font_color, bg_color))
-#		print('self.hex_color_pattern.match(font_color) : {}'.format(self.hex_color_pattern.match(font_color)))
 		if not self.hex_color_pattern.match(font_color):
 			font_color = self.name2hex(font_color)
-#			print('font_color : {}'.format(font_color))
-#		print('self.hex_color_pattern.match(bg_color) : {}'.format(self.hex_color_pattern.match(bg_color)))
 		if not self.hex_color_pattern.match(bg_color):
 			bg_color = self.name2hex(bg_color)
-#			print('bg_color : {}'.format(bg_color))
 
-#		print('font_color : {}, bg_color : {}'.format(font_color, bg_color))
 		font_r, font_g, font_b = int(font_color[1:3], 16), int(font_color[3:5], 16), int(font_color[5:7], 16)
 		bg_r, bg_g, bg_b = int(bg_color[1:3], 16), int(bg_color[3:5], 16), int(bg_color[5:7], 16)
 
@@ -701,7 +364,6 @@ class CLR:
 	#<=====>#
 
 	def color_print(self, text, font_color, bg_color='black', bold=False, italic=False, length=0, align='left'):
-#		print('color_print(self, text={}, font_color={}, bg_color={}, bold={}, italic={}, length={}, align={})'.format(text, font_color, bg_color, bold, italic, length, align))
 		"""
 		Prints a colorized string to the terminal using ANSI escape sequences.
 		:param text: The text to be printed.
@@ -813,9 +475,7 @@ class CLR:
 			bg_color_hex = self.name2hex(bg_color)
 			# bg_lumi = self.lumi_get(bg_color_hex)
 			style_color_hex = self.inv_hex(bg_color_hex)
-#			style_color_hex = self.lumi_inv_hex(bg_color_hex)
 			# style_lumi = self.lumi_get(style_color_hex)
-#			print('bg_color_hex : {}, color_hex : {}, bg_lumi : {}, style_lumi : {}'.format(bg_color_hex, style_color_hex, bg_lumi, style_lumi))
 			cp('{} ({}) Background with {} Font Color'.format(bg_color.upper(), bg_color_hex, style_color_hex), font_color=style_color_hex, bg_color=bg_color_hex, italic=True, length=181, align='center')
 			cp('-'*181, font_color=bg_color_hex, bg_color=style_color_hex, length=181)
 			for font_color in self.pallette:
@@ -841,8 +501,6 @@ class CLR:
 		self.color_print('demo 7', 'white', 'purple', length=200, align='center')
 		self.color_print('loop through some background colors with white & black font colors...', 'gold', 'mediumvioletred', length=200, align='center')
 		color_list = ('00','11','22','33','44','55','66','77','88','99','AA','BB','CC','DD','EE','FF')
-#		color_list = ('00','33','66','99','CC','FF')
-		# pallette = []
 		for red_val in color_list:
 			for green_val in color_list:
 				row_str = ''
@@ -887,8 +545,6 @@ class CLR:
 		print()
 		self.color_print('demo 9', 'white', 'purple', length=200, align='center')
 		self.color_print('loop through some background colors with calculated inverse font colors...', 'gold', 'mediumvioletred', length=200, align='center')
-#		hex_vals = ('0','3','6','9','C','F')
-#		hex_vals = ('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F')
 		hex_vals = ('0','2','4','6','8','A','C','E')
 		possible_vals = []
 		for d1 in hex_vals:
@@ -905,7 +561,6 @@ class CLR:
 					all_cnt += 1
 					bg_hex_color = f'#{red_val}{green_val}{blue_val}'
 					font_hex_color = self.inv_hex(bg_hex_color)
-#					font_hex_color = self.lumi_inv_hex(bg_hex_color)
 					row_str += cs(text='{} {}'.format(font_hex_color, bg_hex_color), font_color=font_hex_color, bg_color=bg_hex_color)
 					if cnt < len(hex_vals):
 						row_str += ' '
@@ -914,23 +569,6 @@ class CLR:
 						row_str = ''
 						cnt = 0
 		print('all_cnt : {}'.format(all_cnt))
-
-#bbffff #440000 #bbffee #440011 #bbffdd #440022 #bbffcc #440033 #bbffbb #440044 #bbffaa #440055 #bbff99 #440066 #bbff88 #440077 #bbff77 #440088 #bbff66 #440099 #bbff55 #4400AA #bbff44 #4400BB #bbff33 #4400CC #bbff22 #4400DD #bbff11 #4400EE #bbff00 #4400FF
-#bbeeff #441100 #bbeeee #441111 #bbeedd #441122 #bbeecc #441133 #bbeebb #441144 #bbeeaa #441155 #bbee99 #441166 #bbee88 #441177 #bbee77 #441188 #bbee66 #441199 #bbee55 #4411AA #bbee44 #4411BB #bbee33 #4411CC #bbee22 #4411DD #bbee11 #4411EE #bbee00 #4411FF
-#bbddff #442200 #bbddee #442211 #bbdddd #442222 #bbddcc #442233 #bbddbb #442244 #bbddaa #442255 #bbdd99 #442266 #bbdd88 #442277 #bbdd77 #442288 #bbdd66 #442299 #bbdd55 #4422AA #bbdd44 #4422BB #bbdd33 #4422CC #bbdd22 #4422DD #bbdd11 #4422EE #bbdd00 #4422FF
-#bbccff #443300 #bbccee #443311 #bbccdd #443322 #bbcccc #443333 #bbccbb #443344 #bbccaa #443355 #bbcc99 #443366 #bbcc88 #443377 #bbcc77 #443388 #bbcc66 #443399 #bbcc55 #4433AA #bbcc44 #4433BB #bbcc33 #4433CC #bbcc22 #4433DD #bbcc11 #4433EE #bbcc00 #4433FF
-#bbbbff #444400 #bbbbee #444411 #bbbbdd #444422 #bbbbcc #444433 #bbbbbb #444444 #bbbbaa #444455 #bbbb99 #444466 #bbbb88 #444477 #bbbb77 #444488 #bbbb66 #444499 #bbbb55 #4444AA #bbbb44 #4444BB #bbbb33 #4444CC #bbbb22 #4444DD #bbbb11 #4444EE #bbbb00 #4444FF
-#bbaaff #445500 #bbaaee #445511 #bbaadd #445522 #bbaacc #445533 #bbaabb #445544 #bbaaaa #445555 #bbaa99 #445566 #bbaa88 #445577 #bbaa77 #445588 #bbaa66 #445599 #bbaa55 #4455AA #bbaa44 #4455BB #bbaa33 #4455CC #bbaa22 #4455DD #bbaa11 #4455EE #bbaa00 #4455FF
-#bb99ff #446600 #bb99ee #446611 #bb99dd #446622 #bb99cc #446633 #bb99bb #446644 #bb99aa #446655 #bb9999 #446666 #bb9988 #446677 #bb9977 #446688 #bb9966 #446699 #bb9955 #4466AA #bb9944 #4466BB #bb9933 #4466CC #bb9922 #4466DD #bb9911 #4466EE #bb9900 #4466FF
-#bb88ff #447700 #bb88ee #447711 #bb88dd #447722 #bb88cc #447733 #bb88bb #447744 #bb88aa #447755 #bb8899 #447766 #bb8888 #447777 #bb8877 #447788 #bb8866 #447799 #bb8855 #4477AA #bb8844 #4477BB #bb8833 #4477CC #bb8822 #4477DD #bb8811 #4477EE #bb8800 #4477FF
-#bb77ff #448800 #bb77ee #448811 #bb77dd #448822 #bb77cc #448833 #bb77bb #448844 #bb77aa #448855 #bb7799 #448866 #bb7788 #448877 #bb7777 #448888 #bb7766 #448899 #bb7755 #4488AA #bb7744 #4488BB #bb7733 #4488CC #bb7722 #4488DD #bb7711 #4488EE #bb7700 #4488FF
-#bb66ff #449900 #bb66ee #449911 #bb66dd #449922 #bb66cc #449933 #bb66bb #449944 #bb66aa #449955 #bb6699 #449966 #bb6688 #449977 #bb6677 #449988 #bb6666 #449999 #bb6655 #4499AA #bb6644 #4499BB #bb6633 #4499CC #bb6622 #4499DD #bb6611 #4499EE #bb6600 #4499FF
-#bb55ff #44AA00 #bb55ee #44AA11 #bb55dd #44AA22 #bb55cc #44AA33 #bb55bb #44AA44 #bb55aa #44AA55 #bb5599 #44AA66 #bb5588 #44AA77 #bb5577 #44AA88 #bb5566 #44AA99 #bb5555 #44AAAA #bb5544 #44AABB #bb5533 #44AACC #bb5522 #44AADD #bb5511 #44AAEE #bb5500 #44AAFF
-#bb44ff #44BB00 #bb44ee #44BB11 #bb44dd #44BB22 #bb44cc #44BB33 #bb44bb #44BB44 #bb44aa #44BB55 #bb4499 #44BB66 #bb4488 #44BB77 #bb4477 #44BB88 #bb4466 #44BB99 #bb4455 #44BBAA #bb4444 #44BBBB #bb4433 #44BBCC #bb4422 #44BBDD #bb4411 #44BBEE #bb4400 #44BBFF
-#bb33ff #44CC00 #bb33ee #44CC11 #bb33dd #44CC22 #bb33cc #44CC33 #bb33bb #44CC44 #bb33aa #44CC55 #bb3399 #44CC66 #bb3388 #44CC77 #bb3377 #44CC88 #bb3366 #44CC99 #bb3355 #44CCAA #bb3344 #44CCBB #bb3333 #44CCCC #bb3322 #44CCDD #bb3311 #44CCEE #bb3300 #44CCFF
-#bb22ff #44DD00 #bb22ee #44DD11 #bb22dd #44DD22 #bb22cc #44DD33 #bb22bb #44DD44 #bb22aa #44DD55 #bb2299 #44DD66 #bb2288 #44DD77 #bb2277 #44DD88 #bb2266 #44DD99 #bb2255 #44DDAA #bb2244 #44DDBB #bb2233 #44DDCC #bb2222 #44DDDD #bb2211 #44DDEE #bb2200 #44DDFF
-#bb11ff #44EE00 #bb11ee #44EE11 #bb11dd #44EE22 #bb11cc #44EE33 #bb11bb #44EE44 #bb11aa #44EE55 #bb1199 #44EE66 #bb1188 #44EE77 #bb1177 #44EE88 #bb1166 #44EE99 #bb1155 #44EEAA #bb1144 #44EEBB #bb1133 #44EECC #bb1122 #44EEDD #bb1111 #44EEEE #bb1100 #44EEFF
-#bb00ff #44FF00 #bb00ee #44FF11 #bb00dd #44FF22 #bb00cc #44FF33 #bb00bb #44FF44 #bb00aa #44FF55 #bb0099 #44FF66 #bb0088 #44FF77 #bb0077 #44FF88 #bb0066 #44FF99 #bb0055 #44FFAA #bb0044 #44FFBB #bb0033 #44FFCC #bb0022 #44FFDD #bb0011 #44FFEE #bb0000 #44FFFF
 
 # helpful regexp replace for converting sections of code 
 # find: tkn\['(\w+)'\]

@@ -1,27 +1,7 @@
 #<=====>#
-# Import All Scope
-#<=====>#
-import_all_func_list = []
-#import_all_func_list.append("mkt_ta_main")
-import_all_func_list.append("mkt_ta_main_new")
-#import_all_func_list.append("ta_ohlcv_df_merge")
-#import_all_func_list.append("ta_resample")
-#import_all_func_list.append("ta_add_color")
-#import_all_func_list.append("ta_add_ha")
-#import_all_func_list.append("ta_add_sha")
-#import_all_func_list.append("ta_add_sma")
-#import_all_func_list.append("ta_add_ema")
-#import_all_func_list.append("ta_add_atr")
-#import_all_func_list.append("ta_add_rsi")
-#import_all_func_list.append("ta_add_bbs")
-#import_all_func_list.append("ta_add_impulse_macd")
-#import_all_func_list.append("ta_add_high_low")
-#
-__all__ = import_all_func_list
-
-#<=====>#
 # Description
 #<=====>#
+
 
 
 #<=====>#
@@ -29,67 +9,27 @@ __all__ = import_all_func_list
 #<=====>#
 
 
-#<=====>#
-# Imports - Common Modules
-#<=====>#
 
-# from datetime import date
-# from datetime import datetime
-from datetime import datetime as dt
-from datetime import timedelta
-# from datetime import timezone
-# from datetime import tzinfo
-# from dateutil import parser as dt_prsr
-# from pprint import pprint
-
-# import decimal
-# import json
+#<=====>#
+# Imports
+#<=====>#
 import numpy as np
-import sys
-import os
-import pandas as pd 
-import pandas_ta as pta 
-import time
-from pprint import pprint
-# import re
-# import requests
-# import schedule
-# import sys
-# import time
+import pandas as pd
+import pandas_ta as pta
+from scipy.ndimage import gaussian_filter1d
 import traceback
 import warnings
+from datetime import datetime as dt, timedelta
+
+from libs.bot_coinbase import cb, cb_candles_get
+from libs.bot_db_read import db_ohlcv_freq_get, db_ohlcv_prod_id_freqs
+from libs.bot_db_write import db_tbl_ohlcv_prod_id_insupd_many
+from libs.bot_settings import debug_settings_get, get_lib_func_secs_max
+from libs.lib_common import dir_val, dttm_get, func_begin, func_end, print_adv
+from libs.lib_dicts import AttrDict
+from libs.lib_common import beep
 
 warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
-
-#<=====>#
-# Imports - Download Modules
-#<=====>#
-
-
-#<=====>#
-# Imports - Shared Library
-#<=====>#
-# shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
-# if shared_libs_path not in sys.path:
-# 	sys.path.append(shared_libs_path)
-
-
-#<=====>#
-# Imports - Local Library
-#<=====>#
-local_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '', 'libs'))
-if local_libs_path not in sys.path:
-	sys.path.append(local_libs_path)
-
-from lib_common                    import *
-from lib_charts                    import *
-from lib_colors                    import *
-
-from bot_common                    import *
-from bot_coinbase                  import *
-from bot_db_read                   import *
-from bot_db_write                  import *
-from bot_theme                     import *
 
 
 #<=====>#
@@ -101,9 +41,12 @@ lib_verbosity = 1
 lib_debug_lvl = 1
 lib_secs_max  = 2
 
-#<=====>#
+# <=====>#
 # Assignments Pre
-#<=====>#
+# <=====>#
+
+dst, debug_settings = debug_settings_get()
+lib_secs_max = get_lib_func_secs_max(lib_name=lib_name)
 
 
 #<=====>#
@@ -116,212 +59,35 @@ lib_secs_max  = 2
 # Functions
 #<=====>#
 
-# def mkt_ta_main(mkt, st):
-# 	func_name = 'mkt_ta_main'
-# 	func_str = f'{lib_name}.{func_name}(mkt, st)'
-# #	G(func_str)
-# 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-# 	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
-
-# 	try:
-
-# 		prod_id     = mkt.prod_id
-# 		ta          = AttrDict()
-# 		prc_mkt     = mkt.prc_mkt
-# 		rfreq       = ''
-# 		df          = None
-
-# 		dfs = {}
-# 		rfreqs = ['1min', '3min', '5min', '15min', '30min', '1h', '4h', '1d']
-# 		for rfreq in rfreqs:
-# 			dfs[rfreq] = ta_df_get(prod_id=prod_id, rfreq=rfreq)
-# 		mkt.dfs = dfs
-
-# #		db_check_ohlcv_prod_id_table(prod_id)
-
-
-# 		rfreqs = ['1min', '3min', '5min', '15min', '30min', '1h', '4h', '1d']
-# 		close_price = dfs['1min']['close'].iloc[-1]
-
-# #		# backfills the oldest rows to ensure we have min 250
-# #		for rfreq in rfreqs:
-# #			if len(dfs[rfreq]) < 300:
-# #				# Calculate the number of rows to replicate
-# #				rows_to_add = 300 - len(dfs[rfreq])
-# #				# Replicate the first row
-# #				first_row_replicated = pd.concat([dfs[rfreq].iloc[0:1]] * rows_to_add, ignore_index=True)
-# #				# Append the replicated rows to the start of the DataFrame
-# #				dfs[rfreq] = pd.concat([first_row_replicated, dfs[rfreq]], ignore_index=True)
-# #				# Ensure the index is a DatetimeIndex
-# #				if 'timestamp' in dfs[rfreq].columns:
-# #					dfs[rfreq]['timestamp'] = pd.to_datetime(dfs[rfreq]['timestamp'])
-# #					dfs[rfreq].set_index('timestamp', inplace=True)
-# #				else:
-# #					print(f"Warning: 'timestamp' column missing in {rfreq} data")
-
-# #		# Backfills the oldest rows to ensure we have min 250
-# #		for rfreq in rfreqs:
-# #			if len(dfs[rfreq]) < 300:
-# #				# Calculate the number of rows to replicate
-# #				rows_to_add = 300 - len(dfs[rfreq])
-# #				# Replicate the first row
-# #				first_row = dfs[rfreq].iloc[0].to_frame().T
-# #				first_row_replicated = pd.concat([first_row] * rows_to_add, ignore_index=True)
-# #				# Ensure the timestamp column is present
-# #				first_row_replicated.index = pd.date_range(start=dfs[rfreq].index[0] - pd.Timedelta(minutes=rows_to_add), periods=rows_to_add, freq=rfreq)
-# #				first_row_replicated.index.name = 'timestamp'
-# #				# Append the replicated rows to the start of the DataFrame
-# #				dfs[rfreq] = pd.concat([first_row_replicated, dfs[rfreq]]).sort_index()
-
-# #		for rfreq in rfreqs:
-# #				print(f"Debug Info Initial => {dfs[rfreq].df.tail(5)}")  # Add this line for more debug info
-
-# 		# populate the data for forming current candles
-# 		for rfreq in rfreqs:
-# 			if rfreq in ('1d','4h'):
-# 				# remove last row
-# 				dfs[rfreq] = dfs[rfreq].iloc[:-1]
-# 				# get max index
-# 				last_candle_dttm = dfs[rfreq].index.max()
-# 				# get the 1h
-# 				df_add = dfs['1h']
-# 				# get the recent 1h
-# 				df_add_filtered = df_add[df_add.index > last_candle_dttm]
-# 				# assemble them
-# 				dfs[rfreq] = pd.concat([dfs[rfreq], df_add_filtered]).sort_index()
-
-# 			if rfreq not in ('1min'):
-# 				# remove last row
-# 				dfs[rfreq] = dfs[rfreq].iloc[:-1]
-# 				# get max index
-# 				last_candle_dttm = dfs[rfreq].index.max()
-# 				# get the 1min
-# 				df_add = dfs['1min']
-# 				# get the recent 1min
-# 				df_add_filtered = df_add[df_add.index > last_candle_dttm]
-# 				# assemble them
-# 				dfs[rfreq] = pd.concat([dfs[rfreq], df_add_filtered]).sort_index()
-
-# 			if rfreq not in ('1min'):
-# 				dfs[rfreq] = dfs[rfreq].resample(rfreq).agg({
-# 					'open': 'first',
-# 					'high': 'max',
-# 					'low': 'min',
-# 					'close': 'last',
-# 					'volume': 'sum'
-# 					}).dropna()
-
-# 			# Ensure the index is a DatetimeIndex
-# 			if not isinstance(dfs[rfreq].index, pd.DatetimeIndex):
-# 				dfs[rfreq]['timestamp'] = pd.to_datetime(dfs[rfreq]['timestamp'])
-# 				dfs[rfreq] = dfs[rfreq].set_index('timestamp')
-
-# 			if rfreq == '1min':
-# 				csv_fname = f'data/{mkt.prod_id}_{rfreq}.csv'
-# 				dir_val(csv_fname)
-# 				dfs[rfreq].to_csv(csv_fname, index=True)
-
-# 		for rfreq in rfreqs:
-# 			if dfs[rfreq]['close'].iloc[-1] != close_price:
-# 				print(f"line 149 => rfreq : {rfreq}, end : {dfs[rfreq].index.max()}, close : {dfs[rfreq]['close'].iloc[-1]}, close should be {close_price}")
-# 				print('before fix')
-# 				print(dfs[rfreq].tail(3))
-# 				dfs[rfreq].loc[dfs[rfreq].index[-1], 'close'] = close_price
-# 				dfs[rfreq].loc[dfs[rfreq].index[-1], 'open']  = dfs[rfreq]['close'].iloc[-2]
-# 				print('after fix')
-# 				print(dfs[rfreq].tail(3))
-
-# 		# reduced list, previous was used for forming current candles
-# 		rfreqs = ['3min', '5min', '15min', '30min', '1h', '4h', '1d']
-
-# 		for rfreq in rfreqs:
-# #			print(f'rfreq : {rfreq}')
-# 			ta[rfreq]            = AttrDict()
-# 			ta[rfreq].df         = None
-# 			ta[rfreq].curr       = AttrDict()
-# 			ta[rfreq].last       = AttrDict()
-# 			ta[rfreq].prev       = AttrDict()
-
-# 			df = dfs[rfreq]
-
-# 			t0000 = time.perf_counter()				
-# 			db_tbl_ohlcv_prod_id_insupd(prod_id, rfreq, df)
-# 			t0001 = time.perf_counter()
-# 			x = t0001 - t0000
-# 			print(f'df insert took {x} seconds')
-
-# 			df = dfs[rfreq]
-# 			df = ta_add_indicators(df, st, prc_mkt, rfreq)
-# 			ta[rfreq].df = df
-
-# 			csv_fname = f'data/{mkt.prod_id}_{rfreq}.csv'
-# 			df.to_csv(csv_fname, index=True)
-
-# 			for x in range(0,-6,-1):
-# 				desc = f'ago{abs(x)}'
-# 				y = x - 1
-# 				for k in df:
-# 					if not rfreq in ta: ta[rfreq] = AttrDict()
-# 					if not k in ta[rfreq]: ta[rfreq][k] = AttrDict()
-# 					ta[rfreq][k][desc] =  df[k].iloc[y]
-
-# 		for rfreq in rfreqs:
-# 			if ta[rfreq].df['close'].iloc[-1] != close_price:
-# 				print(f"line 302 => rfreq : {rfreq}, end : {ta[rfreq].df.index.max()}, close_price : {close_price:>.8f}, close : {ta[rfreq].df['close'].iloc[-1]:>.8f}")
-# 				print(f"Debug Info Final => {ta[rfreq].df.tail(5)}")  # Add this line for more debug info
-# 				ta = 'Error!'
-# #				beep(3)
-# #				sys.exit()
-# 				break
-
-# 	except Exception as e:
-# 		print(f'{func_name} ==> errored... {e}')
-# 		print(dttm_get())
-# 		traceback.print_exc()
-# 		print(type(e))
-# 		print(e)
-# 		print(f'rfreq {type(rfreq)} : {rfreq}')
-# 		print(f'df {type(df)} :  {df}')
-# 		ta = None
-
-# 	func_end(fnc)
-#	return ta
-
-#<=====>#
-
-def mkt_ta_main_new(mkt, st):
-	func_name = 'mkt_ta_main_new'
-	func_str = f'{lib_name}.{func_name}(mkt, st)'
+def ta_main_new(pair, st):
+	func_name = 'ta_main_new'
+	func_str = f'{lib_name}.{func_name}(pair, st)'
+	lib_secs_max = get_lib_func_secs_max(lib_name=lib_name, func_name=func_name)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=5)
 
 	try:
 
-		prod_id     = mkt.prod_id
+		prod_id     = pair.prod_id
 		ta          = AttrDict()
-		prc_mkt     = mkt.prc_mkt
+		prc_mkt     = pair.prc_mkt
 		rfreq       = ''
 		df          = None
 		dfs         = {}
 		dfs_ins_many = {}
 
 		# Getting the Candlestick Data
-		dfs = mkt_ta_ohlcv(mkt, st)
+		dfs = ta_ohlcv(pair, st)
 
 		# Assigning the Real Time Close Price
 		close_price = dfs['1min']['close'].iloc[-1]
-
 
 		# reduced list, previous was used for forming current candles
 #		rfreqs = ['3min', '5min', '15min', '30min', '1h', '4h', '1d']
 		rfreqs = ['5min', '15min', '30min', '1h', '4h', '1d']
 
-
 		# Adding the Technical Analysis Indicators
-		# timer
-#		t0 = time.perf_counter()
 		for rfreq in rfreqs:
-#			print(f'rfreq : {rfreq}')
 			ta[rfreq]            = AttrDict()
 			ta[rfreq].df         = None
 			ta[rfreq].curr       = AttrDict()
@@ -344,20 +110,7 @@ def mkt_ta_main_new(mkt, st):
 					if not k in ta[rfreq]: ta[rfreq][k] = AttrDict()
 					ta[rfreq][k][desc] =  df[k].iloc[y]
 
-#		t00 = time.perf_counter()
 		db_tbl_ohlcv_prod_id_insupd_many(prod_id, dfs_ins_many)
-#		t01 = time.perf_counter()
-#		secs = round(t01 - t00, 2)
-#		msg = cs(f'  * db_tbl_ohlcv_prod_id_insupd - dfs_ins_many for {prod_id} {rfreq} - took {secs} seconds...', font_color='yellow', bg_color='orangered')
-#		chart_row(msg, len_cnt=240)
-
-		# timer
-#		t1 = time.perf_counter()
-#		secs = round(t1 - t0, 2)
-#		msg = cs(f'mkt_ta_main_new - section 5 - adding the technical indicators - took {secs} seconds...', font_color='yellow', bg_color='orangered')
-#		chart_row(msg, len_cnt=240)
-
-
 
 		# Check that all forming candles have the same final close price since they are real time
 		for rfreq in rfreqs:
@@ -365,10 +118,7 @@ def mkt_ta_main_new(mkt, st):
 				print(f"line 302 => rfreq : {rfreq}, end : {ta[rfreq].df.index.max()}, close_price : {close_price:>.8f}, close : {ta[rfreq].df['close'].iloc[-1]:>.8f}")
 				print(f"Debug Info Final => {ta[rfreq].df.tail(5)}")  # Add this line for more debug info
 				ta = 'Error!'
-#				beep(3)
-#				sys.exit()
 				break
-
 
 	except Exception as e:
 		print(f'{func_name} ==> errored... {e}')
@@ -385,17 +135,16 @@ def mkt_ta_main_new(mkt, st):
 
 #<=====>#
 
-def mkt_ta_ohlcv(mkt, st):
-	func_name = 'mkt_ta_ohlcv'
-	func_str = f'{lib_name}.{func_name}(mkt, st)'
-#	G(func_str)
+def ta_ohlcv(pair, st):
+	func_name = 'ta_ohlcv'
+	func_str = f'{lib_name}.{func_name}(pair, st)'
+	lib_secs_max = get_lib_func_secs_max(lib_name=lib_name, func_name=func_name)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=2)
+#	G(func_str)
 
 	try:
 
-		prod_id     = mkt.prod_id
-#		ta          = AttrDict()
-#		prc_mkt     = mkt.prc_mkt
+		prod_id     = pair.prod_id
 		rfreq       = ''
 		df          = None
 		dfs         = {}
@@ -405,19 +154,9 @@ def mkt_ta_ohlcv(mkt, st):
 
 		ohlcv_meths = {}
 
-#		t0 = time.perf_counter()
 		ohlcv_last_dttms = db_ohlcv_prod_id_freqs(prod_id)
-#		t1 = time.perf_counter()
-#		secs = round(t1 - t0, 2)
-#		msg = cs(f'mkt_ta_main_new - section 0 - took {secs} seconds...', font_color='yellow', bg_color='orangered')
-#		chart_row(msg, len_cnt=240)
 
-
-
-		# timer
-#		t0 = time.perf_counter()
 		utc_now = dt.utcnow()
-#		now = dt.now()
 		for freq in rfreqs:
 			ohlcv_meth = {}
 			ohlcv_meth['prod_id']       = prod_id
@@ -458,40 +197,19 @@ def mkt_ta_ohlcv(mkt, st):
 				ohlcv_meth['method']        = 'db'
 
 			ohlcv_meths[freq] = ohlcv_meth
-#		# timer
-#		t1 = time.perf_counter()
-#		secs = round(t1 - t0, 2)
-#		msg = cs(f'mkt_ta_main_new - section 1 - took {secs} seconds...', font_color='yellow', bg_color='orangered')
-#		chart_row(msg, len_cnt=240)
 
-
-
-		# timer
-#		t0 = time.perf_counter()
 		for freq in ohlcv_meths:
-#			print(ohlcv_meths[freq])
 			if ohlcv_meths[freq]['method'] == 'api':
 				msg = 'getting {} {} hist from api'.format(prod_id, freq)
-#				print(msg)
 				dfs[freq] = ta_df_get(prod_id, freq)
 			else:
 				msg = 'getting {} {} hist from db'.format(prod_id, freq)
-#				print(msg)
 				dfs[freq] = ta_hist_db(prod_id, freq)
-		# timer
-#		t1 = time.perf_counter()
-#		secs = round(t1 - t0, 2)
-#		msg = cs(f'mkt_ta_main_new - section 2 - api & db recovery - took {secs} seconds...', font_color='yellow', bg_color='orangered')
-#		chart_row(msg, len_cnt=240)
 
-
-
-		# timer
-#		t0 = time.perf_counter()
-		mkt.dfs = dfs
+		pair.dfs = dfs
 		close_price = dfs['1min']['close'].iloc[-1]
-#		rfreqs = ['1min', '3min', '5min', '15min', '30min', '1h', '4h', '1d']
 		rfreqs = ['1min', '5min', '15min', '30min', '1h', '4h', '1d']
+
 		# populate the data for forming current candles
 		for rfreq in rfreqs:
 			if rfreq in ('1d','4h'):
@@ -533,20 +251,11 @@ def mkt_ta_ohlcv(mkt, st):
 				dfs[rfreq] = dfs[rfreq].set_index('timestamp')
 
 			if rfreq == '1min':
-				csv_fname = f'data/{mkt.prod_id}_{rfreq}.csv'
+				csv_fname = f'data/{pair.prod_id}_{rfreq}.csv'
 				dir_val(csv_fname)
 				dfs[rfreq].to_csv(csv_fname, index=True)
 
-#		# timer
-#		t1 = time.perf_counter()
-#		secs = round(t1 - t0, 2)
-#		msg = cs(f'mkt_ta_main_new - section 3 - took {secs} seconds...', font_color='yellow', bg_color='orangered')
-#		chart_row(msg, len_cnt=240)
-
-
-
 		# timer
-#		t0 = time.perf_counter()
 		for rfreq in rfreqs:
 			if dfs[rfreq]['close'].iloc[-1] != close_price:
 				print(f"line 149 => rfreq : {rfreq}, end : {dfs[rfreq].index.max()}, close : {dfs[rfreq]['close'].iloc[-1]}, close should be {close_price}")
@@ -556,12 +265,6 @@ def mkt_ta_ohlcv(mkt, st):
 				dfs[rfreq].loc[dfs[rfreq].index[-1], 'open']  = dfs[rfreq]['close'].iloc[-2]
 				print('after fix')
 				print(dfs[rfreq].tail(3))
-#		# timer
-#		t1 = time.perf_counter()
-#		secs = round(t1 - t0, 2)
-#		msg = cs(f'mkt_ta_main_new - section 4 - took {secs} seconds...', font_color='yellow', bg_color='orangered')
-#		chart_row(msg, len_cnt=240)
-
 
 	except Exception as e:
 		print(f'{func_name} ==> errored... {e}')
@@ -581,10 +284,8 @@ def mkt_ta_ohlcv(mkt, st):
 def ta_hist_db(prod_id, freq):
 	func_name = "ta_hist_db"
 	func_str = f"{lib_name}.{func_name}(prod_id={prod_id})"
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-
-#	t0 = time.perf_counter()
+#	G(func_str)
 
 	df = None
 	try:
@@ -621,11 +322,6 @@ def ta_hist_db(prod_id, freq):
 		raise
 		exit()
 
-#	t1 = time.perf_counter()
-#	secs = round(t1 - t0, 2)
-#	msg = cs(f'ta_hist_db for {prod_id} - took {secs} seconds...', font_color='white', bg_color='orange')
-#	chart_row(msg, len_cnt=240)
-
 	fnc = func_end(fnc)
 	return df
 
@@ -635,18 +331,10 @@ def ta_hist_db(prod_id, freq):
 def ta_df_get(prod_id, rfreq) -> dict:
 	func_name = 'ta_df_get'
 	func_str = f'{lib_name}.{func_name}(prod_id={prod_id}, rfreq={rfreq})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
-
-#	t0 = time.perf_counter()
+#	G(func_str)
 
 	df = cb_candles_get(product_id=prod_id, rfreq=rfreq, min_rows=299)
-
-#	t1 = time.perf_counter()
-#	secs = round(t1 - t0, 2)
-#	msg = cs(f'ta_df_get for {prod_id} - took {secs} seconds...', font_color='white', bg_color='orange')
-#	chart_row(msg, len_cnt=240)
 
 	func_end(fnc)
 	return df
@@ -657,9 +345,8 @@ def ta_df_get(prod_id, rfreq) -> dict:
 def ta_add_indicators(df: pd.DataFrame, st, prc_mkt, rfreq) -> pd.DataFrame:
 	func_name = 'ta_add_indicators'
 	func_str = f'{lib_name}.{func_name}(df, st, prc_mkt={prc_mkt}, rfreq={rfreq})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	df['hl2']   = (df['high'] + df['low']) / 2
 	df['hlc3']  = (df['high'] + df['low'] + df['close']) / 3
@@ -701,43 +388,39 @@ def ta_add_indicators(df: pd.DataFrame, st, prc_mkt, rfreq) -> pd.DataFrame:
 
 	# New Strat Add Section
 	# STRAT SHA
-#	if mkt.strat_sha_yn == 'Y':
 	# Smoothed Heikin Ashi Candles
-	fast_sha_len1 = st.spot.buy.strats.sha.fast_sha_len1 # 8
-	fast_sha_len2 = st.spot.buy.strats.sha.fast_sha_len2 # 8
-	slow_sha_len1 = st.spot.buy.strats.sha.slow_sha_len1 # 21
-	slow_sha_len2 = st.spot.buy.strats.sha.slow_sha_len2 # 21
+	fast_sha_len1 = st.buy.strats.sha.fast_sha_len1 # 8
+	fast_sha_len2 = st.buy.strats.sha.fast_sha_len2 # 8
+	slow_sha_len1 = st.buy.strats.sha.slow_sha_len1 # 21
+	slow_sha_len2 = st.buy.strats.sha.slow_sha_len2 # 21
 	df = ta_add_sha(df, prc_mkt, sha_len1=fast_sha_len1, sha_len2=fast_sha_len2, tag='_fast')
 	df = ta_add_sha(df, prc_mkt, sha_len1=slow_sha_len1, sha_len2=slow_sha_len2, tag='_slow')
 
 	# STRAT IMP MACD
-#	if mkt.strat_imp_macd_yn == 'Y':
-	per_ma   = st.spot.buy.strats.imp_macd.per_ma   # 34 
-	per_sign = st.spot.buy.strats.imp_macd.per_sign # 9 
+	per_ma   = st.buy.strats.imp_macd.per_ma   # 34 
+	per_sign = st.buy.strats.imp_macd.per_sign # 9 
 	df = ta_add_imp_macd(df, per_ma=per_ma, per_sign=per_sign)
 
 	# STRAT BB
-#	if mkt.strat_bb_yn == 'Y':
-	inner_per = st.spot.buy.strats.bb.inner_per # 21 
-	inner_sd  = st.spot.buy.strats.bb.inner_sd  # 2.3 
-	outer_per = st.spot.buy.strats.bb.outer_per # 21 
-	outer_sd  = st.spot.buy.strats.bb.outer_sd  # 2.7 
+	inner_per = st.buy.strats.bb.inner_per # 21 
+	inner_sd  = st.buy.strats.bb.inner_sd  # 2.3 
+	outer_per = st.buy.strats.bb.outer_per # 21 
+	outer_sd  = st.buy.strats.bb.outer_sd  # 2.7 
 	df = ta_add_bb(df, per=inner_per, sd=inner_sd, tag='_inner')
 	df = ta_add_bb(df, per=outer_per, sd=outer_sd, tag='_outer')
 
 	# STRAT BB BO
-#	if mkt.strat_bb_bo_yn == 'Y':
-	per = st.spot.buy.strats.bb_bo.per # 21 
-	sd  = st.spot.buy.strats.bb_bo.sd  # 2.5 
+	per = st.buy.strats.bb_bo.per # 21 
+	sd  = st.buy.strats.bb_bo.sd  # 2.5 
 	df = ta_add_bb(df, per=per, sd=sd, tag='_bb_bo')
+
+	nwe_bw = 8
+	df = ta_add_nwe(df, src='close', bandwidth=nwe_bw, tag='_bb_bo')
 
 	# Highest, Lowest
 	for x in (7,24,30):
 		df[f'max{x}'] = df['high'].rolling(window=x).max()
 		df[f'min{x}'] = df['low'].rolling(window=x).min()
-
-#	# Higher Highs, Lower Lows
-#	df = ta_add_high_low(df)
 
 	func_end(fnc)
 	return df
@@ -747,9 +430,8 @@ def ta_add_indicators(df: pd.DataFrame, st, prc_mkt, rfreq) -> pd.DataFrame:
 def ta_add_color(df: pd.DataFrame) -> pd.DataFrame:
 	func_name = 'ta_add_color'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	df['color'] = np.where(df['open'] < df['close'], 'green', 'red')
 
@@ -762,9 +444,8 @@ def ta_add_color(df: pd.DataFrame) -> pd.DataFrame:
 def ta_add_ha(df: pd.DataFrame) -> pd.DataFrame:
 	func_name = 'ta_add_ha'
 	func_str = f'{lib_name}.{func_name}()'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	# Calculate Heikin Ashi Close
 	df['ha_close'] = (df['open'] + df['high'] + df['low'] + df['close']) / 4
@@ -808,14 +489,12 @@ def ta_add_ha(df: pd.DataFrame) -> pd.DataFrame:
 
 #<=====>#
 
-#def atr(high, low, close, length=None, mamode=None, talib=None, drift=None, offset=None, **kwargs):
 # Average True Range
 def ta_add_atr(df: pd.DataFrame, per=14) -> pd.DataFrame:
 	func_name = 'ta_add_atr'
 	func_str = f'{lib_name}.{func_name}(per={per})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	per = min(per, len(df))
 
@@ -829,9 +508,8 @@ def ta_add_atr(df: pd.DataFrame, per=14) -> pd.DataFrame:
 def ta_add_rsi(df: pd.DataFrame, per=14) -> pd.DataFrame:
 	func_name = 'ta_add_rsi'
 	func_str = f'{lib_name}.{func_name}(per={per})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	per = min(per, len(df))
 
@@ -846,16 +524,13 @@ def ta_add_rsi(df: pd.DataFrame, per=14) -> pd.DataFrame:
 def ta_add_roc(df: pd.DataFrame, col='close', label=None, per=3) -> pd.DataFrame:
 	func_name = 'ta_add_roc'
 	func_str = f'{lib_name}.{func_name}(col={col}, label={label}, per={per})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	per = min(per, len(df))
 
 	if not label:
 		label = col
-
-#	df[label]                   = pta.sma(df[col], length=per)
 
 	label2 = f'{label}_roc'
 	df[label2]                  = pta.roc(df[label], length=3)
@@ -875,11 +550,8 @@ def ta_add_roc(df: pd.DataFrame, col='close', label=None, per=3) -> pd.DataFrame
 def ta_add_sma(df: pd.DataFrame, per, col='close', label=None) -> pd.DataFrame:
 	func_name = 'ta_add_sma'
 	func_str = f'{lib_name}.{func_name}(per={per}, col={col}, label={label})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
-
-#	last_label = ''
+#	G(func_str)
 
 	per = min(per, len(df))
 
@@ -890,13 +562,6 @@ def ta_add_sma(df: pd.DataFrame, per, col='close', label=None) -> pd.DataFrame:
 
 	df = ta_add_roc(df, col=label)
 
-#	label2 = f'{label}_roc'
-#	df[label2]                  = pta.roc(df[label], length=3)
-#	label3 = f'{label}_roc_up'
-#	df[label3]                  = df[label2]  > df[label2].shift(1)
-#	label4 = f'{label}_roc_dn'
-#	df[label4]                  = df[label2]  < df[label2].shift(1)
-
 	func_end(fnc)
 	return df
 
@@ -906,9 +571,8 @@ def ta_add_sma(df: pd.DataFrame, per, col='close', label=None) -> pd.DataFrame:
 def ta_add_ema(df: pd.DataFrame, per, col='close', label=None) -> pd.DataFrame:
 	func_name = 'ta_add_emas'
 	func_str = f'{lib_name}.{func_name}(per={per}, col={col}, label={label})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	per = min(per, len(df))
 
@@ -919,13 +583,6 @@ def ta_add_ema(df: pd.DataFrame, per, col='close', label=None) -> pd.DataFrame:
 
 	df = ta_add_roc(df, col=label)
 
-#	label2 = f'{label}_roc'
-#	df[label2]                  = pta.roc(df[label], length=3)
-#	label3 = f'{label}_roc_up'
-#	df[label3]                  = df[label2]  > df[label2].shift(1)
-#	label4 = f'{label}_roc_dn'
-#	df[label4]                  = df[label2]  < df[label2].shift(1)
-
 	func_end(fnc)
 	return df
 
@@ -935,9 +592,8 @@ def ta_add_ema(df: pd.DataFrame, per, col='close', label=None) -> pd.DataFrame:
 def ta_add_sha(df: pd.DataFrame, prc_mkt, sha_len1=5, sha_len2=8, tag=None) -> pd.DataFrame:
 	func_name = 'ta_add_sha'
 	func_str = f'{lib_name}.{func_name}(df, prc_mkt={prc_mkt}, sha_len1={sha_len1}, sha_len2={sha_len2}, tag={tag})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	sha_len1 = min(sha_len1, len(df))
 	sha_len2 = min(sha_len2, len(df))
@@ -1011,9 +667,8 @@ def ta_add_sha(df: pd.DataFrame, prc_mkt, sha_len1=5, sha_len2=8, tag=None) -> p
 def ta_add_imp_macd(df: pd.DataFrame, per_ma=34, per_sign=9) -> pd.DataFrame:
 	func_name = 'ta_add_imp_macd'
 	func_str = f'{lib_name}.{func_name}(df, per_ma={per_ma}, per_sign={per_sign})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	per_ma = min(per_ma, len(df))
 	per_sign = min(per_sign, len(df))
@@ -1062,9 +717,8 @@ def ta_add_imp_macd(df: pd.DataFrame, per_ma=34, per_sign=9) -> pd.DataFrame:
 def ta_add_bb(df: pd.DataFrame, per=20, sd=2, tag='') -> pd.DataFrame:
 	func_name = 'ta_add_bbs'
 	func_str = f'{lib_name}.{func_name}(df, per={per}, sd={sd}, tag={tag})'
-#	G(func_str)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
+#	G(func_str)
 
 	per = min(per, len(df))
 
@@ -1092,6 +746,92 @@ def ta_add_bb(df: pd.DataFrame, per=20, sd=2, tag='') -> pd.DataFrame:
 
 	func_end(fnc)
 	return df
+
+#<=====>#
+
+def ta_add_nwe_old(df: pd.DataFrame, src='close', bandwidth=8, tag='') -> pd.DataFrame:
+	func_name = 'ta_add_nwe_old'
+	func_str = f'{lib_name}.{func_name}(df, src={src}, bandwidth={bandwidth}, tag={tag})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	# Nadaraya-Watson Estimator
+
+	def gaussian_kernel(x, h):
+		"""Gaussian function."""
+		return np.exp(-(x ** 2) / (2 * h ** 2))
+
+	def nadaraya_watson_smoother(src, bandwidth):
+		"""Nadaraya-Watson Smoother."""
+		smoothed_values = []
+		for i in range(len(src)):
+			weights = np.array([gaussian_kernel(i - j, bandwidth) for j in range(len(src))])
+			weighted_sum = np.sum(src * weights)
+			sum_of_weights = np.sum(weights)
+			smoothed_value = weighted_sum / sum_of_weights if sum_of_weights != 0 else np.nan
+			smoothed_values.append(smoothed_value)
+		return np.array(smoothed_values)
+
+	def compute_color(smoothed_values):
+		"""Compute color based on whether the smoothed value is increasing or decreasing."""
+		colors = []
+		for i in range(1, len(smoothed_values)):
+			if smoothed_values[i] > smoothed_values[i - 1]:
+				colors.append('green')  # Up trend
+			else:
+				colors.append('red')  # Down trend
+		colors.insert(0, 'green')  # Initial color (default to green)
+		return colors
+
+	# Parameters
+	source = df[src]
+
+	# Calculate the smoothed line and its color
+	smoothed_line = nadaraya_watson_smoother(source.values, bandwidth)
+	line_colors = compute_color(smoothed_line)
+
+	# Add the smoothed line and its color to your DataFrame
+	df['nwe_line'] = smoothed_line
+	df['nwe_roc'] = pta.roc(df['nwe_line'], length=3)
+	df['nwe_color'] = line_colors
+
+	func_end(fnc)
+	return df
+
+#<=====>#
+
+import numpy as np
+import pandas as pd
+
+def ta_add_nwe(df: pd.DataFrame, src='close', bandwidth=8, tag='') -> pd.DataFrame:
+    func_name = 'ta_add_nwe'
+    func_str = f'{lib_name}.{func_name}(df, src={src}, bandwidth={bandwidth}, tag={tag})'
+    fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+
+    try:
+        # Parameters
+        source = df[src].values
+
+        # Apply Gaussian filter
+        smoothed_line = gaussian_filter1d(source, sigma=bandwidth, mode='reflect')
+
+        # Compute Rate of Change (ROC)
+        df['nwe_line'] = smoothed_line
+        df['nwe_roc'] = pta.roc(df['nwe_line'], length=3)
+        
+        # Compute Color based on trend
+        diff = np.diff(smoothed_line, prepend=smoothed_line[0])
+        df['nwe_color'] = np.where(diff > 0, 'green', 'red')
+
+    except Exception as e:
+        print(f"{dttm_get()} {func_name} ==> Error: {e}")
+        traceback.print_exc()
+        traceback.print_stack()
+        print_adv(2)
+        pass
+
+    func_end(fnc)
+    return df
 
 #<=====>#
 
@@ -1131,189 +871,15 @@ def ta_add_bb(df: pd.DataFrame, per=20, sd=2, tag='') -> pd.DataFrame:
 # 	return df, ta_ad
 
 #<=====>#
-
-#def ta_ohlcv_df_merge(higher_df, lower_df, timeframe):
-#	func_str = f'ta_ohlcv_df_merge(higher_df, lower_df, timeframe={timeframe})'
-#
-#	print('')
-#	print('\n\n\n')
-#	print(func_str)
-#	print(f'local time est : {dttm_get()}')
-#
-#	print('')
-#	print('higher_df:')
-#	print(higher_df.tail(3))
-#
-#	print('')
-#	print('lower_df:')
-#	print(lower_df.tail(3))
-#
-#
-#	# Ensure the index of higher_df and lower_df is a DatetimeIndex
-#	if not isinstance(higher_df.index, pd.DatetimeIndex):
-#		higher_df['timestamp'] = pd.to_datetime(higher_df['timestamp'])
-#		higher_df = higher_df.set_index('timestamp')
-#
-#	if not isinstance(lower_df.index, pd.DatetimeIndex):
-#		lower_df['timestamp'] = pd.to_datetime(lower_df['timestamp'])
-#		lower_df = lower_df.set_index('timestamp')
-#
-#	# Remove any duplicate indices in higher_df
-#	higher_df = higher_df[~higher_df.index.duplicated(keep='last')]
-#
-#	last_candle_end   = higher_df.index.max()
-#	print('')
-#	print(f'last_candle_end: {last_candle_end}')
-#
-#	# Filter and resample lower_df to get the current candle
-#	filtered_lower_df = lower_df[lower_df.index > last_candle_end]
-#	print('')
-#	print('filtered_lower_df:')
-#	print(filtered_lower_df.tail(3))
-#
-#	# Ensure timeframe string is correctly formatted for resampling
-#	resample_timeframe = timeframe
-#	print('')
-#	print(f'resample_timeframe: {resample_timeframe}')
-#
-#	current_candle_df = filtered_lower_df.resample(resample_timeframe).agg({
-#		'open': 'first',
-#		'high': 'max',
-#		'low': 'min',
-#		'close': 'last',
-#		'volume': 'sum'
-#	}).dropna()
-#
-##	# Remove any duplicate indices in current_candle_df
-##	current_candle_df = current_candle_df[~current_candle_df.index.duplicated(keep='last')]
-#	print('')
-#	print('current_candle_df:')
-#	print(current_candle_df.tail(3))
-#
-#	# Concatenate higher_df and current_candle_df
-#	df = pd.concat([higher_df, current_candle_df]).sort_index()
-#
-#	# Remove any duplicates in the final dataframe
-#	df = df[~df.index.duplicated(keep='last')]
-#
-#	if not isinstance(df.index, pd.DatetimeIndex):
-#		df['timestamp'] = pd.to_datetime(df['timestamp'])
-#		df = df.set_index('timestamp')
-#
-#	df = df.reset_index()
-#
-#	print('')
-#	print('out df:')
-#	print(df.tail(3))
-#
-##	print('')
-##	print('')
-##	print('')
-#
-#	return df
-
-#<=====>#
-
-#def ta_ohlcv_df_merge_orig(higher_df, lower_df, timeframe):
-#	func_str = 'ta_ohlcv_df_merge_orig(higher_df, lower_df, timeframe={})'.format(timeframe)
-#
-#	# Ensure the index of higher_df and lower_df is a DatetimeIndex
-#	if not isinstance(higher_df.index, pd.DatetimeIndex):
-#		higher_df['timestamp'] = pd.to_datetime(higher_df['timestamp'])
-#		higher_df = higher_df.set_index('timestamp')
-#
-#	if not isinstance(lower_df.index, pd.DatetimeIndex):
-#		lower_df['timestamp'] = pd.to_datetime(lower_df['timestamp'])
-#		lower_df = lower_df.set_index('timestamp')
-#
-#	# Remove any duplicate indices in higher_df
-#	higher_df = higher_df[~higher_df.index.duplicated(keep='last')]
-#
-#	last_candle_end   = higher_df.index.max()
-#
-#	# Filter and resample lower_df to get the current candle
-#	filtered_lower_df = lower_df[lower_df.index > last_candle_end]
-#	current_candle_df = filtered_lower_df.resample(timeframe).agg({
-#		'open': 'first',
-#		'high': 'max',
-#		'low': 'min',
-#		'close': 'last',
-#		'volume': 'sum'
-#	})
-#
-#	# Remove any duplicate indices in current_candle_df
-#	current_candle_df = current_candle_df[~current_candle_df.index.duplicated(keep='lasst')]
-#
-#	# Concatenate higher_df and current_candle_df
-#	df = pd.concat([higher_df, current_candle_df]).sort_index()
-#
-#	# Remove any duplicates in the final dataframe
-#	df = df[~df.index.duplicated(keep='first')]
-#
-#	df = df.reset_index()
-#
-#	return df
-
-#<=====>#
-
-#def ta_resample(df: pd.DataFrame, rfreq: str, roffset=None) -> pd.DataFrame:
-#	func_name = 'ta_resample'
-#	func_str = f'{lib_name}.{func_name}()'
-##	G(func_str)
-#	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	if lib_verbosity >= 2: print_func_name(func_str, adv=2)
-#
-#	"""
-#	Resample DataFrame by <interval>.
-#	"""
-##	https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases
-##	Alias   Description
-##	B       business day frequency
-##	C       custom business day frequency (experimental)
-##	D       calendar day frequency
-##	W       weekly frequency
-##	M       month end frequency
-##	BM      business month end frequency
-##	CBM     custom business month end frequency
-##	MS      month start frequency
-##	BMS     business month start frequency
-##	CBMS    custom business month start frequency
-##	Q       quarter end frequency
-##	BQ      business quarter endfrequency
-##	QS      quarter start frequency
-##	BQS     business quarter start frequency
-##	A       year end frequency
-##	BA      business year end frequency
-##	AS      year start frequency
-##	BAS     business year start frequency
-##	BH      business hour frequency
-##	H       hourly frequency
-##	T, min  minutely frequency
-##	S       secondly frequency
-##	L, ms   milliseonds
-##	U, us   microseconds
-##	N       nanoseconds
-#
-#	d = {"open": "first", "high": "max", "low": "min", "close": "last", "volume": "sum"}
-#
-#	if roffset:
-#		df = df.resample(rfreq, offset=roffset).agg(d)
-#	else:
-#		df = df.resample(rfreq).agg(d)
-##	# added this for coinbase ONE_MINUTE resampling 5/6/24
-#	df.dropna()
-#
-#	func_end(fnc)
-#	return df
-
-#<=====>#
 # Post Variables
 #<=====>#
+
 
 
 #<=====>#
 # Default Run
 #<=====>#
+
 
 
 #<=====>#

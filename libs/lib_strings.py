@@ -1,56 +1,20 @@
 #<=====>#
-# Import All Scope
+# Description
 #<=====>#
-import_all_func_list = []
-
-import_all_func_list.append("lpad")
-import_all_func_list.append("rpad")
-import_all_func_list.append("cpad")
-
-import_all_func_list.append("left")
-import_all_func_list.append("right")
-import_all_func_list.append("mid")
-
-import_all_func_list.append("IsEnglish")
-import_all_func_list.append("format_disp_age")
-import_all_func_list.append("format_disp_age2")
-import_all_func_list.append("short_link")
-
-import_all_func_list.append("strip_formatting")
-import_all_func_list.append("display_length")
 
 
-__all__ = import_all_func_list
 
 #<=====>#
-# Imports - Common Modules
+# Known To Do List
+#<=====>#
+
+
+
+#<=====>#
+# Imports
 #<=====>#
 import re
-import sys, os
-
-#<=====>#
-# Imports - Download Modules
-#<=====>#
-
-#<=====>#
-# Imports - Unsure if used/needed
-#<=====>#
-
-#<=====>#
-# Imports - Recently Removed
-#<=====>#
-
-#<=====>#
-# Imports - Shared Library
-#<=====>#
-# shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
-# if shared_libs_path not in sys.path:
-# 	sys.path.append(shared_libs_path)
-
-
-#<=====>#
-# Imports - Local Library
-#<=====>#
+from libs.lib_colors import cs, cp
 
 
 #<=====>#
@@ -58,9 +22,7 @@ import sys, os
 #<=====>#
 lib_name            = 'lib_strings'
 log_name            = 'lib_strings'
-verbosity           = 1
-lib_debug_lvl       = 1
-lib_display_lvl     = 1
+
 
 #<=====>#
 # Assignments Pre
@@ -205,11 +167,11 @@ def display_length(in_str):
 #<=====>#
 
 
+
 #<=====>#
 # Default Run
 #<=====>#
 
 
+
 #<=====>#
-
-

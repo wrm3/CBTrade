@@ -3,59 +3,36 @@
 #<=====>#
 
 
-#<=====>#
-# Import All
-#<=====>#
-
-
 
 #<=====>#
-# Imports - Common Modules
+# Known To Do List
 #<=====>#
 
-import sys
-import os
-import pytz
+
+
+#<=====>#
+# Imports
+#<=====>#
+from libs.bot_reports import report_buys_recent, report_open_by_gain, report_strats_best
+from libs.bot_reports import report_open_by_age
+from libs.bot_reports import report_open_by_prod_id
+from libs.bot_reports import report_sells_recent
+from libs.bot_settings import bot_settings_get
+from libs.bot_settings import debug_settings_get
+from libs.bot_settings import get_lib_func_secs_max
+from libs.lib_common import clear_screen
+from libs.lib_common import dttm_get
+from libs.lib_common import func_begin
+from libs.lib_common import func_end
+from libs.lib_common import print_adv
+from pprint import pprint
+import pandas as pd
 import sys
 import time
 import traceback
-from datetime            import datetime
-from pprint              import pprint
+import warnings
+warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
-
-#<=====>#
-# Imports - Download Modules
-#<=====>#
-
-
-
-#<=====>#
-# Imports - Shared Library
-#<=====>#
-#shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
-#if shared_libs_path not in sys.path:
-#	sys.path.append(shared_libs_path)
-
-
-
-#<=====>#
-# Imports - Local Library
-#<=====>#
-local_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '', 'libs'))
-if local_libs_path not in sys.path:
-	sys.path.append(local_libs_path)
-
-from libs.lib_charts                   import *
-from libs.lib_common                   import *
-from libs.lib_colors                   import *
-from libs.lib_strings                  import *
-
-from libs.bot_reports                   import *
-from libs.bot_common                    import *
-from libs.bot_db_read                   import *
-from libs.bot_settings                  import settings
-from libs.bot_theme                     import *
-#from bot                               import bot
 
 
 #<=====>#
@@ -63,15 +40,16 @@ from libs.bot_theme                     import *
 #<=====>#
 lib_name      = 'run_report'
 log_name      = 'run_report'
-lib_verbosity = 1
-lib_debug_lvl = 1
-lib_secs_max  = 2
 
 
-#<=====>#
+
+# <=====>#
 # Assignments Pre
-#<=====>#
+# <=====>#
 
+dst, debug_settings = debug_settings_get()
+lib_secs_max = get_lib_func_secs_max(lib_name=lib_name)
+# print(f'{lib_name}, lib_secs_max : {lib_secs_max}')
 
 
 #<=====>#
@@ -90,7 +68,7 @@ def report_loop():
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
 #	G(func_str)
 
-	st = settings.reload()
+	bst, bot_setings = bot_settings_get()
 
 	# this is for the disp.py bot only...
 	upd_delay = 60
@@ -101,8 +79,8 @@ def report_loop():
 			cnt += 1
 
 			if cnt % 10 == 0:
-				st = settings.reload()
-				pprint(st)
+				bst = bot_setings.reload()
+				pprint(bst)
 
 			clear_screen()
 
@@ -136,6 +114,7 @@ def report_loop():
 			print(f'sleeping {upd_delay} seconds and then restarting')
 			time.sleep(upd_delay)
 
+	func_end(fnc)
 
 #<=====>#
 # Post Variables

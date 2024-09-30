@@ -3,203 +3,48 @@
 #<=====>#
 
 
-#<=====>#
-# Import All
-#<=====>#
-
-import_all_func_list = []
-import_all_func_list.append("build_topnav")
-import_all_func_list.append("build_topnav_title")
-import_all_func_list.append("build_topnav_link")
-import_all_func_list.append("html_up_add")
-import_all_func_list.append("html_down_add")
-import_all_func_list.append("html_h1_add")
-import_all_func_list.append("html_h2_add")
-import_all_func_list.append("html_h3_add")
-import_all_func_list.append("html_add")
-import_all_func_list.append("html_comb")
-import_all_func_list.append("frmt_sci_not_tf")
-import_all_func_list.append("frmt_sci_not_2_dec")
-import_all_func_list.append("get_decimal_places")
-import_all_func_list.append("build_data_display")
-import_all_func_list.append("build_sql_display")
-import_all_func_list.append("build_sql_display_old")
-import_all_func_list.append("build_td_int")
-import_all_func_list.append("build_td_dec")
-import_all_func_list.append("build_td_usd")
-import_all_func_list.append("build_td_pct")
-import_all_func_list.append("build_td_str")
-import_all_func_list.append("build_td_important")
-import_all_func_list.append("build_td_bold")
-import_all_func_list.append("build_td_img")
-import_all_func_list.append("build_td_url")
-import_all_func_list.append("add_bals_total")
-import_all_func_list.append("add_report")
-import_all_func_list.append("add_report_summary")
-import_all_func_list.append("add_report_summary_status")
-import_all_func_list.append("add_report_summary_open")
-import_all_func_list.append("add_report_summary_closed")
-import_all_func_list.append("add_report_summary_mkt")
-import_all_func_list.append("add_report_summary_mkt_open")
-import_all_func_list.append("add_report_summary_mkt_closed")
-import_all_func_list.append("add_report_summary_mkt_opened_today")
-import_all_func_list.append("add_report_summary_mkt_closed_today")
-import_all_func_list.append("add_report_summary_winlose")
-import_all_func_list.append("add_report_summary_winlose_open")
-import_all_func_list.append("add_report_summary_winlose_closed")
-import_all_func_list.append("add_report_summary_opened_today")
-import_all_func_list.append("add_report_summary_closed_today")
-import_all_func_list.append("add_report_summary_daily_opened")
-import_all_func_list.append("add_report_summary_daily_closed")
-import_all_func_list.append("add_report_pos_open")
-import_all_func_list.append("add_report_pos_closed")
-import_all_func_list.append("add_report_new3")
-import_all_func_list.append("add_report_new4")
-import_all_func_list.append("add_report_new5")
-import_all_func_list.append("add_report_new6")
-import_all_func_list.append("add_report_new7")
-import_all_func_list.append("add_report_new8")
-import_all_func_list.append("add_report_new9")
-import_all_func_list.append("add_report_new10")
-import_all_func_list.append("add_report_mkt_pos_open")
-import_all_func_list.append("ext_home")
-import_all_func_list.append("ext_all_reports_test")
-import_all_func_list.append("ext_balances")
-import_all_func_list.append("ext_open_positions")
-import_all_func_list.append("ext_closed_positions")
-import_all_func_list.append("ext_buys_recent")
-import_all_func_list.append("ext_sells_recent")
-import_all_func_list.append("ext_buy_strats")
-import_all_func_list.append("ext_mkt_buy_strats")
-import_all_func_list.append("ext_markets")
-import_all_func_list.append("ext_market")
-import_all_func_list.append("ext_sales_all")
-import_all_func_list.append("ext_sales_today")
-import_all_func_list.append("ext_sales_yesterday")
-import_all_func_list.append("ext_sales_day_cntd")
-import_all_func_list.append("ext_sales_dt")
-import_all_func_list.append("ext_sales_month")
-import_all_func_list.append("ext_sales_yr")
-import_all_func_list.append("ext_sales_all_test")
-import_all_func_list.append("ext_sales_today_test")
-import_all_func_list.append("ext_sales_yesterday_test")
-import_all_func_list.append("ext_sales_day_cntd_test")
-import_all_func_list.append("ext_sales_dt_test")
-import_all_func_list.append("ext_sales_month_test")
-import_all_func_list.append("ext_sales_yr_test")
-# import_all_func_list.append(ext_best_strats")
-# import_all_func_list.append(ext_best_markets")
-# import_all_func_list.append(ext_worst_strats")
-# import_all_func_list.append(ext_worst_markets")
-# import_all_func_list.append(ext_get_dt_clause")
-# import_all_func_list.append(ext_get_dt_clause2")
-# import_all_func_list.append(ext_sales_disp_summary")
-# import_all_func_list.append(ext_sales_disp_dt_summary")
-# import_all_func_list.append(ext_sales_disp_mkt_summary")
-# import_all_func_list.append(ext_sales_disp_mkt_dt_summary")
-# import_all_func_list.append(ext_sales_disp_details")
-# import_all_func_list.append(ext_sales_disp_strat_summary")
-# import_all_func_list.append(ext_sales_disp_strat_mkt_summary")
-# import_all_func_list.append(ext_sales_disp_mkt_strat_summary")
-# import_all_func_list.append(ext_buy_strats_today")
-# import_all_func_list.append(ext_buy_strats_all")
-# import_all_func_list.append(ext_buy_strats_prods_today")
-# import_all_func_list.append(ext_buy_strats_prods_all")
-# import_all_func_list.append(ext_sell_strats_today")
-# import_all_func_list.append(ext_sell_strats_prods_today")
-# import_all_func_list.append(ext_sell_strats_all")
-# import_all_func_list.append(ext_sell_strats_prods_all")
-import_all_func_list.append("ext_db_size")
-import_all_func_list.append("ext_main")
-__all__ = import_all_func_list
 
 #<=====>#
 # Known To Do List
 #<=====>#
 
 
-#<=====>#
-# Imports - Common Modules
-#<=====>#
-from datetime import datetime
-import pytz
-# Get the current time in UTC with timezone awareness
-#utc_time = datetime.now(pytz.utc)
 
-from datetime import date
-from datetime import datetime
-from datetime import time
-from datetime import timedelta
-from flask import Flask
-#from flask import redirect
-from flask import render_template
-#from flask import request
-from markupsafe import Markup
-#from requests.exceptions import ConnectionError
-#from requests.exceptions import SSLError
-
+#<=====>#
+# Imports
+#<=====>#
 import calendar
+from datetime import date, datetime, timedelta
 import decimal
-#import errno
-#import json
-#import logging
-# import os
-import pandas as pd
-#import pymysql as mysql
+from flask import Flask
+from markupsafe import Markup
+from libs.lib_colors import B, G, M, R, BoW, GoW, MoW, RoW, WoB, WoG, WoM, WoR, YoK, cp, cs
+from libs.lib_common import dttm_get, now_utc_get
 import re
-#import requests
 import sys
-import os
 import time
 import traceback
-import warnings
+import uuid
 
-warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
+from libs.bot_db_read                  import db
 
-
-#<=====>#
-# Imports - Download Modules
-#<=====>#
-
-
-#<=====>#
-# Imports - Shared Library
-#<=====>#
-#shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
-#if shared_libs_path not in sys.path:
-#	sys.path.append(shared_libs_path)
-
-#<=====>#
-# Imports - Local Library
-#<=====>#
-local_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '', 'libs'))
-if local_libs_path not in sys.path:
-	sys.path.append(local_libs_path)
-
-from lib_charts                   import *
-from lib_common                   import *
-from lib_colors                   import *
-from lib_strings                  import *
-
-from bot_common                        import *
-from bot_db_read                       import db
 
 #<=====>#
 # Variables
 #<=====>#
 lib_name      = 'bot_web'
 log_name      = 'bot_web'
-lib_verbosity = 1
-lib_debug_lvl = 1
-lib_secs_max  = 2
+
 
 #<=====>#
 # Assignments Pre
 #<=====>#
 
+
 #<=====>#
 # Classes
 #<=====>#
+
 
 #<=====>#
 # Functions
@@ -354,51 +199,6 @@ def build_topnav():
 	html = build_topnav_link( in_str='All - Tests',    in_url='sales_all_test.htm',  in_html=html)
 	html = build_topnav_link( in_str='Today - Tests',   in_url='sales_today_test.htm', in_html=html)
 	html = build_topnav_link( in_str='Yesterday - Tests',     in_url='sales_yesterday_test.htm',   in_html=html)
-#	html += "  <tr>"
-#	html += "    <td>"
-#	html += "      <table width='100%' border=0 style='background-color:#0000ff;'>"
-#	html += "        <tr>"
-#	html += "          <td class='dud' style='text-align:left;'>Past</td>"
-#	html += "          <td>"
-#	html += "            <table width='100%' border=0 border=0 style='background-color:#0000ff;'>"
-#	html += "              <tr>"
-#	for x in (3,7,14,30):
-#		html += "            <td class='nav' style='vertical-align:top;text-align:left;' onclick=" + chr(34) + "window.open('/sales_{}d_test.htm','_self');".format(x) + chr(34) + "><a href='/sales_{}d_test.htm'>{}</a></td>".format(x,x)
-#	html += "                <td class='nav' style='vertical-align:top;text-align:left;' onclick=" + chr(34) + "window.open('/sales_all_test.htm','_self');" + chr(34) + "><a href='/sales_all_test.htm'>*</a></td>"
-#	html += "              </tr>"
-#	html += "            </table>"
-#	html += "          </td>"
-#	html += "          <td class='dud' style='text-align:left'>Days</td>"
-#	html += "        </tr>"
-#	html += "      </table>"
-#	html += "    </td>"
-#	html += "  </tr>"
-
-#	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;'>" + st_dt_dd + "</td></tr>"
-#	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;'>" + st_m_dd + "</td></tr>"
-#	html += "  <tr><td class='nav' style='vertical-align:top;text-align:left;'>" + st_y_dd + "</td></tr>"
-
-	# # Best
-	# html = build_topnav_link( in_str='Buy Strats',       in_url='best_strats.htm',        in_html=html)
-	# html = build_topnav_link( in_str='Buy Markets',      in_url='best_markets.htm',       in_html=html)
-
-	# # Worst
-	# html = build_topnav_link( in_str='Worst Strats',       in_url='worst_strats.htm',        in_html=html)
-	# html = build_topnav_link( in_str='Worst Markets',      in_url='worst_markets.htm',       in_html=html)
-
-	# # Buy Strats
-	# html = build_topnav_title(in_str='Buy Strats',             in_html=html)
-	# html = build_topnav_link( in_str='Buy Strats Today',       in_url='buy_strats_today.htm',       in_html=html)
-	# html = build_topnav_link( in_str='Buy Strats All',         in_url='buy_strats_all.htm',         in_html=html)
-	# html = build_topnav_link( in_str='Buy Strats Prods Today', in_url='buy_strats_prods_today.htm', in_html=html)
-	# html = build_topnav_link( in_str='Buy Strats Prods All',   in_url='buy_strats_prods_all.htm',   in_html=html)
-
-	# # Sell Strats
-	# html = build_topnav_title(in_str='Sell Strats',             in_html=html)
-	# html = build_topnav_link( in_str='Sell Strats Today',       in_url='sell_strats_today.htm',       in_html=html)
-	# html = build_topnav_link( in_str='Sell Strats All',         in_url='sell_strats_all.htm',         in_html=html)
-	# html = build_topnav_link( in_str='Sell Strats Prods Today', in_url='sell_strats_prods_today.htm', in_html=html)
-	# html = build_topnav_link( in_str='Sell Strats Prods All',   in_url='sell_strats_prods_all.htm',   in_html=html)
 
 	# Misc
 	html = build_topnav_title(in_str='Misc', in_html=html)
@@ -455,37 +255,30 @@ def html_down_add(d=None) -> str:
 #<=====>#
 
 def html_h1_add(t, m=None, u=None, d=None) -> str:
-	if not u: html_up_add()
-	if not d: html_down_add()
-	if m:
-		m = '{}<hr><h1>{}</h1>'.format(m, t)
-	else:
-		m = '<br><hr><h1>{}</h1>'.format(t)
-
+	more = f'<hr><h1>{t}</h3>'
+	m, u, d = html_add(more=more, m=m, u=u, d=d)
 	return m, u, d
 
 #<=====>#
 
 def html_h2_add(t, m=None, u=None, d=None) -> str:
-	if not u: html_up_add()
-	if not d: html_down_add()
-	if m:
-		m = '{}<hr><h2>{}</h2>'.format(m, t)
-	else:
-		m = '<br><hr><h2>{}</h2>'.format(t)
-
+	more = f'<hr><h2>{t}</h3>'
+	m, u, d = html_add(more=more, m=m, u=u, d=d)
 	return m, u, d
 
 #<=====>#
 
 def html_h3_add(t, m=None, u=None, d=None) -> str:
-	if not u: html_up_add()
-	if not d: html_down_add()
-	if m:
-		m = '{}<hr><h3>{}</h3>'.format(m, t)
-	else:
-		m = '<br><hr><h3>{}</h3>'.format(t)
+	more = f'<hr><h3>{t}</h3>'
+	m, u, d = html_add(more=more, m=m, u=u, d=d)
+	return m, u, d
 
+
+#<=====>#
+
+def html_hr_add(m=None, u=None, d=None) -> str:
+	more = '<br><hr><br>'
+	m, u, d = html_add(more=more, m=m, u=u, d=d)
 	return m, u, d
 
 #<=====>#
@@ -551,7 +344,15 @@ def get_decimal_places(s):
 
 #<=====>#
 
-def build_data_display(data, table_id='first'):
+def gen_guid():
+	guid = str(uuid.uuid4())
+	return guid
+
+	#<=====>#
+
+def build_data_display(data, t=None):
+
+	table_id = gen_guid()
 
 	html = ''
 
@@ -568,25 +369,32 @@ def build_data_display(data, table_id='first'):
 
 	rows = data
 
-#	re_ptn_isnumeric = re.compile(r'^[$]?[-+]?[0-9\,]*\.?[0-9]+$')
-#	re_ptn_lowercase = re.compile('[a-z]+')
-#	re_ptn_uppercase = re.compile('[A-Z0-9]+')
 	re_prod_id       = re.compile(r'^[a-zA-Z0-9]+-[a-zA-Z0-9]+$')
-#	re_symb       = re.compile(r'^[a-zA-Z0-9]+$')
 
 	html = ""
-	html += "<html>"
-	html += "<body>"
-#	html += "<table border=1 style='background-color:#000000' id='{}'>".format(table_id)
-	html += "<table border=1 id='{}'>".format(table_id)
+#	html += "<html>"
+#	html += "<body>"
+	html += f"<table class='dt' border=1 id='{table_id}'>"
 	html += "<thead>"
+
+
+	head_cnt = 0
+	for header in headers:
+		if header != 'exclude':
+			head_cnt += 1
+
+
+	if t:
+		html += "<tr>"
+		html += f"<th class='dt_title' colspan={head_cnt} style='text-align:center'>{t}</th>"
+		html += "</tr>"
 
 	#headers
 	html += "<tr>"
 	head_cnt = 0
 	for header in headers:
 		if header != 'exclude':
-			html += "<th class='dt' style='text-align:center' onclick={}sortTable('{}',{});{}>{}</th>".format('"', table_id, head_cnt, '"', header)
+			html += f"<th class='dt' style='text-align:center'>{header}</th>"
 			head_cnt += 1
 	html += "</tr>"
 	html += "</thead>"
@@ -689,8 +497,8 @@ def build_data_display(data, table_id='first'):
 
 	html += "</tbody>"
 	html += "</table>"
-	html += "</body>"
-	html += "</html>"
+#	html += "</body>"
+#	html += "</html>"
 
 	html = html.replace('>None<','-')
 	html = html.replace('0E-8','0')
@@ -700,144 +508,12 @@ def build_data_display(data, table_id='first'):
 
 #<=====>#
 
-def build_sql_display(s, table_id='first'):
+def build_sql_display(s, t=None):
 
 	data = db.seld(s)
 
-	html = build_data_display(data, table_id)
+	html = build_data_display(data, t)
 
-#	logging.info(html)
-	return html
-
-#<=====>#
-
-def build_sql_display_old(s, table_id='first'):
-
-	html = ""
-	html += "<html>"
-	html += "<body>"
-	html += "<table border=1 style='background-color:#000000' id='{}'>".format(table_id)
-	html += "<thead>"
-
-	try:
-		rows, headers = db.curs(s)
-	except:
-		print(s)
-		raise
-	else:
-#		print(headers)
-#		print(rows)
-		pass
-
-#	re_ptn_isnumeric = re.compile('^[$]?[-+]?[0-9\,]*\.?[0-9]+$')
-	re_ptn_isnumeric = re.compile(r'^[$]?[-+]?[0-9\,]*\.?[0-9]+$')
-	re_ptn_lowercase = re.compile('[a-z]+')
-#	re_prod_id       = re.compile('[a-zA-Z0-9]+\-[a-zA-Z0-9]+')
-	re_prod_id       = re.compile(r'^[a-zA-Z0-9]+-[a-zA-Z0-9]+$')
-#	re_symb       = re.compile(r'^[a-zA-Z0-9]+$')
-#	re_ptn_allcaps = re.compile('^[A-Z0-9\- ].*')
-#	re_ptn_lower = re.compile('[a-z]+')
-#	re_ptn_string = re.compile('^[a-zA-Z0-9\- ]+')
-
-#headers
-	html += "<tr>"
-	head_cnt = 0
-	for header in headers:
-		html += "<th class='dt' onclick={}sortTable('{}',{});{}>{}</th>".format('"', table_id, head_cnt, '"', header)
-		head_cnt += 1
-	html += "</tr>"
-	html += "</thead>"
-	html += "<tbody>"
-
-#contents
-	for row in rows:
-		html += "<tr class='dt'>"
-		for col in row:
-			if isinstance(col, decimal.Decimal):
-				col = float(col)
-#			col = str(col).replace('0E-8','0')
-#			col = str(col).replace('0E-10','0')
-#			col = str(col).replace('0E-12','0')
-#			col = str(col).replace('0E-14','0')
-#			col = str(col).replace('0E-16','0')
-
-			if isinstance(col, (float, decimal.Decimal)):
-				try:
-					if frmt_sci_not_tf(col):
-						col = frmt_sci_not_2_dec(col)
-				except:
-					print('err...')
-					print(type(col))
-					print(col)
-					pass
-
-			if 0 == 1:
-				print('never going to give you up')
-
-			# Probably MC, TC or Pair
-			elif re_prod_id.match(str(col)):
-				html += "<td class='dt' style='text-align:center;color:#ffffff;background-color:#000000'>{}</td>".format(col)
-
-			# Logo Img
-			elif str(col).find('https://bittrexblobstorage.blob.core.windows.net') >= 0 and str(col).find('.png') >= 0:
-				html += "<td class='dt' style='text-align:center;background:black'><img src='" + str(col) + "' width='25' height='25'></img></td>"
-
-			# Contains a USD Amount
-			elif str(col).find('$') >= 0:
-				if str(col).find('-') >= 0:
-					html += "<td class='dt' style='text-align:right;background:red;color:yellow'>"
-					html += "<div style='float:left;width=10%;'>$</div>"
-					html += "<div style='float:right;width=90%;'>"
-					st	= str(col)
-					st = st.replace('$','')
-					st = st.replace(' ','')
-					html += st
-					html += "</div>"
-					html += "</td>"
-				else:
-					html += "<td class='dt' style='text-align:right;background:green;color:yellow'>"
-					html += "<div style='float:left;width=10%;'>$</div>"
-					html += "<div style='float:right;width=90%;'>"
-					st	= str(col)
-					st = st.replace('$','')
-					st = st.replace(' ','')
-					html += st
-					html += "</div>"
-					html += "</td>"
-
-			# Contains a Percent
-			elif str(col).find('%') >= 0:
-				if str(col).find('-') >= 0:
-					html += "<td class='dt' style='text-align:right;background:red;color:yellow;'>" + str(col) + "</td>"
-				else:
-					html += "<td class='dt' style='text-align:right;background:green;color:yellow;'>" + str(col) + "</td>"
-
-			# Probably MC, TC or Pair
-			elif re_ptn_lowercase.search(str(col)) is None:
-				html += "<td class='dt' style='text-align:center'>" + str(col) + "</td>"
-
-			# Probably a String
-			elif re_ptn_lowercase.search(str(col)):
-				html += "<td class='dt' style='text-align:left'>" + str(col) + "</td>"
-
-			# Number
-			elif re_ptn_isnumeric.match(str(col)):
-				html += "<td class='dt' style='text-align:right'>" + str(col) + "</td>"
-
-			else:
-				html += "<td class='dt' style='text-align:center'>" + str(col) + "</td>"
-		html += "</tr>"
-
-	html += "</tbody>"
-	html += "</table>"
-	html += "</body>"
-	html += "</html>"
-
-	html = html.replace('>None<','-')
-	html = html.replace('0E-8','0')
-
-	html = Markup(html)
-#	logging.info(html)
 	return html
 
 #<=====>#
@@ -932,7 +608,6 @@ def build_td_bold(v=None) -> str:
 		return "<td></td>"
 	else:
 		html = ""
-#		html += "<td class='dt' style='text-align:center;color:#ffffff;background-color:#000000'>"
 		html += "<td class='dt' style='text-align:center;background:silver'>"
 		html += "{}".format(v)
 		html += "</td>"
@@ -966,7 +641,6 @@ def build_td_url(v=None) -> str:
 
 def add_bals_total(t='Total Balance', m=None, u=None, d=None) -> str:
 	print(str(datetime.now()) + " add_bals_total(t, m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	sql = " "
 	sql += "select x.cnt "
@@ -988,9 +662,9 @@ def add_bals_total(t='Total Balance', m=None, u=None, d=None) -> str:
 	sql += "          from cbtrade.view_bals b "
 	sql += "       ) x "
 
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+	h = build_sql_display(sql, t)
 	m, u, d = html_add(more=h, m=m, u=u, d=d)
+
 	return m, u, d
 
 #<=====>#
@@ -1027,7 +701,6 @@ def add_report(
 		) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report(t={t}, m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	test_tf = str(test_tf)
 	if sd_dt1: sd_dt1_str = sd_dt1.strftime('%Y-%m-%d')
@@ -1131,7 +804,7 @@ def add_report(
 	group_by_sql = re.sub(r',\s*$', '', group_by_sql)
 
 	sql = ""
-	sql += f"select x.exclude "
+	sql += "select x.exclude "
 	sql += f"  {top_sql} "
 	if not inc_pos_id:
 		sql += "  , x.tot_cnt "
@@ -1237,10 +910,8 @@ def add_report(
 	if lmt:
 		sql += f"limit {lmt}"
 
-#	db.pretty_print_sql(sql)
 
-	h = build_sql_display(sql,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+	h = build_sql_display(sql, t)
 	m, u, d = html_add(more=h, m=m, u=u, d=d)
 	return m, u, d
 
@@ -1249,36 +920,10 @@ def add_report(
 def add_report_summary(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report_summary(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	m, u, d = add_report(
 		t='Summary - All Time - *', 
-		# inc_prod_id=False, 
-		# inc_pos_id=False, 
-		# inc_sd_dt=False, 
-		# inc_td_dt=False, 
-		# inc_stat=False, 
-		# inc_wl=False, 
-		# inc_buy_strat_name=False, 
-		# inc_buy_strat_freq=False, 
-		# inc_sell_strat_name=False, 
-		# inc_sell_strat_freq=False, 
-		# inc_test=False, 
-		# prod_id=None, 
-		# pos_id=None, 
-		# sd_dt1=None, 
-		# sd_dt2=None, 
-		# td_dt1=None, 
-		# td_dt2=None, 
-		# stat=None, 
-		# wl=None, 
-		# buy_strat_name=None, 
-		# buy_strat_freq=None, 
-		# sell_strat_name=None, 
-		# sell_strat_freq=None, 
 		test_tf=0, 
-		# order_by_sql=None, 
-		# lmt=None,
 		m=m, u=u, d=d)
 
 	return m, u, d
@@ -1288,75 +933,11 @@ def add_report_summary(m, u, d) -> str:
 def add_report_summary_status(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report_summary_status(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	m, u, d = add_report(
 		t='Summary - By Status - All Time - *', 
-		# inc_prod_id=False, 
-		# inc_pos_id=False, 
-		# inc_sd_dt=False, 
-		# inc_td_dt=False, 
 		inc_stat=True, 
-		# inc_wl=False, 
-		# inc_buy_strat_name=False, 
-		# inc_buy_strat_freq=False, 
-		# inc_sell_strat_name=False, 
-		# inc_sell_strat_freq=False, 
-		# inc_test=False, 
-		# prod_id=None, 
-		# pos_id=None, 
-		# sd_dt1=None, 
-		# sd_dt2=None, 
-		# td_dt1=None, 
-		# td_dt2=None, 
-		# stat=None, 
-		# wl=None, 
-		# buy_strat_name=None, 
-		# buy_strat_freq=None, 
-		# sell_strat_name=None, 
-		# sell_strat_freq=None, 
 		test_tf=0, 
-		# order_by_sql=None, 
-		# lmt=None,
-		m=m, u=u, d=d)
-
-	return m, u, d
-
-#<=====>#
-
-def add_report_summary_open(m, u, d) -> str:
-	print('')
-	BoW(str(datetime.now()) + f" add_report_summary_open(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
-	m, u, d = add_report(
-		t='Summary - Open Status - *', 
-		# inc_prod_id=False, 
-		# inc_pos_id=False, 
-		# inc_sd_dt=False, 
-		# inc_td_dt=False, 
-		inc_stat=True, 
-		# inc_wl=False, 
-		# inc_buy_strat_name=False, 
-		# inc_buy_strat_freq=False, 
-		# inc_sell_strat_name=False, 
-		# inc_sell_strat_freq=False, 
-		# inc_test=False, 
-		# prod_id=None, 
-		# pos_id=None, 
-		# sd_dt1=None, 
-		# sd_dt2=None, 
-		# td_dt1=None, 
-		# td_dt2=None, 
-		stat='OPEN', 
-		# wl=None, 
-		# buy_strat_name=None, 
-		# buy_strat_freq=None, 
-		# sell_strat_name=None, 
-		# sell_strat_freq=None, 
-		test_tf=0, 
-#		order_by_sql=None, 
-		# lmt=None,
 		m=m, u=u, d=d)
 
 	return m, u, d
@@ -1366,36 +947,12 @@ def add_report_summary_open(m, u, d) -> str:
 def add_report_summary_closed(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report_summary_closed(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	m, u, d = add_report(
 		t='Summary - Closed Status - *', 
-		# inc_prod_id=False, 
-		# inc_pos_id=False, 
-		# inc_sd_dt=False, 
-		# inc_td_dt=False, 
 		inc_stat=True, 
-		# inc_wl=False, 
-		# inc_buy_strat_name=False, 
-		# inc_buy_strat_freq=False, 
-		# inc_sell_strat_name=False, 
-		# inc_sell_strat_freq=False, 
-		# inc_test=False, 
-		# prod_id=None, 
-		# pos_id=None, 
-		# sd_dt1=None, 
-		# sd_dt2=None, 
-		# td_dt1=None, 
-		# td_dt2=None, 
 		stat='CLOSE', 
-		# wl=None, 
-		# buy_strat_name=None, 
-		# buy_strat_freq=None, 
-		# sell_strat_name=None, 
-		# sell_strat_freq=None, 
 		test_tf=0, 
-#		order_by_sql=None, 
-		# lmt=None,
 		m=m, u=u, d=d)
 
 	return m, u, d
@@ -1405,75 +962,15 @@ def add_report_summary_closed(m, u, d) -> str:
 def add_report_summary_mkt(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report_summary_mkt(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	m, u, d = add_report(
 		t='Markets Summary - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=False, 
-#		inc_sd_dt=False, 
-#		inc_td_dt=False, 
 		inc_stat=True, 
-#		inc_wl=False, 
-#		inc_buy_strat_name=False, 
-#		inc_buy_strat_freq=False, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=True, 
-#		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
 		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='ALL', 
 		order_by_sql="Order by x.prod_id, x.pos_stat desc, x.test_tf ", 
-#		lmt=None,
-		m=m, u=u, d=d)
-
-	return m, u, d
-
-#<=====>#
-
-def add_report_summary_mkt_open(m, u, d) -> str:
-	print('')
-	BoW(str(datetime.now()) + f" add_report_summary_mkt_open(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
-	m, u, d = add_report(
-		t='Markets Summary - Open Positions - *', 
-		inc_prod_id=True, 
-#		inc_pos_id=False, 
-#		inc_sd_dt=False, 
-#		inc_td_dt=False, 
-		inc_stat=True, 
-#		inc_wl=False, 
-#		inc_buy_strat_name=False, 
-#		inc_buy_strat_freq=False, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
-		inc_test=True, 
-#		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
-		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
-		test_tf='ALL', 
-		order_by_sql="Order by x.prod_id, x.pos_stat desc, x.test_tf ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	return m, u, d
@@ -1483,36 +980,15 @@ def add_report_summary_mkt_open(m, u, d) -> str:
 def add_report_summary_mkt_closed(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report_summary_mkt_closed(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	m, u, d = add_report(
 		t='Markets Summary - Closed Positions - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=False, 
-#		inc_sd_dt=False, 
-#		inc_td_dt=False, 
 		inc_stat=True, 
-#		inc_wl=False, 
-#		inc_buy_strat_name=False, 
-#		inc_buy_strat_freq=False, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=True, 
-#		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
 		stat='CLOSE', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='ALL', 
 		order_by_sql="Order by x.prod_id, x.pos_stat desc, x.test_tf ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	return m, u, d
@@ -1522,38 +998,17 @@ def add_report_summary_mkt_closed(m, u, d) -> str:
 def add_report_summary_mkt_opened_today(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	today = now_utc_get()
 
 	m, u, d = add_report(
 		t='Markets Summary - Opened Today - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=False, 
-#		inc_sd_dt=False, 
-#		inc_td_dt=False, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=False, 
-#		inc_buy_strat_freq=False, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=True, 
-#		prod_id=None, 
-#		pos_id=None, 
 		sd_dt1=today, 
-#		sd_dt2=None, 
-#		td_dt1=today, 
-#		td_dt2=None, 
-#		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='ALL', 
 		order_by_sql="Order by x.prod_id desc, x.test_tf, x.pos_stat desc", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	return m, u, d
@@ -1563,38 +1018,17 @@ def add_report_summary_mkt_opened_today(m, u, d) -> str:
 def add_report_summary_mkt_closed_today(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	today = now_utc_get()
 
 	m, u, d = add_report(
 		t='Markets Summary - Opened Today - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=False, 
-#		inc_sd_dt=False, 
-#		inc_td_dt=False, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=False, 
-#		inc_buy_strat_freq=False, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=True, 
-#		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=today, 
-#		td_dt2=None, 
-#		stat='CLOSE', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='ALL', 
 		order_by_sql="Order by x.prod_id desc, x.test_tf, x.pos_stat desc", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	return m, u, d
@@ -1604,36 +1038,14 @@ def add_report_summary_mkt_closed_today(m, u, d) -> str:
 def add_report_summary_winlose(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report_summary_winlose(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	m, u, d = add_report(
 		t='Win-Lose Summary - *', 
-#		inc_prod_id=False, 
-#		inc_pos_id=False, 
-#		inc_sd_dt=False, 
-#		inc_td_dt=False, 
 		inc_stat=True, 
 		inc_wl=True, 
-#		inc_buy_strat_name=False, 
-#		inc_buy_strat_freq=False, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
-#		inc_test=False, 
-#		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
-#		stat=None, 
 		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='ALL', 
 		order_by_sql=None, 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	return m, u, d
@@ -1643,36 +1055,15 @@ def add_report_summary_winlose(m, u, d) -> str:
 def add_report_summary_winlose_open(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	m, u, d = add_report(
 		t='Win-Lose Summary - Open Positions - *', 
-#		inc_prod_id=False, 
-#		inc_pos_id=False, 
-#		inc_sd_dt=False, 
-#		inc_td_dt=False, 
 		inc_stat=True, 
 		inc_wl=True, 
-#		inc_buy_strat_name=False, 
-#		inc_buy_strat_freq=False, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
-#		inc_test=False, 
-#		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
 		stat='OPEN', 
 		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='ALL', 
 		order_by_sql=None, 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	return m, u, d
@@ -1682,36 +1073,15 @@ def add_report_summary_winlose_open(m, u, d) -> str:
 def add_report_summary_winlose_closed(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	m, u, d = add_report(
 		t='Win-Lose Summary - Closed Positions - *', 
-#		inc_prod_id=False, 
-#		inc_pos_id=False, 
-#		inc_sd_dt=False, 
-#		inc_td_dt=False, 
 		inc_stat=True, 
 		inc_wl=True, 
-#		inc_buy_strat_name=False, 
-#		inc_buy_strat_freq=False, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
-#		inc_test=False, 
-#		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
 		stat='CLOSE', 
 		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='ALL', 
 		order_by_sql=None, 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	return m, u, d
@@ -1721,7 +1091,6 @@ def add_report_summary_winlose_closed(m, u, d) -> str:
 def add_report_summary_opened_today(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	today = now_utc_get()
 
@@ -1762,7 +1131,6 @@ def add_report_summary_opened_today(m, u, d) -> str:
 def add_report_summary_closed_today(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	today = now_utc_get()
 
@@ -1803,7 +1171,6 @@ def add_report_summary_closed_today(m, u, d) -> str:
 def add_report_summary_daily_opened(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	m, u, d = add_report(
 		t='Daily Sales Summary - All Time', 
@@ -1842,7 +1209,6 @@ def add_report_summary_daily_opened(m, u, d) -> str:
 def add_report_summary_daily_closed(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	m, u, d = add_report(
 		t='Daily Sales Summary - All Time', 
@@ -1878,49 +1244,9 @@ def add_report_summary_daily_closed(m, u, d) -> str:
 
 #<=====>#
 
-def add_report_pos_open(m, u, d) -> str:
-	print('')
-	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
-	m, u, d = add_report(
-		t='Markets - Open Positions', 
-		inc_prod_id=True, 
-		inc_pos_id=True, 
-		inc_sd_dt=False, 
-		inc_td_dt=False, 
-		inc_stat=True, 
-		inc_wl=True, 
-		inc_buy_strat_name=True, 
-		inc_buy_strat_freq=True, 
-		inc_sell_strat_name=False, 
-		inc_sell_strat_freq=False, 
-		inc_test=True, 
-		prod_id=None, 
-		pos_id=None, 
-		sd_dt1=None, 
-		sd_dt2=None, 
-		td_dt1=None, 
-		td_dt2=None, 
-		stat='OPEN', 
-		wl=None, 
-		buy_strat_name=None, 
-		buy_strat_freq=None, 
-		sell_strat_name=None, 
-		sell_strat_freq=None, 
-		test_tf=0, 
-		order_by_sql="Order by x.prod_id, x.pos_id", 
-		lmt=None,
-		m=m, u=u, d=d)
-
-	return m, u, d
-
-#<=====>#
-
 def add_report_pos_closed(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	m, u, d = add_report(
 		t='Markets - Open Positions', 
@@ -1956,82 +1282,9 @@ def add_report_pos_closed(m, u, d) -> str:
 
 #<=====>#
 
-def add_report_new3(m, u, d) -> str:
-	print('')
-	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
-	return m, u, d
-
-#<=====>#
-
-def add_report_new4(m, u, d) -> str:
-	print('')
-	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
-	return m, u, d
-
-#<=====>#
-
-def add_report_new5(m, u, d) -> str:
-	print('')
-	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
-	return m, u, d
-
-#<=====>#
-
-def add_report_new6(m, u, d) -> str:
-	print('')
-	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
-	return m, u, d
-
-#<=====>#
-
-def add_report_new7(m, u, d) -> str:
-	print('')
-	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
-	return m, u, d
-
-#<=====>#
-
-def add_report_new8(m, u, d) -> str:
-	print('')
-	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
-	return m, u, d
-
-#<=====>#
-
-def add_report_new9(m, u, d) -> str:
-	print('')
-	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
-	return m, u, d
-
-#<=====>#
-
-def add_report_new10(m, u, d) -> str:
-	print('')
-	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
-	return m, u, d
-
-#<=====>#
-
 def add_report_mkt_pos_open(m, u, d) -> str:
 	print('')
 	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	m, u, d = add_report(
 		t='Markets - Open Positions', 
@@ -2093,8 +1346,6 @@ now = datetime.now()
 def ext_home() -> str:
 	print(str(datetime.now()) + " home()")
 	tn = build_topnav()
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
-
 	today = now_utc_get()
 
 	m     = None
@@ -2131,7 +1382,6 @@ def ext_home() -> str:
 def ext_all_reports_test() -> str:
 	print(str(datetime.now()) + " all_reports_test()")
 	tn = build_topnav()
-#	dt = datetime.now(pytz.utc).strftime('%Y-%m-%d')
 
 	today = now_utc_get()
 
@@ -2177,13 +1427,15 @@ def ext_balances() -> str:
 	print(str(datetime.now()) + " balances()")
 	tn = build_topnav()
 
-	m   = None
-	u    = None
-	d  = None
+	m = None
+	u = None
+	d = None
 
 	pt = 'My Balances'
 
 	m, u, d = add_bals_total(t='Total Balance', m=m, u=u, d=d)
+
+	m, u, d = html_hr_add(m=m, u=u, d=d)
 
 	sql = ""
 	sql += "select z.* from ( "
@@ -2237,33 +1489,75 @@ def ext_balances() -> str:
 	sql += "  where 1=1 "
 	sql += "  and p.ignore_tf = 0 "
 	sql += "  group by p.prod_id "
-#	sql += "  having b.bal_tot <> sum(p.hold_cnt) "
+
 	sql += "  order by 1 "
 	sql += ") x "
 	sql += ") z "
 	sql += "where 1=1 "
 
-	t = 'Current Balances - Order by Balance'
+	t = 'Current Balances'
 	sql1 = sql + "  order by z.bal_usd desc "
-	h = build_sql_display(sql1,'first')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
+	h = build_sql_display(sql1, t)
 	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t = 'Current Balance - Order by Symbol'
-	sql2 = sql + "  order by z.symb "
-	h = build_sql_display(sql2,'second')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
-	t = 'Current Balances - Order by Free Balance'
-	sql3 = sql + "  order by z.over_under_usd desc "
-	h = build_sql_display(sql3,'third')
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
-	m, u, d = html_add(more=h, m=m, u=u, d=d)
-
 	sh = html_comb(m=m, u=u, d=d)
 
 	return tn, pt, sh
+
+#<=====>#
+
+def add_report_summary_open(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report_summary_open(m, u, d, h)")
+
+	m, u, d = add_report(
+		t='Summary - Open Status - *', 
+		inc_stat=True, 
+		stat='OPEN', 
+		test_tf=0, 
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_summary_mkt_open(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report_summary_mkt_open(m, u, d, h)")
+
+	m, u, d = add_report(
+		t='Markets Summary - Open Positions - *', 
+		inc_prod_id=True, 
+		inc_stat=True, 
+		inc_test=True, 
+		stat='OPEN', 
+		test_tf='ALL', 
+		order_by_sql="Order by x.prod_id, x.pos_stat desc, x.test_tf ", 
+		m=m, u=u, d=d)
+
+	return m, u, d
+
+#<=====>#
+
+def add_report_pos_open(m, u, d) -> str:
+	print('')
+	BoW(str(datetime.now()) + f" add_report(m, u, d, h)")
+
+	m, u, d = add_report(
+		t='Markets - Open Positions', 
+		inc_prod_id=True, 
+		inc_pos_id=True, 
+		inc_stat=True, 
+		inc_wl=True, 
+		inc_buy_strat_name=True, 
+		inc_buy_strat_freq=True, 
+		inc_test=True, 
+		stat='OPEN', 
+		test_tf=0, 
+		order_by_sql="Order by x.prod_id, x.pos_id", 
+		lmt=None,
+		m=m, u=u, d=d)
+
+	return m, u, d
 
 #<=====>#
 
@@ -2475,62 +1769,20 @@ def ext_buy_strats() -> str:
 
 	m, u, d = add_report(
 		t=f'Buy Strats Summary - Closed', 
-#		inc_prod_id=False, 
-#		inc_pos_id=False, 
-#		inc_sd_dt=False, 
-#		inc_td_dt=False, 
-#		inc_stat=True, 
-#		inc_wl=False, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
-#		inc_test=True, 
-#		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
 		stat='CLOSE', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf=0, 
 		order_by_sql="order by x.gain_loss_pct_hr desc ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Buy Strats Summary - Closed', 
-#		inc_prod_id=False, 
-#		inc_pos_id=False, 
-#		inc_sd_dt=False, 
-#		inc_td_dt=False, 
-#		inc_stat=True, 
-#		inc_wl=False, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
-#		inc_test=True, 
-#		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
 		stat='CLOSE', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf=0, 
 		order_by_sql="order by x.buy_strat_name, x.buy_strat_freq ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -2552,61 +1804,21 @@ def ext_mkt_buy_strats() -> str:
 	m, u, d = add_report(
 		t=f'Market Buy Strats Summary - Closed', 
 		inc_prod_id=True, 
-#		inc_pos_id=False, 
-#		inc_sd_dt=False, 
-#		inc_td_dt=False, 
-#		inc_stat=True, 
-#		inc_wl=False, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
-#		inc_test=True, 
-#		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
 		stat='CLOSE', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf=0, 
 		order_by_sql="order by x.gain_loss_pct_hr desc ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Market Buy Strats Summary - Closed', 
 		inc_prod_id=True, 
-#		inc_pos_id=False, 
-#		inc_sd_dt=False, 
-#		inc_td_dt=False, 
-#		inc_stat=True, 
-#		inc_wl=False, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
-#		inc_test=True, 
-#		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
 		stat='CLOSE', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf=0, 
 		order_by_sql="order by x.prod_id, x.buy_strat_name, x.buy_strat_freq ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -2628,121 +1840,37 @@ def ext_markets() -> str:
 	m, u, d = add_report(
 		t=f'Markets - By Gain Rate', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
-#		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.gain_loss_pct_hr desc ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Markets - By Product', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
-#		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Markets - Test - By Gain Rate', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
-#		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.gain_loss_pct_hr desc ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Markets - Test - By Product', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
-#		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -2766,151 +1894,58 @@ def ext_market(mkt) -> str:
 	m, u, d = add_report(
 		t=f'Markets Summary', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
-#		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
-#		inc_test=False, 
 		prod_id=mkt, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Markets Summary - Status', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
 		prod_id=mkt, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Market Buy Strats Summary - Open', 
 		inc_prod_id=True, 
-#		inc_pos_id=False, 
-#		inc_sd_dt=False, 
-#		inc_td_dt=False, 
 		inc_stat=True, 
-#		inc_wl=False, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=True, 
 		prod_id=mkt, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
 		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='ALL', 
 		order_by_sql="order by x.prod_id, x.buy_strat_name, x.buy_strat_freq, x.pos_stat ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Market Buy Strats Summary - Closed', 
 		inc_prod_id=True, 
-#		inc_pos_id=False, 
-#		inc_sd_dt=False, 
-#		inc_td_dt=False, 
 		inc_stat=True, 
-#		inc_wl=False, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=True, 
 		prod_id=mkt, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
 		stat='CLOSE', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='ALL', 
 		order_by_sql="order by x.prod_id, x.buy_strat_name, x.buy_strat_freq, x.pos_stat ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Market Buy Strats Summary - Test', 
 		inc_prod_id=True, 
-#		inc_pos_id=False, 
-#		inc_sd_dt=False, 
-#		inc_td_dt=False, 
 		inc_stat=True, 
-#		inc_wl=False, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=True, 
 		prod_id=mkt, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
 		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="order by x.prod_id, x.buy_strat_name, x.buy_strat_freq, x.pos_stat ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -2920,27 +1955,15 @@ def ext_market(mkt) -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=mkt, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
 		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.pos_id desc ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -2950,57 +1973,25 @@ def ext_market(mkt) -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=mkt, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
 		stat='CLOSE', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.pos_id desc ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Markets - Test - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
 		prod_id=mkt, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -3010,27 +2001,14 @@ def ext_market(mkt) -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=mkt, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
-#		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -3052,31 +2030,11 @@ def ext_sales_all() -> str:
 	m, u, d = add_report(
 		t=f'Sales Summary', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -3086,57 +2044,24 @@ def ext_sales_all() -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Sales Summary - Test - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -3146,27 +2071,14 @@ def ext_sales_all() -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
-#		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -3190,61 +2102,23 @@ def ext_sales_today() -> str:
 	m, u, d = add_report(
 		t=f'Sales Summary - Today - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=today, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Sales Summary - Today - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=today, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -3254,27 +2128,15 @@ def ext_sales_today() -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=today, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -3284,27 +2146,15 @@ def ext_sales_today() -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=today, 
-#		td_dt2=None, 
-#		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -3330,61 +2180,23 @@ def ext_sales_yesterday() -> str:
 	m, u, d = add_report(
 		t=f'Sales Summary - Yesterday - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=yesterday, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Sales Summary - Yesterday - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=yesterday, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -3394,27 +2206,15 @@ def ext_sales_yesterday() -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=yesterday, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -3424,27 +2224,15 @@ def ext_sales_yesterday() -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=yesterday, 
-#		td_dt2=None, 
-#		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -3475,61 +2263,25 @@ def ext_sales_day_cntd(day_cnt) -> str:
 	m, u, d = add_report(
 		t=f'Sales Summary - {dt_str} - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=sd, 
 		td_dt2=td, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Sales Summary - {dt_str} - Test - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=sd, 
 		td_dt2=td, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -3539,27 +2291,16 @@ def ext_sales_day_cntd(day_cnt) -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=sd, 
 		td_dt2=td, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -3569,27 +2310,16 @@ def ext_sales_day_cntd(day_cnt) -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=sd, 
 		td_dt2=td, 
-#		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -3614,61 +2344,23 @@ def ext_sales_dt(dt) -> str:
 	m, u, d = add_report(
 		t=f'Sales Summary - {dt_str} - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=td, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Sales Summary - {dt_str} - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=td, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -3678,27 +2370,15 @@ def ext_sales_dt(dt) -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=td, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -3708,27 +2388,15 @@ def ext_sales_dt(dt) -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=td, 
-#		td_dt2=None, 
-#		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -3763,61 +2431,25 @@ def ext_sales_month(yr,m) -> str:
 	m, u, d = add_report(
 		t=f'Sales Summary - {td_dt1} - {td_dt2} - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=td_dt1, 
 		td_dt2=td_dt2, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
 		t=f'Sales Summary - {td_dt1} - {td_dt2} - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=td_dt1, 
 		td_dt2=td_dt2, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -3827,27 +2459,16 @@ def ext_sales_month(yr,m) -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=td_dt1, 
 		td_dt2=td_dt2, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -3857,27 +2478,16 @@ def ext_sales_month(yr,m) -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=td_dt1, 
 		td_dt2=td_dt2, 
-#		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -3911,31 +2521,13 @@ def ext_sales_yr(yr) -> str:
 	m, u, d = add_report(
 		t=f'Sales Summary - {yr} - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=False, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=td_dt1, 
 		td_dt2=td_dt2, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -3945,27 +2537,16 @@ def ext_sales_yr(yr) -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=td_dt1, 
 		td_dt2=td_dt2, 
-#		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='0', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -3987,31 +2568,11 @@ def ext_sales_all_test() -> str:
 	m, u, d = add_report(
 		t=f'Sales Summary - Test - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -4021,27 +2582,14 @@ def ext_sales_all_test() -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
-#		td_dt1=None, 
-#		td_dt2=None, 
-#		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -4065,31 +2613,12 @@ def ext_sales_today_test() -> str:
 	m, u, d = add_report(
 		t=f'Sales Summary - Today - Test - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=today, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -4099,27 +2628,15 @@ def ext_sales_today_test() -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=today, 
-#		td_dt2=None, 
-#		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -4145,31 +2662,12 @@ def ext_sales_yesterday_test() -> str:
 	m, u, d = add_report(
 		t=f'Sales Summary - Yesterday - Test - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=yesterday, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -4179,27 +2677,15 @@ def ext_sales_yesterday_test() -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=yesterday, 
-#		td_dt2=None, 
-#		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -4230,31 +2716,13 @@ def ext_sales_day_cntd_test(day_cnt) -> str:
 	m, u, d = add_report(
 		t=f'Sales Summary - Test - {dt_str} - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=sd, 
 		td_dt2=td, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -4264,27 +2732,16 @@ def ext_sales_day_cntd_test(day_cnt) -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=sd, 
 		td_dt2=td, 
-#		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -4309,31 +2766,12 @@ def ext_sales_dt_test(dt) -> str:
 	m, u, d = add_report(
 		t=f'Sales Summary - Test - {dt_str} - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=td, 
-#		td_dt2=None, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -4343,27 +2781,15 @@ def ext_sales_dt_test(dt) -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=td, 
-#		td_dt2=None, 
-#		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -4398,31 +2824,13 @@ def ext_sales_month_test(yr,m) -> str:
 	m, u, d = add_report(
 		t=f'Sales Summary - Test - {td_dt1} - {td_dt2} - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=td_dt1, 
 		td_dt2=td_dt2, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -4432,27 +2840,16 @@ def ext_sales_month_test(yr,m) -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=td_dt1, 
 		td_dt2=td_dt2, 
-#		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -4484,31 +2881,13 @@ def ext_sales_yr_test(yr) -> str:
 	m, u, d = add_report(
 		t=f'Sales Summary - Test - {yr} - *', 
 		inc_prod_id=True, 
-#		inc_pos_id=True, 
-#		inc_sd_dt=True, 
-#		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
-#		inc_buy_strat_name=True, 
-#		inc_buy_strat_freq=True, 
-#		inc_sell_strat_name=False, 
-#		inc_sell_strat_freq=False, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=td_dt1, 
 		td_dt2=td_dt2, 
-#		stat='OPEN', 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	m, u, d = add_report(
@@ -4518,27 +2897,16 @@ def ext_sales_yr_test(yr) -> str:
 		inc_sd_dt=True, 
 		inc_td_dt=True, 
 		inc_stat=True, 
-#		inc_wl=True, 
 		inc_buy_strat_name=True, 
 		inc_buy_strat_freq=True, 
 		inc_sell_strat_name=True, 
 		inc_sell_strat_freq=True, 
 		inc_test=True, 
 		prod_id=None, 
-#		pos_id=None, 
-#		sd_dt1=None, 
-#		sd_dt2=None, 
 		td_dt1=td_dt1, 
 		td_dt2=td_dt2, 
-#		stat=None, 
-#		wl=None, 
-#		buy_strat_name=None, 
-#		buy_strat_freq=None, 
-#		sell_strat_name=None, 
-#		sell_strat_freq=None, 
 		test_tf='1', 
 		order_by_sql="Order by x.prod_id ", 
-#		lmt=None,
 		m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)
@@ -4558,7 +2926,6 @@ def ext_db_size() -> str:
 	pt = 'MySQL Database'
 
 	st = 'MySQL Health Check'
-	m, u, d = html_h2_add(t=st, m=m, u=u, d=d)
 
 	t = 'MySQL DB Size'
 	sql = " "
@@ -4566,11 +2933,9 @@ def ext_db_size() -> str:
 	sql +=  "	sum( data_length + index_length ) / 1024 / 1024 as db_size_mb,"
 	sql +=  "	sum( data_free )/ 1024 / 1024 as free_size_mb "
 	sql +=  "FROM information_schema.TABLES x "
-#	sql +=  "WHERE x.table_schema = 'ctbot2021' "
 	sql +=  "GROUP BY x.table_schema "
-	h = build_sql_display(sql,'first')
+	h = build_sql_display(sql, t)
 
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
 	m, u, d = html_add(more=h, m=m, u=u, d=d)
 
 	t = 'DB Size with Tables'
@@ -4579,11 +2944,9 @@ def ext_db_size() -> str:
 	sql +=  "	sum( data_length + index_length ) / 1024 / 1024 as db_size_mb,"
 	sql +=  "	sum( data_free )/ 1024 / 1024 as free_size_mb "
 	sql +=  "FROM information_schema.TABLES x "
-#	sql +=  "WHERE x.table_schema = 'ctbot2021' "
 	sql +=  "GROUP BY x.table_schema, x.table_name"
-	h = build_sql_display(sql,'second')
+	h = build_sql_display(sql, t)
 
-	m, u, d = html_h3_add(t=t, m=m, u=u, d=d)
 	m, u, d = html_add(more=h, m=m, u=u, d=d)
 
 	sh = html_comb(m=m, u=u, d=d)

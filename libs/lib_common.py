@@ -1,166 +1,37 @@
 #<=====>#
-# Import All Scope
-#<=====>#
-import_all_func_list = []
-
-import_all_func_list.append("AttrDict")
-import_all_func_list.append("AttrDictConv")
-import_all_func_list.append("AttrDictUpd")
-
-
-import_all_func_list.append("dict_2_obj")
-
-# screen
-import_all_func_list.append("clear_screen")
-
-
-# performance timers
-import_all_func_list.append("temp_timing_begin")
-import_all_func_list.append("temp_timing_end")
-import_all_func_list.append("temp_timer_begin")
-import_all_func_list.append("temp_timer_end")
-
-# function standards
-import_all_func_list.append("func_begin")
-import_all_func_list.append("func_end")
-
-# date & time
-import_all_func_list.append("calc_elapsed")
-import_all_func_list.append("now_utc_get")
-import_all_func_list.append("now_utc_ts_get")
-
-# audio queues & sounds
-import_all_func_list.append("play_file")
-import_all_func_list.append("play_cash")
-import_all_func_list.append("play_doh")
-import_all_func_list.append("play_thunder")
-import_all_func_list.append("play_sw_theme")
-import_all_func_list.append("play_sw_imperial_march")
-import_all_func_list.append("play_beep")
-import_all_func_list.append("beep")
-import_all_func_list.append("speak")
-import_all_func_list.append("speak_async")
-
-# variable type helpers
-import_all_func_list.append("dec_2_float")
-import_all_func_list.append("int2tf")
-import_all_func_list.append("tf2int")
-import_all_func_list.append("dec")
-import_all_func_list.append("dec_prec")
-import_all_func_list.append("is_odd")
-import_all_func_list.append("is_even")
-import_all_func_list.append("tf")
-import_all_func_list.append("AllHaveVal")
-import_all_func_list.append("HasVal")
-import_all_func_list.append("getRaw")
-
-# dictionary tools
-import_all_func_list.append("dict_of_dicts_sort")
-import_all_func_list.append("DictKeyValIfElse")
-import_all_func_list.append("DictKeyValFill")
-import_all_func_list.append("DictKeyVal")
-import_all_func_list.append("DictKeyDel")
-import_all_func_list.append("DictKeyValMult")
-import_all_func_list.append("DictContainsKeys")
-import_all_func_list.append("DictValCheck")
-import_all_func_list.append("AllHaveVal")
-
-# printing stuff
-import_all_func_list.append("print_adv")
-import_all_func_list.append("print_func_name")
-import_all_func_list.append("print_line")
-import_all_func_list.append("print_obj")
-import_all_func_list.append("prt_dttm_get")
-
-# json tools
-import_all_func_list.append("json_safe")
-import_all_func_list.append("json_file_read")
-import_all_func_list.append("json_file_write")
-
-# files and logging
-import_all_func_list.append("dir_val")
-import_all_func_list.append("file_write")
-import_all_func_list.append("logit")
-import_all_func_list.append("dttm_get")
-
-__all__ = import_all_func_list
-
-#<=====>#
-# Imports - Common Modules
+# Description
 #<=====>#
 
-# from collections         import OrderedDict
-from datetime            import datetime as dt
-# from glob                import glob
-# from importlib           import util
-# from math                import ceil
-# from math                import floor
-# from operator            import itemgetter, getitem
-import sys, os
-from pprint              import pformat
-from pprint              import pprint
-from termcolor           import colored
-from termcolor           import cprint
-# from web3                import Web3
-# from web3                import exceptions as w3exceptions
-# from web3.middleware     import geth_poa_middleware
-# from websockets          import connect as ws_connect
-from termcolor           import colored
-# import asyncio
+
+
+#<=====>#
+# Known To Do List
+#<=====>#
+
+
+
+#<=====>#
+# Imports
+#<=====>#
+from datetime import datetime as dt
+from libs.cls_settings import AttrDict
+from libs.cls_settings import Settings
+from pprint import pformat
+from pprint import pprint
+from termcolor import cprint
 import beepy
+import concurrent.futures
 import datetime
 import decimal
 import errno
 import json
-# import logging
-# import math
-# import numpy as np
-import sys
 import os
 import pyttsx3
-# import re
-# import requests
+import pytz
 import sys
 import time
 import traceback
-# import websockets
 import winsound
-
-import concurrent.futures
-
-# from bs4 import BeautifulSoup as bsp
-# from selenium import webdriver
-# from selenium.webdriver.firefox.options import Options
-# from webdriver_manager.chrome import ChromeDriverManager
-# from webdriver_manager.firefox import GeckoDriverManager
-
-#shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
-#if shared_libs_path not in sys.path:
-#	sys.path.append(shared_libs_path)
-
-#<=====>#
-# Imports - Download Modules
-#<=====>#
-
-#<=====>#
-# Imports - Unsure if used/needed
-#<=====>#
-
-#<=====>#
-# Imports - Recently Removed
-#<=====>#
-
-#<=====>#
-# Imports - Shared Library
-#<=====>#
-# shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
-# if shared_libs_path not in sys.path:
-# 	sys.path.append(shared_libs_path)
-
-
-#<=====>#
-# Imports - Local Library
-#<=====>#
 
 
 #<=====>#
@@ -168,13 +39,12 @@ import concurrent.futures
 #<=====>#
 lib_name            = 'lib_common'
 log_name            = 'lib_common'
-verbosity           = 1
-lib_debug_lvl       = 1
-lib_display_lvl     = 1
+
 
 #<=====>#
 # Assignments Pre
 #<=====>#
+
 
 
 #<=====>#
@@ -193,17 +63,6 @@ class EmptyObject:
 	pass
 
 #<=====>#
-
-#class AttrDict(dict):
-#	def __getattr__(self, item):
-#		return self[item]
-#	def __setattr__(self, key, value):
-#		self[key] = value
-
-#<=====>#
-# Functions
-#<=====>#
-
 class AttrDict(dict):
 	def __getattr__(self, item):
 		return self[item]
@@ -280,98 +139,22 @@ def AttrDictUpd(in_attr_dict=None, in_dict=None):
 
 #<=====>#
 
-# helpful regexp replace for converting sections of code 
-# find: tkn\['(\w+)'\]
-# repl: tkn.\1
-#def AttrDictConv(in_dict=None):
-#	out_attr_dict = AttrDict()
-#	'''
-#	Returns AttrDict from dict
-#	If No Dict is provided returns AttrDict
-#	'''
-#	try:
-#		if in_dict:
-#			if isinstance(in_dict, dict):
-#				for k in in_dict:
-#					v = in_dict[k]
-#					if isinstance(v, dict):
-#						v = AttrDictConv(v)
-#					out_attr_dict[k] = v
-#	except Exception as e:
-#		print('{} ==> errored... {}'.format(func_name, e))
-#		traceback.print_exc()
-#		traceback.print_stack()
-#		print(type(e))
-#		print(e)
-#		print('k : {} ({})'.format(k, type(k)))
-#		print('v : {} ({})'.format(v, type(v)))
-#		print('in_dict : ({})'.format(type(in_dict)))
-#		pprint(in_dict)
-#		sys.exit()
-#	return out_attr_dict
-
-#<=====>#
-
-#def AttrDictUpd(in_attr_dict=None, in_dict=None):
-#	if in_attr_dict and isinstance(in_attr_dict, AttrDict):
-#		out_attr_dict = in_attr_dict
-#	else:
-#		out_attr_dict = AttrDict()
-#	'''
-#	Returns in AttrDict with new keys added from in_dict
-#	If No Dict is provided returns AttrDict with keys added from in_dict
-#	'''
-#	try:
-#		if in_dict:
-#			if isinstance(in_dict, dict):
-#				for k in in_dict:
-#					v = in_dict[k]
-#					if isinstance(v, dict):
-#						v = AttrDictConv(v)
-#					out_attr_dict[k] = v
-#	except Exception as e:
-#		print('{} ==> errored... {}'.format(func_name, e))
-#		traceback.print_exc()
-#		traceback.print_stack()
-#		print(type(e))
-#		print(e)
-#		print('k : {} ({})'.format(k, type(k)))
-#		print('v : {} ({})'.format(v, type(v)))
-#		print('in_dict : ({})'.format(type(in_dict)))
-#		pprint(in_dict)
-#		sys.exit()
-#	return out_attr_dict
-
-#<=====>#
-
 def dict_of_dicts_sort(d:dict, k:str, typ='float', rev=False):
-	# m = 'dict_of_dicts_sort(d=d, k={}, rev={})'
-	# msg =m.format(k, rev)
-#	print(msg)
 	sorted_d  = {}
 	vals_list = []
 	pks_list  = []
 	for pk in d:
 		val = str(d[pk][k])
-#		print('dict_of_dicts_sort => Step 1 - pk of all dicts in dict => : {}'.format(val))
 		vals_list.append(val)
 	sorted_vals_list = sorted(vals_list, reverse=rev)
-#	print(sorted_vals_list)
 	for val_tgt in sorted_vals_list:
 		if typ == 'float': val_tgt = float(val_tgt)
 		if typ == 'str': val_tgt = str(val_tgt)
 		if typ == 'int': val_tgt = int(val_tgt)
-#		print('dict_of_dicts_sort => Step 2 - val_tgt in sorted_vals_list => : {}'.format(val_tgt))
 		for pk in d:
-#			print('dict_of_dicts_sort => Step 3 - pk in d => : {}'.format(pk))
 			val = d[pk][k]
-#			print('dict_of_dicts_sort => Step 4 - val in d[pk][k] => : {}'.format(val))
 			if val == val_tgt:
-#				print('dict_of_dicts_sort => Step 5A - val : {} ({}) == val_tgt : {}  ({})'.format(val, val_tgt, type(val), type(val_tgt)))
 				pks_list.append(pk)
-#			else:
-#				print('dict_of_dicts_sort => Step 5B - val : {} ({}) != val_tgt : {}  ({})'.format(val, type(val), val_tgt, type(val_tgt)))
-#	print(pks_list)
 	for pk in pks_list:
 		sorted_d[pk] = d[pk]
 	return sorted_d
@@ -475,11 +258,6 @@ def DictKeyVal(in_dict, k):
 	Returns Boolean if key in in_dict and has value using HaveValue function
 	'''
 	try:
-#		if not isinstance(in_dict, dict):
-#			print(func_name)
-#			print('k : {} ({})'.format(k, type(k)))
-#			print('in_dict : ({})'.format(type(in_dict)))
-#			pprint(in_dict)
 		resp = False
 		if k in in_dict:
 			if HasVal(in_dict[k]):
@@ -542,9 +320,6 @@ def DictContainsKeys(in_dict={}, ks=[]):
 	ks - either a single key or list of keys
 	DOES NOT check values of those keys, just if keys are present
 	'''
-#	print('DictContainsKeys(in_dict, ks={})'.format(ks))
-#	resp = in_dict.keys() >= ks
-#	print(resp)
 	s = set(ks)
 	resp = s.issubset(in_dict.keys())
 	return resp
@@ -557,7 +332,6 @@ def DictValCheck(in_dict={}, ks=[], show_yn='N'):
 	ks - allows specified keys to be returned
 	'''
 	if HasVal(ks):
-#		print('DictValCheck(in_dict, ks={}, show_yn={})'.format(ks, show_yn))
 		resp = True
 		if isinstance(ks, list):
 			for k in ks:
@@ -654,50 +428,12 @@ def dec(val):
 
 #<=====>#
 
-#def dec_prec(val, prec=28):
-#	# Save the current precision
-#	orig_prec = decimal.getcontext().prec
-#	# Set the new precision
-#	decimal.getcontext().prec = prec
-#	# Convert the number to Decimal
-#	d = decimal.Decimal(val)
-#	# Reset the precision to its original value
-#	decimal.getcontext().prec = orig_prec
-#	return d
-
 def dec_prec(number, prec=28):
 	with decimal.localcontext() as ctx:
 		ctx.prec = prec
 		d = decimal.Decimal(number)
 		pprint(d)
 		return d
-
-#<=====>#
-
-#def dec_round(val, digs=0):
-#	try:
-#		if val is None:
-#			val = dec(0)
-#			return val
-#		val = dec(val)
-#		print('val    : {} ({})'.format(val, type(val)))
-#		digs = abs(dec(digs)) * -1
-#		print('digs   : {} ({})'.format(digs, type(digs)))
-#		digits = dec(10) ** digs
-#		print('digits : {} ({})'.format(digits, type(digits)))
-#		val.quantize(digits)
-#		print('val    : {} ({})'.format(val, type(val)))
-#	except Exception as e:
-#		print('{} ==> errored... {}'.format('dec_round', e))
-#		traceback.print_exc()
-#		print(type(e))
-#		print(e)
-#		print('val    : {} ({})'.format(val, type(val)))
-#		print('digs   : {} ({})'.format(digs, type(digs)))
-#		print('digits : {} ({})'.format(digits, type(digits)))
-#		sys.exit()
-#
-#	return val
 
 #<=====>#
 
@@ -727,7 +463,6 @@ def dir_val(directory_string):
 #<=====>#
 
 def file_write(fullfilename, msg):
-	# func_name = 'file_write'
 	dir_val(fullfilename)
 	with open(fullfilename, 'a') as FileWriter:
 		if isinstance(msg, str):
@@ -768,7 +503,6 @@ def logit(logname, msg):
 def json_safe(in_data, depth=0):
 	depth += 1
 	out_data = in_data
-#	print('in_data : [{}]   ({})  ===>  {}'.format(depth, type(in_data), in_data))
 
 	if isinstance(in_data, list):
 		for x in in_data:
@@ -784,8 +518,6 @@ def json_safe(in_data, depth=0):
 	else:
 		out_data = in_data
 
-#	print('depth : {}'.format(depth))
-
 	return out_data
 
 #<=====>#
@@ -799,7 +531,6 @@ def json_file_read(directory_string, default_json_content=None):
 	:param default_json_content: The content to populate a non-existing JSON file with
 	:type default_json_content: dict, list
 	"""
-#	print(directory_string)
 	dir_val(directory_string)
 	try:
 		with open(directory_string) as file:
@@ -962,8 +693,6 @@ def now_utc_ts_get():
 #<=====>#
 
 def calc_elapsed(dttm_new, dttm_old, interval='seconds'):
-#	print('dttm_new : {} ({})'.format(dttm_new, type(dttm_new)))
-#	print('dttm_old : {} ({})'.format(dttm_old, type(dttm_old)))
 	if interval == 'seconds':
 		elapsed = (dttm_new - dttm_old).total_seconds()
 	elif interval == 'minutes':
@@ -983,8 +712,6 @@ def getRaw(nbr, dec):
 #<=====>#
 
 def get_now():
-
-#	now = dt.fromtimestamp(time.time())
 	now = dt.now().replace(microsecond=0)
 
 	return now
@@ -1010,9 +737,6 @@ def prt_dttm_get():
 #<=====>#
 
 def plogit(logname, epoch, msg=None, printyn='Y', logyn='Y'):
-
-#	print('plogit - begin')
-
 	dttm_now = dt.now().strftime('%Y_%m_%d')
 	prt_dttm_now = dt.now().strftime('%Y-%m-%d %H:%M:%S')
 
@@ -1034,15 +758,11 @@ def plogit(logname, epoch, msg=None, printyn='Y', logyn='Y'):
 			if logyn == 'Y': LogWriter.write(pformat(msg))
 		LogWriter.writelines('\n')
 		LogWriter.close()
-
-#	print('plogit - end')
-
 	return
 
 #<=====>#
 
 def file_write(fullfilename, msg):
-	# func_name = 'file_write'
 	dir_val(fullfilename)
 	with open(fullfilename, 'a') as FileWriter:
 		if isinstance(msg, str):
@@ -1085,12 +805,9 @@ def sleep(sec):
 
 #<=====>#
 
-def print_dict(d, debug_lvl=lib_debug_lvl):
+def print_dict(d):
 	func_name = 'print_dict'
 	func_str = ' * {}.{}(d)'.format(lib_name, func_name)
-	fnc = func_begin(func_name, log_name, debug_lvl)
-
-	if debug_lvl >= 1: print(func_str)
 
 	print('')
 	print('')
@@ -1099,7 +816,6 @@ def print_dict(d, debug_lvl=lib_debug_lvl):
 	print('')
 	print('')
 
-	fnc = func_end(fnc, debug_lvl=lib_debug_lvl)
 	return
 
 
@@ -1123,9 +839,6 @@ def beep_old():
 def beep(reps=1):
 	for _ in range(0, reps, 1):
 		cprint('beep()!!!', 'white', 'on_red')
-#		cprint('beep()!!!', 'white', 'on_red')
-#		cprint('beep()!!!', 'white', 'on_red')
-#		print('\a', end='', flush=True)
 	play_beep(frequency=2500,duration=1000, reps=reps)
 
 #<=====>#
@@ -1152,7 +865,6 @@ def play_beep(frequency=1000, duration=1000, reps=1):
 #<=====>#
 
 def play_sw_theme():
-#	print('play_sw_theme()')
 	"""
 	Used to play the Star Wars theme song
 	"""
@@ -1232,18 +944,6 @@ def play_thunder():
 
 #<=====>#
 
-#def speak(tempmessage):
-#	print(f'speaking : {tempmessage}...')
-#	engine = pyttsx3.init()
-#	engine.say(tempmessage)
-#	voices = engine.getProperty('voices')
-#	engine.setProperty('voice', voices[1].id) #changing index changes voices but ony 0 and 1 are working here
-#	engine.setProperty('rate',120)  #120 words per minute
-#	engine.setProperty('volume',0.9)
-#	engine.runAndWait()
-
-#<=====>#
-
 def speak(tempmessage):
 	print(f'speaking : {tempmessage}...')
 	engine = pyttsx3.init()
@@ -1253,10 +953,6 @@ def speak(tempmessage):
 	engine.setProperty('volume', 0.9)
 	engine.say(tempmessage)
 	engine.runAndWait()
-
-#	voices = engine.getProperty("voices")
-#	for voice in voices:
-#		print(voice)
 
 #<=====>#
 
@@ -1268,10 +964,6 @@ def speak_async(tempmessage):
 #<=====>#
 
 def func_begin(func_name, func_str, logname, secs_max=0.33):
-	# this_func = 'func_begin'
-	# this_str = f'{lib_name}.{this_func}(func_name={func_name}, func_str={func_str}, logname={logname}, secs_max={secs_max})'
-#	G(this_str)
-
 	fnc = {}
 	t0                = time.perf_counter()
 	strt_dttm         = dt.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -1290,10 +982,6 @@ def func_begin(func_name, func_str, logname, secs_max=0.33):
 #<=====>#
 
 def func_end(fnc):
-	# this_func = 'func_end'
-	# this_str = f'{lib_name}.{this_func}(fnc)'
-#	G(this_str)
-
 	t0              = fnc['t0']
 	func_name       = fnc['func_name']
 	func_str        = fnc['func_str']
@@ -1307,9 +995,10 @@ def func_end(fnc):
 	fnc['end_dttm'] = end_dttm
 	fnc['secs']     = secs
 
-	if secs > secs_max:
-		msg = f"{func_name:<35} began at {strt_dttm} completed at {end_dttm}, taking {secs} seconds... max : {secs_max} * {func_str}"
-		cprint(msg, 'black', 'on_yellow')
+	if secs_max >= 0:
+		if secs > secs_max:
+			msg = f"{func_name:<35} began at {strt_dttm} completed at {end_dttm}, taking {secs} seconds... max : {secs_max} * {func_str}"
+			cprint(msg, 'white', 'on_red')
 
 	return fnc
 
@@ -1348,24 +1037,14 @@ def print_obj(in_obj):
 	jsonStr = json.dumps(in_obj.__dict__)
 	print(jsonStr)
 
-
-
 #<=====>#
 
+def debug_display_func_name(func_name, debug_show_lvl=0):
 
-
-
-
-
-#<=====>#
-
-def debug_display_func_name(func_name, debug_show_lvl=0, debug_lvl=lib_debug_lvl):
-
-	if debug_show_lvl <= debug_lvl:
-		prt_dttm_now = dt.now().strftime('%Y-%m-%d %H:%M:%S')
-		m = '{} ==> {}'
-		msg = m.format(prt_dttm_now, func_name)
-		print(msg)
+	prt_dttm_now = dt.now().strftime('%Y-%m-%d %H:%M:%S')
+	m = '{} ==> {}'
+	msg = m.format(prt_dttm_now, func_name)
+	print(msg)
 
 	return
 
@@ -1400,35 +1079,29 @@ def section_header(
 	, after_ln_adv = 0
 	, show_dttm_yn = 'Y'
 	, center_yn = 'N'
-	, display_lvl=lib_display_lvl
-	, debug_lvl=lib_debug_lvl
 	):
-	func_name = 'section_header(display_text=' + str(txt) +', clr=' + str(clr) +', bgclr=' + str(bgclr) +', display_lvl=' + str(display_lvl) +', debug_lvl=' + str(debug_lvl) +')'
-	if debug_lvl >= 2: print(func_name)
+	func_name = 'section_header(display_text=' + str(txt) +', clr=' + str(clr) +', bgclr=' + str(bgclr) + ')'
 
 	if center_yn == 'Y': txt = txt.center(l)
 
-	if display_lvl >= 1: 
-		if before_ln_adv > 0: pa(before_ln_adv)
-#		pb(c='*', l=l, fgclr='blue')
+	if before_ln_adv > 0: pa(before_ln_adv)
 
-		dttm_str = ''
-		if show_dttm_yn == 'Y':
-			dttm_str = dt.now().strftime('%Y-%m-%d %H:%M:%S') + ' '
+	dttm_str = ''
+	if show_dttm_yn == 'Y':
+		dttm_str = dt.now().strftime('%Y-%m-%d %H:%M:%S') + ' '
 
-		if clr not in ('grey','red','green','yellow','blue','magenta','cyan','white'): clr = ''
+	if clr not in ('grey','red','green','yellow','blue','magenta','cyan','white'): clr = ''
 
-		if bgclr not in ('on_grey','on_red','on_green','on_yellow','on_blue','on_magenta','on_cyan','on_white'): bgclr = ''
+	if bgclr not in ('on_grey','on_red','on_green','on_yellow','on_blue','on_magenta','on_cyan','on_white'): bgclr = ''
 
-		if clr != '' and bgclr != '':
-			cprint(dttm_str + txt, clr, bgclr)
-		elif clr != '':
-			cprint(dttm_str + txt, clr)
-		else:
-			print(dttm_str + txt)
+	if clr != '' and bgclr != '':
+		cprint(dttm_str + txt, clr, bgclr)
+	elif clr != '':
+		cprint(dttm_str + txt, clr)
+	else:
+		print(dttm_str + txt)
 
-#		pb(c='*', l=l, fgclr='blue')
-		if after_ln_adv > 0: pa(after_ln_adv)
+	if after_ln_adv > 0: pa(after_ln_adv)
 
 	return
 
@@ -1460,11 +1133,11 @@ def pb(c='*', l=235, fgclr='', bgclr=''):
 #<=====>#
 
 
+
 #<=====>#
 # Default Run
 #<=====>#
 
 
+
 #<=====>#
-
-

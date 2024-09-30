@@ -3,82 +3,51 @@
 #<=====>#
 
 
+
 #<=====>#
-# Import All
+# Known To Do List
 #<=====>#
 
-import_all_func_list = []
-import_all_func_list.append("report_open")
-import_all_func_list.append("report_open_by_age")
-import_all_func_list.append("report_open_by_gain")
-import_all_func_list.append("report_open_by_prod_id")
-import_all_func_list.append("report_buys_recent")
-import_all_func_list.append("report_sells_recent")
-import_all_func_list.append("report_strats_best")
-import_all_func_list.append("report_pos_open")
-import_all_func_list.append("report_pos_close")
-import_all_func_list.append("report_strat")
-import_all_func_list.append("report_strats")
-import_all_func_list.append("disp_recent")
-__all__ = import_all_func_list
 
 
 #<=====>#
-# Imports - Common Modules
+# Imports
 #<=====>#
-
-import sys
-import os
+from datetime import datetime, timedelta
+from pprint import pprint
 import pytz
-import sys
-import time
-import traceback
-from datetime            import datetime
-from pprint              import pprint
+from libs.bot_db_read import (
+    db_bals_get, db_mkt_strat_elapsed_get, db_mkt_strats_used_get, db_poss_close_recent_get, 
+    db_poss_open_get, db_poss_open_recent_get, db_strats_perf_get_all, 
+    db_strats_w_stats_get_all, db_trade_strat_perf_get
+)
+from libs.bot_settings import debug_settings_get, get_lib_func_secs_max
+from libs.bot_theme import cs_pct_color, cs_pct_color_50
+from libs.lib_charts import chart_bottom, chart_headers, chart_mid, chart_row, chart_top
+from libs.lib_colors import WoB, WoG, WoM, WoR
+from libs.lib_common import (
+    AttrDictConv, dec_2_float, dttm_get, func_begin, func_end, print_adv
+)
+from libs.lib_strings import format_disp_age
+import pandas as pd
+import warnings
 
-#<=====>#
-# Imports - Download Modules
-#<=====>#
+warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 
-
-#<=====>#
-# Imports - Shared Library
-#<=====>#
-#shared_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'SHARED_LIBS'))
-#if shared_libs_path not in sys.path:
-#	sys.path.append(shared_libs_path)
-
-
-#<=====>#
-# Imports - Local Library
-#<=====>#
-local_libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '', 'libs'))
-if local_libs_path not in sys.path:
-	sys.path.append(local_libs_path)
-
-from lib_charts                   import *
-from lib_common                   import *
-from lib_colors                   import *
-from lib_strings                  import *
-
-from bot_common                    import *
-from bot_db_read                   import *
-from bot_settings                  import settings
-from bot_theme                     import *
-#from bot                               import bot
 
 #<=====>#
 # Variables
 #<=====>#
 lib_name      = 'bot_reports'
 log_name      = 'bot_reports'
-lib_verbosity = 1
-lib_debug_lvl = 1
-lib_secs_max  = 2
 
-#<=====>#
+
+# <=====>#
 # Assignments Pre
-#<=====>#
+# <=====>#
+
+dst, debug_settings = debug_settings_get()
+lib_secs_max = get_lib_func_secs_max(lib_name=lib_name)
 
 
 #<=====>#
@@ -93,14 +62,14 @@ lib_secs_max  = 2
 def report_open():
 	func_name = 'report_open'
 	func_str = f'{lib_name}.{func_name}()'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
 
 	poss = db_poss_open_get(include_test_yn='Y')
 
 	if poss:
 		print_adv(2)
-		title = f'Open Positions - By Age'
+		title = 'Open Positions - By Age'
 		show_pos_open_header_yn = 'Y'
 		poss_sorted = sorted(poss, key=lambda x: x["age_mins"], reverse=True)
 		poss = poss_sorted
@@ -112,7 +81,7 @@ def report_open():
 			report_pos_open(title, pos, show_pos_open_header_yn)
 			show_pos_open_header_yn = 'N'
 
-		chart_bottom(in_str='bottom1', len_cnt=260)
+		chart_bottom(len_cnt=260)
 
 	if poss:
 		print_adv(2)
@@ -128,7 +97,7 @@ def report_open():
 			report_pos_open(title, pos, show_pos_open_header_yn)
 			show_pos_open_header_yn = 'N'
 
-		chart_bottom(in_str='bottom2', len_cnt=260)
+		chart_bottom(len_cnt=260)
 
 	func_end(fnc)
 
@@ -139,14 +108,14 @@ def report_open():
 def report_open_by_age():
 	func_name = 'report_open_by_age'
 	func_str = f'{lib_name}.{func_name}()'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
 
 	poss = db_poss_open_get(include_test_yn='Y')
 
 	if poss:
 		print_adv(2)
-		title = f'Open Positions - By Age'
+		title = 'Open Positions - By Age'
 		show_pos_open_header_yn = 'Y'
 		poss_sorted = sorted(poss, key=lambda x: x["age_mins"], reverse=True)
 		poss = poss_sorted
@@ -158,7 +127,7 @@ def report_open_by_age():
 			report_pos_open(title, pos, show_pos_open_header_yn)
 			show_pos_open_header_yn = 'N'
 
-		chart_bottom(in_str='bottom3', len_cnt=226)
+		chart_bottom(len_cnt=226)
 
 	func_end(fnc)
 
@@ -169,14 +138,14 @@ def report_open_by_age():
 def report_open_by_gain():
 	func_name = 'report_open_by_gain'
 	func_str = f'{lib_name}.{func_name}()'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
 
 	poss = db_poss_open_get(include_test_yn='Y')
 
 	if poss:
 		print_adv(2)
-		title = f'Open Positions - By Prod_id'
+		title = 'Open Positions - By Prod_id'
 		show_pos_open_header_yn = 'Y'
 		poss_sorted = sorted(poss, key=lambda x: x["gain_loss_pct"], reverse=True)
 		poss = poss_sorted
@@ -188,7 +157,7 @@ def report_open_by_gain():
 			report_pos_open(title, pos, show_pos_open_header_yn)
 			show_pos_open_header_yn = 'N'
 
-		chart_bottom(in_str='bottom4', len_cnt=226)
+		chart_bottom(len_cnt=226)
 	func_end(fnc)
 
 	#<=====>#
@@ -198,14 +167,14 @@ def report_open_by_gain():
 def report_open_by_prod_id():
 	func_name = 'report_open_by_prod_id'
 	func_str = f'{lib_name}.{func_name}()'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
 
 	poss = db_poss_open_get(include_test_yn='Y')
 
 	if poss:
 		print_adv(2)
-		title = f'Open Positions - By Prod_id'
+		title = 'Open Positions - By Prod_id'
 		show_pos_open_header_yn = 'Y'
 		poss_sorted = sorted(poss, key=lambda x: x["prod_id"])
 		poss = poss_sorted
@@ -217,7 +186,7 @@ def report_open_by_prod_id():
 			report_pos_open(title, pos, show_pos_open_header_yn)
 			show_pos_open_header_yn = 'N'
 
-		chart_bottom(in_str='bottom4', len_cnt=226)
+		chart_bottom(len_cnt=226)
 	func_end(fnc)
 
 	#<=====>#
@@ -227,8 +196,8 @@ def report_open_by_prod_id():
 def report_buys_recent(cnt=15, test_yn='N'):
 	func_name = 'report_buys_recent'
 	func_str = f'{lib_name}.{func_name}()'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
 
 	print_adv(2)
 
@@ -239,11 +208,9 @@ def report_buys_recent(cnt=15, test_yn='N'):
 		title = f'Last {cnt} Opened Positions - Test'
 
 	poss = db_poss_open_recent_get(lmt=cnt, test_yn=test_yn)
-#	poss = db_poss_close_recent_get(lmt=cnt)
+
 	show_pos_open_header_yn = 'Y'
 	if poss:
-#		poss_sorted = sorted(poss, key=lambda x: x["age_mins"], reverse=True)
-#		poss = poss_sorted
 		for pos in poss:
 			pos = dec_2_float(pos)
 			pos = AttrDictConv(in_dict=pos)
@@ -252,7 +219,7 @@ def report_buys_recent(cnt=15, test_yn='N'):
 			report_pos_open(title, pos, show_pos_open_header_yn)
 			show_pos_open_header_yn = 'N'
 
-		chart_bottom(in_str='bottom5', len_cnt=226)
+		chart_bottom(len_cnt=226)
 	func_end(fnc)
 
 #<=====>#
@@ -260,8 +227,8 @@ def report_buys_recent(cnt=15, test_yn='N'):
 def report_sells_recent(cnt=15, test_yn='N'):
 	func_name = 'report_sells_recent'
 	func_str = f'{lib_name}.{func_name}()'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
 
 	print_adv(2)
 
@@ -274,8 +241,6 @@ def report_sells_recent(cnt=15, test_yn='N'):
 	poss = db_poss_close_recent_get(lmt=cnt, test_yn=test_yn)
 	show_pos_close_header_yn = 'Y'
 	if poss:
-#		poss_sorted = sorted(poss, key=lambda x: x["age_mins"], reverse=True)
-#		poss = poss_sorted
 		for pos in poss:
 			pos = dec_2_float(pos)
 			pos = AttrDictConv(in_dict=pos)
@@ -284,7 +249,7 @@ def report_sells_recent(cnt=15, test_yn='N'):
 			report_pos_close(title, pos, show_pos_close_header_yn)
 			show_pos_close_header_yn = 'N'
 
-		chart_bottom(in_str='bottom6', len_cnt=251)
+		chart_bottom(len_cnt=251)
 	func_end(fnc)
 
 #<=====>#
@@ -292,16 +257,14 @@ def report_sells_recent(cnt=15, test_yn='N'):
 def report_strats_best(cnt=10, min_trades=1):
 	func_name = 'report_strats_best'
 	func_str = f'{lib_name}.{func_name}(cnt={cnt}, min_trades={min_trades})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
 
 	print_adv(2)
 
 	title = f'Best {cnt} Buy Strats with minimum of {min_trades} Trades'
 	poss_strats = db_mkt_strats_used_get(min_trades)
 	mkt_strats_perf = []
-
-#	pprint(poss_strats)
 	for x in poss_strats:
 		prod_id        = x['prod_id']
 		buy_strat_type = x['buy_strat_type']
@@ -309,10 +272,7 @@ def report_strats_best(cnt=10, min_trades=1):
 		buy_strat_freq = x['buy_strat_freq']
 
 		buy_strat_desc = ''
-#		for z in buy_strats:
-#			print(buy_strats[z])
-#			if buy_strat_name == buy_strats[z]['buy_strat_name']:
-#				buy_strat_desc = z['buy_strat_desc']
+
 		if buy_strat_name == 'sha': buy_strat_desc = 'Double Smoothed Heikin Ashi'
 		elif buy_strat_name == 'imp_macd': buy_strat_desc = 'Impulse MACD'
 		elif buy_strat_name == 'emax': buy_strat_desc = 'Triple EMA Crossover'
@@ -321,12 +281,10 @@ def report_strats_best(cnt=10, min_trades=1):
 		elif buy_strat_name == 'bb': buy_strat_desc = 'Double Bollinger Band'
 
 		mkt_strat_perf = db_trade_strat_perf_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_freq)
-#		pprint(mkt_strat_perf)
 		mkt_strat_perf = dec_2_float(mkt_strat_perf)
 		mkt_strat_perf = AttrDictConv(in_dict=mkt_strat_perf)
 		if mkt_strat_perf:
 			mkt_strat_perf.buy_strat_desc = buy_strat_desc
-#			pprint(mkt_strat_perf)
 			r = db_mkt_strat_elapsed_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_freq)
 			mkt_strat_perf.strat_bo_elapsed   = r[0]
 			mkt_strat_perf.strat_pos_elapsed  = r[1]
@@ -352,7 +310,7 @@ def report_strats_best(cnt=10, min_trades=1):
 			if show_cnt >= cnt:
 				break
 
-		chart_bottom(in_str='bottom7', len_cnt=232)
+		chart_bottom(len_cnt=232)
 
 	func_end(fnc)
 
@@ -361,10 +319,8 @@ def report_strats_best(cnt=10, min_trades=1):
 def report_pos_open(title, pos, show_pos_open_header_yn='Y'):
 	func_name = 'report_pos_open'
 	func_str = f'{lib_name}.{func_name}(pos)'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
-
-#	chart_title('Currently Open Positions - By Market', len(hmsg))
 
 	hmsg = ''
 	hmsg += f"{'mkt':^12} | "
@@ -374,21 +330,17 @@ def report_pos_open(title, pos, show_pos_open_header_yn='Y'):
 	hmsg += f"{'freq':^10} | "
 	hmsg += f"{'age':^10} | "
 	hmsg += f"{'open @ est':^16} | "
-#	hmsg += f"{'curr_val':^16} | "
 	hmsg += f"{'buy_val':^16} | "
 	hmsg += f"{'buy_prc':^14} | "
 	hmsg += f"{'curr_prc':^14} | "
 	hmsg += f"{'high_prc':^14} | "
 	hmsg += f"{'gain_pct':^8} % | "
 	hmsg += f"{'gain_top':^8} % | "
-#	hmsg += f"{'gain_low':^8} % | "
 	hmsg += f"{'drop_pct':^8} % | "
 	hmsg += f"{'gain_loss':^14} | "
 	hmsg += f"{'gain_loss_high':^14}"
 
 	if show_pos_open_header_yn == 'Y':
-		print(len(hmsg))
-#		chart_top(len_cnt=len(hmsg))
 		chart_top(in_str=title, len_cnt=len(hmsg), align='center')
 		chart_headers(in_str=hmsg, len_cnt=len(hmsg), align='center')
 		chart_mid(len_cnt=len(hmsg))
@@ -407,14 +359,12 @@ def report_pos_open(title, pos, show_pos_open_header_yn='Y'):
 	msg += f'{pos.buy_strat_freq:>10} | '
 	msg += f'{pos.report_age:>10} | '
 	msg += f"{pos.pos_begin_dttm:>16} | "
-#	msg += f'$ {pos.val_tot:>14.8f} | '
 	msg += f'$ {pos.tot_out_cnt:>14.8f} | '
 	msg += f'{pos.prc_buy:>14.8f} | '
 	msg += f'{pos.prc_curr:>14.8f} | '
 	msg += f'{pos.prc_high:>14.8f} | '
 	msg += f'{pos.gain_loss_pct:>8.2f} % | '
 	msg += f'{pos.gain_loss_pct_est_high:>8.2f} % | '
-#	msg += f'{pos.gain_loss_pct_est_low:>8.2f} % | '
 	msg += f'{pos.prc_chg_pct_drop:>8.2f} % | '
 	msg += f'{pos.gain_loss_amt:>14.8f} | '
 	msg += f'{pos.gain_loss_amt_est_high:>14.8f}'
@@ -429,8 +379,8 @@ def report_pos_open(title, pos, show_pos_open_header_yn='Y'):
 def report_pos_close(title, pos, show_pos_close_header_yn='Y'):
 	func_name = 'report_pos_close'
 	func_str = f'{lib_name}.{func_name}(pos)'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
 
 	hmsg = ""
 	hmsg += f"{'mkt':^12} | "
@@ -441,29 +391,22 @@ def report_pos_close(title, pos, show_pos_close_header_yn='Y'):
 	hmsg += f"{'sell':^14} | "
 	hmsg += f"{'age':^10} | "
 	hmsg += f"{'sold @ est':^16} | "
-#	hmsg += f"{'curr_val':^16} | "
 	hmsg += f"{'buy_val':^16} | "
 	hmsg += f"{'buy_prc':^14} | "
 	hmsg += f"{'curr_prc':^14} | "
-#	hmsg += f"{'high_prc':^14} | "
 	hmsg += f"{'gain_pct':^8} % | "
 	hmsg += f"{'gain_est':^8} % | "
 	hmsg += f"{'gain_top':^8} % | "
-#	hmsg += f"{'gain_low':^8} % | "
 	hmsg += f"{'drop_pct':^8} % | "
 	hmsg += f"{'gain_loss':^14} | "
 	hmsg += f"{'gain_loss_est':^14} | "
 	hmsg += f"{'gain_loss_high':^14}"
 
 	if show_pos_close_header_yn == 'Y':
-		print(len(hmsg))
 		chart_top(in_str=title, len_cnt=len(hmsg), align='center')
 		chart_headers(in_str=hmsg, len_cnt=len(hmsg), align='center')
 		chart_mid(len_cnt=len(hmsg))
 		show_pos_close_header_yn = 'N'
-
-#	utc_timezone = pytz.utc
-#	pos.pos_end_dttm = utc_timezone.localize(pos.pos_end_dttm)
 
 	pos.pos_end_dttm = datetime.strptime(pos.pos_end_dttm, "%m-%d-%Y %H:%M")
 	utc_timezone = pytz.utc
@@ -486,15 +429,12 @@ def report_pos_close(title, pos, show_pos_close_header_yn='Y'):
 	msg += f'{pos.sell_strat_name:>14} | '
 	msg += f'{pos.report_age:>10} | '
 	msg += f"{pos.pos_end_dttm:>16} | "
-#	msg += f'$ {pos.val_tot:>14.8f} | '
 	msg += f'$ {pos.tot_out_cnt:>14.8f} | '
 	msg += f'{pos.prc_buy:>14.8f} | '
 	msg += f'{pos.prc_curr:>14.8f} | '
-#	msg += f'{pos.prc_high:>14.8f} | '
 	msg += f'{pos.gain_loss_pct:>8.2f} % | ' # Open Shows Estimates, Closed Shows Actual
 	msg += f'{pos.gain_loss_pct_est:>8.2f} % | '  # Open Shows Estimates, Closed Shows Actual
 	msg += f'{pos.gain_loss_pct_est_high:>8.2f} % | '
-#	msg += f'{pos.gain_loss_pct_est_low:>8.2f} % | '
 	msg += f'{pos.prc_chg_pct_drop:>8.2f} % | '
 	msg += f'{pos.gain_loss_amt:>14.8f} | '
 	msg += f'{pos.gain_loss_amt_est:>14.8f} | '   # Open Shows Estimates, Closed Shows Actual
@@ -510,14 +450,10 @@ def report_pos_close(title, pos, show_pos_close_header_yn='Y'):
 def report_strat(title, mkt_strat_perf, show_strat_header_yn):
 	func_name = 'report_strat'
 	func_str = f'{lib_name}.{func_name}(title, mkt_strat_perf, show_strat_header_yn)'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
-
-#	pprint(mkt_strat_perf)
 
 	hmsg = ""
-#	hmsg += f"{x.prod_id} | "
-#	hmsg += f"{x.buy_strat_type} | "
 	hmsg += f"{'mkt':<15} | "
 	hmsg += f"{'desc':<45} | "
 	hmsg += f"{'strat':<15} | "
@@ -529,22 +465,13 @@ def report_strat(title, mkt_strat_perf, show_strat_header_yn):
 	hmsg += f"{'lose':^5} | "
 	hmsg += f"{'win':^6} % | "
 	hmsg += f"{'lose':^6} % | "
-#	hmsg += f"{'hours':<6} | "
-#	hmsg += f"{'tot_out_cnt':<10} | "
-#	hmsg += f"{'tot_in_cnt':<10} | "
-#	hmsg += f"{'fees_cnt_tot':<10} | "
-#	hmsg += f"{'val_curr':<10} | "
-#	hmsg += f"{'val_tot':<10} | "
 	hmsg += f"{'gain_amt':^10} | "
 	hmsg += f"{'gain_pct':^10} % | "
 	hmsg += f"{'gain_hr':^10} % | "
 	hmsg += f"{'gain_day':^10} % | "
-#	hmsg += f"{'bo_elapsed':<10} | "
-#	hmsg += f"{'pos_elapsed':<10} | "
 	hmsg += f"{'elapsed':^7} | "
 
 	if show_strat_header_yn == 'Y':
-		print(len(hmsg))
 		chart_top(in_str=title, len_cnt=len(hmsg), align='center')
 		chart_headers(in_str=hmsg, len_cnt=len(hmsg), align='center')
 		chart_mid(len_cnt=len(hmsg))
@@ -552,7 +479,6 @@ def report_strat(title, mkt_strat_perf, show_strat_header_yn):
 
 	msg = ''
 	msg += f'{mkt_strat_perf.prod_id:<15} | '
-#	msg += f'{mkt_strat_perf.buy_strat_type} | '
 	msg += f'{mkt_strat_perf.buy_strat_desc:<45} | '
 	msg += f'{mkt_strat_perf.buy_strat_name:<15} | '
 	msg += f'{mkt_strat_perf.buy_strat_freq:<15} | '
@@ -563,18 +489,10 @@ def report_strat(title, mkt_strat_perf, show_strat_header_yn):
 	msg += f'{int(mkt_strat_perf.lose_cnt):>5} | '
 	msg += f'{mkt_strat_perf.win_pct:>6.2f} % | '
 	msg += f'{mkt_strat_perf.lose_pct:>6.2f} % | '
-#	msg += f'{mkt_strat_perf.age_hours:<6} | '
-#	msg += f'{mkt_strat_perf.tot_out_cnt:<10} | '
-#	msg += f'{mkt_strat_perf.tot_in_cnt:<10} | '
-#	msg += f'{mkt_strat_perf.fees_cnt_tot:<10} | '
-#	msg += f'{mkt_strat_perf.val_curr:<10} | '
-#	msg += f'{mkt_strat_perf.val_tot:<10} | '
 	msg += f'{mkt_strat_perf.gain_loss_amt:>10.2f} | '
 	msg += f'{mkt_strat_perf.gain_loss_pct:>10.2f} % | '
 	msg += f'{mkt_strat_perf.gain_loss_pct_hr:>10.2f} % | '
 	msg += f'{mkt_strat_perf.gain_loss_pct_day:>10.2f} % | '
-#	msg += f'{mkt_strat_perf.bo_elapsed:<10} | '
-#	msg += f'{mkt_strat_perf.pos_elapsed:<10} | '
 	msg += f'{mkt_strat_perf.strat_last_elapsed:>7} | '
 	msg = cs_pct_color_50(pct=mkt_strat_perf.win_pct, msg=msg)
 
@@ -587,8 +505,8 @@ def report_strat(title, mkt_strat_perf, show_strat_header_yn):
 def report_strats():
 	func_name = 'report_strats'
 	func_str = f'{lib_name}.{func_name}()'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
 
 	hf = ''
 	mf = ''
@@ -613,10 +531,6 @@ def report_strats():
 	hs.append('sell_cnt')
 	mf += '{:^8} | '
 	hf += '{:^8} | '
-
-#	hs.append('sell_attempts')
-#	hf += '{:^8} | '
-#	mf += '{:^8} | '
 
 	hs.append('spent_amt')
 	hf += '{:^10} | '
@@ -649,14 +563,6 @@ def report_strats():
 	hs.append('val_curr')
 	hf += '{:^10} | '
 	mf += '{:>10.2f} | '
-
-#	hs.append('fees_buy')
-#	hf += '{:^21} | '
-#	mf += '{:>21.8f} | '
-
-#	hs.append('fees_sell')
-#	hf += '{:^21} | '
-#	mf += '{:>21.8f} | '
 
 	hs.append('fees_tot')
 	hf += '{:^10} | '
@@ -805,8 +711,8 @@ def report_strats():
 def disp_recent(show_pos_close_header_yn='Y'):
 	func_name = 'disp_recent'
 	func_str = f'{lib_name}.{func_name}()'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name)
 
 	print_adv(3)
 
@@ -818,7 +724,6 @@ def disp_recent(show_pos_close_header_yn='Y'):
 	hmsg += f"{'sell':^14} | "
 	hmsg += f"{'age':^10} | "
 	hmsg += f"{'sold @ utc':^16} | "
-#	hmsg += f"{'curr_val':^16} | "
 	hmsg += f"{'buy_val':^16} | "
 	hmsg += f"{'buy_prc':^14} | "
 	hmsg += f"{'curr_prc':^14} | "
@@ -826,7 +731,6 @@ def disp_recent(show_pos_close_header_yn='Y'):
 	hmsg += f"{'gain_pct':^8} % | "
 	hmsg += f"{'gain_est':^8} % | "
 	hmsg += f"{'gain_top':^8} % | "
-#	hmsg += f"{'gain_low':^8} % | "
 	hmsg += f"{'drop_pct':^8} % | "
 	hmsg += f"{'gain_loss':^14} | "
 	hmsg += f"{'gain_loss_est':^14} | "
@@ -835,7 +739,6 @@ def disp_recent(show_pos_close_header_yn='Y'):
 	title = 'Recently Closed Positions'
 	show_pos_close_header_yn = 'Y'
 	if show_pos_close_header_yn == 'Y':
-		print(len(hmsg))
 		chart_top(in_str=title, len_cnt=len(hmsg), align='center')
 		chart_headers(in_str=hmsg, len_cnt=len(hmsg), align='center')
 		chart_mid(len_cnt=len(hmsg))
@@ -857,7 +760,6 @@ def disp_recent(show_pos_close_header_yn='Y'):
 			msg += f'{pos.sell_strat_name:>14} | '
 			msg += f'{disp_age:>10} | '
 			msg += f"{pos.pos_end_dttm:>16} | "
-#			msg += f'$ {pos.val_tot:>14.8f} | '
 			msg += f'$ {pos.tot_out_cnt:>14.8f} | '
 			msg += f'{pos.prc_buy:>14.8f} | '
 			msg += f'{pos.prc_curr:>14.8f} | '
@@ -865,7 +767,6 @@ def disp_recent(show_pos_close_header_yn='Y'):
 			msg += f'{pos.gain_loss_pct:>8.2f} % | ' # Open Shows Estimates, Closed Shows Actual
 			msg += f'{pos.gain_loss_pct_est:>8.2f} % | '  # Open Shows Estimates, Closed Shows Actual
 			msg += f'{pos.gain_loss_pct_est_high:>8.2f} % | '
-#			msg += f'{pos.gain_loss_pct_est_low:>8.2f} % | '
 			msg += f'{pos.prc_chg_pct_drop:>8.2f} % | '
 			msg += f'{pos.gain_loss_amt:>14.8f} | '
 			msg += f'{pos.gain_loss_amt_est:>14.8f} | '   # Open Shows Estimates, Closed Shows Actual
@@ -883,14 +784,12 @@ def disp_recent(show_pos_close_header_yn='Y'):
 	hmsg += f"{'freq':^10} | "
 	hmsg += f"{'age':^10} | "
 	hmsg += f"{'open @ est':^16} | "
-#	hmsg += f"{'curr_val':^16} | "
 	hmsg += f"{'buy_val':^16} | "
 	hmsg += f"{'buy_prc':^14} | "
 	hmsg += f"{'curr_prc':^14} | "
 	hmsg += f"{'high_prc':^14} | "
 	hmsg += f"{'gain_pct':^8} % | "
 	hmsg += f"{'gain_top':^8} % | "
-#	hmsg += f"{'gain_low':^8} % | "
 	hmsg += f"{'drop_pct':^8} % | "
 	hmsg += f"{'gain_loss':^14} | "
 	hmsg += f"{'gain_loss_high':^14}"
@@ -898,7 +797,6 @@ def disp_recent(show_pos_close_header_yn='Y'):
 	title = 'Currently Open Positions - By Market'
 	show_pos_close_header_yn = 'Y'
 	if show_pos_close_header_yn == 'Y':
-		print(len(hmsg))
 		chart_top(in_str=title, len_cnt=len(hmsg), align='center')
 		chart_headers(in_str=hmsg, len_cnt=len(hmsg), align='center')
 		chart_mid(len_cnt=len(hmsg))
@@ -919,14 +817,12 @@ def disp_recent(show_pos_close_header_yn='Y'):
 			msg += f'{pos.buy_strat_freq:>10} | '
 			msg += f'{disp_age:>10} | '
 			msg += f"{pos.pos_begin_dttm:>16} | "
-#			msg += f'$ {pos.val_tot:>14.8f} | '
 			msg += f'$ {pos.tot_out_cnt:>14.8f} | '
 			msg += f'{pos.prc_buy:>14.8f} | '
 			msg += f'{pos.prc_curr:>14.8f} | '
 			msg += f'{pos.prc_high:>14.8f} | '
 			msg += f'{pos.gain_loss_pct:>8.2f} % | '
 			msg += f'{pos.gain_loss_pct_est_high:>8.2f} % | '
-#			msg += f'{pos.gain_loss_pct_est_low:>8.2f} % | '
 			msg += f'{pos.prc_chg_pct_drop:>8.2f} % | '
 			msg += f'{pos.gain_loss_amt:>14.8f} | '
 			msg += f'{pos.gain_loss_amt_est_high:>14.8f}'
@@ -943,14 +839,12 @@ def disp_recent(show_pos_close_header_yn='Y'):
 	hmsg += f"{'freq':^10} | "
 	hmsg += f"{'age':^10} | "
 	hmsg += f"{'open @ est':^16} | "
-#	hmsg += f"{'curr_val':^16} | "
 	hmsg += f"{'buy_val':^16} | "
 	hmsg += f"{'buy_prc':^14} | "
 	hmsg += f"{'curr_prc':^14} | "
 	hmsg += f"{'high_prc':^14} | "
 	hmsg += f"{'gain_pct':^8} % | "
 	hmsg += f"{'gain_top':^8} % | "
-#	hmsg += f"{'gain_low':^8} % | "
 	hmsg += f"{'drop_pct':^8} % | "
 	hmsg += f"{'gain_loss':^14} | "
 	hmsg += f"{'gain_loss_high':^14}"
@@ -958,13 +852,11 @@ def disp_recent(show_pos_close_header_yn='Y'):
 	title = 'Currently Open Positions - By Age Desc'
 	show_pos_close_header_yn = 'Y'
 	if show_pos_close_header_yn == 'Y':
-		print(len(hmsg))
 		chart_top(in_str=title, len_cnt=len(hmsg), align='center')
 		chart_headers(in_str=hmsg, len_cnt=len(hmsg), align='center')
 		chart_mid(len_cnt=len(hmsg))
 		show_pos_close_header_yn = 'N'
 
-#	poss = db_poss_open_get()
 	if poss:
 		poss_sorted = sorted(poss, key=lambda x: x["age_mins"], reverse=True)
 		poss = poss_sorted
@@ -982,14 +874,12 @@ def disp_recent(show_pos_close_header_yn='Y'):
 			msg += f'{pos.buy_strat_freq:>10} | '
 			msg += f'{disp_age:>10} | '
 			msg += f"{pos.pos_begin_dttm:>16} | "
-#			msg += f'$ {pos.val_tot:>14.8f} | '
 			msg += f'$ {pos.tot_out_cnt:>14.8f} | '
 			msg += f'{pos.prc_buy:>14.8f} | '
 			msg += f'{pos.prc_curr:>14.8f} | '
 			msg += f'{pos.prc_high:>14.8f} | '
 			msg += f'{pos.gain_loss_pct:>8.2f} % | '
 			msg += f'{pos.gain_loss_pct_est_high:>8.2f} % | '
-#			msg += f'{pos.gain_loss_pct_est_low:>8.2f} % | '
 			msg += f'{pos.prc_chg_pct_drop:>8.2f} % | '
 			msg += f'{pos.gain_loss_amt:>14.8f} | '
 			msg += f'{pos.gain_loss_amt_est_high:>14.8f}'
