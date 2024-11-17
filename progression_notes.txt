@@ -3,6 +3,11 @@ Modifications Log
 -------------------------------------------------
 -------------------------------------------------
 
+    2024-11-17
+        summary: 2 months of changes and edits
+        I have fallen behind in updating the github repository, but have been actively coding daily
+        I have lost track of everything that has changed since my last commit
+
     2024-09-10
         summary: ohlcv tables, mysql stays, increased speed
         Removed all he DuckDb test code.  
