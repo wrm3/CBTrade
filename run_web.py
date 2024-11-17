@@ -99,7 +99,6 @@ def all_reports_test() -> str:
 							, html_disp  = sh
 							)
 
-
 #<=====>#
 
 @app.route("/balances.htm")

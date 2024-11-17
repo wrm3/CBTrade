@@ -258,7 +258,7 @@ class db_mysql(object):
 
 #<=====>#
 
-	def ins_one(self, sql, vals=None):
+	def ins_one(self, sql, vals=None, exit_on_error=True):
 		try:
 			self.__open()
 			if vals:
@@ -274,12 +274,12 @@ class db_mysql(object):
 			print(e)
 			self.pretty_print_sql(sql)
 			print(vals)
-			sys.exit()
+			if exit_on_error: sys.exit()
 		return self.__session.lastrowid
 
 #<=====>#
 
-	def ins_many(self, sql, vals):
+	def ins_many(self, sql, vals, exit_on_error=True):
 		try:
 			self.__open()
 			self.__session.executemany(sql, vals)
@@ -292,12 +292,12 @@ class db_mysql(object):
 			print(e)
 			self.pretty_print_sql(sql)
 			print(vals)
-			sys.exit()
+			if exit_on_error: sys.exit()
 		return self.__session.rowcount
 
 #<=====>#
 
-	def upd(self, sql, vals=None):
+	def upd(self, sql, vals=None, exit_on_error=True):
 		try:
 			self.__open()
 			if vals:
@@ -315,7 +315,7 @@ class db_mysql(object):
 			print(e)
 			self.pretty_print_sql(sql)
 			print(vals)
-			sys.exit()
+			if exit_on_error: sys.exit()
 		return update_rows
 
 #<=====>#
@@ -396,7 +396,7 @@ class db_mysql(object):
 
 #<=====>#
 
-	def ins_ez(self, schema, table, in_dict):
+	def ins_ez(self, schema, table, in_dict, exit_on_error=True):
 		try:
 			x = -1
 			# vals = []
@@ -424,7 +424,7 @@ class db_mysql(object):
 			print(schema)
 			print(table)
 			print(in_dict)
-			sys.exit()
+			if exit_on_error: sys.exit()
 		return x
 
 #<=====>#
@@ -473,7 +473,7 @@ class db_mysql(object):
 
 #<=====>#
 
-	def upd_ez(self, schema, table, in_dict, where_dict=None):
+	def upd_ez(self, schema, table, in_dict, where_dict=None, exit_on_error=True):
 		try:
 			x = -1
 			sql1 = "update {}.{} ".format(schema, table)
@@ -509,12 +509,12 @@ class db_mysql(object):
 			print(table)
 			print(in_dict)
 			print(where_dict)
-			sys.exit()
+			if exit_on_error: sys.exit()
 		return x
 
 #<=====>#
 
-	def del_ez(self, schema, table, where_dict=None):
+	def del_ez(self, schema, table, where_dict=None, exit_on_error=True):
 		try:
 			x = -1
 			sql = f"delete from {schema}.{table}"
@@ -543,7 +543,7 @@ class db_mysql(object):
 
 #<=====>#
 
-	async def sel_async(self, sql, vals=None):
+	async def sel_async(self, sql, vals=None, exit_on_error=True):
 		try:
 			r = None
 			conn = await aiomysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
@@ -571,7 +571,7 @@ class db_mysql(object):
 			print(type(e))
 			print(e)
 			print('exiting...')
-			sys.exit()
+			if exit_on_error: sys.exit()
 		return r
 
 #<=====>#
@@ -624,7 +624,7 @@ class db_mysql(object):
 
 #<=====>#
 
-	async def seld_async(self, sql, vals=None):
+	async def seld_async(self, sql, vals=None, exit_on_error=True):
 		try:
 			r = None
 			conn = await aiomysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
@@ -648,13 +648,12 @@ class db_mysql(object):
 			print(type(e))
 			print(e)
 			print('exiting...')
-			sys.exit()
-
+			if exit_on_error: sys.exit()
 		return r
 
 #<=====>#
 
-	async def ins_one_async(self, sql, vals=None):
+	async def ins_one_async(self, sql, vals=None, exit_on_error=True):
 		try:
 			r = None
 			conn = await aiomysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
@@ -672,12 +671,12 @@ class db_mysql(object):
 			print(type(e))
 			print(e)
 			print('exiting...')
-			sys.exit()
+			if exit_on_error: sys.exit()
 		return r
 
 #<=====>#
 
-	async def ins_many_async(self, sql, vals):
+	async def ins_many_async(self, sql, vals, exit_on_error=True):
 		try:
 			r = None
 			conn = await aiomysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
@@ -695,12 +694,12 @@ class db_mysql(object):
 			print(type(e))
 			print(e)
 			print('exiting...')
-			sys.exit()
+			if exit_on_error: sys.exit()
 		return r
 
 #<=====>#
 
-	async def upd_async(self, sql, vals=None):
+	async def upd_async(self, sql, vals=None, exit_on_error=True):
 		try:
 			r = None
 			conn = await aiomysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
@@ -718,12 +717,12 @@ class db_mysql(object):
 			print(type(e))
 			print(e)
 			print('exiting...')
-			sys.exit()
+			if exit_on_error: sys.exit()
 		return r
 
 #<=====>#
 
-	async def delete_async(self, sql, vals=None):
+	async def delete_async(self, sql, vals=None, exit_on_error=True):
 		try:
 			r = None
 			conn = await aiomysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
@@ -741,12 +740,12 @@ class db_mysql(object):
 			print(type(e))
 			print(e)
 			print('exiting...')
-			sys.exit()
+			if exit_on_error: sys.exit()
 		return r
 
 #<=====>#
 
-	async def execute_async(self, sql, vals=None):
+	async def execute_async(self, sql, vals=None, exit_on_error=True):
 		try:
 			r = None
 			conn = await aiomysql.connect(host=self.db_host, port=self.db_port, db=self.db_name, user=self.db_user, password=self.db_pw)
@@ -764,7 +763,7 @@ class db_mysql(object):
 			print(type(e))
 			print(e)
 			print('exiting...')
-			sys.exit()
+			if exit_on_error: sys.exit()
 		return r
 
 #<=====>#

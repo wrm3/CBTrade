@@ -182,6 +182,29 @@ def DictKeyValFill(in_dict, k, v):
 
 #<=====>#
 
+def DictKey(in_dict, k):
+	func_name = 'DictKey'
+	'''
+	Returns Boolean if key in in_dict
+	'''
+	try:
+		resp = False
+		if k in in_dict:
+			resp = True
+	except Exception as e:
+		print('{} ==> errored... {}'.format(func_name, e))
+		traceback.print_exc()
+		traceback.print_stack()
+		print(type(e))
+		print(e)
+		print('k : {} ({})'.format(k, type(k)))
+		print('in_dict : ({})'.format(type(in_dict)))
+		pprint(in_dict)
+		sys.exit()
+	return resp
+
+#<=====>#
+
 def DictKeyVal(in_dict, k):
 	func_name = 'DictKeyVal'
 	'''

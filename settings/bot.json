@@ -1,7 +1,7 @@
 {
 	"edited_yn": "Y",
 	"loop_secs": 15,
-	"auto_loop_secs": 180,
+	"auto_loop_secs": 60,
 	"speak_yn": "Y",
 	"trade_markets": {
 		"USDC": {

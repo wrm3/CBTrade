@@ -1,11 +1,11 @@
 {
     "edited_yn": "N",
     "elapse_max": {
-        "***": 10,
-        "bot_cls_buy": 10,
-        "bot_cls_market": 10,
-        "bot_cls_pair": 10,
-        "bot_cls_main": 10,
-        "bot_cls_sell": 10
+        "***": 5,
+        "bot_cls_buy": 5,
+        "bot_cls_market": 5,
+        "bot_cls_pair": 5,
+        "bot_cls_main": 5,
+        "bot_cls_sell": 5
     }
 }

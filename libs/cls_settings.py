@@ -17,6 +17,8 @@ import json
 from datetime import datetime as dt
 import os
 import traceback
+from pprint import pprint
+import sys
 
 
 #<=====>#
@@ -255,9 +257,33 @@ class Settings():
 # Functions
 #<=====>#
 
-def test_main():
-	pass
-
+def AttrDictConv(in_dict=None):
+	func_name = 'AttrDictConv'
+	out_attr_dict = AttrDict()
+	'''
+	Returns AttrDict from dict
+	If No Dict is provided returns AttrDict
+	'''
+	try:
+		if in_dict:
+			if isinstance(in_dict, dict):
+				for k in in_dict:
+					v = in_dict[k]
+					if isinstance(v, dict):
+						v = AttrDictConv(v)
+					out_attr_dict[k] = v
+	except Exception as e:
+		print(f'{lib_name}.{func_name} ==> errored... {e}')
+		traceback.print_exc()
+		traceback.print_stack()
+		print(type(e))
+		print(e)
+		print('k : {} ({})'.format(k, type(k)))
+		print('v : {} ({})'.format(v, type(v)))
+		print('in_dict : ({})'.format(type(in_dict)))
+		pprint(in_dict)
+		sys.exit()
+	return out_attr_dict
 
 #<=====>#
 # Post Variables

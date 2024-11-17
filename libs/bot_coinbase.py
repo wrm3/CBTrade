@@ -28,10 +28,11 @@ from libs.bot_db_write import (
 )
 from libs.bot_settings import debug_settings_get, get_lib_func_secs_max
 from libs.cls_settings import AttrDict
-from libs.lib_common import dttm_get, func_begin, func_end
+from libs.lib_common import dttm_get, func_begin, func_end, beep
 from pprint import pprint
 import pandas as pd
 import time
+from libs.lib_colors import G
 
 
 #<=====>#
@@ -131,15 +132,15 @@ product_ids (str or list of str) List of product IDs to return.
 
 '''
 
-def cb_bid_ask_by_amt_get(mkt, buy_sell_size):
+def cb_bid_ask_by_amt_get(pair, buy_sell_size):
 	func_name = 'cb_bid_ask_by_amt_get'
 	func_str = f'{lib_name}.{func_name}(mkt, buy_sell_size={buy_sell_size})'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	prod_id = mkt.prod_id
-	bid_prc = mkt.prc
-	ask_prc = mkt.prc
+	prod_id = pair.prod_id
+	bid_prc = pair.prc
+	ask_prc = pair.prc
 
 	try:
 
@@ -238,7 +239,7 @@ def cb_candles_get(product_id, start = None, end = None, rfreq = None, granulari
 	func_name = 'cb_candles_get'
 	func_str = f'{lib_name}.{func_name}(product_id : {product_id}, start : {start}, end : {end}, rfreq : {rfreq}, min_rows : {min_rows})'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
+	# G(func_str)
 
 	secs = 0
 	now = int(round(datetime.now().timestamp()))
@@ -881,11 +882,22 @@ def cb_wallet_refresh():
 			all_bals.append(curr)
 		all_currs.append(curr)
 
-	db_tbl_bals_insupd(all_bals)
-	db_tbl_currs_insupd(all_currs)
+	# this keeps colliding with other bots when 
+	# they both hit here at the same time
+	# this function should get moved to auto loop
+	try:
+		db_tbl_bals_insupd(all_bals)
+		db_tbl_currs_insupd(all_currs)
+		db_currs_prc_mkt_upd()
+		db_bals_prc_mkt_upd()
+	except Exception as e:
+		traceback.print_exc()
+		traceback.print_stack()
+		print(type(e))
+		print(e)
+		beep()
+		pass
 
-	db_currs_prc_mkt_upd()
-	db_bals_prc_mkt_upd()
 
 	t1 = time.perf_counter()
 	elapsed_seconds = round(t1 - t0, 2)

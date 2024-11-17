@@ -25,7 +25,8 @@ from libs.bot_db_read import db_table_names_get
 from libs.bot_settings import debug_settings_get, get_lib_func_secs_max
 from libs.cls_db_mysql import db_mysql
 from libs.lib_common import dttm_get, func_begin, func_end, print_adv, dir_val
-from libs.lib_charts import left
+from libs.lib_charts import left, chart_top, chart_row, chart_bottom
+from libs.lib_colors import G
 
 
 #<=====>#
@@ -73,6 +74,42 @@ def db_safe_string(in_str):
 
 #<=====>#
 
+def db_mkt_checks_buy_upd(prod_id, guid):
+	func_name = 'db_mkt_checks_buy_upd'
+	func_str = f'{lib_name}.{func_name}(prod_id={prod_id}, guid={guid})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "update cbtrade.mkt_checks mc "
+	sql += f"  set mc.buy_check_dttm = NOW(), buy_check_guid = '{guid}' "
+	sql += f"  where mc.prod_id = '{prod_id}'"
+#	print(sql)
+	x = db.upd(sql)
+#	print(x)
+
+	func_end(fnc)
+
+#<=====>#
+
+def db_mkt_checks_sell_upd(prod_id, guid):
+	func_name = 'db_mkt_checks_sell_upd'
+	func_str = f'{lib_name}.{func_name}(prod_id={prod_id}, guid={guid})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "update cbtrade.mkt_checks mc "
+	sql += f"  set mc.sell_check_dttm = NOW(), sell_check_guid = '{guid}' "
+	sql += f"  where mc.prod_id = '{prod_id}'"
+#	print(sql)
+	x = db.upd(sql)
+#	print(x)
+
+	func_end(fnc)
+
+#<=====>#
+
 def db_poss_check_mkt_dttm_upd(prod_id):
 	func_name = 'db_poss_check_mkt_dttm_upd'
 	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
@@ -108,143 +145,143 @@ def db_poss_check_last_dttm_upd(pos_id):
 
 #<=====>#
 
-def db_check_ohlcv_prod_id_piano(prod_id, in_data):
-	func_name = 'db_check_ohlcv_prod_id_piano'
-#	G(func_name)
+# def db_check_ohlcv_prod_id_piano(prod_id, in_data):
+# 	func_name = 'db_check_ohlcv_prod_id_piano'
+# #	G(func_name)
 
-#	freqs = ['1min','3min','5min','15min','30min','1h','4h','1d']
-	freqs = ['1min','5min','15min','30min','1h','4h','1d']
+# #	freqs = ['1min','3min','5min','15min','30min','1h','4h','1d']
+# 	freqs = ['1min','5min','15min','30min','1h','4h','1d']
 
-	sql = ''
-	sql += 'create table if not exists '
-	sql += f'ohlcv_{prod_id}_piano('
-	sql += '    prod_id     varchar(64) '
-	for freq in freqs:
-		sql += '  , timestamp   timestamp '
-		sql += '  , freq_{freq}        varchar(64) '
-		sql += '  , open_{freq}        decimal(36, 12) '
-		sql += '  , high_{freq}        decimal(36, 12) '
-		sql += '  , low_{freq}         decimal(36, 12) '
-		sql += '  , close_{freq}       decimal(36, 12) '
-		sql += '  , volume_{freq}      decimal(36, 12) '
-		sql += '  , start_dttm_{freq}  timestamp, '
-		sql += '  , end_dttm_{freq}    timestamp '
-	sql += '  , upd_dttm    timestamp '
-	sql += '  , dlm         timestamp default current_timestamp on update current_timestamp '                              
-	sql += ');'
-
-	db.execute(sql)
-
-#<=====>#
-
-def db_check_ohlcv_prod_id_table(prod_id):
-	func_name = 'db_check_ohlcv_prod_id_table'
-#	G(func_name)
-
-	prod_id = prod_id.replace('-','_')
-
-	sql = ""
-	sql += "create table if not exists "
-	sql += f"ohlcv_{prod_id} ("
-	sql += "  timestamp     timestamp "
-	sql += "  , freq        varchar(64) "
-	sql += "  , open        decimal(36, 12) "
-	sql += "  , high        decimal(36, 12) "
-	sql += "  , low         decimal(36, 12) "
-	sql += "  , close       decimal(36, 12) "
-	sql += "  , volume      decimal(36, 12) "
-	sql += "  , start_dttm  timestamp "
-	sql += "  , end_dttm    timestamp "
-	sql += "  , upd_dttm    timestamp default current_timestamp on update current_timestamp "
-	sql += "  , dlm         timestamp default current_timestamp on update current_timestamp "
-	sql += "  , unique(timestamp, freq) "
-	sql += "  )"
+# 	sql = ''
+# 	sql += 'create table if not exists '
+# 	sql += f'ohlcv_{prod_id}_piano('
+# 	sql += '    prod_id     varchar(64) '
+# 	for freq in freqs:
+# 		sql += '  , timestamp   timestamp '
+# 		sql += '  , freq_{freq}        varchar(64) '
+# 		sql += '  , open_{freq}        decimal(36, 12) '
+# 		sql += '  , high_{freq}        decimal(36, 12) '
+# 		sql += '  , low_{freq}         decimal(36, 12) '
+# 		sql += '  , close_{freq}       decimal(36, 12) '
+# 		sql += '  , volume_{freq}      decimal(36, 12) '
+# 		sql += '  , start_dttm_{freq}  timestamp, '
+# 		sql += '  , end_dttm_{freq}    timestamp '
+# 	sql += '  , upd_dttm    timestamp '
+# 	sql += '  , dlm         timestamp default current_timestamp on update current_timestamp '                              
+# 	sql += ');'
 
 	db.execute(sql)
 
-	time.sleep(0.05)
+#<=====>#
+
+# def db_check_ohlcv_prod_id_table(prod_id):
+# 	func_name = 'db_check_ohlcv_prod_id_table'
+# #	G(func_name)
+
+# 	prod_id = prod_id.replace('-','_')
+
+# 	sql = ""
+# 	sql += "create table if not exists "
+# 	sql += f"ohlcv_{prod_id} ("
+# 	sql += "  timestamp     timestamp "
+# 	sql += "  , freq        varchar(64) "
+# 	sql += "  , open        decimal(36, 12) "
+# 	sql += "  , high        decimal(36, 12) "
+# 	sql += "  , low         decimal(36, 12) "
+# 	sql += "  , close       decimal(36, 12) "
+# 	sql += "  , volume      decimal(36, 12) "
+# 	sql += "  , start_dttm  timestamp "
+# 	sql += "  , end_dttm    timestamp "
+# 	sql += "  , upd_dttm    timestamp default current_timestamp on update current_timestamp "
+# 	sql += "  , dlm         timestamp default current_timestamp on update current_timestamp "
+# 	sql += "  , unique(timestamp, freq) "
+# 	sql += "  )"
+
+# 	db.execute(sql)
+
+# 	time.sleep(0.05)
 
 
 #<=====>#
 
-def db_tbl_ohlcv_prod_id_insupd(prod_id, freq, in_df):
-	func_name = 'db_tbl_ohlcv_prod_id_insupd'
-	func_str = f'{lib_name}.{func_name}(prod_id={prod_id}, freq={freq}, in_df)'
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
+# def db_tbl_ohlcv_prod_id_insupd(prod_id, freq, in_df):
+# 	func_name = 'db_tbl_ohlcv_prod_id_insupd'
+# 	func_str = f'{lib_name}.{func_name}(prod_id={prod_id}, freq={freq}, in_df)'
+# 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+# #	G(func_str)
 
-	prod_id = prod_id.replace('-','_')
+# 	prod_id = prod_id.replace('-','_')
 
-	in_df['freq'] = freq
+# 	in_df['freq'] = freq
 
-	in_df['start_dttm'] = in_df.index
-	if freq == '1min':
-		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=59) 
-#	elif freq == '3min':
-#		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=179) 
-	elif freq == '5min':
-		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=299) 
-	elif freq == '15min':
-		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=899) 
-	elif freq == '30min':
-		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=1799) 
-	elif freq == '1h':
-		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=3599) 
-	elif freq == '4h':
-		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=14399) 
-	elif freq == '1d':
-		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=86399) 
+# 	in_df['start_dttm'] = in_df.index
+# 	if freq == '1min':
+# 		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=59) 
+# #	elif freq == '3min':
+# #		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=179) 
+# 	elif freq == '5min':
+# 		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=299) 
+# 	elif freq == '15min':
+# 		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=899) 
+# 	elif freq == '30min':
+# 		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=1799) 
+# 	elif freq == '1h':
+# 		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=3599) 
+# 	elif freq == '4h':
+# 		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=14399) 
+# 	elif freq == '1d':
+# 		in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=86399) 
 
-	in_data = in_df.reset_index().rename(columns={'index': 'timestamp'}).to_dict(orient='records')
+# 	in_data = in_df.reset_index().rename(columns={'index': 'timestamp'}).to_dict(orient='records')
 
-	table_name = f'ohlcv_{prod_id}'
+# 	table_name = f'ohlcv_{prod_id}'
 
-	db_tbl_insupd(table_name, in_data)
+# 	db_tbl_insupd(table_name, in_data, exit_on_error=False)
 
-	func_end(fnc)
+# 	func_end(fnc)
 
 #<=====>#
 
-def db_tbl_ohlcv_prod_id_insupd_many(prod_id, in_dfs):
-	func_name = 'db_tbl_ohlcv_prod_id_insupd_many'
-	func_str = f'{lib_name}.{func_name}(prod_id={prod_id}, in_df)'
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
+# def db_tbl_ohlcv_prod_id_insupd_many(prod_id, in_dfs):
+# 	func_name = 'db_tbl_ohlcv_prod_id_insupd_many'
+# 	func_str = f'{lib_name}.{func_name}(prod_id={prod_id}, in_df)'
+# 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+# #	G(func_str)
 
-	prod_id = prod_id.replace('-','_')
+# 	prod_id = prod_id.replace('-','_')
 
-	all_data = []
+# 	all_data = []
 
-	for rfreq in in_dfs:
-		in_df = in_dfs[rfreq] 
+# 	for rfreq in in_dfs:
+# 		in_df = in_dfs[rfreq] 
 
-		in_df['freq'] = rfreq
+# 		in_df['freq'] = rfreq
 
-		in_df['start_dttm'] = in_df.index
-		if rfreq == '1min':
-			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=59) 
-#		elif rfreq == '3min':
-#			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=179) 
-		elif rfreq == '5min':
-			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=299) 
-		elif rfreq == '15min':
-			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=899) 
-		elif rfreq == '30min':
-			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=1799) 
-		elif rfreq == '1h':
-			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=3599) 
-		elif rfreq == '4h':
-			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=14399) 
-		elif rfreq == '1d':
-			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=86399) 
+# 		in_df['start_dttm'] = in_df.index
+# 		if rfreq == '1min':
+# 			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=59) 
+# #		elif rfreq == '3min':
+# #			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=179) 
+# 		elif rfreq == '5min':
+# 			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=299) 
+# 		elif rfreq == '15min':
+# 			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=899) 
+# 		elif rfreq == '30min':
+# 			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=1799) 
+# 		elif rfreq == '1h':
+# 			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=3599) 
+# 		elif rfreq == '4h':
+# 			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=14399) 
+# 		elif rfreq == '1d':
+# 			in_df['end_dttm'] = in_df['start_dttm'] + timedelta(seconds=86399) 
 
-		in_data = in_df.reset_index().rename(columns={'index': 'timestamp'}).to_dict(orient='records')
-		all_data.extend(in_data)
+# 		in_data = in_df.reset_index().rename(columns={'index': 'timestamp'}).to_dict(orient='records')
+# 		all_data.extend(in_data)
 
-	table_name = f'ohlcv_{prod_id}'
-	db_tbl_insupd(table_name, all_data)
+# 	table_name = f'ohlcv_{prod_id}'
+# 	db_tbl_insupd(table_name, all_data, exit_on_error=False)
 
-	func_end(fnc)
+# 	func_end(fnc)
 
 #<=====>#
 
@@ -415,15 +452,17 @@ def db_tbl_del(table_name):
 
 #<=====>#
 
-def db_tbl_insupd(table_name, in_data, rat_on_extra_cols_yn='N'):
+def db_tbl_insupd(table_name, in_data, rat_on_extra_cols_yn='N', exit_on_error=True):
 	func_name = 'db_tbl_insupd'
 	func_str = '{}.{}(table_name={}, in_data)'.format(lib_name, func_name, table_name)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	tbl_cols  = db.table_cols(table=table_name)
 	data_cols = []
 	ins_data  = []
+
 
 	if isinstance(in_data, dict):
 		if in_data:
@@ -500,10 +539,14 @@ def db_tbl_insupd(table_name, in_data, rat_on_extra_cols_yn='N'):
 		print(formatted_sql)
 		print(f'vals : {ins_data}')
 
+	t1 = time.perf_counter()
+
+	t0 = time.perf_counter()
 	if ins_type == 'one':
-		db.ins_one(sql=sql, vals=ins_data)
+		db.ins_one(sql=sql, vals=ins_data, exit_on_error=exit_on_error)
 	else:
-		db.ins_many(sql=sql, vals=ins_data)
+		db.ins_many(sql=sql, vals=ins_data, exit_on_error=exit_on_error)
+	t1 = time.perf_counter()
 
 	func_end(fnc)
 
@@ -517,7 +560,7 @@ def db_tbl_bals_insupd(in_data):
 
 	table_name = 'bals'
 	db_tbl_del(table_name=table_name)
-	db_tbl_insupd(table_name, in_data)
+	db_tbl_insupd(table_name, in_data, exit_on_error=False)
 
 	func_end(fnc)
 
@@ -530,7 +573,7 @@ def db_tbl_bals_bal_insupd(in_data):
 #	G(func_str)
 
 	table_name = 'bals'
-	db_tbl_insupd(table_name, in_data)
+	db_tbl_insupd(table_name, in_data, exit_on_error=False)
 
 	func_end(fnc)
 
@@ -569,7 +612,7 @@ def db_tbl_buy_signals_insupd(in_data):
 #	G(func_str)
 
 	table_name = 'buy_signals'
-	db_tbl_insupd(table_name, in_data)
+	db_tbl_insupd(table_name, in_data, exit_on_error=False)
 
 	func_end(fnc)
 
@@ -582,8 +625,8 @@ def db_tbl_currs_insupd(in_data):
 #	G(func_str)
 
 	table_name = 'currs'
-	db_tbl_del(table_name=table_name)
-	db_tbl_insupd(table_name, in_data)
+#	db_tbl_del(table_name=table_name)
+	db_tbl_insupd(table_name, in_data, exit_on_error=False)
 
 	func_end(fnc)
 
@@ -597,7 +640,7 @@ def db_tbl_currs_curr_insupd(in_data):
 
 	table_name = 'currs'
 #	db_tbl_del(table_name=table_name)
-	db_tbl_insupd(table_name, in_data)
+	db_tbl_insupd(table_name, in_data, exit_on_error=False)
 
 	func_end(fnc)
 
@@ -616,7 +659,7 @@ def db_tbl_mkts_insupd(in_data):
 	# cannot pull OHLCV data.  So I am filtering on add_dttm from this
 	# table, meaning I can't delete before repopulating...
 #	db_tbl_del(table_name=table_name)
-	db_tbl_insupd(table_name, in_data)
+	db_tbl_insupd(table_name, in_data, exit_on_error=False)
 
 	func_end(fnc)
 
@@ -629,7 +672,7 @@ def db_tbl_ords_insupd(in_data):
 #	G(func_str)
 
 	table_name = 'ords'
-	db_tbl_insupd(table_name, in_data)
+	db_tbl_insupd(table_name, in_data, exit_on_error=False)
 
 	func_end(fnc)
 
@@ -642,7 +685,7 @@ def db_tbl_poss_insupd(in_data):
 #	G(func_str)
 
 	table_name = 'poss'
-	db_tbl_insupd(table_name, in_data)
+	db_tbl_insupd(table_name, in_data, exit_on_error=True)
 
 	func_end(fnc)
 
@@ -655,7 +698,7 @@ def db_tbl_sell_ords_insupd(in_data):
 #	G(func_str)
 
 	table_name = 'sell_ords'
-	db_tbl_insupd(table_name, in_data)
+	db_tbl_insupd(table_name, in_data, exit_on_error=True)
 
 	func_end(fnc)
 
@@ -668,7 +711,7 @@ def db_tbl_sell_signs_insupd(in_data):
 #	G(func_str)
 
 	table_name = 'sell_signs'
-	db_tbl_insupd(table_name, in_data)
+	db_tbl_insupd(table_name, in_data, exit_on_error=False)
 
 	func_end(fnc)
 
@@ -681,7 +724,7 @@ def db_tbl_sell_signals_insupd(in_data):
 #	G(func_str)
 
 	table_name = 'sell_signals'
-	db_tbl_insupd(table_name, in_data)
+	db_tbl_insupd(table_name, in_data, exit_on_error=False)
 
 	func_end(fnc)
 
@@ -694,18 +737,21 @@ def db_table_csvs_dump():
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=6)
 #	G(func_str)
 
+	chart_top(len_cnt=250)
+	chart_row(in_str='CSV DUMP', len_cnt=250, align='center')
+	chart_bottom(in_str='', len_cnt=250)
+
 	tbls_list = db_table_names_get()
 	tbls_exclude_list = []
-	print('')
 	for tbl in tbls_list:
 		if tbl not in tbls_exclude_list and left(tbl,5) != 'ohlcv':
-			sql = "select * from {}".format(tbl)
+			sql = f"select * from {tbl}"
 			res = db.seld(sql)
 			df = pd.DataFrame(res)
-			csv_fname = 'csvs/{}_table.csv'.format(tbl)
+			csv_fname = f'csvs/{tbl}_table.csv'
 			dir_val(csv_fname)
 			df.to_csv(csv_fname, index=True)
-			print('{} saved...'.format(csv_fname))
+			print(f'{csv_fname:<60} saved...')
 
 	func_end(fnc)
 

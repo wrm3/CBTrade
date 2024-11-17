@@ -17,8 +17,10 @@ from dotenv import load_dotenv
 from libs.bot_settings import debug_settings_get, get_lib_func_secs_max
 from libs.cls_db_mysql import db_mysql
 from libs.lib_common import func_begin, func_end, print_func_name
+import sqlparse
 import os
 import re
+from libs.lib_colors import G
 
 
 #<=====>#
@@ -66,6 +68,199 @@ def db_safe_string(in_str):
 
 #<=====>#
 
+def db_tbl_insupd(table_name, in_data, rat_on_extra_cols_yn='N', exit_on_error=True):
+	func_name = 'db_tbl_insupd'
+	func_str = '{}.{}(table_name={}, in_data)'.format(lib_name, func_name, table_name)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	tbl_cols  = db.table_cols(table=table_name)
+	data_cols = []
+	ins_data  = []
+
+
+	if isinstance(in_data, dict):
+		if in_data:
+			ins_type = 'one'
+			if 'add_dttm' in in_data: del in_data['add_dttm']
+			if 'dlm' in in_data: del in_data['dlm']
+			for k in in_data:
+				if k in tbl_cols:
+					data_cols.append(k)
+			for k in in_data:
+				if k in tbl_cols:
+					ins_data.append(in_data[k])
+				else:
+					if rat_on_extra_cols_yn == 'Y':
+						print('column : {} not defined in table {}...'.format(k, table_name))
+
+	# received a list of dictionaries
+	elif isinstance(in_data, list):
+		ins_data = []
+		if in_data:
+			if isinstance(in_data[0], dict):
+				ins_type = 'many'
+				# populating data_cols with all the distinct columns names 
+				# from data and checking against table
+				for r in in_data:
+					if 'add_dttm' in in_data: del r['add_dttm']
+					if 'dlm' in in_data: del r['dlm']
+					for k in r:
+						if k not in data_cols:
+							if k in tbl_cols:
+								data_cols.append(k)
+							else:
+								if table_name not in ('currs'):
+									if rat_on_extra_cols_yn == 'Y':
+										print('column : {} not defined in table {}...'.format(k, table_name))
+				# looping through data to standardize for inserts
+				for r in in_data:
+					ins_dict = {}
+					# prepopulate with None, which will become null 
+					for k in data_cols: ins_dict[k] = None
+					# assign actual values from data when present
+					for k in r:
+						if k in tbl_cols:
+							ins_dict[k] = r[k]
+					# preparing list of the dict values for the insert
+					ins_list = []
+					for k in data_cols:
+						ins_list.append(ins_dict[k])
+					# adding the row list to the big list for inserts
+					ins_data.append(ins_list)
+
+	sql1 = " insert into {} ( ".format(table_name)
+
+	sql2 = ", ".join(data_cols)
+
+	sql3 = " ) values ( "
+
+	sql4 = ', '.join(['%s'] * len(data_cols))
+
+	sql5 = " ) on duplicate key update  "
+
+	col1 = data_cols[0]
+	sql6 = ' {} = values({})'.format(col1, col1)
+	for col in data_cols:
+		if col != col1:
+			sql6 += ', {} = values({})'.format(col, col)
+
+	sql = sql1 + sql2 + sql3 + sql4 + sql5 + sql6
+
+
+	if table_name == 'mkts' and ins_type == 'one':
+		print(f'sql  :')
+		formatted_sql = sqlparse.format(sql, reindent=True, keyword_case='upper')
+		print(formatted_sql)
+		print(f'vals : {ins_data}')
+
+	if ins_type == 'one':
+		db.ins_one(sql=sql, vals=ins_data, exit_on_error=exit_on_error)
+	else:
+		db.ins_many(sql=sql, vals=ins_data, exit_on_error=exit_on_error)
+
+	func_end(fnc)
+
+#<=====>#
+
+def db_mkt_checks_insupd(d):
+	func_name = 'db_mkt_checks_insupd'
+	func_str = f'{lib_name}.{func_name}(d)'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	db_tbl_insupd(table_name='mkt_checks', in_data=d)
+
+	func_end(fnc)
+
+#<=====>#
+
+def db_buy_check_get(prod_id):
+	func_name = 'db_buy_check_get'
+	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "select mc.buy_check_dttm, mc.buy_check_guid, TIMESTAMPDIFF(MINUTE, mc.buy_check_dttm, NOW()) as elapsed "
+	sql += f"  from cbtrade.mkt_checks mc "
+	sql += f"  where mc.prod_id = '{prod_id}'"
+	buy_check_dttm = db.sel(sql)
+
+	if not buy_check_dttm:
+		d = {}
+		d['prod_id'] = prod_id
+		db_mkt_checks_insupd(d)
+		buy_check_dttm = db.sel(sql)
+#		print(buy_check_dttm)
+
+#	print(buy_check_dttm)
+	func_end(fnc)
+	return buy_check_dttm
+
+#<=====>#
+
+def db_sell_check_get(prod_id):
+	func_name = 'db_sell_check_get'
+	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "select mc.sell_check_dttm, mc.sell_check_guid, TIMESTAMPDIFF(MINUTE, mc.sell_check_dttm, NOW()) as elapsed "
+	sql += f"  from cbtrade.mkt_checks mc "
+	sql += f"  where mc.prod_id = '{prod_id}'"
+	sell_check_dttm = db.sel(sql)
+
+	if not sell_check_dttm:
+		d = {}
+		d['prod_id'] = prod_id
+		db_mkt_checks_insupd(d)
+		sell_check_dttm = db.sel(sql)
+#		print(sell_check_dttm)
+
+#	print(sell_check_dttm)
+	func_end(fnc)
+	return sell_check_dttm
+
+#<=====>#
+
+def db_poss_check_mkt_dttm_get(prod_id):
+	func_name = 'db_poss_check_mkt_dttm_get'
+	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "select max(p.check_mkt_dttm) "
+	sql += f"  from cbtrade.poss p "
+	sql += f"  where p.prod_id = '{prod_id}'"
+
+	check_mkt_dttm = db.sel(sql)
+
+	func_end(fnc)
+	return check_mkt_dttm
+
+#<=====>#
+
+def db_poss_check_last_dttm_get(pos_id):
+	func_name = 'db_poss_check_last_dttm_get'
+	func_str = f'{lib_name}.{func_name}(pos_id={pos_id})'
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	sql = ""
+	sql += "select p.check_last_dttm "
+	sql += f"  from cbtrade.poss p "
+	sql += f"  where p.pos_id = {pos_id}"
+
+	check_last_dttm = db.sel(sql)
+
+	func_end(fnc)
+	return check_last_dttm
+
+#<=====>#
+
 def db_bot_spent(quote_curr_symb=None):
 	func_name = 'db_bot_spent'
 	func_str = f'{lib_name}.{func_name}()'
@@ -96,15 +291,18 @@ def db_bot_spent(quote_curr_symb=None):
 	sql += "  from cbtrade.poss p "
 	sql += "  where p.pos_stat in ('OPEN','SELL') "
 	if quote_curr_symb:
-		sql += "  and p.quote_curr_symb = '{quote_curr_symb}' "
+		sql += f"  and p.quote_curr_symb = '{quote_curr_symb}' "
 	sql += "  group by p.quote_curr_symb "
 	sql += "  ) x "
 	sql += "  order by x.symb "
 
 	spent = db.seld(sql)
 
-	if not spent:
-		spent = {}
+#	print(sql)
+#	print(spent)
+
+#	if not spent:
+#		spent = {}
 
 	func_end(fnc)
 	return spent
@@ -323,89 +521,53 @@ def db_pair_strat_freq_spent(prod_id=None, buy_strat_type=None, buy_strat_name=N
 
 #<=====>#
 
-def db_poss_check_mkt_dttm_get(prod_id):
-	func_name = 'db_poss_check_mkt_dttm_get'
-	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
+# def db_ohlcv_prod_id_freqs(prod_id):
+# 	func_name = 'db_ohlcv_prod_id_freqs'
+# 	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
+# 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+# #	G(func_str)
 
-	sql = ""
-	sql += "select max(p.check_mkt_dttm) "
-	sql += f"  from cbtrade.poss p "
-	sql += f"  where p.prod_id = '{prod_id}'"
+# 	prod_id = prod_id.replace('-','_')
 
-	check_mkt_dttm = db.sel(sql)
+# 	sql = ""
+# 	sql += "select distinct x.freq "
+# 	sql += "  , max(start_dttm) as last_start_dttm "
+# 	sql += f"  from ohlcv_{prod_id} x "
+# 	sql += "  where 1=1 "
+# 	sql += "  group by x.freq "
 
-	func_end(fnc)
-	return check_mkt_dttm
+# 	last_dttms = db.seld(sql)
 
-#<=====>#
+# 	if not last_dttms:
+# 		last_dttms = {}
 
-def db_poss_check_last_dttm_get(pos_id):
-	func_name = 'db_poss_check_last_dttm_get'
-	func_str = f'{lib_name}.{func_name}(pos_id={pos_id})'
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
-
-	sql = ""
-	sql += "select p.check_last_dttm "
-	sql += f"  from cbtrade.poss p "
-	sql += f"  where p.pos_id = {pos_id}"
-
-	check_last_dttm = db.sel(sql)
-
-	func_end(fnc)
-	return check_last_dttm
+# 	func_end(fnc)
+# 	return last_dttms
 
 #<=====>#
 
-def db_ohlcv_prod_id_freqs(prod_id):
-	func_name = 'db_ohlcv_prod_id_freqs'
-	func_str = f'{lib_name}.{func_name}(prod_id={prod_id})'
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
+# def db_ohlcv_freq_get(prod_id, freq, lmt=500):
+# 	func_name = 'db_ohlcv_freq_get'
+# 	func_str = f'{lib_name}.{func_name}(prod_id={prod_id}, freq={freq})'
+# 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+# #	G(func_str)
 
-	prod_id = prod_id.replace('-','_')
+# 	prod_id = prod_id.replace('-','_')
 
-	sql = ""
-	sql += "select distinct x.freq "
-	sql += "  , max(start_dttm) as last_start_dttm "
-	sql += f"  from ohlcv_{prod_id} x "
-	sql += "  where 1=1 "
-	sql += "  group by x.freq "
+# 	sql = ""
+# 	sql += "select * "
+# 	sql += f"  from ohlcv_{prod_id} x "
+# 	sql += f"  where freq = '{freq}' "
+# 	sql += "   order by x.timestamp desc "
+# 	sql += f"  limit {lmt} "
 
-	last_dttms = db.seld(sql)
+# 	ohlcv = db.seld(sql)
 
-	if not last_dttms:
-		last_dttms = {}
+# 	if not ohlcv:
+# 		ohlcv = []
 
-	func_end(fnc)
-	return last_dttms
-
-#<=====>#
-
-def db_ohlcv_freq_get(prod_id, freq, lmt=500):
-	func_name = 'db_ohlcv_freq_get'
-	func_str = f'{lib_name}.{func_name}(prod_id={prod_id}, freq={freq})'
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
-
-	prod_id = prod_id.replace('-','_')
-
-	sql = ""
-	sql += "select * "
-	sql += f"  from ohlcv_{prod_id} x "
-	sql += f"  where freq = '{freq}' "
-	sql += "   order by x.timestamp desc "
-	sql += f"  limit {lmt} "
-
-	ohlcv = db.seld(sql)
-
-	if not ohlcv:
-		ohlcv = []
-
-	func_end(fnc)
-	return ohlcv
+# 	func_end(fnc)
+# 	return ohlcv
 
 #<=====>#
 
@@ -444,7 +606,7 @@ def db_pairs_loop_get(mode='full', loop_pairs=None, stable_pairs=None, err_pairs
 
 	# products in settings
 	sql = ""
-	sql += " select m.mkt_id "
+	sql += " select distinct m.mkt_id "
 	sql += "   , m.mkt_name "
 	sql += "   , m.prod_id "
 	sql += "   , m.prc "
@@ -510,6 +672,9 @@ def db_pairs_loop_get(mode='full', loop_pairs=None, stable_pairs=None, err_pairs
 	sql += "   , m.mkt_trading_disabled_tf "
 	sql += "   , m.mkt_auction_mode_tf "
 
+	sql += "   , mc.buy_check_dttm "
+	sql += "   , mc.sell_check_dttm "
+
 	sql += "   , m.note1 "
 	sql += "   , m.note2 "
 	sql += "   , m.note3 "
@@ -517,12 +682,11 @@ def db_pairs_loop_get(mode='full', loop_pairs=None, stable_pairs=None, err_pairs
 	sql += "   , m.upd_dttm "
 	sql += "   , m.dlm "
 
-	sql += "   , vmp.test_tf "
-
 	sql += "   , (select max(p.check_mkt_dttm) from cbtrade.poss p where p.prod_id = m.prod_id) as check_mkt_dttm "
 
 	sql += "  from cbtrade.mkts m "
 	sql += "  left outer join cbtrade.view_mkt_perf vmp on vmp.prod_id = m.prod_id "
+	sql += "  left outer join cbtrade.mkt_checks mc on mc.prod_id = m.prod_id "
 	sql += "  where 1=1 "
 	if quote_curr_symb:
 		sql += f"  and .quote_curr_symb = '{quote_curr_symb}' "
@@ -538,7 +702,8 @@ def db_pairs_loop_get(mode='full', loop_pairs=None, stable_pairs=None, err_pairs
 		sql += "   and m.prod_id not in ({}) ".format(err_pairs_str)
 
 	if mode == 'sell':
-		sql += "   order by (select max(p.check_mkt_dttm) from cbtrade.poss p where p.prod_id = m.prod_id), vmp.gain_loss_pct_hr desc "
+		sql += "   order by (select sum(p.tot_out_cnt) from cbtrade.poss p where p.prod_id = m.prod_id and p.pos_stat = 'OPEN') desc "
+#		sql += "   order by vmp.gain_loss_pct_hr desc "
 	else:
 		sql += "   order by vmp.gain_loss_pct_hr desc "
 
@@ -730,12 +895,16 @@ def db_pairs_loop_poss_open_prod_ids_get(quote_curr_symb=None):
 	sql += " select prod_id "
 	sql += "   from cbtrade.poss "
 	sql += "   where ignore_tf = 0 "
-	sql += "   and test_tf = 0 "
 	if quote_curr_symb:
 		sql += f"  and quote_curr_symb = '{quote_curr_symb}' "
 	sql += "   and pos_stat in ('OPEN','SELL') "
 
 	mkts = db.sel(sql)
+	if isinstance(mkts, str):
+		mkts = [mkts]
+	# print(mkts)
+	# print(type(mkts))
+	# print(len(mkts))
 
 	func_end(fnc)
 	return mkts
@@ -753,7 +922,7 @@ def db_open_trade_amts_get():
 	sql += "  from cbtrade.poss p"
 	sql += "  where 1=1"
 	sql += "  and p.ignore_tf = 0"
-	sql += "  and p.test_tf = 0 "
+	sql += "  and p.test_txn_yn = 'N' "
 	sql += "  and p.pos_stat in ('OPEN','SELL')"
 	sql += "  group by p.base_curr_symb"
 	sql += "  order by p.base_curr_symb"
@@ -806,11 +975,11 @@ def db_buy_ords_open_get():
 #	G(func_str)
 
 	sql = ""
-	sql += "select * "
-	sql += "  from buy_ords  "
+	sql += "select bo.*, TIMESTAMPDIFF(MINUTE, bo.buy_begin_dttm, NOW()) as elapsed "
+	sql += "  from buy_ords bo  "
 	sql += "  where 1=1 "
-	sql += "  and ord_stat = 'OPEN'  "
-	sql += "  and ignore_tf = 0"
+	sql += "  and bo.ord_stat = 'OPEN'  "
+	sql += "  and bo.ignore_tf = 0"
 
 	bos = db.seld(sql)
 
@@ -856,7 +1025,6 @@ def db_mkt_elapsed_get(prod_id):
 	sql += "select TIMESTAMPDIFF(MINUTE, max(bo.buy_begin_dttm), NOW()) + 1 as bo_elapsed "
 	sql += "  from cbtrade.buy_ords bo "
 	sql += "  where bo.ignore_tf = 0 "
-	sql += "  and bo.test_tf = 0 "
 	sql += f" and bo.prod_id = '{prod_id}' "
 	sql += "  and bo.ord_stat in ('OPEN','FILL') "
 
@@ -869,7 +1037,6 @@ def db_mkt_elapsed_get(prod_id):
 	sql += "select coalesce(TIMESTAMPDIFF(MINUTE, max(p.pos_begin_dttm), NOW()) + 1, 9999) as pos_elapsed "
 	sql += "  from cbtrade.poss p "
 	sql += "  where p.ignore_tf = 0 "
-	sql += "  and p.test_tf = 0 "
 	sql += f" and p.prod_id = '{prod_id}' "
 	sql += "  and p.pos_stat in ('OPEN','SELL') "
 
@@ -899,7 +1066,6 @@ def db_mkt_strat_elapsed_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_
 	sql += "select TIMESTAMPDIFF(MINUTE, max(bo.buy_begin_dttm), NOW()) + 1 as bo_elapsed "
 	sql += "  from cbtrade.buy_ords bo "
 	sql += "  where bo.ignore_tf = 0 "
-	sql += "  and bo.test_tf = 0 "
 	sql += f" and bo.prod_id = '{prod_id}' "
 	sql += f" and bo.buy_strat_type = '{buy_strat_type}' "
 	sql += f" and bo.buy_strat_name = '{buy_strat_name}' "
@@ -915,7 +1081,6 @@ def db_mkt_strat_elapsed_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_
 	sql += "select coalesce(TIMESTAMPDIFF(MINUTE, max(p.pos_begin_dttm), NOW()) + 1, 9999) as strat_pos_elapsed "
 	sql += "  from cbtrade.poss p "
 	sql += "  where p.ignore_tf = 0 "
-	sql += "  and p.test_tf = 0 "
 	sql += f" and p.prod_id = '{prod_id}' "
 	sql += f" and p.buy_strat_type = '{buy_strat_type}' "
 	sql += f" and p.buy_strat_name = '{buy_strat_name}' "
@@ -975,7 +1140,6 @@ def db_trade_perf_get(pos_stat=None):
 	sql += "  join cbtrade.mkts m on m.prod_id = p.prod_id "
 	sql += "  where 1=1 "
 	sql += "  and p.ignore_tf = 0 "
-	sql += "  and p.test_tf = 0 "
 	sql += stat_sql
 	sql += "  group by p.prod_id, p.pos_stat  "
 	sql += "  order by p.prod_id, p.pos_stat desc "
@@ -1023,10 +1187,10 @@ def db_trade_strat_perf_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_f
 	sql += "          , count(p.pos_id) as tot_cnt  "
 	sql += "          , sum(case when p.pos_stat in ('OPEN','SELL') then 1 else 0 end) as open_cnt  "
 	sql += "          , sum(case when p.pos_stat = 'CLOSE' then 1 else 0 end) as close_cnt  "
-	sql += "          , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
-	sql += "          , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
-	sql += "          , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
-	sql += "          , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
+	sql += "          , sum(case when p.tot_in_cnt + p.val_tot > p.tot_out_cnt then 1 else 0 end) as win_cnt  "
+	sql += "          , sum(case when p.tot_in_cnt + p.val_tot < p.tot_out_cnt then 1 else 0 end) as lose_cnt  "
+	sql += "          , coalesce(round(sum(case when p.tot_in_cnt + p.val_tot > p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as win_pct  "
+	sql += "          , coalesce(round(sum(case when p.tot_in_cnt + p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct  "
 	sql += "          , sum(p.age_mins) as age_mins "
 	sql += "          , sum(p.age_mins) / 60 as age_hours "
 	sql += "          , round(sum(p.tot_out_cnt), 2) as tot_out_cnt "
@@ -1043,19 +1207,20 @@ def db_trade_strat_perf_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_f
 	sql += "          , sum(p.sell_order_attempt_cnt) as sell_order_attempt_cnt "
 	sql += "          , round(sum(p.val_curr), 2) as val_curr "
 	sql += "          , round(sum(p.val_tot), 2) as val_tot "
-	sql += "          , round(sum(case when p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
-	sql += "          , round(sum(case when p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
+	sql += "          , round(sum(case when p.tot_in_cnt + p.val_tot > p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as win_amt  "
+	sql += "          , round(sum(case when p.tot_in_cnt + p.val_tot < p.tot_out_cnt then p.gain_loss_amt else 0 end), 2) as lose_amt "
 	sql += "          , round(sum(p.gain_loss_amt), 2) as gain_loss_amt "
 	sql += "          , round(sum(p.gain_loss_amt_net), 2) as gain_loss_amt_net "
 	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100,2) as gain_loss_pct "
 	sql += "          , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr "
-	sql += "          , p.test_tf "
 	sql += "          from (select bs.buy_strat_type, bs.buy_strat_name, bs.buy_strat_desc, f.freq as buy_strat_freq "
 	sql += "                  from cbtrade.buy_strats bs "
-	sql += "                  join cbtrade.freqs f) x"
+	sql += "                  join cbtrade.freqs f "
+	sql += "                  where 1=1 "
+	sql += "                  and bs.ignore_tf = 0 "
+	sql += "                  and f.ignore_tf = 0) x"
 	sql += "          left outer join cbtrade.poss p on p.buy_strat_type = x.buy_strat_type and p.buy_strat_name = x.buy_strat_name and p.buy_strat_freq = x.buy_strat_freq "
 	sql += "          where p.ignore_tf = 0 "
-	sql += "          and p.test_tf = 0 "
 	sql += "          and p.prod_id = '{}' ".format(prod_id)
 	sql += "          and p.buy_strat_type = '{}' ".format(buy_strat_type)
 	sql += "          and p.buy_strat_name = '{}' ".format(buy_strat_name)
@@ -1069,6 +1234,86 @@ def db_trade_strat_perf_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_f
 
 	if mkt_strat_perf:
 		mkt_strat_perf = mkt_strat_perf[0]
+
+	func_end(fnc)
+	return mkt_strat_perf
+
+#<=====>#
+
+# => disp_strats_best, mkt_summary
+def db_trade_strat_perf_all_get(min_trades=1):
+	func_name = 'db_trade_strat_perf_all_get'
+	func_str = '{}.{}()'.format(lib_name, func_name)
+	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+
+	sql = ""
+	sql += " WITH strategy_base AS ( "
+	sql += "   SELECT bs.buy_strat_type "
+	sql += "     , bs.buy_strat_name "
+	sql += "     , bs.buy_strat_desc "
+	sql += "     , f.freq as buy_strat_freq "
+	sql += "     FROM cbtrade.buy_strats bs "
+	sql += "     JOIN cbtrade.freqs f "
+	sql += "     WHERE 1=1 "
+	sql += "     AND bs.ignore_tf = 0 "
+	sql += "     AND f.ignore_tf = 0 "
+	sql += "     ), "
+	sql += " position_stats AS ( "
+	sql += "   SELECT p.prod_id "
+	sql += "     , p.buy_strat_type "
+	sql += "     , p.buy_strat_name "
+	sql += "     , p.buy_strat_freq "
+	sql += "     , COUNT(p.pos_id) as tot_cnt "
+	sql += "     , SUM(CASE WHEN p.pos_stat IN ('OPEN','SELL') THEN 1 ELSE 0 END) as open_cnt "
+	sql += "     , SUM(CASE WHEN p.pos_stat = 'CLOSE' THEN 1 ELSE 0 END) as close_cnt "
+	sql += "     , SUM(CASE WHEN p.tot_in_cnt + p.val_tot > p.tot_out_cnt THEN 1 ELSE 0 END) as win_cnt "
+	sql += "     , SUM(CASE WHEN p.tot_in_cnt + p.val_tot < p.tot_out_cnt THEN 1 ELSE 0 END) as lose_cnt "
+	sql += "     , SUM(p.age_mins) as age_mins "
+	sql += "     , ROUND(SUM(p.tot_out_cnt), 2) as tot_out_cnt "
+	sql += "     , ROUND(SUM(p.tot_in_cnt), 2) as tot_in_cnt "
+	sql += "     , ROUND(SUM(p.fees_cnt_tot), 2) as fees_cnt_tot "
+	sql += "     , ROUND(SUM(p.val_curr), 2) as val_curr "
+	sql += "     , ROUND(SUM(p.val_tot), 2) as val_tot "
+	sql += "     , ROUND(SUM(p.gain_loss_amt), 2) as gain_loss_amt "
+	sql += "     FROM strategy_base x "
+	sql += "     LEFT OUTER JOIN cbtrade.poss p ON p.buy_strat_type = x.buy_strat_type AND p.buy_strat_name = x.buy_strat_name AND p.buy_strat_freq = x.buy_strat_freq "
+	sql += "     WHERE p.ignore_tf = 0 "
+	sql += "     GROUP BY p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq "
+	sql += "   ) "
+	sql += " SELECT  "
+	sql += "   prod_id, "
+	sql += "   buy_strat_type, "
+	sql += "   buy_strat_name, "
+	sql += "   buy_strat_freq, "
+	sql += "   COALESCE(tot_cnt, 0) as tot_cnt, "
+	sql += "   COALESCE(open_cnt, 0) as open_cnt, "
+	sql += "   COALESCE(close_cnt, 0) as close_cnt, "
+	sql += "   COALESCE(win_cnt, 0) as win_cnt, "
+	sql += "   COALESCE(lose_cnt, 0) as lose_cnt, "
+	sql += "   COALESCE(ROUND(win_cnt * 100.0 / NULLIF(tot_cnt, 0), 2), 0) as win_pct, "
+	sql += "   COALESCE(ROUND(lose_cnt * 100.0 / NULLIF(tot_cnt, 0), 2), 0) as lose_pct, "
+	sql += "   COALESCE(age_mins / 60.0, 0) as age_hours, "
+	sql += "   COALESCE(tot_out_cnt, 0) as tot_out_cnt, "
+	sql += "   COALESCE(tot_in_cnt, 0) as tot_in_cnt, "
+	sql += "   COALESCE(fees_cnt_tot, 0) as fees_cnt_tot, "
+	sql += "   COALESCE(val_curr, 0) as val_curr, "
+	sql += "   COALESCE(val_tot, 0) as val_tot, "
+	sql += "   COALESCE(gain_loss_amt, 0) as gain_loss_amt, "
+	sql += "   COALESCE(ROUND(gain_loss_amt * 100.0 / NULLIF(tot_out_cnt, 0), 2), 0) as gain_loss_pct, "
+	sql += "   COALESCE(ROUND(gain_loss_amt * 100.0 / NULLIF(tot_out_cnt, 0) / NULLIF(age_mins / 60.0, 0), 8), 0) as gain_loss_pct_hr, "
+	sql += "   COALESCE(ROUND(gain_loss_amt * 100.0 / NULLIF(tot_out_cnt, 0) / NULLIF(age_mins / 60.0, 0) * 24, 8), 0) as gain_loss_pct_day "
+	sql += " FROM position_stats "
+	sql += " WHERE 1=1 "
+	if min_trades:
+			sql += f"  and tot_cnt >= {min_trades} "
+	sql += " ORDER BY gain_loss_pct_hr DESC "
+
+	mkt_strat_perf = db.seld(sql)
+
+#	if mkt_strat_perf:
+#		mkt_strat_perf = mkt_strat_perf[0]
 
 	func_end(fnc)
 	return mkt_strat_perf
@@ -1131,7 +1376,6 @@ def db_mkt_strats_stats_open_get(prod_id):
 	sql += "   , coalesce((select count(*) "
 	sql += "        from cbtrade.poss  "
 	sql += "        where ignore_tf = 0 "
-	sql += "        and test_tf = 0 "
 	sql += "        and prod_id = p.prod_id  "
 	sql += "        and buy_strat_type = p.buy_strat_type  "
 	sql += "        and buy_strat_name = p.buy_strat_name  "
@@ -1140,7 +1384,6 @@ def db_mkt_strats_stats_open_get(prod_id):
 	sql += "   , coalesce((select count(*) "
 	sql += "        from cbtrade.poss  "
 	sql += "        where ignore_tf = 0 "
-	sql += "        and test_tf = 0 "
 	sql += "        and prod_id = p.prod_id  "
 	sql += "        and buy_strat_type = p.buy_strat_type  "
 	sql += "        and buy_strat_name = p.buy_strat_name  "
@@ -1149,7 +1392,6 @@ def db_mkt_strats_stats_open_get(prod_id):
 	sql += "   , coalesce((select count(*) "
 	sql += "        from cbtrade.poss  "
 	sql += "        where ignore_tf = 0 "
-	sql += "        and test_tf = 0 "
 	sql += "        and prod_id = p.prod_id  "
 	sql += "        and buy_strat_type = p.buy_strat_type  "
 	sql += "        and buy_strat_name = p.buy_strat_name  "
@@ -1158,7 +1400,6 @@ def db_mkt_strats_stats_open_get(prod_id):
 	sql += "   , coalesce((select count(*) "
 	sql += "        from cbtrade.poss  "
 	sql += "        where ignore_tf = 0 "
-	sql += "        and test_tf = 0 "
 	sql += "        and prod_id = p.prod_id  "
 	sql += "        and buy_strat_type = p.buy_strat_type  "
 	sql += "        and buy_strat_name = p.buy_strat_name  "
@@ -1167,7 +1408,6 @@ def db_mkt_strats_stats_open_get(prod_id):
 	sql += "   , coalesce((select count(*) "
 	sql += "        from cbtrade.poss  "
 	sql += "        where ignore_tf = 0 "
-	sql += "        and test_tf = 0 "
 	sql += "        and prod_id = p.prod_id  "
 	sql += "        and buy_strat_type = p.buy_strat_type  "
 	sql += "        and buy_strat_name = p.buy_strat_name  "
@@ -1175,7 +1415,6 @@ def db_mkt_strats_stats_open_get(prod_id):
 	sql += "        and buy_strat_freq = '1d'), 0) as cnt_1d "
 	sql += "   from cbtrade.poss p "
 	sql += "   where p.ignore_tf = 0 "
-	sql += "   and p.test_tf = 0 "
 	sql += "   and p.prod_id = '{}' ".format(prod_id)
 	sql += "   and p.pos_stat in ('OPEN','SELL') "
 	sql += "   order by buy_strat_type, buy_strat_name "
@@ -1204,7 +1443,6 @@ def db_mkt_strats_used_get(min_trades):
 	sql += "  from cbtrade.poss p "
 	sql += "  where 1=1 "
 	sql += "  and ignore_tf = 0 "
-	sql += "  and test_tf = 0 "
 	sql += "  group by p.prod_id, p.buy_strat_type, p.buy_strat_name, p.buy_strat_freq "
 	sql += f"  having count(*) >= {min_trades} "
 	sql += "  order by cnt desc "
@@ -1230,19 +1468,18 @@ def db_perf_summaries_get(prod_id=None, pos_stat=None, pos_id=None):
 	else:
 		stat_sql = ""
 
-	sql = "select p.test_tf "
+	sql = "select p.pos_stat "
 	if prod_id:
 		sql += "  , p.prod_id "
 	if pos_id:
 		sql += "  , p.pos_id "
 	sql += "  , p.prod_id as mkt "
-	sql += "  , p.pos_stat "
 	sql += "  , count(p.pos_id)                                                                     as tot_cnt  "
-	sql += "  , sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end)                          as win_cnt  "
-	sql += "  , sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end)                          as lose_cnt  "
-	sql += "  , coalesce(round(sum(case when p.val_tot > p.tot_out_cnt then 1 else 0 end) "
+	sql += "  , sum(case when p.tot_in_cnt + p.val_tot > p.tot_out_cnt then 1 else 0 end)                          as win_cnt  "
+	sql += "  , sum(case when p.tot_in_cnt + p.val_tot < p.tot_out_cnt then 1 else 0 end)                          as lose_cnt  "
+	sql += "  , coalesce(round(sum(case when p.tot_in_cnt + p.val_tot > p.tot_out_cnt then 1 else 0 end) "
 	sql += "  ,   / count(p.pos_id) * 100, 2),0)                                                    as win_pct  "
-	sql += "  , coalesce(round(sum(case when p.val_tot < p.tot_out_cnt then 1 else 0 end) "
+	sql += "  , coalesce(round(sum(case when p.tot_in_cnt + p.val_tot < p.tot_out_cnt then 1 else 0 end) "
 	sql += "  ,   / count(p.pos_id) * 100, 2),0)                                                    as lose_pct  "
 	sql += "  , sum(p.age_mins)                                                                     as age_mins "
 	sql += "  , sum(p.age_mins) / 60                                                                as age_hours "
@@ -1272,9 +1509,9 @@ def db_perf_summaries_get(prod_id=None, pos_stat=None, pos_id=None):
 	sql += "  , round(sum(p.fees_cnt_tot), 2)                                                       as fees_cnt_tot "
 	sql += "  , round(sum(p.val_curr),2)                                                            as val_curr "
 	sql += "  , round(sum(p.val_tot),2)                                                             as val_tot "
-	sql += "  , round(sum(case when p.val_tot > p.tot_out_cnt  "
+	sql += "  , round(sum(case when p.tot_in_cnt + p.val_tot > p.tot_out_cnt  "
 	sql += "                   then p.gain_loss_amt else 0 end), 2)                                 as win_amt  "
-	sql += "  , round(sum(case when p.val_tot < p.tot_out_cnt  "
+	sql += "  , round(sum(case when p.tot_in_cnt + p.val_tot < p.tot_out_cnt  "
 	sql += "                   then p.gain_loss_amt else 0 end), 2)                                 as lose_amt "
 	sql += "  , round(sum(p.gain_loss_amt), 2)                                                      as gain_loss_amt "
 	sql += "  , round(sum(p.gain_loss_amt_net), 2)                                                  as gain_loss_amt_net "
@@ -1289,7 +1526,7 @@ def db_perf_summaries_get(prod_id=None, pos_stat=None, pos_id=None):
 	sql += "  where 1=1 "
 	sql += "  and p.ignore_tf = 0 "
 
-	# do not check test_tf here because we want to pull in all that simulated trading
+	# do not check test_txn_yn here because we want to pull in all that simulated trading
 
 	sql += stat_sql
 
@@ -1348,9 +1585,9 @@ def db_poss_open_recent_get(lmt=None, test_yn='N'):
 	sql += "  where 1=1 "
 	sql += "  and p.ignore_tf = 0 "
 	if test_yn == 'Y':
-		sql += "  and test_tf = 1 "
+		sql += "  and test_txn_yn = 'Y' "
 	elif test_yn == 'N':
-		sql += "  and test_tf = 0 "
+		sql += "  and test_txn_yn = 'N' "
 	sql += "  and pos_stat = 'OPEN' "
 	sql += "  order by p.pos_begin_dttm desc "
 	poss = db.seld(sql)
@@ -1376,9 +1613,9 @@ def db_poss_close_recent_get(lmt=None, test_yn='N'):
 	sql += "  where 1=1 "
 	sql += "  and ignore_tf = 0 "
 	if test_yn == 'Y':
-		sql += "  and test_tf = 1 "
+		sql += "  and test_txn_yn = 'Y' "
 	elif test_yn == 'N':
-		sql += "  and test_tf = 0 "
+		sql += "  and test_txn_yn = 'N' "
 	sql += "  and pos_stat = 'CLOSE' "
 	sql += "  order by p.pos_end_dttm desc "
 	poss = db.seld(sql)
@@ -1404,7 +1641,6 @@ def db_poss_open_cnt_get_by_prod_id(prod_id):
 	sql += "   from cbtrade.poss p "
 	sql += "   where 1=1 "
 	sql += "   and p.ignore_tf = 0 "
-	sql += "   and p.test_tf = 0 "
 	sql += "   and p.prod_id = '{}' ".format(prod_id)
 	sql += "   and p.pos_stat in ('OPEN','SELL') "
 #	sql += "   order by p.buy_strat_name, p.buy_strat_freq "
@@ -1429,13 +1665,14 @@ def db_pos_open_get_by_prod_id(prod_id):
 	sql += "   from cbtrade.poss p "
 	sql += "   where 1=1 "
 	sql += "   and p.ignore_tf = 0 "
-#	sql += "   and p.test_tf = 0 "
 	sql += "   and p.prod_id = '{}' ".format(prod_id)
 	sql += "   and p.pos_stat in ('OPEN','SELL') "
 #	sql += "   order by p.buy_strat_name, p.buy_strat_freq "
 	sql += "   order by p.pos_id "
 
 	poss = db.seld(sql)
+#	print(f'poss => len : {len(poss)}, typ: {type(poss)}')
+
 
 	func_end(fnc)
 	return poss
@@ -1454,7 +1691,6 @@ def db_poss_open_max_trade_size_get(prod_id):
 	sql += "  where 1=1 "
 	sql += "  and p.prod_id = '{}' ".format(prod_id)
 	sql += "  and p.ignore_tf = 0 "
-	sql += "  and p.test_tf = 0 "
 	sql += "  and pos_stat in ('OPEN','SELL') "
 	sql += "  order by p.prod_id, p.pos_id "
 
@@ -1480,7 +1716,6 @@ def db_mkts_open_cnt_get():
 	sql += "  where 1=1 "
 	sql += "  and p.pos_stat in ('OPEN','SELL') "
 	sql += "  and p.ignore_tf = 0 "
-	sql += "  and p.test_tf = 0 "
 
 	mkt_open_cnt = db.sel(sql)
 
@@ -1497,24 +1732,24 @@ def db_poss_sell_order_problems_get():
 
 	sql = ""
 	sql += "select 'pos.pos_stat = SELL but no OPEN sell orders on sell_ords' as reason "
-	sql += "  , p.* "
-	sql += "  from poss p "
+	sql += "  , p.pos_id, p.prod_id, p.pos_stat, p.test_txn_yn, so.so_id "
+	sql += "  from poss p left outer join cbtrade.sell_ords so on so.pos_id = p.pos_id "
 	sql += "  where 1=1 "
 	sql += "  and p.ignore_tf = 0 "
 	sql += "  and p.pos_stat = 'SELL' "
 	sql += "  and not exists (select * from cbtrade.sell_ords so where so.pos_id = p.pos_id) "
 	sql += "union "
 	sql += "select 'pos.pos_stat = OPEN but there is a sell order(s) on sell_ords' as reason "
-	sql += "  , p.* "
-	sql += "  from poss p "
+	sql += "  , p.pos_id, p.prod_id, p.pos_stat, p.test_txn_yn, so.so_id "
+	sql += "  from poss p left outer join cbtrade.sell_ords so on so.pos_id = p.pos_id "
 	sql += "  where 1=1 "
 	sql += "  and p.ignore_tf = 0 "
 	sql += "  and p.pos_stat = 'OPEN' "
 	sql += "  and exists (select * from cbtrade.sell_ords so where so.pos_id = p.pos_id) "
 	sql += "union "
 	sql += "select 'multiple sell orders' as reason "
-	sql += "  , p.* "
-	sql += "  from poss p "
+	sql += "  , p.pos_id, p.prod_id, p.pos_stat, p.test_txn_yn, so.so_id "
+	sql += "  from poss p left outer join cbtrade.sell_ords so on so.pos_id = p.pos_id "
 	sql += "  where 1=1 "
 	sql += "  and p.ignore_tf = 0 "
 	sql += "  and (select count(*) from cbtrade.sell_ords so where so.pos_id = p.pos_id) > 1 "
@@ -1526,7 +1761,7 @@ def db_poss_sell_order_problems_get():
 
 #<=====>#
 
-def db_poss_open_get(prod_id=None, include_test_yn='N'):
+def db_poss_open_get(prod_id=None, test_only_yn='N', live_only_yn='N'):
 	func_name = 'db_poss_open_get'
 	func_str = f'{lib_name}.{func_name}()'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
@@ -1537,8 +1772,12 @@ def db_poss_open_get(prod_id=None, include_test_yn='N'):
 	sql += "  from poss p "
 	sql += "  where 1=1 "
 	sql += "  and p.ignore_tf = 0 "
-	if include_test_yn == 'N':
-		sql += "  and p.test_tf = 0 "
+
+	if test_only_yn == 'Y':
+		sql += "  and p.test_txn_yn = 'Y' "
+	elif live_only_yn == 'Y':
+		sql += "  and p.test_txn_yn = 'N' "
+
 	if prod_id:
 		sql += f"  and prod_id = '{prod_id}' "
 	sql += "  and pos_stat in ('OPEN','SELL') "
@@ -1561,7 +1800,7 @@ def db_sell_ords_open_get():
 #	G(func_str)
 
 	sql = ""
-	sql += "select so.* "
+	sql += "select so.*, TIMESTAMPDIFF(MINUTE, so.sell_begin_dttm, NOW()) as elapsed "
 	sql += "  from sell_ords so "
 	sql += "  join poss p on p.pos_id = so.pos_id "
 	sql += "  where 1=1 "

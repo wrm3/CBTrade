@@ -442,19 +442,19 @@ def WoR1(text, font_color='#FFA500', bg_color='#000000', bold=False, italic=Fals
 
 #<=====>#
 
-def WoG1(text, font_color='#9ACD32', bg_color='#000000', bold=False, italic=False, length=0, align='left', print_yn='Y'):
+def WoG1(text, font_color='#228B22', bg_color='#000000', bold=False, italic=False, length=0, align='left', print_yn='Y'):
 	if print_yn == 'Y':
 		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
 	else:
 		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
 
-def WoG2(text, font_color='#228B22', bg_color='#000000', bold=False, italic=False, length=0, align='left', print_yn='Y'):
+def WoG2(text, font_color='#32CD32', bg_color='#000000', bold=False, italic=False, length=0, align='left', print_yn='Y'):
 	if print_yn == 'Y':
 		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
 	else:
 		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
 
-def WoG3(text, font_color='#32CD32', bg_color='#000000', bold=False, italic=False, length=0, align='left', print_yn='Y'):
+def WoG3(text, font_color='#9ACD32', bg_color='#000000', bold=False, italic=False, length=0, align='left', print_yn='Y'):
 	if print_yn == 'Y':
 		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
 	else:
@@ -466,13 +466,13 @@ def WoG4(text, font_color='#FFFFFF', bg_color='#9ACD32', bold=False, italic=Fals
 	else:
 		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
 
-def WoG5(text, font_color='#FFFFFF', bg_color='#228B22', bold=False, italic=False, length=0, align='left', print_yn='Y'):
+def WoG5(text, font_color='#FFFFFF', bg_color='#32CD32', bold=False, italic=False, length=0, align='left', print_yn='Y'):
 	if print_yn == 'Y':
 		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
 	else:
 		return cs(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
 
-def WoG6(text, font_color='#FFFFFF', bg_color='#32CD32', bold=False, italic=False, length=0, align='left', print_yn='Y'):
+def WoG6(text, font_color='#FFFFFF', bg_color='#228B22', bold=False, italic=False, length=0, align='left', print_yn='Y'):
 	if print_yn == 'Y':
 		cp(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
 	else:

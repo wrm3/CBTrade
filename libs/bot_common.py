@@ -57,38 +57,6 @@ def calc_chg_pct(old_val, new_val, dec_prec=2):
 
 #<=====>#
 
-# buy limit orders
-def cb_buy_base_size_calc(buy_prc, spend_amt, base_size_incr, base_size_min, base_size_max):
-	func_name = 'cb_buy_base_size_calc'
-	func_str = f'{lib_name}.{func_name}(buy_prc={buy_prc:>.8f}, spend_amt={spend_amt:>.8f}, base_size_incr={base_size_incr:>.8f}, base_size_min={base_size_min:>.8f}, base_size_max={base_size_max:>.8f}'
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
-
-	trade_size     = dec(spend_amt) / dec(buy_prc)
-	print(f'trade_size : {trade_size:>.8f} passed in...')
-
-	if trade_size < dec(base_size_min):
-		print(f'...selling less {trade_size:>.8f} than coinbase allows {base_size_min}...exiting...')
-		beep()
-		beep()
-		beep()
-		func_end(fnc)
-		return str(0)
-	print(f'trade_size : {trade_size:>.8f} after base_size_min {base_size_min:>.8f} check...')
-
-	sell_blocks = int(dec(trade_size) / dec(base_size_incr))
-	trade_size = sell_blocks * dec(base_size_incr)
-	print(f'trade_size : {trade_size:>.8f} after sell_block {sell_blocks} increments of {base_size_incr:>.8f}...')
-
-	if trade_size > dec(base_size_max):
-		trade_size = dec(base_size_max)
-	print(f'trade_size : {trade_size:>.8f} after base_size_max {base_size_max:>.8f} check...')
-
-	func_end(fnc)
-	return str(trade_size)
-
-#<=====>#
-
 def freqs_get(rfreq):
 	func_name = 'freqs_get'
 	func_str = f'{lib_name}.{func_name}(rfreq={rfreq})'
