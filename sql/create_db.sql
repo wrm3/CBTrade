@@ -588,9 +588,16 @@ create table poss(
 	, dlm                                         timestamp default current_timestamp on update current_timestamp
 	, unique(bo_uuid)
 	);
+alter table cbtrade.poss add index idx_prod_id_quote_curr_symb (prod_id, quote_curr_symb);
+alter table cbtrade.poss add index idx_prod_id (prod_id);
+alter table cbtrade.poss add index idx_prod_id_stat (prod_id, pos_stat);
+alter table cbtrade.poss add index idx_buy_strat_name_freq (buy_strat_name, buy_strat_freq);
+
 
 
 /*
+alter table cbtrade.poss add index prod_id_quote_curr_symb (prod_id, quote_curr_symb);
+  , ;
 alter table cbtrade.poss add column test_txn_yn char(1) default 'N' after test_tf;
 update cbtrade.poss set test_txn_yn = 'Y' where test_tf = 1;
 update cbtrade.poss set test_txn_yn = 'N' where test_tf = 0;

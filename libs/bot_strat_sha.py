@@ -247,6 +247,8 @@ def buy_strat_sha(buy, ta, pst):
 	buy.buy_yn  = buy.buy_yn
 	buy.wait_yn = buy.wait_yn
 
+#	print(f'{lib_name}.{func_name} => prod_id : {buy.prod_id}, buy_yn : {buy.buy_yn}, wait_yn : {buy.wait_yn}')
+
 	func_end(fnc)
 	return buy, ta
 

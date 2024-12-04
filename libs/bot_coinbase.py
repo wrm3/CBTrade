@@ -686,19 +686,31 @@ def cb_ord_get(order_id):
 	func_str = f'{lib_name}.{func_name}(order_id={order_id})'
 	lib_secs_max = get_lib_func_secs_max(lib_name=lib_name, func_name=func_name)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
+	G(func_str)
 
 	o = None
 	time.sleep(0.25)
-	r = cb.get_order(order_id=order_id)
+
+	r = None
+	try:
+		r = cb.get_order(order_id=order_id)
+	except Exception as e:
+		print('get_order errored...')
+		print(e)
+#		beep()
+
 	if r:
 		if 'order' in r:
 			if r['order']:
 				o = r['order']
+		else:
+			print(f'{func_name} no order found for {order_id}')
+			print(r)
+#			beep()
 
-	if o:
-		o = cb_ord_shaper(o)
-		db_tbl_ords_insupd(o)
+		if o:
+			o = cb_ord_shaper(o)
+			db_tbl_ords_insupd(o)
 
 	func_end(fnc)
 	return o

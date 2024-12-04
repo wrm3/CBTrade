@@ -180,14 +180,15 @@ def buy_strat_nwe_3row(buy, ta, pst):
 		prod_id          = buy.prod_id
 		buy.buy_yn       = 'Y'
 		buy.wait_yn      = 'N'
+		buy.show_tests_yn = buy.pst.buy.strats.nwe_3row.show_tests_yn
 
 		buy.rfreq = buy.trade_strat_perf.buy_strat_freq
 		freq = buy.buy_strat_freq
 #		freqs, faster_freqs = freqs_get(buy.rfreq)
 		if freq == '1d':
-			faster_freqs = ['5min', '15min','30min', '1h']
+			faster_freqs = ['5min', '15min','30min']
 		elif freq == '4h':
-			faster_freqs = ['5min', '15min', '30min']
+			faster_freqs = ['5min', '15min','30min']
 		elif freq == '1h':
 			faster_freqs = ['5min', '15min']
 		elif freq == '30min':

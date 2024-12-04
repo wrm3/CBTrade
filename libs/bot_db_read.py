@@ -290,6 +290,8 @@ def db_bot_spent(quote_curr_symb=None):
 	sql += "  , sum(case when p.buy_strat_type = 'dn' then p.tot_out_cnt else 0 end) as spent_dn_amt "
 	sql += "  from cbtrade.poss p "
 	sql += "  where p.pos_stat in ('OPEN','SELL') "
+	sql += "  and p.ignore_tf = 0 "
+	sql += "  and p.test_txn_yn = 'N' "
 	if quote_curr_symb:
 		sql += f"  and p.quote_curr_symb = '{quote_curr_symb}' "
 	sql += "  group by p.quote_curr_symb "
@@ -1730,29 +1732,61 @@ def db_poss_sell_order_problems_get():
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	sql = ""
-	sql += "select 'pos.pos_stat = SELL but no OPEN sell orders on sell_ords' as reason "
-	sql += "  , p.pos_id, p.prod_id, p.pos_stat, p.test_txn_yn, so.so_id "
-	sql += "  from poss p left outer join cbtrade.sell_ords so on so.pos_id = p.pos_id "
-	sql += "  where 1=1 "
-	sql += "  and p.ignore_tf = 0 "
-	sql += "  and p.pos_stat = 'SELL' "
-	sql += "  and not exists (select * from cbtrade.sell_ords so where so.pos_id = p.pos_id) "
-	sql += "union "
-	sql += "select 'pos.pos_stat = OPEN but there is a sell order(s) on sell_ords' as reason "
-	sql += "  , p.pos_id, p.prod_id, p.pos_stat, p.test_txn_yn, so.so_id "
-	sql += "  from poss p left outer join cbtrade.sell_ords so on so.pos_id = p.pos_id "
-	sql += "  where 1=1 "
-	sql += "  and p.ignore_tf = 0 "
-	sql += "  and p.pos_stat = 'OPEN' "
-	sql += "  and exists (select * from cbtrade.sell_ords so where so.pos_id = p.pos_id) "
-	sql += "union "
-	sql += "select 'multiple sell orders' as reason "
-	sql += "  , p.pos_id, p.prod_id, p.pos_stat, p.test_txn_yn, so.so_id "
-	sql += "  from poss p left outer join cbtrade.sell_ords so on so.pos_id = p.pos_id "
-	sql += "  where 1=1 "
-	sql += "  and p.ignore_tf = 0 "
-	sql += "  and (select count(*) from cbtrade.sell_ords so where so.pos_id = p.pos_id) > 1 "
+	poss = []
+
+	sql = """
+		WITH SellOrderStats AS (
+			SELECT 
+				pos_id, 
+				COUNT(*) AS sell_order_count 
+			FROM cbtrade.sell_ords
+			GROUP BY pos_id
+		)
+		SELECT 
+			'pos.pos_stat = SELL but no OPEN sell orders on sell_ords' AS reason,
+			p.pos_id, 
+			p.prod_id, 
+			p.pos_stat, 
+			p.test_txn_yn, 
+			so.so_id
+		FROM poss p
+		LEFT JOIN cbtrade.sell_ords so ON so.pos_id = p.pos_id
+		LEFT JOIN SellOrderStats sos ON p.pos_id = sos.pos_id
+		WHERE p.ignore_tf = 0 
+		AND p.pos_stat = 'SELL' 
+		AND sos.sell_order_count IS NULL
+
+		UNION ALL
+
+		SELECT 
+			'pos.pos_stat = OPEN but there is a sell order(s) on sell_ords' AS reason,
+			p.pos_id, 
+			p.prod_id, 
+			p.pos_stat, 
+			p.test_txn_yn, 
+			so.so_id
+		FROM poss p
+		LEFT JOIN cbtrade.sell_ords so ON so.pos_id = p.pos_id
+		LEFT JOIN SellOrderStats sos ON p.pos_id = sos.pos_id
+		WHERE p.ignore_tf = 0 
+		AND p.pos_stat = 'OPEN' 
+		AND sos.sell_order_count > 0
+
+		UNION ALL
+
+		SELECT 
+			'multiple sell orders' AS reason,
+			p.pos_id, 
+			p.prod_id, 
+			p.pos_stat, 
+			p.test_txn_yn, 
+			so.so_id
+		FROM poss p
+		LEFT JOIN cbtrade.sell_ords so ON so.pos_id = p.pos_id
+		LEFT JOIN SellOrderStats sos ON p.pos_id = sos.pos_id
+		WHERE p.ignore_tf = 0 
+		AND sos.sell_order_count > 1;
+		"""
 
 	poss = db.seld(sql)
 
@@ -1800,7 +1834,7 @@ def db_sell_ords_open_get():
 #	G(func_str)
 
 	sql = ""
-	sql += "select so.*, TIMESTAMPDIFF(MINUTE, so.sell_begin_dttm, NOW()) as elapsed "
+	sql += "select so.*, p.buy_strat_name, p.buy_strat_freq, TIMESTAMPDIFF(MINUTE, so.sell_begin_dttm, NOW()) as elapsed "
 	sql += "  from sell_ords so "
 	sql += "  join poss p on p.pos_id = so.pos_id "
 	sql += "  where 1=1 "

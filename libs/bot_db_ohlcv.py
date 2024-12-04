@@ -283,8 +283,8 @@ def db_check_ohlcv_prod_id_table(prod_id):
 	sql += "  , upd_dttm    timestamp default current_timestamp on update current_timestamp "
 	sql += "  , dlm         timestamp default current_timestamp on update current_timestamp "
 	sql += "  , unique(timestamp, freq) "
+	sql += "  , INDEX idx_freq_timestamp (freq, timestamp DESC)"
 	sql += "  )"
-
 	db_ohlcv.execute(sql)
 
 	time.sleep(0.05)

@@ -180,6 +180,7 @@ def buy_strat_nwe_env(buy, ta, pst):
 		prod_id          = buy.prod_id
 		buy.buy_yn       = 'Y'
 		buy.wait_yn      = 'N'
+		buy.show_tests_yn = buy.pst.buy.strats.nwe_env.show_tests_yn
 
 
 		buy.rfreq = buy.trade_strat_perf.buy_strat_freq

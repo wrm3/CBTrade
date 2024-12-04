@@ -338,7 +338,7 @@ def report_strats_best(cnt=10, min_trades=1):
 			if show_cnt >= cnt:
 				break
 
-		chart_bottom(len_cnt=232)
+		chart_bottom(len_cnt=172)
 
 	func_end(fnc)
 
@@ -490,7 +490,7 @@ def report_strat(title, mkt_strat_perf, show_strat_header_yn):
 	hmsg += f"{'gain_amt':^10} | "
 	hmsg += f"{'gain_pct':^10} % | "
 	hmsg += f"{'gain_hr':^10} % | "
-	hmsg += f"{'gain_day':^10} % | "
+	hmsg += f"{'gain_day':^10} %"
 #	hmsg += f"{'elapsed':^7} | "
 
 	if show_strat_header_yn == 'Y':
@@ -514,7 +514,7 @@ def report_strat(title, mkt_strat_perf, show_strat_header_yn):
 	msg += f'{mkt_strat_perf.gain_loss_amt:>10.2f} | '
 	msg += f'{mkt_strat_perf.gain_loss_pct:>10.2f} % | '
 	msg += f'{mkt_strat_perf.gain_loss_pct_hr:>10.2f} % | '
-	msg += f'{mkt_strat_perf.gain_loss_pct_day:>10.2f} % | '
+	msg += f'{mkt_strat_perf.gain_loss_pct_day:>10.2f} %'
 #	msg += f'{mkt_strat_perf.strat_last_elapsed:>7} | '
 	msg = cs_pct_color_50(pct=mkt_strat_perf.win_pct, msg=msg)
 

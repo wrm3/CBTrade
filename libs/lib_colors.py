@@ -377,6 +377,16 @@ class CLR:
 
 	#<=====>#
 
+	def cs(self, text, font_color, bg_color='black', bold=False, italic=False, length=0, align='left'):
+		return self.color_string(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
+
+	#<=====>#
+
+	def cp(self, text, font_color, bg_color='black', bold=False, italic=False, length=0, align='left'):
+		self.color_print(text, font_color=font_color, bg_color=bg_color, bold=bold, italic=italic, length=length, align=align)
+
+	#<=====>#
+
 	def demo1(self):
 		pass
 

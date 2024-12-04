@@ -20,6 +20,7 @@ from scipy.ndimage import gaussian_filter1d
 import traceback
 import warnings
 from datetime import datetime as dt, timedelta
+import time
 
 from libs.bot_coinbase import cb, cb_candles_get
 #from libs.bot_db_read import db_ohlcv_freq_get, db_ohlcv_prod_id_freqs
@@ -46,7 +47,7 @@ warnings.simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 #<=====>#
 lib_name      = 'bot_ta'
 log_name      = 'bot_ta'
-lib_secs_max  = 1
+lib_secs_max  = 0
 
 # <=====>#
 # Assignments Pre
@@ -72,6 +73,8 @@ def ta_main_new(pair, st):
 	lib_secs_max = get_lib_func_secs_max(lib_name=lib_name, func_name=func_name)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
+
+	t0 = time.perf_counter()
 
 	try:
 
@@ -134,6 +137,10 @@ def ta_main_new(pair, st):
 		print(f'df {type(df)} :  {df}')
 		ta = None
 
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
+
 	func_end(fnc)
 	return ta
 
@@ -146,6 +153,7 @@ def ta_ohlcv(pair, st):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=2)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	try:
 
 		prod_id     = pair.prod_id
@@ -319,6 +327,10 @@ def ta_ohlcv(pair, st):
 				last_signal = df[df[col] == 1].index[-1]
 				print(f"Last {col}: {last_signal} {'↑' if 'buy' in col else '↓'}")
 
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
+
 	func_end(fnc)
 	return dfs
 
@@ -331,11 +343,16 @@ def ta_ohlcv_range(prod_id, freq='1h', sd='2024-01-01', td='2024-12-31'):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=2)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	df          = None
 	sd          = int(pd.Timestamp(sd).timestamp())
 	td          = int(pd.Timestamp(td).timestamp())
 	df          = cb_candles_get(prod_id, start = sd, end = td, freq = freq)
 	df          = ta_df_dropna(df)
+
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
 	return df
@@ -349,6 +366,7 @@ def ta_df_api_get(prod_id, rfreq) -> dict:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	# print_adv(2)
 	df_db  = ta_df_hist_db(prod_id, rfreq)
 	df_api = cb_candles_get(product_id=prod_id, rfreq=rfreq, min_rows=299)
@@ -372,6 +390,10 @@ def ta_df_api_get(prod_id, rfreq) -> dict:
 	df = ta_df_dropna(df)
 	# print(f'df  : {len(df_api)}')
 
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
+
 	func_end(fnc)
 	return df
 
@@ -383,6 +405,7 @@ def ta_df_hist_db(prod_id, freq):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	df = None
 	try:
 		hist = db_ohlcv_freq_get(prod_id, freq, lmt=500)
@@ -437,6 +460,7 @@ def ta_df_fill_rows(df, min_rows=300, time_index_col=None) -> dict:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	
 	"""
 	Ensures the DataFrame has at least `min_rows` rows by prepending duplicates of the oldest row,
@@ -509,6 +533,10 @@ def ta_df_fill_rows(df, min_rows=300, time_index_col=None) -> dict:
 	if not time_index_col:
 		df.index = pd.DatetimeIndex(df.index)
 
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
+
 	func_end(fnc)
 	return df
 
@@ -521,8 +549,13 @@ def ta_df_dropna(df, cols=['open', 'high', 'low', 'close', 'volume']):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	df = df.dropna(subset=cols)
 	df = df[(df[cols] != 0).any(axis=1)]
+
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
 	return df
@@ -536,6 +569,7 @@ def ta_df_merge_db_and_api(prod_id, freq, df_db, df_api):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	"""
 	Fetches OHLCV data from the database and the API, merges them,
 	replaces overlapping data with API data, updates the database,
@@ -582,6 +616,10 @@ def ta_df_merge_db_and_api(prod_id, freq, df_db, df_api):
 		traceback.print_exc()
 		df_merged = None
 
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
+
 	func_end(fnc)
 	return df_merged
 
@@ -594,6 +632,7 @@ def ta_add_indicators(df: pd.DataFrame, st, prc_mkt, rfreq) -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	df['hl2']   = (df['high'] + df['low']) / 2
 	df['hlc3']  = (df['high'] + df['low'] + df['close']) / 3
 	df['ohlc4'] = (df['open'] + df['high'] + df['low'] + df['close']) / 4
@@ -604,6 +643,9 @@ def ta_add_indicators(df: pd.DataFrame, st, prc_mkt, rfreq) -> pd.DataFrame:
 
 	if len(df) < 10:
 		print('error gettings candles...')
+		t1 = time.perf_counter()
+		secs = round(t1 - t0, 2)
+	#	print(f'{func_name} completed in {secs}')
 		func_end(fnc)
 		return 'N','Y'
 
@@ -678,6 +720,10 @@ def ta_add_indicators(df: pd.DataFrame, st, prc_mkt, rfreq) -> pd.DataFrame:
 		df[f'max{x}'] = df['high'].rolling(window=x).max()
 		df[f'min{x}'] = df['low'].rolling(window=x).min()
 
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
+
 	func_end(fnc)
 	return df
 
@@ -689,7 +735,12 @@ def ta_add_color(df: pd.DataFrame) -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	df['color'] = np.where(df['open'] < df['close'], 'green', 'red')
+
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
 	return df
@@ -703,6 +754,7 @@ def ta_add_ha(df: pd.DataFrame) -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	# Calculate Heikin Ashi Close
 	df['ha_close'] = (df['open'] + df['high'] + df['low'] + df['close']) / 4
 
@@ -740,6 +792,10 @@ def ta_add_ha(df: pd.DataFrame) -> pd.DataFrame:
 	# HA Candle Color
 	df['ha_color']                  = np.where(df['ha_open'] < df['ha_close'], 'green', 'red')
 
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
+
 	func_end(fnc)
 	return df
 
@@ -752,9 +808,14 @@ def ta_add_atr(df: pd.DataFrame, per=14) -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	per = min(per, len(df))
 
 	df['atr'] = pta.atr(high=df['high'], low=df['low'], close=df['close'], length=per, mamode='SMA')
+
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
 	return df
@@ -767,9 +828,14 @@ def ta_add_rsi(df: pd.DataFrame, per=14) -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	per = min(per, len(df))
 
 	df['rsi'] = pta.rsi(df['close'], length=per)
+
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
 	return df
@@ -783,6 +849,7 @@ def ta_add_roc(df: pd.DataFrame, col='close', label=None, per=3) -> pd.DataFrame
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	per = min(per, len(df))
 
 	if not label:
@@ -797,6 +864,10 @@ def ta_add_roc(df: pd.DataFrame, col='close', label=None, per=3) -> pd.DataFrame
 	label4 = f'{label}_roc_dn'
 	df[label4]                  = df[label2]  < df[label2].shift(1)
 
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
+
 	func_end(fnc)
 	return df
 
@@ -809,6 +880,7 @@ def ta_add_sma(df: pd.DataFrame, per, col='close', label=None) -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	per = min(per, len(df))
 
 	if not label:
@@ -817,6 +889,10 @@ def ta_add_sma(df: pd.DataFrame, per, col='close', label=None) -> pd.DataFrame:
 	df[label]                   = pta.sma(df['close'], length=per)
 
 	df = ta_add_roc(df, col=label)
+
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
 	return df
@@ -830,6 +906,7 @@ def ta_add_ema(df: pd.DataFrame, per, col='close', label=None) -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	per = min(per, len(df))
 
 	if not label:
@@ -838,6 +915,10 @@ def ta_add_ema(df: pd.DataFrame, per, col='close', label=None) -> pd.DataFrame:
 	df[label]                   = pta.ema(df[col], length=per)
 
 	df = ta_add_roc(df, col=label)
+
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
 	return df
@@ -851,6 +932,7 @@ def ta_add_sha(df: pd.DataFrame, prc_mkt, sha_len1=5, sha_len2=8, tag=None) -> p
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	sha_len1 = min(sha_len1, len(df))
 	sha_len2 = min(sha_len2, len(df))
 
@@ -914,6 +996,10 @@ def ta_add_sha(df: pd.DataFrame, prc_mkt, sha_len1=5, sha_len2=8, tag=None) -> p
 		for c in('sha_open', 'sha_close', 'sha_high', 'sha_low', 'sha_body', 'sha_wick_upper', 'sha_wick_lower', 'sha_color', 'prc_abv_sha', 'prc_bel_sha'):
 			df.pop(c)
 
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
+
 	func_end(fnc)
 	return df
 
@@ -926,6 +1012,7 @@ def ta_add_sha(df: pd.DataFrame, prc_mkt, sha_len1=5, sha_len2=8, tag=None) -> p
 # 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 # #	G(func_str)
 
+#	t0 = time.perf_counter()
 # 	per_ma = min(per_ma, len(df))
 # 	per_sign = min(per_sign, len(df))
 
@@ -972,7 +1059,11 @@ def ta_add_sha(df: pd.DataFrame, prc_mkt, sha_len1=5, sha_len2=8, tag=None) -> p
 # 	for c in('hlc3', 'hi', 'lo','md', 'sb', 'sh', 'mdc'):
 # 		df.pop(c)
 
-# 	func_end(fnc)
+# 	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
+
+	func_end(fnc)
 # 	return df
 
 
@@ -983,6 +1074,9 @@ def ta_add_imp_macd(df: pd.DataFrame, per_ma=34, per_sign=9, filter_strength=Tru
 	func_name = 'ta_add_imp_macd'
 	func_str = f'{lib_name}.{func_name}(df, per_ma={per_ma}, per_sign={per_sign})'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	t0 = time.perf_counter()
 
 	per_ma = min(per_ma, len(df))
 	per_sign = min(per_sign, len(df))
@@ -1041,6 +1135,10 @@ def ta_add_imp_macd(df: pd.DataFrame, per_ma=34, per_sign=9, filter_strength=Tru
 	for c in ('hlc3', 'hi', 'lo', 'md', 'sb', 'sh', 'hist_avg'):
 		df.pop(c)
 
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
+
 	func_end(fnc)
 	return df
 
@@ -1054,6 +1152,7 @@ def ta_add_bb(df: pd.DataFrame, per=20, sd=2, tag='') -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
+	t0 = time.perf_counter()
 	per = min(per, len(df))
 
 	# Calculate Bollinger Bands
@@ -1078,6 +1177,10 @@ def ta_add_bb(df: pd.DataFrame, per=20, sd=2, tag='') -> pd.DataFrame:
 	df[f'bb{tag}_upwards']   = (df[f'bb_upper_roc{tag}'] > 0) & (df[f'bb_lower_roc{tag}'] > 0)
 	df[f'bb{tag}_downwards'] = (df[f'bb_upper_roc{tag}'] < 0) & (df[f'bb_lower_roc{tag}'] < 0)
 
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
+
 	func_end(fnc)
 	return df
 
@@ -1087,6 +1190,9 @@ def ta_add_nwe(df: pd.DataFrame, src='close', bandwidth=8.0, mult=3.0, tag='', r
 	func_name = 'ta_add_nwe'
 	func_str = f'{lib_name}.{func_name}(df, src={src}, bandwidth={bandwidth}, tag={tag})'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	t0 = time.perf_counter()
 
 	from scipy.ndimage import gaussian_filter1d
 
@@ -1266,8 +1372,10 @@ def ta_add_nwe(df: pd.DataFrame, src='close', bandwidth=8.0, mult=3.0, tag='', r
 		df['nwe_3row_sell_signal'] = (
 			(df['nwe_color'] == 'red') &
 			(df['nwe_color'].shift(1) == 'red') &
+			(df['nwe_color'].shift(2) == 'red') &
 			(df['nwe_roc'] <= 0) &
-			(df['nwe_roc'].shift(1) <= 0)
+			(df['nwe_roc'].shift(1) <= 0) &
+			(df['nwe_roc'].shift(2) <= 0)
 			).astype(int)
 
 	except Exception as e:
@@ -1276,6 +1384,10 @@ def ta_add_nwe(df: pd.DataFrame, src='close', bandwidth=8.0, mult=3.0, tag='', r
 		traceback.print_stack()
 		print_adv(2)
 		pass
+
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
 	return df
@@ -1286,6 +1398,9 @@ def ta_add_nwe_env(df: pd.DataFrame, src='close', mult=3.0) -> pd.DataFrame:
 	func_name = 'ta_add_nwe_env'
 	func_str = f'{lib_name}.{func_name}(df, src={src})'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	t0 = time.perf_counter()
 
 	try:
 		'''
@@ -1414,8 +1529,8 @@ def ta_add_nwe_env(df: pd.DataFrame, src='close', mult=3.0) -> pd.DataFrame:
 
 		# Detect Buy Breach
 		df['nwe_env_buy_breach'] = (
-			(df[src] < df['nwe_lower']) | 
-			(df[src].shift(1) < df['nwe_lower'].shift(1))
+			(df['low'] < df['nwe_lower']) | 
+			(df['low'].shift(1) < df['nwe_lower'].shift(1))
 			)
 		# Detect Buy Breach Depth
 		df['nwe_env_buy_breach_depth'] = df.apply(
@@ -1453,6 +1568,10 @@ def ta_add_nwe_env(df: pd.DataFrame, src='close', mult=3.0) -> pd.DataFrame:
 		print_adv(2)
 		pass
 
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
+
 	func_end(fnc)
 	return df
 
@@ -1462,6 +1581,9 @@ def ta_add_nwe_rev(df: pd.DataFrame) -> pd.DataFrame:
 	func_name = 'ta_add_nwe_rev'
 	func_str = f'{lib_name}.{func_name}(df)'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	t0 = time.perf_counter()
 
 	try:
 		'''
@@ -1609,6 +1731,10 @@ def ta_add_nwe_rev(df: pd.DataFrame) -> pd.DataFrame:
 		print_adv(2)
 		pass
 
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
+
 	func_end(fnc)
 	return df
 
@@ -1618,6 +1744,9 @@ def ta_add_nwe_orig(df: pd.DataFrame, src='close', bandwidth=8.0, mult=3.0, tag=
 	func_name = 'ta_add_nwe_orig'
 	func_str = f'{lib_name}.{func_name}(df, src={src}, bandwidth={bandwidth}, tag={tag})'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	t0 = time.perf_counter()
 
 	from scipy.ndimage import gaussian_filter1d
 
@@ -1984,6 +2113,10 @@ def ta_add_nwe_orig(df: pd.DataFrame, src='close', bandwidth=8.0, mult=3.0, tag=
 		print_adv(2)
 		pass
 
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
+
 	func_end(fnc)
 	return df
 
@@ -1993,6 +2126,9 @@ def ta_add_nwex(df: pd.DataFrame, src='close', bandwidth=8.0, mult=3.0, tag='', 
 	func_name = 'ta_add_nwe'
 	func_str = f'{lib_name}.{func_name}(df, src={src}, bandwidth={bandwidth}, tag={tag})'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	t0 = time.perf_counter()
 
 	from scipy.ndimage import gaussian_filter1d
 
@@ -2090,6 +2226,10 @@ def ta_add_nwex(df: pd.DataFrame, src='close', bandwidth=8.0, mult=3.0, tag='', 
 		print_adv(2)
 		pass
 
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
+
 	func_end(fnc)
 	return df
 
@@ -2099,6 +2239,9 @@ def ta_add_nwe_before(df: pd.DataFrame, src='close', bandwidth=8.0, mult=2.5, ta
 	func_name = 'ta_add_nwe'
 	func_str = f'{lib_name}.{func_name}(df, src={src}, bandwidth={bandwidth}, tag={tag})'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
+#	G(func_str)
+
+	t0 = time.perf_counter()
 
 	from scipy.ndimage import gaussian_filter1d
 
@@ -2310,6 +2453,10 @@ def ta_add_nwe_before(df: pd.DataFrame, src='close', bandwidth=8.0, mult=2.5, ta
 		traceback.print_stack()
 		print_adv(2)
 		pass
+
+	t1 = time.perf_counter()
+	secs = round(t1 - t0, 2)
+#	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
 	return df
