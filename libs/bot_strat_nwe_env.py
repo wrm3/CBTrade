@@ -29,6 +29,7 @@ from libs.bot_strat_common import disp_sell_tests, exit_if_logic
 import pandas as pd
 import numpy as np
 import pandas_ta as pta
+from pprint import pprint
 
 
 #<=====>#
@@ -62,7 +63,7 @@ def buy_strat_settings_nwe_env(st):
 	func_name = 'buy_strat_settings_nwe_env'
 	func_str = f'{lib_name}.{func_name}(buy)'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
+	# G(func_str)
 
 	# nwe
 	buy_strat_st = {
@@ -76,7 +77,7 @@ def buy_strat_settings_nwe_env(st):
 					"show_tests_yn": "Y"
 					}
 
-	st['buy']['strats']['sha'] = buy_strat_st
+	st['buy']['strats']['nwe_env'] = buy_strat_st
 
 	func_end(fnc)
 	return st
@@ -87,7 +88,7 @@ def sell_strat_settings_nwe_env(st):
 	func_name = 'sell_strat_settings_nwe_env'
 	func_str = f'{lib_name}.{func_name}(buy)'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
+	# G(func_str)
 
 	# nwe
 	sell_strat_st = {
@@ -100,7 +101,7 @@ def sell_strat_settings_nwe_env(st):
 					"show_tests_yn": "Y"
 					}
 
-	st['sell']['strats']['sha'] = sell_strat_st
+	st['sell']['strats']['nwe_env'] = sell_strat_st
 
 	func_end(fnc)
 	return st

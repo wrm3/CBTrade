@@ -26,6 +26,7 @@ from libs.lib_colors import cs, cp, G
 from libs.lib_common import dttm_get, func_begin, func_end, print_adv
 from libs.lib_colors import BoW
 from libs.bot_strat_common import disp_sell_tests
+from pprint import pprint
 
 
 #<=====>#
@@ -58,7 +59,7 @@ def buy_strat_settings_drop(st):
 	func_name = 'buy_strat_settings_drop'
 	func_str = f'{lib_name}.{func_name}(buy)'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
+	# G(func_str)
 
 	# drop
 	buy_strat_st = {
@@ -81,7 +82,7 @@ def buy_strat_settings_drop(st):
 					"show_tests_yn": "Y"
 					}
 
-	st['buy']['strats']['sha'] = buy_strat_st
+	st['buy']['strats']['drop'] = buy_strat_st
 
 	func_end(fnc)
 	return st
@@ -92,7 +93,7 @@ def sell_strat_settings_drop(st):
 	func_name = 'sell_strat_settings_drop'
 	func_str = f'{lib_name}.{func_name}(buy)'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
+	# G(func_str)
 
 	# drop
 	sell_strat_st = {
@@ -105,7 +106,7 @@ def sell_strat_settings_drop(st):
 					"show_tests_yn": "Y"
 					}
 
-	st['sell']['strats']['sha'] = sell_strat_st
+	st['sell']['strats']['drop'] = sell_strat_st
 
 	func_end(fnc)
 	return st

@@ -30,12 +30,12 @@ from libs.bot_strat_bb import buy_strat_bb, sell_strat_bb, buy_strat_settings_bb
 from libs.bot_strat_bb_bo import buy_strat_bb_bo, sell_strat_bb_bo, buy_strat_settings_bb_bo, sell_strat_settings_bb_bo
 from libs.bot_strat_drop import buy_strat_drop, sell_strat_drop, buy_strat_settings_drop, sell_strat_settings_drop
 
-
-#from libs.bot_strat_nwe import buy_strat_nwe, sell_strat_nwe, buy_strat_settings_nwe, sell_strat_settings_nwe
 from libs.bot_strat_nwe_3row import buy_strat_nwe_3row, sell_strat_nwe_3row, buy_strat_settings_nwe_3row, sell_strat_settings_nwe_3row
 from libs.bot_strat_nwe_env import buy_strat_nwe_env, sell_strat_nwe_env, buy_strat_settings_nwe_env, sell_strat_settings_nwe_env
 from libs.bot_strat_nwe_rev import buy_strat_nwe_rev, sell_strat_nwe_rev, buy_strat_settings_nwe_rev, sell_strat_settings_nwe_rev
 
+import sys
+from pprint import pprint
 
 #<=====>#
 # Variables
@@ -127,12 +127,6 @@ def buy_strats_get():
 	strats['drop_4h']          = {'prod_id': '', 'buy_strat_nick': 'drop_4h'        , 'buy_strat_type': 'dn', 'buy_strat_name': 'drop',     'buy_strat_desc': 'Big Dip Strat',               'buy_strat_freq': '4h'}
 	strats['drop_1d']          = {'prod_id': '', 'buy_strat_nick': 'drop_1d'        , 'buy_strat_type': 'dn', 'buy_strat_name': 'drop',     'buy_strat_desc': 'Big Dip Strat',               'buy_strat_freq': '1d'}
 
-	# strats['emax_15min']       = {'prod_id': '', 'buy_strat_nick': 'emax_15min'     , 'buy_strat_type': 'up', 'buy_strat_name': 'emax',     'buy_strat_desc': 'Triple EMA Crossover',        'buy_strat_freq': '15min'}
-	# strats['emax_30min']       = {'prod_id': '', 'buy_strat_nick': 'emax_30min'     , 'buy_strat_type': 'up', 'buy_strat_name': 'emax',     'buy_strat_desc': 'Triple EMA Crossover',        'buy_strat_freq': '30min'}
-	# strats['emax_1h']          = {'prod_id': '', 'buy_strat_nick': 'emax_1h'        , 'buy_strat_type': 'up', 'buy_strat_name': 'emax',     'buy_strat_desc': 'Triple EMA Crossover',        'buy_strat_freq': '1h'}
-	# strats['emax_4h']          = {'prod_id': '', 'buy_strat_nick': 'emax_4h'        , 'buy_strat_type': 'up', 'buy_strat_name': 'emax',     'buy_strat_desc': 'Triple EMA Crossover',        'buy_strat_freq': '4h'}
-	# strats['emax_1d']          = {'prod_id': '', 'buy_strat_nick': 'emax_1d'        , 'buy_strat_type': 'up', 'buy_strat_name': 'emax',     'buy_strat_desc': 'Triple EMA Crossover',        'buy_strat_freq': '1d'}
-
 	func_end(fnc)
 	return strats
 
@@ -142,16 +136,10 @@ def buy_strat_settings_get(st):
 	func_name = 'buy_strat_settings_get'
 	func_str = f'{lib_name}.{func_name}()'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
-
-#	from pprint import pprint
-#	pprint(st)
-#	print(type(st))f
-#	st = json.loads(st)
+	# G(func_str)
 
 	#ADD_NEW_STARTS_HERE
 	st = buy_strat_settings_sha(st)
-#	st = buy_strat_settings_nwe(st)
 	st = buy_strat_settings_nwe_3row(st)
 	st = buy_strat_settings_nwe_env(st)
 	st = buy_strat_settings_nwe_rev(st)
@@ -159,8 +147,6 @@ def buy_strat_settings_get(st):
 	st = buy_strat_settings_bb_bo(st)
 	st = buy_strat_settings_bb(st)
 	st = buy_strat_settings_drop(st)
-
-#	st = json.dumps(st, indent=4)
 
 	func_end(fnc)
 	return st
@@ -171,13 +157,10 @@ def sell_strat_settings_get(st):
 	func_name = 'sell_strat_settings_get'
 	func_str = f'{lib_name}.{func_name}()'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
-
-#	st = json.loads(st)
+	# G(func_str)
 
 	#ADD_NEW_STARTS_HERE
 	st = sell_strat_settings_sha(st)
-#	st = sell_strat_settings_nwe(st)
 	st = sell_strat_settings_nwe_3row(st)
 	st = sell_strat_settings_nwe_env(st)
 	st = sell_strat_settings_nwe_rev(st)
@@ -185,8 +168,6 @@ def sell_strat_settings_get(st):
 	st = sell_strat_settings_bb_bo(st)
 	st = sell_strat_settings_bb(st)
 	st = sell_strat_settings_drop(st)
-
-#	st = json.dumps(st, indent=4)
 
 	func_end(fnc)
 	return st
@@ -200,11 +181,6 @@ def buy_strats_avail_get(pair, pst):
 #	G(func_str)
 
 	prod_id = pair.prod_id
-	pst     = pst
-
-	#ADD_NEW_STARTS_HERE
-	# from pprint import pprint
-	# pprint(pst.buy.strats.sha)
 
 	# New Strat Add Section
 	pair.strat_sha_yn = 'N'

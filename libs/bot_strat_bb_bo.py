@@ -19,14 +19,13 @@ from libs.lib_common import dttm_get, func_begin, func_end, print_adv, beep, spe
 from libs.lib_colors import BoW
 from libs.lib_colors import GoW
 import traceback
-import traceback
 from libs.bot_settings import debug_settings_get, get_lib_func_secs_max
 from libs.lib_charts import chart_row
 from libs.lib_colors import cs, cp, G
 from libs.lib_common import dttm_get, func_begin, func_end, print_adv
 from libs.lib_colors import BoW
 from libs.bot_strat_common import disp_sell_tests, exit_if_logic
-
+from pprint import pprint
 
 #<=====>#
 # Variables
@@ -60,7 +59,7 @@ def buy_strat_settings_bb_bo(st):
 	func_name = 'buy_strat_settings_bb_bo'
 	func_str = f'{lib_name}.{func_name}(buy)'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
+	# G(func_str)
 
 	# bb_bo
 	buy_strat_st = {
@@ -75,7 +74,7 @@ def buy_strat_settings_bb_bo(st):
 					"show_tests_yn": "Y"
 					}
 
-	st['buy']['strats']['sha'] = buy_strat_st
+	st['buy']['strats']['bb_bo'] = buy_strat_st
 
 	func_end(fnc)
 	return st
@@ -86,7 +85,7 @@ def sell_strat_settings_bb_bo(st):
 	func_name = 'sell_strat_settings_bb_bo'
 	func_str = f'{lib_name}.{func_name}(buy)'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
+	# G(func_str)
 
 	# bb_bo
 	sell_strat_st = {
@@ -99,7 +98,7 @@ def sell_strat_settings_bb_bo(st):
 					"show_tests_yn": "Y"
 					}
 
-	st['sell']['strats']['sha'] = sell_strat_st
+	st['sell']['strats']['bb_bo'] = sell_strat_st
 
 	func_end(fnc)
 	return st
