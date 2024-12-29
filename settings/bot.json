@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 {
 	"edited_yn": "Y",
 	"loop_secs": 15,
@@ -9,16 +8,4 @@
 			"settings_fpath": "market_usdc.json"
 		}
 	}
-=======
-{
-    "edited_yn": "N",
-    "loop_secs": 15,
-    "auto_loop_secs": 15,
-    "speak_yn": "Y",
-    "trade_markets": {
-        "USDC": {
-            "settings_fpath": "market_usdc.json"
-        }
-    }
->>>>>>> Stashed changes
 }
