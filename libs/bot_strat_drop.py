@@ -190,7 +190,7 @@ def buy_strat_drop(buy, ta, pst):
 		dipped_tf = False
 		for ago in ago_list:
 			prc_drop_pct = round(((buy.prc_buy - max24) / max24) * 100, 2)
-			msg = f'    * BUY REQUIRE : recent ({ago}) current price {buy.prc_buy:>.8f} below {drop_pct:>.2f}% below max30 : {max24:>.8f} target_prc : {target_prc:>.8f} prc_drop_pct : {prc_drop_pct:>.2f}%'
+			msg = f'recent ({ago}) current price {buy.prc_buy:>.8f} below {drop_pct:>.2f}% below max30 : {max24:>.8f} target_prc : {target_prc:>.8f} prc_drop_pct : {prc_drop_pct:>.2f}%'
 			if buy.prc_buy < target_prc:
 				dipped_tf = True
 				all_passes.append(msg)
@@ -205,7 +205,7 @@ def buy_strat_drop(buy, ta, pst):
 		for freq in freqs:
 			for ago in ago_list:
 				color = buy.ta[freq]['color'][ago]
-				msg = f'    * BUY REQUIRE : {freq} {ago} candles == green : {color}'
+				msg = f'{freq} {ago} candles == green : {color}'
 				if color == 'green':
 					all_passes.append(msg)
 				else:
@@ -217,7 +217,7 @@ def buy_strat_drop(buy, ta, pst):
 		for freq in faster_freqs:
 			for ago in ago_list:
 				ha_color = buy.ta[freq]['ha_color'][ago]
-				msg = f'    * BUY REQUIRE : {freq} {ago} Heikin Ashi candles == green : {ha_color}'
+				msg = f'{freq} {ago} Heikin Ashi candles == green : {ha_color}'
 				if ha_color == 'green':
 					all_passes.append(msg)
 				else:
@@ -305,27 +305,36 @@ def sell_strat_drop(mkt, pos, ta, pst):
 			if pos.prc_chg_pct > 0:
 				if exit_if_profit_yn == 'Y':
 					if pos.prc_chg_pct < exit_if_profit_pct_min:
-						msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % < exit_if_profit_pct_min : {exit_if_profit_pct_min}, cancelling sell...'
-						BoW(msg)
+						msg = ''
+						msg += '    ' 
+						msg += cs(f'==> exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % < exit_if_profit_pct_min : {exit_if_profit_pct_min}, cancelling sell...', font_color='blue', bg_color='white')
+						print(msg)
 						pos.sell_yn = 'N'
 						pos.hodl_yn = 'Y'
 				elif exit_if_profit_yn == 'N':
-					msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...'
+					msg = ''
+					msg += '    ' 
+					msg += cs(f'==> exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...', font_color='blue', bg_color='white')
 					if pst.sell.show_tests_yn == 'Y':
-						BoW(msg)
+						print(msg)
 					pos.sell_yn = 'N'
 					pos.hodl_yn = 'Y'
 			elif pos.prc_chg_pct <= 0:
 				if exit_if_loss_yn == 'Y':
 					if pos.prc_chg_pct > exit_if_loss_pct_max:
-						msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % > exit_if_loss_pct_max : {exit_if_loss_pct_max}, cancelling sell...'
-						BoW(msg)
+						msg = ''
+						msg += '    ' 
+						msg += cs(f'==> exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % < exit_if_loss_pct_min : {exit_if_loss_pct_min}, cancelling sell...', font_color='blue', bg_color='white')
+						print(msg)
+						print(msg)
 						pos.sell_yn = 'N'
 						pos.hodl_yn = 'Y'
 				elif exit_if_loss_yn == 'N':
-					msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} -  cancelling sell...'
+					msg = ''
+					msg += '    ' 
+					msg += cs(f'==> exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...', font_color='blue', bg_color='white')
 					if pst.sell.show_tests_yn == 'Y':
-						BoW(msg)
+						print(msg)
 					pos.sell_yn = 'N'
 					pos.hodl_yn = 'Y'
 

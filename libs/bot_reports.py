@@ -82,7 +82,7 @@ def report_open():
 			report_pos_open(title, pos, show_pos_open_header_yn)
 			show_pos_open_header_yn = 'N'
 
-		chart_bottom(len_cnt=260)
+		chart_bottom(len_cnt=267)
 
 	if poss:
 		print_adv(2)
@@ -98,7 +98,7 @@ def report_open():
 			report_pos_open(title, pos, show_pos_open_header_yn)
 			show_pos_open_header_yn = 'N'
 
-		chart_bottom(len_cnt=260)
+		chart_bottom(len_cnt=267)
 
 	func_end(fnc)
 
@@ -127,7 +127,7 @@ def report_open_by_age():
 			report_pos_open(title, pos, show_pos_open_header_yn)
 			show_pos_open_header_yn = 'N'
 
-		chart_bottom(len_cnt=226)
+		chart_bottom(len_cnt=233)
 
 	func_end(fnc)
 
@@ -156,18 +156,18 @@ def report_open_by_gain():
 			report_pos_open(title, pos, show_pos_open_header_yn)
 			show_pos_open_header_yn = 'N'
 
-		chart_bottom(len_cnt=226)
+		chart_bottom(len_cnt=233)
 	func_end(fnc)
 
 #<=====>#
 
-def report_open_by_prod_id():
+def report_open_by_prod_id(test_only_yn='N', live_only_yn='Y'):
 	func_name = 'report_open_by_prod_id'
 	func_str = f'{lib_name}.{func_name}()'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	poss = db_poss_open_get()
+	poss = db_poss_open_get(test_only_yn=test_only_yn, live_only_yn=live_only_yn)
 
 	if poss:
 		print_adv(2)
@@ -184,7 +184,7 @@ def report_open_by_prod_id():
 			report_pos_open(title, pos, show_pos_open_header_yn)
 			show_pos_open_header_yn = 'N'
 
-		chart_bottom(len_cnt=226)
+		chart_bottom(len_cnt=233)
 	func_end(fnc)
 
 #<=====>#
@@ -196,6 +196,7 @@ def report_open_test_by_gain():
 #	G(func_str)
 
 	poss = db_poss_open_get()
+	cnt = 0
 
 	if poss:
 		print_adv(2)
@@ -207,12 +208,13 @@ def report_open_test_by_gain():
 			pos = dec_2_float(pos)
 			pos = AttrDictConv(in_dict=pos)
 			if pos.test_txn_yn == 'Y':
+				cnt += 1
 				pos.pos_begin_dttm = pos.pos_begin_dttm.strftime('%m-%d-%Y %H:%M')
 				pos.report_age = format_disp_age(pos.age_mins)
 				report_pos_open(title, pos, show_pos_open_header_yn)
 				show_pos_open_header_yn = 'N'
 
-		chart_bottom(len_cnt=226)
+		chart_bottom(in_str=cnt, len_cnt=233)
 	func_end(fnc)
 
 #<=====>#
@@ -224,6 +226,7 @@ def report_open_live_by_gain():
 #	G(func_str)
 
 	poss = db_poss_open_get()
+	cnt = 0
 
 	if poss:
 		print_adv(2)
@@ -235,13 +238,14 @@ def report_open_live_by_gain():
 			pos = dec_2_float(pos)
 			pos = AttrDictConv(in_dict=pos)
 			if pos.test_txn_yn == 'N':
+				cnt += 1
 				pos.test_txn_yn = ''
 				pos.pos_begin_dttm = pos.pos_begin_dttm.strftime('%m-%d-%Y %H:%M')
 				pos.report_age = format_disp_age(pos.age_mins)
 				report_pos_open(title, pos, show_pos_open_header_yn)
 				show_pos_open_header_yn = 'N'
 
-		chart_bottom(len_cnt=226)
+		chart_bottom(in_str=cnt, len_cnt=233)
 	func_end(fnc)
 
 #<=====>#
@@ -273,7 +277,7 @@ def report_buys_recent(cnt=15, test_yn='N'):
 			report_pos_open(title, pos, show_pos_open_header_yn)
 			show_pos_open_header_yn = 'N'
 
-		chart_bottom(len_cnt=226)
+		chart_bottom(len_cnt=233)
 	func_end(fnc)
 
 #<=====>#
@@ -304,7 +308,7 @@ def report_sells_recent(cnt=15, test_yn='N'):
 			report_pos_close(title, pos, show_pos_close_header_yn)
 			show_pos_close_header_yn = 'N'
 
-		chart_bottom(len_cnt=251)
+		chart_bottom(len_cnt=258)
 	func_end(fnc)
 
 #<=====>#
@@ -338,7 +342,7 @@ def report_strats_best(cnt=10, min_trades=1):
 			if show_cnt >= cnt:
 				break
 
-		chart_bottom(len_cnt=172)
+		chart_bottom(len_cnt=171)
 
 	func_end(fnc)
 
@@ -358,15 +362,15 @@ def report_pos_open(title, pos, show_pos_open_header_yn='Y'):
 	hmsg += f"{'freq':^10} | "
 	hmsg += f"{'age':^10} | "
 	hmsg += f"{'open @ est':^16} | "
-	hmsg += f"{'buy_val':^16} | "
-	hmsg += f"{'buy_prc':^14} | "
-	hmsg += f"{'curr_prc':^14} | "
-	hmsg += f"{'high_prc':^14} | "
+	hmsg += f"{'buy_val':^17} | "
+	hmsg += f"{'buy_prc':^15} | "
+	hmsg += f"{'curr_prc':^15} | "
+	hmsg += f"{'high_prc':^15} | "
 	hmsg += f"{'gain_pct':^8} % | "
 	hmsg += f"{'gain_top':^8} % | "
 	hmsg += f"{'drop_pct':^8} % | "
-	hmsg += f"{'gain_loss':^14} | "
-	hmsg += f"{'gain_loss_high':^14}"
+	hmsg += f"{'gain_loss':^15} | "
+	hmsg += f"{'gain_loss_high':^15}"
 
 	if show_pos_open_header_yn == 'Y':
 		chart_top(in_str=title, len_cnt=len(hmsg), align='center')
@@ -384,15 +388,15 @@ def report_pos_open(title, pos, show_pos_open_header_yn='Y'):
 	msg += f'{pos.buy_strat_freq:>10} | '
 	msg += f'{pos.report_age:>10} | '
 	msg += f"{pos.pos_begin_dttm:>16} | "
-	msg += f'$ {pos.tot_out_cnt:>14.8f} | '
-	msg += f'{pos.prc_buy:>14.8f} | '
-	msg += f'{pos.prc_curr:>14.8f} | '
-	msg += f'{pos.prc_high:>14.8f} | '
+	msg += f'$ {pos.tot_out_cnt:>15.8f} | '
+	msg += f'{pos.prc_buy:>15.8f} | '
+	msg += f'{pos.prc_curr:>15.8f} | '
+	msg += f'{pos.prc_high:>15.8f} | '
 	msg += f'{pos.gain_loss_pct:>8.2f} % | '
 	msg += f'{pos.gain_loss_pct_est_high:>8.2f} % | '
 	msg += f'{pos.prc_chg_pct_drop:>8.2f} % | '
-	msg += f'{pos.gain_loss_amt:>14.8f} | '
-	msg += f'{pos.gain_loss_amt_est_high:>14.8f}'
+	msg += f'{pos.gain_loss_amt:>15.8f} | '
+	msg += f'{pos.gain_loss_amt_est_high:>15.8f}'
 
 	msg = cs_pct_color(pos.prc_chg_pct, msg)
 	chart_row(msg, len_cnt=len(hmsg))
@@ -416,16 +420,16 @@ def report_pos_close(title, pos, show_pos_close_header_yn='Y'):
 	hmsg += f"{'sell':^14} | "
 	hmsg += f"{'age':^10} | "
 	hmsg += f"{'sold @ est':^16} | "
-	hmsg += f"{'buy_val':^16} | "
-	hmsg += f"{'buy_prc':^14} | "
-	hmsg += f"{'curr_prc':^14} | "
+	hmsg += f"{'buy_val':^17} | "
+	hmsg += f"{'buy_prc':^15} | "
+	hmsg += f"{'curr_prc':^15} | "
 	hmsg += f"{'gain_pct':^8} % | "
 	hmsg += f"{'gain_est':^8} % | "
 	hmsg += f"{'gain_top':^8} % | "
 	hmsg += f"{'drop_pct':^8} % | "
-	hmsg += f"{'gain_loss':^14} | "
-	hmsg += f"{'gain_loss_est':^14} | "
-	hmsg += f"{'gain_loss_high':^14}"
+	hmsg += f"{'gain_loss':^15} | "
+	hmsg += f"{'gain_loss_est':^15} | "
+	hmsg += f"{'gain_loss_high':^15}"
 
 	if show_pos_close_header_yn == 'Y':
 		chart_top(in_str=title, len_cnt=len(hmsg), align='center')
@@ -451,16 +455,16 @@ def report_pos_close(title, pos, show_pos_close_header_yn='Y'):
 	msg += f'{pos.sell_strat_name:>14} | '
 	msg += f'{pos.report_age:>10} | '
 	msg += f"{pos.pos_end_dttm:>16} | "
-	msg += f'$ {pos.tot_out_cnt:>14.8f} | '
-	msg += f'{pos.prc_buy:>14.8f} | '
-	msg += f'{pos.prc_curr:>14.8f} | '
+	msg += f'$ {pos.tot_out_cnt:>15.8f} | '
+	msg += f'{pos.prc_buy:>15.8f} | '
+	msg += f'{pos.prc_curr:>15.8f} | '
 	msg += f'{pos.gain_loss_pct:>8.2f} % | ' # Open Shows Estimates, Closed Shows Actual
 	msg += f'{pos.gain_loss_pct_est:>8.2f} % | '  # Open Shows Estimates, Closed Shows Actual
 	msg += f'{pos.gain_loss_pct_est_high:>8.2f} % | '
 	msg += f'{pos.prc_chg_pct_drop:>8.2f} % | '
-	msg += f'{pos.gain_loss_amt:>14.8f} | '
-	msg += f'{pos.gain_loss_amt_est:>14.8f} | '   # Open Shows Estimates, Closed Shows Actual
-	msg += f'{pos.gain_loss_amt_est_high:>14.8f}'
+	msg += f'{pos.gain_loss_amt:>15.8f} | '
+	msg += f'{pos.gain_loss_amt_est:>15.8f} | '   # Open Shows Estimates, Closed Shows Actual
+	msg += f'{pos.gain_loss_amt_est_high:>15.8f}'
 
 	msg = cs_pct_color(pos.prc_chg_pct, msg)
 	chart_row(msg, len_cnt=len(hmsg))
@@ -746,17 +750,17 @@ def disp_recent(show_pos_close_header_yn='Y'):
 	hmsg += f"{'sell':^14} | "
 	hmsg += f"{'age':^10} | "
 	hmsg += f"{'sold @ utc':^16} | "
-	hmsg += f"{'buy_val':^16} | "
-	hmsg += f"{'buy_prc':^14} | "
-	hmsg += f"{'curr_prc':^14} | "
-	hmsg += f"{'high_prc':^14} | "
+	hmsg += f"{'buy_val':^17} | "
+	hmsg += f"{'buy_prc':^15} | "
+	hmsg += f"{'curr_prc':^15} | "
+	hmsg += f"{'high_prc':^15} | "
 	hmsg += f"{'gain_pct':^8} % | "
 	hmsg += f"{'gain_est':^8} % | "
 	hmsg += f"{'gain_top':^8} % | "
 	hmsg += f"{'drop_pct':^8} % | "
-	hmsg += f"{'gain_loss':^14} | "
-	hmsg += f"{'gain_loss_est':^14} | "
-	hmsg += f"{'gain_loss_high':^14}"
+	hmsg += f"{'gain_loss':^15} | "
+	hmsg += f"{'gain_loss_est':^15} | "
+	hmsg += f"{'gain_loss_high':^15}"
 
 	title = 'Recently Closed Positions'
 	show_pos_close_header_yn = 'Y'
@@ -783,17 +787,17 @@ def disp_recent(show_pos_close_header_yn='Y'):
 			msg += f'{pos.sell_strat_name:>14} | '
 			msg += f'{disp_age:>10} | '
 			msg += f"{pos.pos_end_dttm:>16} | "
-			msg += f'$ {pos.tot_out_cnt:>14.8f} | '
-			msg += f'{pos.prc_buy:>14.8f} | '
-			msg += f'{pos.prc_curr:>14.8f} | '
-			msg += f'{pos.prc_high:>14.8f} | '
+			msg += f'$ {pos.tot_out_cnt:>15.8f} | '
+			msg += f'{pos.prc_buy:>15.8f} | '
+			msg += f'{pos.prc_curr:>15.8f} | '
+			msg += f'{pos.prc_high:>15.8f} | '
 			msg += f'{pos.gain_loss_pct:>8.2f} % | ' # Open Shows Estimates, Closed Shows Actual
 			msg += f'{pos.gain_loss_pct_est:>8.2f} % | '  # Open Shows Estimates, Closed Shows Actual
 			msg += f'{pos.gain_loss_pct_est_high:>8.2f} % | '
 			msg += f'{pos.prc_chg_pct_drop:>8.2f} % | '
-			msg += f'{pos.gain_loss_amt:>14.8f} | '
-			msg += f'{pos.gain_loss_amt_est:>14.8f} | '   # Open Shows Estimates, Closed Shows Actual
-			msg += f'{pos.gain_loss_amt_est_high:>14.8f}'
+			msg += f'{pos.gain_loss_amt:>15.8f} | '
+			msg += f'{pos.gain_loss_amt_est:>15.8f} | '   # Open Shows Estimates, Closed Shows Actual
+			msg += f'{pos.gain_loss_amt_est_high:>15.8f}'
 
 			msg = cs_pct_color(pos.prc_chg_pct, msg)
 			chart_row(in_str=msg, len_cnt=len(hmsg))
@@ -807,15 +811,15 @@ def disp_recent(show_pos_close_header_yn='Y'):
 	hmsg += f"{'freq':^10} | "
 	hmsg += f"{'age':^10} | "
 	hmsg += f"{'open @ est':^16} | "
-	hmsg += f"{'buy_val':^16} | "
-	hmsg += f"{'buy_prc':^14} | "
-	hmsg += f"{'curr_prc':^14} | "
-	hmsg += f"{'high_prc':^14} | "
+	hmsg += f"{'buy_val':^17} | "
+	hmsg += f"{'buy_prc':^15} | "
+	hmsg += f"{'curr_prc':^15} | "
+	hmsg += f"{'high_prc':^15} | "
 	hmsg += f"{'gain_pct':^8} % | "
 	hmsg += f"{'gain_top':^8} % | "
 	hmsg += f"{'drop_pct':^8} % | "
-	hmsg += f"{'gain_loss':^14} | "
-	hmsg += f"{'gain_loss_high':^14}"
+	hmsg += f"{'gain_loss':^15} | "
+	hmsg += f"{'gain_loss_high':^15}"
 
 	title = 'Currently Open Positions - By Market'
 	show_pos_close_header_yn = 'Y'
@@ -840,15 +844,15 @@ def disp_recent(show_pos_close_header_yn='Y'):
 			msg += f'{pos.buy_strat_freq:>10} | '
 			msg += f'{disp_age:>10} | '
 			msg += f"{pos.pos_begin_dttm:>16} | "
-			msg += f'$ {pos.tot_out_cnt:>14.8f} | '
-			msg += f'{pos.prc_buy:>14.8f} | '
-			msg += f'{pos.prc_curr:>14.8f} | '
-			msg += f'{pos.prc_high:>14.8f} | '
+			msg += f'$ {pos.tot_out_cnt:>15.8f} | '
+			msg += f'{pos.prc_buy:>15.8f} | '
+			msg += f'{pos.prc_curr:>15.8f} | '
+			msg += f'{pos.prc_high:>15.8f} | '
 			msg += f'{pos.gain_loss_pct:>8.2f} % | '
 			msg += f'{pos.gain_loss_pct_est_high:>8.2f} % | '
 			msg += f'{pos.prc_chg_pct_drop:>8.2f} % | '
-			msg += f'{pos.gain_loss_amt:>14.8f} | '
-			msg += f'{pos.gain_loss_amt_est_high:>14.8f}'
+			msg += f'{pos.gain_loss_amt:>15.8f} | '
+			msg += f'{pos.gain_loss_amt_est_high:>15.8f}'
 
 			msg = cs_pct_color(pos.prc_chg_pct, msg)
 			chart_row(in_str=msg, len_cnt=len(hmsg))
@@ -862,15 +866,15 @@ def disp_recent(show_pos_close_header_yn='Y'):
 	hmsg += f"{'freq':^10} | "
 	hmsg += f"{'age':^10} | "
 	hmsg += f"{'open @ est':^16} | "
-	hmsg += f"{'buy_val':^16} | "
-	hmsg += f"{'buy_prc':^14} | "
-	hmsg += f"{'curr_prc':^14} | "
-	hmsg += f"{'high_prc':^14} | "
+	hmsg += f"{'buy_val':^17} | "
+	hmsg += f"{'buy_prc':^15} | "
+	hmsg += f"{'curr_prc':^15} | "
+	hmsg += f"{'high_prc':^15} | "
 	hmsg += f"{'gain_pct':^8} % | "
 	hmsg += f"{'gain_top':^8} % | "
 	hmsg += f"{'drop_pct':^8} % | "
-	hmsg += f"{'gain_loss':^14} | "
-	hmsg += f"{'gain_loss_high':^14}"
+	hmsg += f"{'gain_loss':^15} | "
+	hmsg += f"{'gain_loss_high':^15}"
 
 	title = 'Currently Open Positions - By Age Desc'
 	show_pos_close_header_yn = 'Y'
@@ -897,15 +901,15 @@ def disp_recent(show_pos_close_header_yn='Y'):
 			msg += f'{pos.buy_strat_freq:>10} | '
 			msg += f'{disp_age:>10} | '
 			msg += f"{pos.pos_begin_dttm:>16} | "
-			msg += f'$ {pos.tot_out_cnt:>14.8f} | '
-			msg += f'{pos.prc_buy:>14.8f} | '
-			msg += f'{pos.prc_curr:>14.8f} | '
-			msg += f'{pos.prc_high:>14.8f} | '
+			msg += f'$ {pos.tot_out_cnt:>15.8f} | '
+			msg += f'{pos.prc_buy:>15.8f} | '
+			msg += f'{pos.prc_curr:>15.8f} | '
+			msg += f'{pos.prc_high:>15.8f} | '
 			msg += f'{pos.gain_loss_pct:>8.2f} % | '
 			msg += f'{pos.gain_loss_pct_est_high:>8.2f} % | '
 			msg += f'{pos.prc_chg_pct_drop:>8.2f} % | '
-			msg += f'{pos.gain_loss_amt:>14.8f} | '
-			msg += f'{pos.gain_loss_amt_est_high:>14.8f}'
+			msg += f'{pos.gain_loss_amt:>15.8f} | '
+			msg += f'{pos.gain_loss_amt_est_high:>15.8f}'
 
 			msg = cs_pct_color(pos.prc_chg_pct, msg)
 			chart_row(in_str=msg, len_cnt=len(hmsg))

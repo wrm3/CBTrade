@@ -25,7 +25,7 @@ from libs.lib_charts import chart_row
 from libs.lib_colors import cs, cp, G
 from libs.lib_common import dttm_get, func_begin, func_end, print_adv
 from libs.lib_colors import BoW
-from libs.bot_strat_common import disp_sell_tests
+from libs.bot_strat_common import disp_sell_tests, exit_if_logic
 
 #<=====>#
 # Variables
@@ -114,25 +114,25 @@ def buy_strat_bb(buy, ta, pst):
 #	G(func_str)
 
 	try:
-		all_passes       = []
-		all_fails        = []
-		prod_id          = buy.prod_id
+		all_passes           = []
+		all_fails            = []
+		prod_id              = buy.prod_id
 		buy.buy_yn           = 'Y'
 		buy.wait_yn          = 'N'
-		buy.show_tests_yn = buy.pst.buy.strats.bb.show_tests_yn
+		buy.show_tests_yn    = buy.pst.buy.strats.bb.show_tests_yn
 
-		buy.rfreq = buy.trade_strat_perf.buy_strat_freq
-		freqs, faster_freqs     = freqs_get(buy.rfreq)
+		buy.rfreq            = buy.trade_strat_perf.buy_strat_freq
+		freqs, faster_freqs  = freqs_get(buy.rfreq)
 
-		curr_close             = buy.ta[buy.rfreq]['close']['ago0']
-		curr_bb_lower_inner    = buy.ta[buy.rfreq]['bb_lower_inner']['ago0']
-		last_low               = buy.ta[buy.rfreq]['low']['ago1']
-		last_bb_lower_outer    = buy.ta[buy.rfreq]['bb_lower_outer']['ago1']
-		prev_low               = buy.ta[buy.rfreq]['low']['ago2']
-		prev_bb_lower_outer    = buy.ta[buy.rfreq]['bb_lower_outer']['ago2']
+		curr_close           = buy.ta[buy.rfreq]['close']['ago0']
+		curr_bb_lower_inner  = buy.ta[buy.rfreq]['bb_lower_inner']['ago0']
+		last_low             = buy.ta[buy.rfreq]['low']['ago1']
+		last_bb_lower_outer  = buy.ta[buy.rfreq]['bb_lower_outer']['ago1']
+		prev_low             = buy.ta[buy.rfreq]['low']['ago2']
+		prev_bb_lower_outer  = buy.ta[buy.rfreq]['bb_lower_outer']['ago2']
 
 		# Last Close Below Outer BB Lower
-		msg = f'    * BUY REQUIRE : {buy.rfreq} last low : {last_low:>.8f} < bb lower outer : {last_bb_lower_outer:>.8f} or prev low : {prev_low:>.8f} < bb lower outer : {prev_bb_lower_outer:>.8f}'
+		msg = f'{buy.rfreq} last low : {last_low:>.8f} < bb lower outer : {last_bb_lower_outer:>.8f} or prev low : {prev_low:>.8f} < bb lower outer : {prev_bb_lower_outer:>.8f}'
 		if last_low < last_bb_lower_outer or prev_low < prev_bb_lower_outer:
 			all_passes.append(msg)
 		else:
@@ -140,7 +140,7 @@ def buy_strat_bb(buy, ta, pst):
 			all_fails.append(msg)
 
 		# Current Close Above Inner BB Lower
-		msg = f'    * BUY REQUIRE : {buy.rfreq} current close : {curr_close:>.8f} above inner bb lower : {curr_bb_lower_inner:>.8f}'
+		msg = f'{buy.rfreq} current close : {curr_close:>.8f} above inner bb lower : {curr_bb_lower_inner:>.8f}'
 		if curr_close > curr_bb_lower_inner:
 			all_passes.append(msg)
 		else:
@@ -152,7 +152,7 @@ def buy_strat_bb(buy, ta, pst):
 		for freq in freqs:
 			for ago in ago_list:
 				color = buy.ta[freq]['color'][ago]
-				msg = f'    * BUY REQUIRE : {freq} {ago} candles == green : {color}'
+				msg = f'{freq} {ago} candles == green : {color}'
 				if color == 'green':
 					all_passes.append(msg)
 				else:
@@ -164,7 +164,7 @@ def buy_strat_bb(buy, ta, pst):
 		for freq in faster_freqs:
 			for ago in ago_list:
 				ha_color = buy.ta[freq]['ha_color'][ago]
-				msg = f'    * BUY REQUIRE : {freq} {ago} Heikin Ashi candles == green : {ha_color}'
+				msg = f'{freq} {ago} Heikin Ashi candles == green : {ha_color}'
 				if ha_color == 'green':
 					all_passes.append(msg)
 				else:
@@ -174,7 +174,7 @@ def buy_strat_bb(buy, ta, pst):
 		# Nadaraya-Watson Estimator - Estimated Is Green
 		ago_list = ['ago0','ago1']
 		for ago in ago_list:
-			m = '    * BUY REQUIRE : {} Nadaraya-Watson Estimator color {} == green : {}'
+			m = '{} Nadaraya-Watson Estimator color {} == green : {}'
 			msg = m.format(freq, ago, buy.ta[buy.rfreq]['nwe_color'][ago])
 			if buy.ta[freq]['ha_color'][ago] == 'green':
 				all_passes.append(msg)
@@ -262,37 +262,9 @@ def sell_strat_bb(mkt, pos, ta, pst):
 		msg = '    SELL TESTS - Bollinger Band'
 		mkt = disp_sell_tests(msg=msg, mkt=mkt, pos=pos, pst=pst, all_sells=all_sells, all_hodls=all_hodls)
 
-		exit_if_profit_yn      = pst.sell.strats.bb.exit_if_profit_yn
-		exit_if_profit_pct_min = pst.sell.strats.bb.exit_if_profit_pct_min
-		exit_if_loss_yn        = pst.sell.strats.bb.exit_if_loss_yn
-		exit_if_loss_pct_max   = abs(pst.sell.strats.bb.exit_if_loss_pct_max) * -1
-		if pos.sell_yn == 'Y':
-			if pos.prc_chg_pct > 0:
-				if exit_if_profit_yn == 'Y':
-					if pos.prc_chg_pct < exit_if_profit_pct_min:
-						msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % < exit_if_profit_pct_min : {exit_if_profit_pct_min}, cancelling sell...'
-						BoW(msg)
-						pos.sell_yn = 'N'
-						pos.hodl_yn = 'Y'
-				elif exit_if_profit_yn == 'N':
-					msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...'
-					if pst.sell.show_tests_yn == 'Y':
-						BoW(msg)
-					pos.sell_yn = 'N'
-					pos.hodl_yn = 'Y'
-			elif pos.prc_chg_pct <= 0:
-				if exit_if_loss_yn == 'Y':
-					if pos.prc_chg_pct > exit_if_loss_pct_max:
-						msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % > exit_if_loss_pct_max : {exit_if_loss_pct_max}, cancelling sell...'
-						BoW(msg)
-						pos.sell_yn = 'N'
-						pos.hodl_yn = 'Y'
-				elif exit_if_loss_yn == 'N':
-					msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} -  cancelling sell...'
-					if pst.sell.show_tests_yn == 'Y':
-						BoW(msg)
-					pos.sell_yn = 'N'
-					pos.hodl_yn = 'Y'
+
+		pos = exit_if_logic(pos=pos, pst=pst)
+
 
 		if pos.sell_yn == 'Y':
 			pos.sell_strat_type = 'strat'

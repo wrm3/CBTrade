@@ -25,7 +25,7 @@ from libs.lib_charts import chart_row
 from libs.lib_colors import cs, cp, G
 from libs.lib_common import dttm_get, func_begin, func_end, print_adv
 from libs.lib_colors import BoW
-from libs.bot_strat_common import disp_sell_tests
+from libs.bot_strat_common import disp_sell_tests, exit_if_logic
 
 
 #<=====>#
@@ -128,7 +128,7 @@ def buy_strat_sha(buy, ta, pst):
 		ago_list = ['ago0','ago1']
 		for freq in freqs:
 			for ago in ago_list:
-				m = '    * BUY REQUIRE : {} current price : {:>.8f} >>> {} SHA - FAST close {:>.8f} - {}'
+				m = '{} current price : {:>.8f} >>> {} SHA - FAST close {:>.8f} - {}'
 				msg = m.format(freq, buy.prc_buy, freq, buy.ta[freq]['sha_fast_close'][ago], ago)
 				if buy.prc_buy > buy.ta[freq]['sha_fast_close'][ago]:
 					all_passes.append(msg)
@@ -140,7 +140,7 @@ def buy_strat_sha(buy, ta, pst):
 		ago_list = ['ago0','ago1']
 		for freq in freqs:
 			for ago in ago_list:
-				m = '    * BUY REQUIRE : {} SHA_FAST candles {} == green : {}'
+				m = '{} SHA_FAST candles {} == green : {}'
 				msg = m.format(freq, ago, buy.ta[freq]['sha_fast_color'][ago])
 				if buy.ta[freq]['sha_fast_color'][ago] == 'green':
 					all_passes.append(msg)
@@ -152,7 +152,7 @@ def buy_strat_sha(buy, ta, pst):
 		ago_list = ['ago0']
 		for freq in freqs:
 			for ago in ago_list:
-				m = '    * BUY REQUIRE : {} current price : {:>.8f} >>> {} SHA - SLOW close {:>.8f} - {}'
+				m = '{} current price : {:>.8f} >>> {} SHA - SLOW close {:>.8f} - {}'
 				msg = m.format(freq, buy.prc_buy, freq, buy.ta[freq]['sha_slow_close'][ago], ago)
 				if buy.prc_buy > buy.ta[freq]['sha_slow_close'][ago]:
 					all_passes.append(msg)
@@ -164,7 +164,7 @@ def buy_strat_sha(buy, ta, pst):
 		ago_list = ['ago0']
 		for freq in freqs:
 			for ago in ago_list:
-				m = '    * BUY REQUIRE : {} SHA_SLOW candles {} == green : {}'
+				m = '{} SHA_SLOW candles {} == green : {}'
 				msg = m.format(freq, ago, buy.ta[freq]['sha_slow_color'][ago])
 				if buy.ta[freq]['sha_slow_color'][ago] == 'green':
 					all_passes.append(msg)
@@ -174,11 +174,11 @@ def buy_strat_sha(buy, ta, pst):
 
 		# Check to make sure the body is growing body
 		if buy.ta[buy.rfreq]['sha_fast_body']['ago0'] >= buy.ta[buy.rfreq]['sha_fast_body']['ago1'] >= buy.ta[buy.rfreq]['sha_fast_body']['ago2']:
-			m = '    * BUY REQUIRE : {} growing body size TRUE - curr {:>.8f} >>> last {:>.8f} >>>  prev {:>.8f}'
+			m = '{} growing body size TRUE - curr {:>.8f} >>> last {:>.8f} >>>  prev {:>.8f}'
 			msg = m.format(buy.rfreq, buy.ta[buy.rfreq]['sha_fast_body']['ago0'], buy.ta[buy.rfreq]['sha_fast_body']['ago1'],  buy.ta[buy.rfreq]['sha_fast_body']['ago2'])
 			all_passes.append(msg)
 		else:
-			m = '    * BUY REQUIRE : {} growing body size FALSE - curr {:>.8f} >>> last {:>.8f} >>>  prev {:>.8f}'
+			m = '{} growing body size FALSE - curr {:>.8f} >>> last {:>.8f} >>>  prev {:>.8f}'
 			msg = m.format(buy.rfreq, buy.ta[buy.rfreq]['sha_fast_body']['ago0'], buy.ta[buy.rfreq]['sha_fast_body']['ago1'],  buy.ta[buy.rfreq]['sha_fast_body']['ago2'])
 			buy.buy_yn  = 'N'
 			all_fails.append(msg)
@@ -187,11 +187,11 @@ def buy_strat_sha(buy, ta, pst):
 		ago_list = ['ago0', 'ago1', 'ago2']
 		for ago in ago_list:
 			if buy.ta[buy.rfreq]['sha_fast_wick_upper'][ago] >= buy.ta[buy.rfreq]['sha_fast_wick_lower'][ago]:
-				m = '    * BUY REQUIRE : {} larger upper wick - upper {:>.8f} >>> lower {:>.8f} - {}'
+				m = '{} larger upper wick - upper {:>.8f} >>> lower {:>.8f} - {}'
 				msg = m.format(buy.rfreq, buy.ta[buy.rfreq]['sha_fast_wick_upper'][ago], buy.ta[buy.rfreq]['sha_fast_wick_lower'][ago], ago)
 				all_passes.append(msg)
 			else:
-				m = '    * BUY REQUIRE : {} growing body size - upper {:>.8f} <<< lower {:>.8f} - {}' 
+				m = '{} growing body size - upper {:>.8f} <<< lower {:>.8f} - {}' 
 				msg = m.format(buy.rfreq, buy.ta[buy.rfreq]['sha_fast_wick_upper'][ago], buy.ta[buy.rfreq]['sha_fast_wick_lower'][ago], ago)
 				buy.buy_yn  = 'N'
 				all_fails.append(msg)
@@ -200,7 +200,7 @@ def buy_strat_sha(buy, ta, pst):
 		ago_list = ['ago0','ago1']
 		for freq in freqs:
 			for ago in ago_list:
-				m = '    * BUY REQUIRE : {} HA candles {} == green : {}'
+				m = '{} HA candles {} == green : {}'
 				msg = m.format(freq, ago, buy.ta[freq]['ha_color'][ago])
 				if buy.ta[freq]['ha_color'][ago] == 'green':
 					all_passes.append(msg)
@@ -211,7 +211,7 @@ def buy_strat_sha(buy, ta, pst):
 		# Nadaraya-Watson Estimator - Estimated Is Green
 		ago_list = ['ago0','ago1']
 		for ago in ago_list:
-			m = '    * BUY REQUIRE : {} Nadaraya-Watson Estimator color {} == green : {}'
+			m = '{} Nadaraya-Watson Estimator color {} == green : {}'
 			msg = m.format(freq, ago, buy.ta[buy.rfreq]['nwe_color'][ago])
 			if buy.ta[freq]['ha_color'][ago] == 'green':
 				all_passes.append(msg)
@@ -422,37 +422,7 @@ def sell_strat_sha(mkt, pos, ta, pst):
 		msg = '    SELL TESTS - Smoothed Heikin Ashi'
 		mkt = disp_sell_tests(msg=msg, mkt=mkt, pos=pos, pst=pst, all_sells=all_sells, all_hodls=all_hodls)
 
-		exit_if_profit_yn      = pst.sell.strats.sha.exit_if_profit_yn
-		exit_if_profit_pct_min = pst.sell.strats.sha.exit_if_profit_pct_min
-		exit_if_loss_yn        = pst.sell.strats.sha.exit_if_loss_yn
-		exit_if_loss_pct_max   = abs(pst.sell.strats.sha.exit_if_loss_pct_max) * -1
-		if pos.sell_yn == 'Y':
-			if pos.prc_chg_pct > 0:
-				if exit_if_profit_yn == 'Y':
-					if pos.prc_chg_pct < exit_if_profit_pct_min:
-						msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % < exit_if_profit_pct_min : {exit_if_profit_pct_min}, cancelling sell...'
-						BoW(msg)
-						pos.sell_yn = 'N'
-						pos.hodl_yn = 'Y'
-				elif exit_if_profit_yn == 'N':
-					msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...'
-					if pst.sell.show_tests_yn == 'Y':
-						BoW(msg)
-					pos.sell_yn = 'N'
-					pos.hodl_yn = 'Y'
-			elif pos.prc_chg_pct <= 0:
-				if exit_if_loss_yn == 'Y':
-					if pos.prc_chg_pct > exit_if_loss_pct_max:
-						msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % > exit_if_loss_pct_max : {exit_if_loss_pct_max}, cancelling sell...'
-						BoW(msg)
-						pos.sell_yn = 'N'
-						pos.hodl_yn = 'Y'
-				elif exit_if_loss_yn == 'N':
-					msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...'
-					if pst.sell.show_tests_yn == 'Y':
-						BoW(msg)
-					pos.sell_yn = 'N'
-					pos.hodl_yn = 'Y'
+		pos = exit_if_logic(pos=pos, pst=pst)
 
 		if pos.sell_yn == 'Y':
 			pos.sell_strat_type = 'strat'

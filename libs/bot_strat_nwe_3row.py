@@ -25,7 +25,7 @@ from libs.lib_charts import chart_row
 from libs.lib_colors import cs, cp, G, WoR, WoG
 from libs.lib_common import dttm_get, func_begin, func_end, print_adv, speak_async
 from libs.lib_colors import BoW
-from libs.bot_strat_common import disp_sell_tests
+from libs.bot_strat_common import disp_sell_tests, exit_if_logic
 import pandas as pd
 import numpy as np
 import pandas_ta as pta
@@ -216,7 +216,7 @@ def buy_strat_nwe_3row(buy, ta, pst):
 		ago_list = ['ago0']
 		for freq in faster_freqs:
 			for ago in ago_list:
-				m = '    * BUY REQUIRE : {} HA candles {} == green : {}'
+				m = '{} HA candles {} == green : {}'
 				msg = m.format(freq, ago, buy.ta[freq]['ha_color'][ago])
 				if buy.ta[freq]['ha_color'][ago] == 'green':
 					all_passes.append(msg)
@@ -230,7 +230,7 @@ def buy_strat_nwe_3row(buy, ta, pst):
 		ago_list = ['ago0']
 		for f in faster_freqs:
 			for ago in ago_list:
-				msg = f'    * BUY REQUIRE : {f} Nadaraya-Watson Estimator color {ago} == green : {buy.ta[buy.rfreq]['nwe_color'][ago]}'
+				msg = f'{f} Nadaraya-Watson Estimator color {ago} == green : {buy.ta[buy.rfreq]['nwe_color'][ago]}'
 				if buy.ta[freq]['nwe_color'][ago] == 'green':
 					all_passes.append(msg)
 				else:
@@ -239,7 +239,7 @@ def buy_strat_nwe_3row(buy, ta, pst):
 
 
 		if nwe_3row_buy_signal:
-			msg = f'    * BUY SIGNAL: NWE 3 In A Row {freq} Green Shift'
+			msg = f'NWE 3 In A Row {freq} Green Shift'
 			buy.reason = msg.strip()
 			all_passes.append(msg)
 		else:
@@ -297,6 +297,7 @@ def sell_strat_nwe_3row(mkt, pos, ta, pst):
 
 		freq = pos.buy_strat_freq
 
+
 		if pst.sell.strats.nwe_3row.show_tests_yn == 'Y':
 			show_stuff(freq, ta, False)
 
@@ -317,37 +318,9 @@ def sell_strat_nwe_3row(mkt, pos, ta, pst):
 		msg = 'SELL TESTS - NWE 3 In A Row '
 		mkt = disp_sell_tests(msg=msg, mkt=mkt, pos=pos, pst=pst, all_sells=all_sells, all_hodls=all_hodls)
 
-		exit_if_profit_yn      = pst.sell.strats.nwe_3row.exit_if_profit_yn
-		exit_if_profit_pct_min = pst.sell.strats.nwe_3row.exit_if_profit_pct_min
-		exit_if_loss_yn        = pst.sell.strats.nwe_3row.exit_if_loss_yn
-		exit_if_loss_pct_max   = abs(pst.sell.strats.nwe_3row.exit_if_loss_pct_max) * -1
-		if pos.sell_yn == 'Y':
-			if pos.prc_chg_pct > 0:
-				if exit_if_profit_yn == 'Y':
-					if pos.prc_chg_pct < exit_if_profit_pct_min:
-						msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % < exit_if_profit_pct_min : {exit_if_profit_pct_min}, cancelling sell...'
-						BoW(msg)
-						pos.sell_yn = 'N'
-						pos.hodl_yn = 'Y'
-				elif exit_if_profit_yn == 'N':
-					msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...'
-					if pst.sell.show_tests_yn == 'Y':
-						BoW(msg)
-					pos.sell_yn = 'N'
-					pos.hodl_yn = 'Y'
-			elif pos.prc_chg_pct <= 0:
-				if exit_if_loss_yn == 'Y':
-					if pos.prc_chg_pct > exit_if_loss_pct_max:
-						msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % > exit_if_loss_pct_max : {exit_if_loss_pct_max}, cancelling sell...'
-						BoW(msg)
-						pos.sell_yn = 'N'
-						pos.hodl_yn = 'Y'
-				elif exit_if_loss_yn == 'N':
-					msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...'
-					if pst.sell.show_tests_yn == 'Y':
-						BoW(msg)
-					pos.sell_yn = 'N'
-					pos.hodl_yn = 'Y'
+
+		pos = exit_if_logic(pos=pos, pst=pst)
+
 
 		if pos.sell_yn == 'Y':
 			pos.sell_strat_type = 'strat'

@@ -1,21 +1,21 @@
-drop database if exists cbtrade;
-create database cbtrade;
+drop database if exists cbtrade2;
+create database cbtrade2;
 
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
-drop user cbtrade@localhost;
-CREATE USER cbtrade@localhost IDENTIFIED BY 'cbtrade';
-GRANT ALL PRIVILEGES ON cbtrade.* TO 'cbtrade'@'localhost';
+drop user if exists cbtrade2@localhost;
+CREATE USER cbtrade2@localhost IDENTIFIED BY 'cbtrade2';
+GRANT ALL PRIVILEGES ON cbtrade2.* TO 'cbtrade2'@'localhost';
 
-use cbtrade;
-drop schema if exists cbtrade;
-create schema cbtrade default character set utf8mb4;
+use cbtrade2;
+drop schema if exists cbtrade2;
+create schema cbtrade2 default character set utf8mb4;
 
 
-use cbtrade;
+use cbtrade2;
 drop table if exists currs;
 create table currs(
 	curr_id                                       int(11) primary key AUTO_INCREMENT comment 'pk for currs table'
@@ -39,7 +39,7 @@ create table currs(
 	);
 
 
-use cbtrade;
+use cbtrade2;
 drop table if exists bals;
 create table bals(
 	  bal_id                                      int(11) primary key AUTO_INCREMENT comment 'pk for bals table'
@@ -76,17 +76,7 @@ create table bals(
 	);
 
 
-use cbtrade;
-drop table if exists ohlcv_prod_id_freqs;
-create table if not exists ohlcv_prod_id_freqs(
-    prod_id           varchar(64) 
-  , freq              varchar(64) 
-  , last_upd_dttm     timestamp default current_timestamp 
-  , dlm               timestamp default current_timestamp on update current_timestamp 
-  );
-
-
-use cbtrade;
+use cbtrade2;
 drop table if exists buy_ords;
 create table buy_ords(
 	bo_id                                         int(11) primary key AUTO_INCREMENT
@@ -136,111 +126,8 @@ create table buy_ords(
 	);
 
 
-/*
 
-alter table cbtrade.buy_ords add column test_txn_yn char(1) default 'N' after test_tf;
-update cbtrade.buy_ords set test_txn_yn = 'Y' where test_tf = 1;
-update cbtrade.buy_ords set test_txn_yn = 'N' where test_tf = 0;
-
-
-alter table cbtrade.buy_ords modify column reason varchar(1024);
-alter table cbtrade.buy_ords add column reason varchar(64) after ignore_tf;
-alter table cbtrade.buy_ords add column symb varchar(64) after test_tf;
-update cbtrade.buy_ords set symb = 'USDC';
-ALTER TABLE cbtrade.buy_ords ADD CONSTRAINT unique_buy_order UNIQUE (buy_order_uuid, buy_client_order_id, prod_id);
-ALTER TABLE cbtrade.buy_ords drop index buy_order_uuid;
-*/
-
-
-
-use cbtrade;
-drop table if exists buy_signals;
-create table buy_signals(
-	sid                                           int(11) primary key AUTO_INCREMENT
-	, test_tf                                     tinyint default 0
-	, test_txn_yn                                 char(1)        default 'N'
-	, prod_id                                     varchar(64)
-	, buy_strat_type                              varchar(64)
-	, buy_strat_name                              varchar(64)
-	, buy_strat_freq                              varchar(64)
-	, buy_yn                                      char(1)
-	, buy_deny_yn                                 char(1)
-	, wait_yn                                     char(1)
-	, actv_dttm                                   timestamp default current_timestamp
-	, note1                                       varchar(1024)
-	, note2                                       varchar(1024)
-	, note3                                       varchar(1024)
-	, add_dttm                                    timestamp default current_timestamp
-	, upd_dttm                                    timestamp default current_timestamp on update current_timestamp
-	, dlm                                         timestamp default current_timestamp on update current_timestamp
-	);
-
-
-
-alter table cbtrade.buy_signals add column test_txn_yn char(1) default 'N' after test_tf;
-update cbtrade.buy_signals set test_txn_yn = 'Y' where test_tf = 1;
-update cbtrade.buy_signals set test_txn_yn = 'N' where test_tf = 0;
-
-
-use cbtrade;
-drop table if exists buy_signs;
-create table buy_signs(
-	bs_id                                         int(11) primary key AUTO_INCREMENT
-	, test_tf                                     tinyint        default 0
-	, test_txn_yn                                 char(1)        default 'N'
-	, prod_id                                     varchar(64)
-	, buy_strat_type                              varchar(64)
-	, buy_strat_name                              varchar(64)
-	, buy_strat_freq                              varchar(64)
-	, buy_yn                                      char(1)
-	, wait_yn                                     char(1)
-	, bs_dttm                                     timestamp default current_timestamp
-	, buy_curr_symb                               varchar(64)
-	, spend_curr_symb                             varchar(64)
-	, fees_curr_symb                              varchar(64)
-	, buy_cnt_est                                 decimal(36,12) default 0
-	, buy_prc_est                                 decimal(36,12) default 0
-	, buy_sub_tot_est                             decimal(36,12) default 0
-	, buy_fees_est                                decimal(36,12) default 0
-	, buy_tot_est                                 decimal(36,12) default 0
-	, all_passes                                  varchar(2048)
-	, all_fails                                   varchar(2048)
-	, ignore_tf                                   tinyint default 0
-	, note1                                       varchar(1024)
-	, note2                                       varchar(1024)
-	, note3                                       varchar(1024)
-	, add_dttm                                    timestamp default current_timestamp
-	, upd_dttm                                    timestamp default current_timestamp on update current_timestamp
-	, dlm                                         timestamp default current_timestamp on update current_timestamp
---	, prod_id                                     varchar(64)
---	, mkt_name                                    varchar(64)
---	, mkt_venue                                   varchar(64)
---	, buy_order_uuid                              varchar(64)
---	, buy_client_order_id                         varchar(64)
---	, pos_type                                    varchar(64)
---	, ord_stat                                    varchar(64)
---	, buy_strat_type                              varchar(64)
---	, buy_strat_name                              varchar(64)
---	, buy_strat_freq                              varchar(64)
---	, buy_asset_type                              varchar(64)
---	, buy_begin_dttm                              timestamp default current_timestamp
---	, buy_end_dttm                                timestamp
---	, buy_cnt_act                                 decimal(36,12) default 0
---	, fees_cnt_act                                decimal(36,12) default 0
---	, tot_out_cnt                                 decimal(36,12) default 0
---	, prc_buy_act                                 decimal(36,12) default 0
---	, prc_buy_slip_pct                            decimal(36,12) default 0
-	, unique(prod_id, buy_strat_type, buy_strat_name, buy_strat_freq, bs_dttm)
-	);
-
-
-alter table cbtrade.buy_signs add column test_txn_yn char(1) default 'N' after test_tf;
-update cbtrade.buy_signs set test_txn_yn = 'Y' where test_tf = 1;
-update cbtrade.buy_signs set test_txn_yn = 'N' where test_tf = 0;
-
-
-
-use cbtrade;
+use cbtrade2;
 drop table if exists buy_strats;
 create table buy_strats(
 	bs_id                                         int(11) primary key AUTO_INCREMENT comment 'pk for buy_strats table'
@@ -252,40 +139,17 @@ create table buy_strats(
 	, upd_dttm                                    timestamp default current_timestamp on update current_timestamp
 	, dlm                                         timestamp default current_timestamp on update current_timestamp
 	);
-insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'sha', 'double smoothed heikin ashi', 0);
-insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'imp_macd', 'impulse macd', 0);
-insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'bb_bo', 'bollinger band breakout', 0);
--- insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'emax', 'triple ema crossover', 0);
-insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('dn', 'bb', 'bollinger band', 0);
-insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('dn', 'drop', 'buy the dip', 0);
-
--- insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'nwe', 'Nadaraya Watson Estimator', 0);
-insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'nwe_3row', 'nwe 3 in a row', 0);
-insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('dn', 'nwe_env', 'nwe envelope', 0);
-insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('dn', 'nwe_rev', 'nwe reversal', 0);
-
-/*
-delete from cbtrade.buy_strats where buy_strat_name not in ('nwe_3row','nwe_env','nwe_rev')
-*/
+insert into cbtrade2.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'sha', 'double smoothed heikin ashi', 0);
+insert into cbtrade2.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'imp_macd', 'impulse macd', 0);
+insert into cbtrade2.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'bb_bo', 'bollinger band breakout', 0);
+insert into cbtrade2.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('dn', 'bb', 'bollinger band', 0);
+insert into cbtrade2.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('dn', 'drop', 'buy the dip', 0);
+insert into cbtrade2.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'nwe_3row', 'nwe 3 in a row', 0);
+insert into cbtrade2.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('dn', 'nwe_env', 'nwe envelope', 0);
+insert into cbtrade2.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('dn', 'nwe_rev', 'nwe reversal', 0);
 
 
-use cbtrade;
-drop table if exists force_buy;
-create table force_buy(
-	fb_id                                         int(11) primary key AUTO_INCREMENT comment 'pk for currs table'
-	, prod_id                                     varchar(64)
-	, base_symb                                   varchar(64)
-	, quote_symb                                  varchar(64)
-	, buy_amt                                     decimal(36,12) default 0
-	, spend_amt                                   decimal(36,12) default 0
-	, done_tf                                     tinyint default 0
-	, add_dttm                                    timestamp default current_timestamp
-	, upd_dttm                                    timestamp default current_timestamp on update current_timestamp
-	, dlm                                         timestamp default current_timestamp on update current_timestamp
-	);
-
-
-use cbtrade;
+use cbtrade2;
 drop table if exists freqs;
 create table freqs(
 	f_id                                          int(11) primary key AUTO_INCREMENT comment 'pk for freq table'
@@ -320,38 +184,8 @@ insert into freqs (freq, freq_desc, minutes, ignore_tf) values ('610min', '610 m
 insert into freqs (freq, freq_desc, minutes, ignore_tf) values ('987min', '987 minute', 987, 1);
 insert into freqs (freq, freq_desc, minutes, ignore_tf) values ('1597min', '1597 minute', 1597, 1);
 
-/*
-144
-233
-377
-610
-987
-1597
-2584
-4181
-6765
-10946
-17711
-28657
-46368
-75025
-121393
-196418
-317811
-514229
-832040
-1346269
-2178309
-3524578
-5702887
-9227465
-14930352
-24157817
-39088169
-*/
 
-
-use cbtrade;
+use cbtrade2;
 drop table if exists mkt_checks;
 create table mkt_checks(
 	prod_id                                       varchar(64)
@@ -365,14 +199,7 @@ create table mkt_checks(
 	, unique(prod_id)
 	);
 
-/*
-alter table cbtrade.mkt_checks add column buy_check_guid varchar(64) after buy_check_dttm;
-alter table cbtrade.mkt_checks add column sell_check_guid varchar(64) after sell_check_dttm;
-alter table cbtrade.mkt_checks add column refresh_check_guid varchar(64) after refresh_check_dttm;
-*/
-
-
-use cbtrade;
+use cbtrade2;
 drop table if exists mkts;
 create table mkts(
 	mkt_id                                        int(11) primary key AUTO_INCREMENT comment 'pk for mkts table'
@@ -420,16 +247,8 @@ create table mkts(
 	, unique(prod_id)
 	);
 
-/*
-alter table mkts change ask_prc prc_ask decimal(36,12);
-alter table mkts change buy_prc prc_buy decimal(36,12);
-alter table mkts change bid_prc prc_bid decimal(36,12);
-alter table mkts change sell_prc prc_sell decimal(36,12);
-*/
 
-
-
-use cbtrade;
+use cbtrade2;
 drop table if exists ords;
 create table ords(
 	ord_id                                      int(11) primary key AUTO_INCREMENT
@@ -499,7 +318,7 @@ create table ords(
 	);
 
 
-use cbtrade;
+use cbtrade2;
 drop table if exists poss;
 create table poss(
 	pos_id                                        int(11) primary key AUTO_INCREMENT
@@ -568,7 +387,7 @@ create table poss(
 	, sell_block_yn                               char(1) default 'N'
 	, sell_force_yn                               char(1) default 'N'
 	, test_tf                                     tinyint default 0
-	, test_txn_yn                                 char(1)        default 'N'
+	, test_txn_yn                                 char(1) default 'N'
 	, force_sell_tf                               tinyint default 0
 	, ignore_tf                                   tinyint default 0
 	, error_tf                                    tinyint default 0
@@ -588,37 +407,13 @@ create table poss(
 	, dlm                                         timestamp default current_timestamp on update current_timestamp
 	, unique(bo_uuid)
 	);
-alter table cbtrade.poss add index idx_prod_id_quote_curr_symb (prod_id, quote_curr_symb);
-alter table cbtrade.poss add index idx_prod_id (prod_id);
-alter table cbtrade.poss add index idx_prod_id_stat (prod_id, pos_stat);
-alter table cbtrade.poss add index idx_buy_strat_name_freq (buy_strat_name, buy_strat_freq);
+alter table cbtrade2.poss add index idx_prod_id_quote_curr_symb (prod_id, quote_curr_symb);
+alter table cbtrade2.poss add index idx_prod_id (prod_id);
+alter table cbtrade2.poss add index idx_prod_id_stat (prod_id, pos_stat);
+alter table cbtrade2.poss add index idx_buy_strat_name_freq (buy_strat_name, buy_strat_freq);
 
 
-
-/*
-alter table cbtrade.poss add index prod_id_quote_curr_symb (prod_id, quote_curr_symb);
-  , ;
-alter table cbtrade.poss add column test_txn_yn char(1) default 'N' after test_tf;
-update cbtrade.poss set test_txn_yn = 'Y' where test_tf = 1;
-update cbtrade.poss set test_txn_yn = 'N' where test_tf = 0;
-*/
-
--- alter table cbtrade.poss add column symb varchar(64) after pos_id;
--- update cbtrade.poss set symb = 'USDC';
-
-
--- alter table cbtrade.poss add column error_tf tinyint default 0 after ignore_tf;
--- alter table cbtrade.poss add column sell_yn char(1) after quote_size_max;
--- alter table cbtrade.poss add column sell_block_yn char(1) after sell_yn;
--- alter table cbtrade.poss add column hodl_yn char(1) after sell_block_yn;
--- alter table cbtrade.poss add column sell_force_yn char(1) default 'N' after sell_block_yn;
--- alter table cbtrade.poss modify column sell_block_yn char(1) default 'N';
--- alter table cbtrade.poss modify column hodl_yn char(1) after sell_yn;
-
-
-
-
-use cbtrade;
+use cbtrade2;
 drop table if exists sell_ords;
 create table sell_ords(
 	so_id                                         int(11) primary key AUTO_INCREMENT
@@ -670,109 +465,8 @@ create table sell_ords(
 	, unique(sell_order_uuid, sell_client_order_id, pos_id)
 	);
 
-/*
 
-alter table cbtrade.sell_ords add column test_txn_yn char(1) default 'N' after test_tf;
-update cbtrade.sell_ords set test_txn_yn = 'Y' where test_tf = 1;
-update cbtrade.sell_ords set test_txn_yn = 'N' where test_tf = 0;
-
-
-alter table cbtrade.sell_ords add column reason varchar(1024) after ignore_tf;
-
-alter table cbtrade.sell_ords rename column tot_prc_buy to prc_sell_tot;
-
-alter table cbtrade.sell_ords add column symb varchar(64) after test_tf;
-update cbtrade.sell_ords set symb = 'USDC';
-ALTER TABLE cbtrade.sell_ords ADD CONSTRAINT unique_sell_order UNIQUE (sell_order_uuid, sell_client_order_id, pos_id);
-ALTER TABLE cbtrade.sell_ords drop index sell_order_uuid;
-sell_ords
-*/
-
-
-
-use cbtrade;
-drop table if exists sell_signals;
-create table sell_signals(
-	sid                                           int(11) primary key AUTO_INCREMENT
-	, test_tf                                     tinyint default 0
-	, test_txn_yn                                 char(1)        default 'N'
-	, prod_id                                     varchar(64)
-	, pos_id                                      int(11)
-	, buy_strat_type                              varchar(64)
-	, buy_strat_name                              varchar(64)
-	, buy_strat_freq                              varchar(64)
-	, sell_strat_type                             varchar(64)
-	, sell_strat_name                             varchar(64)
-	, sell_strat_freq                             varchar(64)
-	, sell_yn                                     char(1)
-	, sell_block_yn                               char(1)
-	, hodl_yn                                     char(1)
-	, actv_dttm                                   timestamp default current_timestamp
-	, note1                                       varchar(1024)
-	, note2                                       varchar(1024)
-	, note3                                       varchar(1024)
-	, add_dttm                                    timestamp default current_timestamp
-	, upd_dttm                                    timestamp default current_timestamp on update current_timestamp
-	, dlm                                         timestamp default current_timestamp on update current_timestamp
-	);
-
-alter table cbtrade.sell_signals add column test_txn_yn char(1) default 'N' after test_txn_yn;
-update cbtrade.sell_signals set test_txn_yn = 'Y' where test_txn_yn = 1;
-update cbtrade.sell_signals set test_txn_yn = 'N' where test_txn_yn = 0;
-
-
-use cbtrade;
-drop table if exists sell_signs;
-create table sell_signs(
-	ss_id                                         int(11) primary key AUTO_INCREMENT
-	, test_tf                                     tinyint        default 0
-	, test_txn_yn                                 char(1)        default 'N'
-	, prod_id                                     varchar(64)
-	, pos_id                                      int(11)
-	, sell_strat_type                             varchar(64)
-	, sell_strat_name                             varchar(64)
-	, sell_strat_freq                             varchar(64)
-	, sell_asset_type                             varchar(64)
-	, sell_yn                                     char(1)
-	, hodl_yn                                     char(1)
-	, ss_dttm                                     timestamp default current_timestamp
-	, sell_curr_symb                              varchar(64)
-	, recv_curr_symb                              varchar(64)
-	, fees_curr_symb                              varchar(64)
-	, sell_cnt_est                                decimal(36,12) default 0
-	, sell_prc_est                                decimal(36,12) default 0
-	, sell_sub_tot_est                            decimal(36,12) default 0
-	, sell_fees_est                               decimal(36,12) default 0
-	, sell_tot_est                                decimal(36,12) default 0
-	, all_sells                                   varchar(2048)
-	, all_hodls                                   varchar(2048)
-	, ignore_tf                                   tinyint default 0
-	, note1                                       varchar(1024)
-	, note2                                       varchar(1024)
-	, note3                                       varchar(1024)
-	, add_dttm                                    timestamp default current_timestamp
-	, upd_dttm                                    timestamp default current_timestamp on update current_timestamp
-	, dlm                                         timestamp default current_timestamp on update current_timestamp
---	, sell_cnt_est                                decimal(36,12) default 0
---	, sell_cnt_act                                decimal(36,12) default 0
---	, fees_cnt_act                                decimal(36,12) default 0
---	, tot_in_cnt                                  decimal(36,12) default 0
---	, prc_sell_est                                decimal(36,12) default 0
---	, prc_sell_act                                decimal(36,12) default 0
---	, tot_prc_buy                                 decimal(36,12) default 0
---	, prc_sell_slip_pct                           decimal(36,12) default 0
-	, unique(prod_id, pos_id, sell_strat_type, sell_strat_name, sell_strat_freq, ss_dttm)
-	);
-    
-
-
-alter table cbtrade.sell_signs add column test_txn_yn char(1) default 'N' after test_tf;
-update cbtrade.sell_signs set test_txn_yn = 'Y' where test_tf = 1;
-update cbtrade.sell_signs set test_txn_yn = 'N' where test_tf = 0;
-
-
-
-use cbtrade;
+use cbtrade2;
 drop view if exists view_bals;
 create view view_bals as
 select b.symb
@@ -787,12 +481,12 @@ select b.symb
   , round(case when b.symb in ('USD','USDC') then b.bal_tot else coalesce(sum(p.hold_cnt),0) * m.prc end, 8) as bot_val_usd
   , round(case when b.symb in ('USD','USDC') then b.bal_tot else (b.bal_tot - coalesce(sum(p.hold_cnt),0)) * m.prc end, 8) as free_val_usd
   , b.curr_uuid
-  from cbtrade.bals b
-  left outer join (select m.base_curr_symb as symb, m.prc from cbtrade.mkts m where m.quote_curr_symb = 'USDC'
+  from cbtrade2.bals b
+  left outer join (select m.base_curr_symb as symb, m.prc from cbtrade2.mkts m where m.quote_curr_symb = 'USDC'
 					union 
-                    select 'ETH2' as symb, m.prc from cbtrade.mkts m where m.quote_curr_symb = 'USDC' and m.base_curr_symb = 'ETH'
+                    select 'ETH2' as symb, m.prc from cbtrade2.mkts m where m.quote_curr_symb = 'USDC' and m.base_curr_symb = 'ETH'
 					) m on m.symb = b.symb
-  left outer join cbtrade.poss p on p.base_curr_symb = b.symb and p.quote_curr_symb = 'USDC' and p.ignore_tf = 0 --  and p.pos_stat in ('OPEN', 'SELL')
+  left outer join cbtrade2.poss p on p.base_curr_symb = b.symb and p.quote_curr_symb = 'USDC' and p.ignore_tf = 0 --  and p.pos_stat in ('OPEN', 'SELL')
   where b.bal_tot > 0
   
   group by b.symb, b.bal_avail, b.bal_hold, b.bal_tot, b.curr_prc_usd, m.prc, b.curr_uuid
@@ -801,8 +495,8 @@ select b.symb
   
 
 
-drop view if exists cbtrade.view_mkt_perf;
-create view cbtrade.view_mkt_perf as 
+drop view if exists cbtrade2.view_mkt_perf;
+create view cbtrade2.view_mkt_perf as 
 select p.prod_id
   , p.quote_curr_symb
   , count(p.pos_id) as tot_cnt 
@@ -812,8 +506,8 @@ select p.prod_id
   , coalesce(round(sum(case when p.tot_in_cnt + p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct 
   , sum(p.age_mins) as age_mins
   , sum(p.age_mins) / 60 as age_hours
-  , (select coalesce(TIMESTAMPDIFF(SECOND, max(bo.buy_begin_dttm), NOW())/60, 9999) from cbtrade.buy_ords bo where bo.prod_id = p.prod_id) as bo_elapsed
-  , (select coalesce(TIMESTAMPDIFF(SECOND, max(px.pos_begin_dttm), NOW())/60, 9999) from cbtrade.poss px where px.prod_id = p.prod_id and px.pos_stat not in ('TIME') ) as pos_elapsed
+  , (select coalesce(TIMESTAMPDIFF(SECOND, max(bo.buy_begin_dttm), NOW())/60, 9999) from cbtrade2.buy_ords bo where bo.prod_id = p.prod_id) as bo_elapsed
+  , (select coalesce(TIMESTAMPDIFF(SECOND, max(px.pos_begin_dttm), NOW())/60, 9999) from cbtrade2.poss px where px.prod_id = p.prod_id and px.pos_stat not in ('TIME') ) as pos_elapsed
   , round(sum(p.tot_out_cnt), 2) as tot_out_cnt
   , round(sum(p.tot_in_cnt), 2) as tot_in_cnt
   , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt
@@ -836,7 +530,7 @@ select p.prod_id
   , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr
   , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60) * 24, 8) as gain_loss_pct_day
 --  , p.test_txn_yn
-  from cbtrade.poss p
+  from cbtrade2.poss p
   where ignore_tf = 0
   group by p.prod_id
   order by gain_loss_pct_day desc
@@ -845,8 +539,8 @@ select p.prod_id
 
 
 
-drop view if exists cbtrade.view_pos;
-create view cbtrade.view_pos as 
+drop view if exists cbtrade2.view_pos;
+create view cbtrade2.view_pos as 
 select p.pos_id
   , p.prod_id
   , p.pos_stat
@@ -904,7 +598,7 @@ select p.pos_id
   , p.fees_curr_symb
   , p.test_txn_yn
   , round(p.gain_loss_amt / p.tot_out_cnt * 100 / p.age_mins / 60, 8) as gain_loss_pct_hr
-  from cbtrade.poss p
+  from cbtrade2.poss p
   where ignore_tf = 0
   order by p.pos_id desc
   ;

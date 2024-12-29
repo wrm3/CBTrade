@@ -25,7 +25,7 @@ from libs.lib_charts import chart_row
 from libs.lib_colors import cs, cp, G, WoR, WoG
 from libs.lib_common import dttm_get, func_begin, func_end, print_adv, speak_async
 from libs.lib_colors import BoW
-from libs.bot_strat_common import disp_sell_tests
+from libs.bot_strat_common import disp_sell_tests, exit_if_logic
 import pandas as pd
 import numpy as np
 import pandas_ta as pta
@@ -195,15 +195,15 @@ def buy_strat_nwe_rev(buy, ta, pst):
 		nwe_rev_sell_signal             = buy.ta[freq]['nwe_rev_sell_signal']['ago0']
 		nwe_rev_buy_signal_last         = buy.ta[freq]['nwe_rev_buy_signal']['ago1']
 
-		if buy.prod_id == 'BTC-USDC':
-			if nwe_rev_buy_signal:
-				speak_async(f"{buy.prod_id} has a Nadaraya Watson Reversal Buy Trigger on the {freq} timeframe")
+		# if buy.prod_id == 'BTC-USDC':
+		# 	if nwe_rev_buy_signal:
+		# 		speak_async(f"{buy.prod_id} has a Nadaraya Watson Reversal Buy Trigger on the {freq} timeframe")
 
 		# -------------------------------
 		# Integrate Buy Signals from Trend Reversal
 		# -------------------------------
 		if nwe_rev_buy_signal or (nwe_rev_buy_signal_last and not nwe_rev_sell_signal):
-			msg = f'    * BUY SIGNAL: NWE_REV {freq} Trend Reversal detected (BULL)'
+			msg = f'NWE_REV {freq} Trend Reversal detected (BULL)'
 			buy.reason = msg.strip()
 			all_passes.append(msg)
 		else:
@@ -274,9 +274,9 @@ def sell_strat_nwe_rev(mkt, pos, ta, pst):
 		nwe_rev_sell_signal            = ta[freq]['nwe_rev_sell_signal']['ago0']
 		nwe_rev_sell_signal_last       = ta[freq]['nwe_rev_sell_signal']['ago1']
 
-		if pos.prod_id == 'BTC-USDC':
-			if nwe_rev_sell_signal:
-				speak_async(f"{pos.prod_id} has a Nadaraya Watson Reversal Sell Trigger on the {freq} timeframe")
+		# if pos.prod_id == 'BTC-USDC':
+		# 	if nwe_rev_sell_signal:
+		# 		speak_async(f"{pos.prod_id} has a Nadaraya Watson Reversal Sell Trigger on the {freq} timeframe")
 
 		if nwe_rev_sell_signal or (nwe_rev_sell_signal_last and not nwe_rev_buy_signal):
 			pos.sell_yn = 'Y'
@@ -294,38 +294,8 @@ def sell_strat_nwe_rev(mkt, pos, ta, pst):
 		if pos.sell_yn == 'Y': pos.hodl_yn = 'N'
 		msg = 'SELL TESTS - Nadaraya-Watson Estimator'
 		mkt = disp_sell_tests(msg=msg, mkt=mkt, pos=pos, pst=pst, all_sells=all_sells, all_hodls=all_hodls)
+		pos = exit_if_logic(pos=pos, pst=pst)
 
-		exit_if_profit_yn      = pst.sell.strats.nwe_rev.exit_if_profit_yn
-		exit_if_profit_pct_min = pst.sell.strats.nwe_rev.exit_if_profit_pct_min
-		exit_if_loss_yn        = pst.sell.strats.nwe_rev.exit_if_loss_yn
-		exit_if_loss_pct_max   = abs(pst.sell.strats.nwe_rev.exit_if_loss_pct_max) * -1
-		if pos.sell_yn == 'Y':
-			if pos.prc_chg_pct > 0:
-				if exit_if_profit_yn == 'Y':
-					if pos.prc_chg_pct < exit_if_profit_pct_min:
-						msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % < exit_if_profit_pct_min : {exit_if_profit_pct_min}, cancelling sell...'
-						BoW(msg)
-						pos.sell_yn = 'N'
-						pos.hodl_yn = 'Y'
-				elif exit_if_profit_yn == 'N':
-					msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...'
-					if pst.sell.show_tests_yn == 'Y':
-						BoW(msg)
-					pos.sell_yn = 'N'
-					pos.hodl_yn = 'Y'
-			elif pos.prc_chg_pct <= 0:
-				if exit_if_loss_yn == 'Y':
-					if pos.prc_chg_pct > exit_if_loss_pct_max:
-						msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % > exit_if_loss_pct_max : {exit_if_loss_pct_max}, cancelling sell...'
-						BoW(msg)
-						pos.sell_yn = 'N'
-						pos.hodl_yn = 'Y'
-				elif exit_if_loss_yn == 'N':
-					msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...'
-					if pst.sell.show_tests_yn == 'Y':
-						BoW(msg)
-					pos.sell_yn = 'N'
-					pos.hodl_yn = 'Y'
 
 		if pos.sell_yn == 'Y':
 			pos.sell_strat_type = 'strat'

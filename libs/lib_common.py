@@ -19,7 +19,7 @@ from libs.cls_settings import Settings
 from pprint import pformat
 from pprint import pprint
 from termcolor import cprint
-import beepy
+# import beepy
 import concurrent.futures
 import datetime
 import decimal
@@ -843,8 +843,8 @@ def beep(reps=1):
 
 #<=====>#
 
-def beep_error():
-	beepy.beep(sound='error')
+# def beep_error():
+# 	beepy.beep(sound='error')
 
 #<=====>#
 

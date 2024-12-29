@@ -463,7 +463,6 @@ def db_tbl_insupd(table_name, in_data, rat_on_extra_cols_yn='N', exit_on_error=T
 	data_cols = []
 	ins_data  = []
 
-
 	if isinstance(in_data, dict):
 		if in_data:
 			ins_type = 'one'

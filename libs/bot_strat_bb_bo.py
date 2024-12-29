@@ -25,7 +25,7 @@ from libs.lib_charts import chart_row
 from libs.lib_colors import cs, cp, G
 from libs.lib_common import dttm_get, func_begin, func_end, print_adv
 from libs.lib_colors import BoW
-from libs.bot_strat_common import disp_sell_tests
+from libs.bot_strat_common import disp_sell_tests, exit_if_logic
 
 
 #<=====>#
@@ -128,7 +128,7 @@ def buy_strat_bb_bo(buy, ta, pst):
 #		check_list = ['sma100']
 #		for x in check_list:
 #			sma = ta[rfreq][x]['ago0']
-#			msg = f'    * BUY REQUIRE : {rfreq} Current Price : {buy.prc_buy:>.8f} must be above current {x} : {sma}'
+#			msg = f'{rfreq} Current Price : {buy.prc_buy:>.8f} must be above current {x} : {sma}'
 #			if not sma:
 #				buy.buy_yn  = 'N'
 #				all_fails.append(msg)
@@ -139,7 +139,7 @@ def buy_strat_bb_bo(buy, ta, pst):
 #				all_fails.append(msg)
 
 		# Current High Above Inner BB Lower
-		m = '    * BUY REQUIRE : current {} high : {:>.8f} above bb upper : {:>.8f}'
+		m = 'current {} high : {:>.8f} above bb upper : {:>.8f}'
 		msg = m.format(buy.rfreq, buy.ta[buy.rfreq]['high']['ago0'], buy.ta[buy.rfreq]['bb_upper_bb_bo']['ago0'])
 		if buy.ta[buy.rfreq]['high']['ago0'] > buy.ta[buy.rfreq]['bb_upper_bb_bo']['ago0']:
 			all_passes.append(msg)
@@ -148,7 +148,7 @@ def buy_strat_bb_bo(buy, ta, pst):
 			all_fails.append(msg)
 
 		# Current Close Above Inner BB Lower
-		m = '    * BUY REQUIRE : pervious {} close : {:>.8f} above bb upper : {:>.8f}'
+		m = 'pervious {} close : {:>.8f} above bb upper : {:>.8f}'
 		msg = m.format(buy.rfreq, buy.ta[buy.rfreq]['close']['ago1'], buy.ta[buy.rfreq]['bb_upper_bb_bo']['ago1'])
 		if buy.ta[buy.rfreq]['close']['ago1'] > buy.ta[buy.rfreq]['bb_upper_bb_bo']['ago1']:
 			all_passes.append(msg)
@@ -161,7 +161,7 @@ def buy_strat_bb_bo(buy, ta, pst):
 		for freq in freqs:
 			for ago in ago_list:
 				color = buy.ta[freq]['color'][ago]
-				msg = f'    * BUY REQUIRE : {freq} {ago} candles == green : {color}'
+				msg = f'{freq} {ago} candles == green : {color}'
 				if color == 'green':
 					all_passes.append(msg)
 				else:
@@ -173,7 +173,7 @@ def buy_strat_bb_bo(buy, ta, pst):
 		for freq in faster_freqs:
 			for ago in ago_list:
 				ha_color = buy.ta[freq]['ha_color'][ago]
-				msg = f'    * BUY REQUIRE : {freq} {ago} Heikin Ashi candles == green : {ha_color}'
+				msg = f'{freq} {ago} Heikin Ashi candles == green : {ha_color}'
 				if ha_color == 'green':
 					all_passes.append(msg)
 				else:
@@ -256,33 +256,8 @@ def sell_strat_bb_bo(mkt, pos, ta, pst):
 		exit_if_profit_pct_min = pst.sell.strats.drop.exit_if_profit_pct_min
 		exit_if_loss_yn        = pst.sell.strats.drop.exit_if_loss_yn
 		exit_if_loss_pct_max   = abs(pst.sell.strats.drop.exit_if_loss_pct_max) * -1
-		if pos.sell_yn == 'Y':
-			if pos.prc_chg_pct > 0:
-				if exit_if_profit_yn == 'Y':
-					if pos.prc_chg_pct < exit_if_profit_pct_min:
-						msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % < exit_if_profit_pct_min : {exit_if_profit_pct_min}, cancelling sell...'
-						BoW(msg)
-						pos.sell_yn = 'N'
-						pos.hodl_yn = 'Y'
-				elif exit_if_profit_yn == 'N':
-					msg = f'    * exit_if_profit_yn : {exit_if_profit_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - cancelling sell...'
-					if pst.sell.show_tests_yn == 'Y':
-						BoW(msg)
-					pos.sell_yn = 'N'
-					pos.hodl_yn = 'Y'
-			elif pos.prc_chg_pct <= 0:
-				if exit_if_loss_yn == 'Y':
-					if pos.prc_chg_pct > exit_if_loss_pct_max:
-						msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} - pos.prc_chg_pct : {pos.prc_chg_pct} % > exit_if_loss_pct_max : {exit_if_loss_pct_max}, cancelling sell...'
-						BoW(msg)
-						pos.sell_yn = 'N'
-						pos.hodl_yn = 'Y'
-				elif exit_if_loss_yn == 'N':
-					msg = f'    * exit_if_loss_yn : {exit_if_loss_yn}, {pos.buy_strat_name} {pos.buy_strat_freq} -  cancelling sell...'
-					if pst.sell.show_tests_yn == 'Y':
-						BoW(msg)
-					pos.sell_yn = 'N'
-					pos.hodl_yn = 'Y'
+
+		pos = exit_if_logic(pos=pos, pst=pst)
 
 		if pos.sell_yn == 'Y':
 			pos.sell_strat_type = 'strat'

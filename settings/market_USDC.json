@@ -1,35 +1,34 @@
 {
 	"edited_yn": "Y",
-	"upd_msg": "These settings are from 2024-10-02 11:17am",
+	"upd_msg": "These settings are from 2024-12-29 01:24pm",
 	"trade_yn": "Y",
 	"trade_live_yn": "Y",
-	"paper_trades_only_yn": "N",
-	"portfoilio_id": "2b69eba6-6232-57fa-84cf-578586216e3d",
+	"paper_trades_only_yn": "Y",
 	"stable_coins": ["DAI","GUSD","PAX","PYUSD","USD","USDC","USDT"],
 	"speak_yn": "Y",
 	"loop_secs": 15,
 	"budget": {
 		"max_tot_loss": -250.0,
-		"spend_max_amt": 3000.0,
-		"spend_up_max_pct": 75.0,
-		"spend_dn_max_pct": 40.0,
+		"spend_max_amt": 3500.0,
+		"spend_up_max_pct": 65.0,
+		"spend_dn_max_pct": 35.0,
 		"spend_max_pcts": {
-			"***": {"spend_up_max_pct": 80.0, "spend_dn_max_pct": 50.0},
-			"BTC-USDC": {"spend_up_max_pct": 80.0, "spend_dn_max_pct": 50.0},
-			"ETH-USDC": {"spend_up_max_pct": 80.0, "spend_dn_max_pct": 50.0},
-			"SOL-USDC": {"spend_up_max_pct": 80.0, "spend_dn_max_pct": 50.0}
+			"***": {"spend_up_max_pct": 65.0, "spend_dn_max_pct": 35.0},
+			"BTC-USDC": {"spend_up_max_pct": 65.0, "spend_dn_max_pct": 35.0},
+			"ETH-USDC": {"spend_up_max_pct": 65.0, "spend_dn_max_pct": 35.0},
+			"SOL-USDC": {"spend_up_max_pct": 65.0, "spend_dn_max_pct": 35.0}
 		},
 		"mkt_shares": {
 			"shares_or_pcts": "pct",
 			"***": 3,
 			"BTC-USDC":   50,
-			"ETH-USDC":   25,
-			"SOL-USDC":   25,
+			"ETH-USDC":   33,
+			"SOL-USDC":   33,
 			"ADA-USDC":    6,
-			"XRP-USDC":    6,
 			"DOGE-USDC":   6,
 			"SHIB-USDC":   6,
-			"SUI-USDC":    6
+			"SUI-USDC":   10,
+			"XRP-USDC":   10
 		},
 		"reserve_amt": 100.0,
 		"reserve_addtl_daily_amt": 0
@@ -38,36 +37,53 @@
 		"trade_pairs": [
 			"AAVE-USDC",
 			"ADA-USDC",
+			"AIOZ-USDC",
+			"ALGO-USDC",
+			"ATOM-USDC",
 			"AVAX-USDC",
 			"BONK-USDC",
 			"BTC-USDC",
 			"DOGE-USDC",
 			"DOT-USDC",
 			"ETH-USDC",
+			"FET-USDC",
+			"FIL-USDC",
 			"FLOKI-USDC",
 			"FTM-USDC",
-			"JTO-USDC",
+			"GRT-USDC",
+			"HBAR-USDC",
+			"HNT-USDC",
+			"JASMY-USDC",
+			"JUP-USDC",
+			"LINK-USDC",
 			"PEPE-USDC",
-			"POPCAT-USDC",
 			"POL-USDC",
+			"PYTH-USDC",
+			"RAY-USDC",
 			"RENDER-USDC",
 			"RNDR-USDC",
 			"SHIB-USDC",
 			"SOL-USDC",
 			"SUI-USDC",
+			"TON-USDC",
+			"UNI-USDC",
+			"VET-USDC",
+			"WIF-USDC",
 			"XRP-USDC"
 			],
 		"trade_pairs_bk1": ["AAVE-USDC","ADA-USDC","ALGO-USDC","ARB-USDC","APT-USDC","AVAX-USDC","BONK-USDC","BTC-USDC","DOGE-USDC","DOT-USDC","ETH-USDC","FET-USDC","FIL-USDC","FTM-USDC","HBAR-USDC","HNT-USDC","INJ-USDC","JASMY-USDC","JUP-USDC","LDO-USDC","LINK-USDC","NEAR-USDC","OP-USDC","PEPE-USDC","POL-USDC","PYTH-USDC","RENDER-USDC","RNDR-USDC","RUNE-USDC","SHIB-USDC","SOL-USDC","SUI-USDC","THETA-USDC","TON-USDC","TRON-USDC","WIF-USDC","UNI-USDC"],
+		"trade_pairs_bk2": ["AAVE-USDC","ADA-USDC","AIOZ-USDC","ALGO-USDC","ATOM-USDC","AVAX-USDC","BONK-USDC","BTC-USDC","DOGE-USDC","DOT-USDC","ETH-USDC","FET-USDC","FIL-USDC","FLOKI-USDC","FTM-USDC","GRT-USDC","HBAR-USDC","HNT-USDC","JASMY-USDC","JUP-USDC","LINK-USDC","PEPE-USDC","POL-USDC","PYTH-USDC","RAY-USDC","RENDER-USDC","RNDR-USDC","SHIB-USDC","SOL-USDC","SUI-USDC","TON-USDC","UNI-USDC","VET-USDC","WIF-USDC","XRP-USDC"],
+		"trade_pairs_bk1": [],
 		"stable_pairs": ["DAI-USDC","GUSD-USDC","PAX-USDC","PYUSD-USDC","USDT-USDC"],
 		"err_pairs": ["CORECHAIN-USDC","DAI-USDC","MATIC-USDC","MKR-USDC"],
 		"extra_pairs_watched_yn": "N",
 		"extra_pairs_top_bot_perf_yn": "Y",
-		"extra_pairs_top_bot_perf_cnt": 12,
-		"extra_pairs_top_bot_perf_pct_min": 0.01,
-		"extra_pairs_top_bot_gains_yn": "Y",
-		"extra_pairs_top_bot_gains_cnt": 12,
-		"extra_pairs_prc_pct_chg_24h_yn": "Y",
-		"extra_pairs_prc_pct_chg_24h_cnt": 4,
+		"extra_pairs_top_bot_perf_cnt": 10,
+		"extra_pairs_top_bot_perf_pct_min": 0.1,
+		"extra_pairs_top_bot_gains_yn": "N",
+		"extra_pairs_top_bot_gains_cnt": 10,
+		"extra_pairs_prc_pct_chg_24h_yn": "N",
+		"extra_pairs_prc_pct_chg_24h_cnt": 5,
 		"extra_pairs_prc_pct_chg_24h_pct_min": 5,
 		"extra_pairs_vol_quote_24h_yn": "N",
 		"extra_pairs_vol_quote_24h_cnt": 4,
@@ -76,18 +92,18 @@
 	},
 	"buy_test_txns": {
 		"test_txns_on_yn": "Y",
-		"test_txns_min": 1,
-		"test_txns_max": 33
+		"test_txns_min": 3,
+		"test_txns_max": 25
 	},
 	"buy": {
 		"buying_on_yn": "Y",
-		"force_all_tests_yn": "Y",
 		"show_tests_yn": "N",
+		"show_boosts_yn": "N",
 		"show_tests_min": 101,
 		"save_files_yn": "N",
 		"buy_limit_yn": "N",
-		"show_boosts_yn": "N",
-		"mkts_open_max": 100,
+		"mkts_open_max": 60,
+		"trade_strat_perf_recent_cnt": 50,
 		"special_prod_ids": [],
 		"buy_delay_minutes": {
 			"***": 1,
@@ -104,24 +120,24 @@
 		},
 		"open_poss_cnt_max": {
 			"***": 7,
-			"BTC-USDC": 50,
-			"ETH-USDC": 50,
-			"SOL-USDC": 50
+			"BTC-USDC": 35,
+			"ETH-USDC": 35,
+			"SOL-USDC": 35
 		},
 		"strat_open_cnt_max": {
 			"***": 1,
-			"BTC-USDC": 4,
+			"BTC-USDC": 3,
 			"ETH-USDC": 3,
 			"SOL-USDC": 3
 		},
 		"trade_size": {
-			"***": 5,
+			"***": 2,
 			"BTC-USDC": 25,
 			"ETH-USDC": 25,
 			"SOL-USDC": 25
 		},
 		"trade_size_min_mult": {
-			"***": 3,
+			"***": 2,
 			"BTC-USDC": 20,
 			"ETH-USDC": 20,
 			"SOL-USDC": 20
@@ -214,9 +230,9 @@
 				"use_yn": "Y",
 				"freqs": ["1d", "4h","1h","30min"],
 				"inner_per": 34,
-				"inner_sd": 2.3,
+				"inner_sd": 2.25,
 				"outer_per": 34,
-				"outer_sd": 2.7,
+				"outer_sd": 2.50,
 				"prod_ids": [],
 				"skip_prod_ids": [],
 				"tests_min": {"15min": 13,"30min": 11,"1h": 9,"4h": 7,"1d": 5},
@@ -227,7 +243,7 @@
 				"use_yn": "Y",
 				"freqs": ["1d", "4h","1h","30min","15min"],
 				"drop_pct": {
-					"***": 8,
+					"***": 7,
 					"BTC-USDC": 5,
 					"ETH-USDC": 5,
 					"SOL-USDC": 5,
@@ -243,10 +259,9 @@
 	},
 	"sell": {
 		"selling_on_yn": "Y",
-		"force_all_tests_yn": "Y",
 		"show_blocks_yn": "Y",
-		"show_forces_yn": "N",
-		"show_tests_yn": "N",
+		"show_forces_yn": "Y",
+		"show_tests_yn": "Y",
 		"save_files_yn": "N",
 		"sell_limit_yn": "N",
 		"take_profit": {
@@ -254,8 +269,20 @@
 			"hard_take_profit_pct": 33,
 			"hard_take_profit_strats_skip": ["nwe_3row","nwe_env","nwe_rev"],
 			"trailing_profit_yn": "Y",
-			"trailing_profit_trigger_pct": 4,
-			"trailing_profit_strats_skip": []
+			"trailing_profit_trigger_pct": 3,
+			"trailing_profit_strats_skip": [],
+			"trailing_profit_levels": {
+				"89": 8.00,
+				"55": 7.00,
+				"34": 6.00,
+				"21": 5.00,
+				"13": 4.00,
+				"8":  3.00,
+				"5":  2.00,
+				"3":  1.00,
+				"2":  0.66,
+				"1":  0.33
+				}
 		},
 		"stop_loss": {
 			"hard_stop_loss_yn": "Y",
@@ -276,6 +303,7 @@
 		},
 		"force_sell": {
 			"all_yn": "N",
+			"live_all_yn": "N",
 			"prod_ids": [
 				"CBETH-USDC",
 				"LSETH-USDC",
@@ -286,7 +314,7 @@
 				"WCFG-USDC",
 				"MATIC-USDC"
 			],
-			"pos_ids": []
+			"pos_ids": [34947,34868,34880]
 		},
 		"never_sell": {
 			"all_yn": "N",
@@ -295,23 +323,45 @@
 		},
 		"never_sell_loss": {
 			"all_yn": "N",
-			"live_all_yn": "Y",
-			"prod_ids": ["BTC-USDC","ETH-USDC","SOL-USDC"],
+			"live_all_yn": "N",
+			"prod_ids": [],
+			"prod_ids_bk": [
+				"AAVE-USDC",
+				"ADA-USDC",
+				"ALGO-USDC",
+				"ATOM-USDC",
+				"AVAX-USDC",
+				"BTC-USDC",
+				"DOT-USDC",
+				"ETH-USDC",
+				"FTM-USDC",
+				"GRT-USDC",
+				"HBAR-USDC",
+				"LINK-USDC",
+				"POL-USDC",
+				"RENDER-USDC",
+				"RNDR-USDC",
+				"SOL-USDC",
+				"SUI-USDC",
+				"TON-USDC",
+				"UNI-USDC",
+				"XRP-USDC"
+			],
 			"pos_ids": []
 		},
 		"strats": {
 			"nwe_3row": {
 				"exit_if_profit_yn": "Y",
-				"exit_if_profit_pct_min": 5,
+				"exit_if_profit_pct_min": 1,
 				"exit_if_loss_yn": "N",
-				"exit_if_loss_pct_max": 5,
+				"exit_if_loss_pct_max": 3,
 				"skip_prod_ids": [],
 				"tests_min": {"15min": 13,"30min": 11,"1h": 9,"4h": 7,"1d": 5},
 				"show_tests_yn": "N"
 			},
 			"nwe_env": {
 				"exit_if_profit_yn": "Y",
-				"exit_if_profit_pct_min": 3,
+				"exit_if_profit_pct_min": 1,
 				"exit_if_loss_yn": "Y",
 				"exit_if_loss_pct_max": 3,
 				"skip_prod_ids": [],
@@ -320,7 +370,7 @@
 			},
 			"nwe_rev": {
 				"exit_if_profit_yn": "Y",
-				"exit_if_profit_pct_min": 3,
+				"exit_if_profit_pct_min": 1,
 				"exit_if_loss_yn": "Y",
 				"exit_if_loss_pct_max": 3,
 				"skip_prod_ids": [],
@@ -329,45 +379,45 @@
 			},
 			"sha": {
 				"exit_if_profit_yn": "Y",
-				"exit_if_profit_pct_min": 0.5,
+				"exit_if_profit_pct_min": 1,
 				"exit_if_loss_yn": "Y",
-				"exit_if_loss_pct_max": 2,
+				"exit_if_loss_pct_max": 3,
 				"skip_prod_ids": [],
 				"tests_min": {"15min": 13,"30min": 11,"1h": 9,"4h": 7,"1d": 5},
 				"show_tests_yn": "N"
 			},
 			"imp_macd": {
 				"exit_if_profit_yn": "Y",
-				"exit_if_profit_pct_min": 0.5,
+				"exit_if_profit_pct_min": 1,
 				"exit_if_loss_yn": "Y",
-				"exit_if_loss_pct_max": 2,
+				"exit_if_loss_pct_max": 3,
 				"skip_prod_ids": [],
 				"tests_min": {"15min": 13,"30min": 11,"1h": 9,"4h": 7,"1d": 5},
 				"show_tests_yn": "N"
 			},
 			"bb_bo": {
 				"exit_if_profit_yn": "N",
-				"exit_if_profit_pct_min": 0.5,
+				"exit_if_profit_pct_min": 1,
 				"exit_if_loss_yn": "N",
-				"exit_if_loss_pct_max": 2,
+				"exit_if_loss_pct_max": 3,
 				"skip_prod_ids": [],
 				"tests_min": {"15min": 13,"30min": 11,"1h": 9,"4h": 7,"1d": 5},
 				"show_tests_yn": "N"
 			},
 			"bb": {
 				"exit_if_profit_yn": "N",
-				"exit_if_profit_pct_min": 0.5,
+				"exit_if_profit_pct_min": 1,
 				"exit_if_loss_yn": "N",
-				"exit_if_loss_pct_max": 2,
+				"exit_if_loss_pct_max": 3,
 				"skip_prod_ids": [],
 				"tests_min": {"15min": 13,"30min": 11,"1h": 9,"4h": 7,"1d": 5},
 				"show_tests_yn": "N"
 			},
 			"drop": {
 				"exit_if_profit_yn": "N",
-				"exit_if_profit_pct_min": 0.5,
+				"exit_if_profit_pct_min": 1,
 				"exit_if_loss_yn": "N",
-				"exit_if_loss_pct_max": 2,
+				"exit_if_loss_pct_max": 3,
 				"skip_prod_ids": [],
 				"tests_min": {"15min": 13,"30min": 11,"1h": 9,"4h": 7,"1d": 5},
 				"show_tests_yn": "N"

@@ -380,7 +380,7 @@ def build_data_display(data, t=None):
 	html = ""
 #	html += "<html>"
 #	html += "<body>"
-	html += f"<table class='dt' border=1 id='{table_id}'>"
+	html += f"<table class='dt' border=1 id='{table_id}' width=100%>"
 	html += "<thead>"
 
 
@@ -677,12 +677,27 @@ def add_bals_total(t='Total Balance', m=None, u=None, d=None) -> str:
 	sql += "  , concat('$',' ', round(x.bot_val_usd,4)) as bot_val_usd "
 	sql += "  , concat('$',' ', round(x.free_val_usd,4)) as free_val_usd"
 
-	sql += "  , (select sum(tot_out_cnt) from cbtrade.poss where ignore_tf=0 and pos_stat='CLOSE') as tot_out"
-	sql += "  , (select sum(tot_in_cnt) from cbtrade.poss where ignore_tf=0 and pos_stat='CLOSE') as tot_in"
+	sql += "  , concat('$',' ', round((select sum(tot_out_cnt) from cbtrade.poss px where px.quote_curr_symb='USD' and px.ignore_tf=0 and px.pos_stat='CLOSE'), 2)) as tot_out_usd"
+	sql += "  , concat('$',' ', round((select sum(tot_in_cnt) from cbtrade.poss px where px.quote_curr_symb='USD' and px.ignore_tf=0 and px.pos_stat='CLOSE'), 2)) as tot_in_usd"
 
-	sql += "  , (select sum(tot_out_cnt) from cbtrade.poss where ignore_tf=0 and pos_stat='OPEN') as spent_open"
-	sql += "  , (select sum(tot_in_cnt) from cbtrade.poss px join cbtrade.mkts m on m.prod_id = px.prod_id where px.ignore_tf=0 and px.pos_stat='OPEN') as value_open"
-	sql += "  , (select sum(hold_cnt) * m.prc from cbtrade.poss px join cbtrade.mkts m on m.prod_id = px.prod_id where px.ignore_tf=0 and px.pos_stat='OPEN') as value_open"
+	sql += "  , concat('$',' ', round((select sum(tot_out_cnt) from cbtrade.poss px where px.quote_curr_symb='USDC' and px.ignore_tf=0 and px.pos_stat='CLOSE'), 2)) as tot_out_usdc"
+	sql += "  , concat('$',' ', round((select sum(tot_in_cnt) from cbtrade.poss px where px.quote_curr_symb='USDC' and px.ignore_tf=0 and px.pos_stat='CLOSE'), 2)) as tot_in_usdc"
+
+	sql += "  , concat('$',' ', round((select sum(tot_out_cnt) from cbtrade.poss px where px.quote_curr_symb='USDT' and px.ignore_tf=0 and px.pos_stat='CLOSE'), 2)) as tot_out_usdt"
+	sql += "  , concat('$',' ', round((select sum(tot_in_cnt) from cbtrade.poss px where px.quote_curr_symb='USDT' and px.ignore_tf=0 and px.pos_stat='CLOSE'), 2)) as tot_in_usdt"
+
+	sql += "  , (select sum(tot_out_cnt) from cbtrade.poss px where px.quote_curr_symb='BTC' and px.ignore_tf=0 and px.pos_stat='CLOSE') as tot_out_btc"
+	sql += "  , (select sum(tot_in_cnt) from cbtrade.poss px where px.quote_curr_symb='BTC' and px.ignore_tf=0 and px.pos_stat='CLOSE') as tot_in_btc"
+
+	sql += "  , (select sum(tot_out_cnt) from cbtrade.poss px where px.quote_curr_symb='ETH' and px.ignore_tf=0 and px.pos_stat='CLOSE') as tot_out_eth"
+	sql += "  , (select sum(tot_in_cnt) from cbtrade.poss px where px.quote_curr_symb='ETH' and px.ignore_tf=0 and px.pos_stat='CLOSE') as tot_in_eth"
+
+	sql += "  , (select sum(tot_out_cnt) from cbtrade.poss px where px.quote_curr_symb='SOL' and px.ignore_tf=0 and px.pos_stat='CLOSE') as tot_out_sol"
+	sql += "  , (select sum(tot_in_cnt) from cbtrade.poss px where px.quote_curr_symb='SOL' and px.ignore_tf=0 and px.pos_stat='CLOSE') as tot_in_sol"
+
+	sql += "  , concat('$',' ', round((select sum(tot_out_cnt) from cbtrade.poss px where px.ignore_tf=0 and px.pos_stat='OPEN'), 2)) as spent_open"
+	sql += "  , concat('$',' ', round((select sum(tot_in_cnt) from cbtrade.poss px join cbtrade.mkts m on m.prod_id = px.prod_id where px.ignore_tf=0 and px.pos_stat='OPEN'), 2)) as value_open "
+	sql += "  , concat('$',' ', round((select sum(hold_cnt * (select m.prc from cbtrade.mkts m where m.prod_id = px.prod_id)) from cbtrade.poss px where px.ignore_tf=0 and px.pos_stat='OPEN'), 2)) as value_open_2 "
 
 	sql += "  from (select count(b.symb) as cnt "
 	sql += "          , sum(b.bal_val_usd) as bal_val_usd "
@@ -748,12 +763,14 @@ def add_report(
 	if inc_prod_id or prod_id:
 		mid_sql      += " , p.prod_id "
 		group_by_sql += " p.prod_id,"
+	# print(f"group_by_sql 1: {group_by_sql}")
 
 	if inc_pos_id:
 		top_sql      += " , x.pos_id "
 	if inc_pos_id or pos_id:
 		mid_sql      += " , p.pos_id "
 		group_by_sql += " p.pos_id,"
+	# print(f"group_by_sql 2: {group_by_sql}")
 
 	if inc_sd_dt:
 		top_sql      += " , x.sd_dt "
@@ -767,6 +784,7 @@ def add_report(
 			group_by_sql      += " p.pos_begin_dttm, "
 		else:
 			group_by_sql      += " date(p.pos_begin_dttm),"
+	# print(f"group_by_sql 3: {group_by_sql}")
 
 	if inc_td_dt:
 		top_sql      += " , x.td_dt "
@@ -780,56 +798,66 @@ def add_report(
 			group_by_sql      += " p.pos_end_dttm, "
 		else:
 			group_by_sql      += " date(p.pos_end_dttm),"
+	# print(f"group_by_sql 4: {group_by_sql}")
 
 	if inc_stat:
 		top_sql      += " , x.pos_stat "
 	if inc_stat or stat:
 		mid_sql      += " , p.pos_stat "
 		group_by_sql += " p.pos_stat,"
+	# print(f"group_by_sql 5: {group_by_sql}")
 
 	if inc_wl:
 		top_sql      += " , x.wl "
 	if inc_wl or wl:
 		mid_sql      += " , case when p.tot_in_cnt + p.val_tot > p.tot_out_cnt then 'WIN' else 'LOSE' end as wl "
 		group_by_sql += " case when p.tot_in_cnt + p.val_tot > p.tot_out_cnt then 'WIN' else 'LOSE' end, "
+	# print(f"group_by_sql 6: {group_by_sql}")
 
 	if inc_test:
 		top_sql      += " , test_txn_yn as test_yn "
 	if inc_test or test_txn_yn == 'Y':
 		mid_sql      += " , p.test_txn_yn "
 		group_by_sql += " p.test_txn_yn,"
+	# print(f"group_by_sql 7: {group_by_sql}")
 
 	if inc_buy_strat_name:
 		top_sql      += " , x.buy_strat_name "
 	if inc_buy_strat_name or buy_strat_name:
 		mid_sql      += " , p.buy_strat_name "
 		group_by_sql += " p.buy_strat_name,"
+	# print(f"group_by_sql 8: {group_by_sql}")
 
 	if inc_buy_strat_freq:
 		top_sql      += " , x.buy_strat_freq "
 	if inc_buy_strat_freq or buy_strat_freq:
 		mid_sql      += " , p.buy_strat_freq "
 		group_by_sql += " p.buy_strat_freq,"
+	# print(f"group_by_sql 9: {group_by_sql}")
 
 	if inc_sell_strat_name:
 		top_sql      += " , x.sell_strat_name "
 	if inc_sell_strat_name or sell_strat_name:
 		mid_sql      += " , p.sell_strat_name "
 		group_by_sql += " p.sell_strat_name,"
+	# print(f"group_by_sql 10: {group_by_sql}")
 
 	if inc_sell_strat_freq:
 		top_sql      += " , x.sell_strat_freq "
 	if inc_sell_strat_freq or sell_strat_freq:
 		mid_sql      += " , p.sell_strat_freq "
 		group_by_sql += " p.sell_strat_freq,"
+	# print(f"group_by_sql 11: {group_by_sql}")
 
 	if group_by_sql != "":
 		group_by_sql = "group by " + group_by_sql
+	# print(f"group_by_sql 12: {group_by_sql}")
 
 	# if sql ends with a comma, remove it
 	top_sql = re.sub(r',\s*$', '', top_sql)
 	mid_sql = re.sub(r',\s*$', '', mid_sql)
 	group_by_sql = re.sub(r',\s*$', '', group_by_sql)
+	# print(f"group_by_sql 13: {group_by_sql}")
 
 	sql = ""
 	sql += "select x.exclude "
@@ -847,6 +875,7 @@ def add_report(
 	sql += "  , concat('$ ', x.val_curr) as val_curr "
 	sql += "  , concat('$ ', x.val_tot) as val_tot "
 	sql += "  , concat('$ ', x.gain_loss_amt) as gain_loss_amt "
+	sql += "  , concat('$ ', x.gain_loss_amt_net) as gain_loss_amt_net "
 	sql += "  , concat(x.gain_loss_pct, ' %') as gain_loss_pct "
 	sql += "  , concat(x.gain_loss_pct_hr, ' %') as gain_loss_pct_hr "
 	sql += "  , concat(x.gain_loss_pct_hr * 24, ' %') as gain_loss_pct_day "
@@ -1166,7 +1195,7 @@ def add_report_summary_closed_today(m, u, d) -> str:
 		inc_prod_id=False, 
 		inc_pos_id=False, 
 		inc_sd_dt=False, 
-		inc_td_dt=False, 
+		inc_td_dt=True, 
 		inc_stat=True, 
 		inc_wl=True, 
 		inc_buy_strat_name=False, 
@@ -1206,7 +1235,7 @@ def add_report_summary_daily_opened(m, u, d) -> str:
 		inc_sd_dt=False, 
 		inc_td_dt=True, 
 		inc_stat=False, 
-		inc_wl=False, 
+		inc_wl=True, 
 		inc_buy_strat_name=False, 
 		inc_buy_strat_freq=False, 
 		inc_sell_strat_name=False, 
@@ -1219,7 +1248,7 @@ def add_report_summary_daily_opened(m, u, d) -> str:
 		td_dt1=None, 
 		td_dt2=None, 
 		stat='CLOSE', 
-		wl=None, 
+		wl=True, 
 		buy_strat_name=None, 
 		buy_strat_freq=None, 
 		sell_strat_name=None, 
@@ -1552,61 +1581,48 @@ def ext_balances() -> str:
 	# sql += "where 1=1 "
 
 
-	sql = ""
-	sql += "select z.* from ( "
-	sql += "select x.symb "
-	sql += "  , x.open_cnt "
-	sql += "  , x.sell_cnt "
-	sql += "  , x.close_cnt "
-	sql += "  , x.open_hold_cnt "
-	sql += "  , round(x.open_hold_cnt * x.curr_prc_usd, 3) as open_hold_usd "
-	sql += "  , x.sell_hold_cnt "
-	sql += "  , round(x.sell_hold_cnt * x.curr_prc_usd, 3) as sell_hold_usd "
-	sql += "  , x.close_hold_cnt "
-	sql += "  , round(x.close_hold_cnt * x.curr_prc_usd, 3) as close_hold_usd "
-	sql += "  , round(x.curr_prc_usd,5) as curr_prc_usd "
-	sql += "  , x.bal_tot "
-	sql += "  , round(x.curr_val_usd,3) as bal_usd "
-	sql += "  , x.open_hold_cnt + x.sell_hold_cnt + x.close_hold_cnt as need_cnt_tot "
-	sql += "  , round((x.open_hold_cnt + x.sell_hold_cnt + x.close_hold_cnt) * x.curr_prc_usd, 3) as need_val_usd "
-	sql += "  , x.bal_tot - (x.open_hold_cnt + x.close_hold_cnt) as over_under_cnt "
-	sql += "  , round((x.bal_tot - (x.open_hold_cnt + x.close_hold_cnt)) * x.curr_prc_usd, 3) as over_under_usd "
-	sql += "from ( "
-	sql += "select distinct b.symb "
-	sql += "  , sum(case when p.pos_stat in ( 'OPEN' ) then 1 else 0 end) as open_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'OPEN' ) then p.hold_cnt else 0 end) as open_hold_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'OPEN' ) then p.pocket_cnt else 0 end) as open_pocket_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'OPEN' ) then p.clip_cnt else 0 end) as open_clip_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'OPEN' ) then p.buy_cnt else 0 end) as open_buy_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'OPEN' ) then p.sell_cnt_tot else 0 end) as open_sell_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'OPEN' ) then p.buy_cnt else 0 end) - sum(case when p.pos_stat = 'OPEN' then p.sell_cnt_tot else 0 end) - sum(case when p.pos_stat in ( 'OPEN' ) then p.hold_cnt else 0 end) as open_buy_sell_diff "
-	sql += "  , sum(case when p.pos_stat in ( 'SELL' ) then 1 else 0 end) as sell_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'SELL' ) then p.buy_cnt else 0 end) as sell_hold_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'SELL' ) then p.pocket_cnt else 0 end) as sell_pocket_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'SELL' ) then p.clip_cnt else 0 end) as sell_clip_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'SELL' ) then p.buy_cnt else 0 end) as sell_buy_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'SELL' ) then p.sell_cnt_tot else 0 end) as selln_sell_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'SELL' ) then p.buy_cnt else 0 end) - sum(case when p.pos_stat = 'OPEN' then p.sell_cnt_tot else 0 end)  as sell_buy_sell_diff "
-	sql += "  , sum(case when p.pos_stat in ( 'CLOSE' ) then 1 else 0 end) as close_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'CLOSE' ) then p.hold_cnt else 0 end) as close_hold_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'CLOSE' ) then p.pocket_cnt else 0 end) as close_pocket_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'CLOSE' ) then p.clip_cnt else 0 end) as close_clip_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'CLOSE' ) then p.buy_cnt else 0 end) as close_buy_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'CLOSE' ) then p.sell_cnt_tot else 0 end) as close_sell_cnt "
-	sql += "  , sum(case when p.pos_stat in ( 'CLOSE' ) then p.buy_cnt else 0 end) - sum(case when p.pos_stat = 'OPEN' then p.sell_cnt_tot else 0 end)  as close_buy_sell_diff "
-	sql += "  , sum(p.hold_cnt) as hold_cnt "
-	sql += "  , b.bal_tot "
-	sql += "  , b.curr_prc_usd "
-	sql += "  , b.curr_val_usd "
-	sql += "  , ((b.bal_tot - sum(case when p.pos_stat in ( 'CLOSE' ) then p.hold_cnt else 0 end)) * b.curr_prc_usd) as var_usd "
-	sql += "  from cbtrade.bals b "
-	sql += "  left outer join cbtrade.poss p on p.buy_curr_symb = b.symb and p.ignore_tf = 0 and p.test_txn_yn='N' "
-	sql += "  where 1=1 "
-	sql += "  group by b.symb "
-	sql += "  order by 1 "
-	sql += ") x "
-	sql += ") z "
-	sql += "where 1=1 "
+	sql = """
+		SELECT z.*
+		FROM (
+			SELECT x.symb,
+				x.open_cnt,
+				x.sell_cnt,
+				x.close_cnt,
+				x.open_hold_cnt,
+				ROUND(x.open_hold_cnt * x.curr_prc_usd, 3) AS open_hold_usd,
+				x.sell_hold_cnt,
+				ROUND(x.sell_hold_cnt * x.curr_prc_usd, 3) AS sell_hold_usd,
+				x.close_hold_cnt,
+				ROUND(x.close_hold_cnt * x.curr_prc_usd, 3) AS close_hold_usd,
+				ROUND(x.curr_prc_usd, 5) AS curr_prc_usd,
+				x.bal_tot,
+				ROUND(x.curr_val_usd, 3) AS bal_usd,
+				x.open_hold_cnt + x.sell_hold_cnt + x.close_hold_cnt AS need_cnt_tot,
+				ROUND((x.open_hold_cnt + x.sell_hold_cnt + x.close_hold_cnt) * x.curr_prc_usd, 3) AS need_val_usd,
+				x.bal_tot - (x.open_hold_cnt + x.close_hold_cnt) AS over_under_cnt,
+				ROUND((x.bal_tot - (x.open_hold_cnt + x.close_hold_cnt)) * x.curr_prc_usd, 3) AS over_under_usd
+			FROM (
+				SELECT b.symb,
+					SUM(CASE WHEN p.pos_stat IN ('OPEN') THEN 1 ELSE 0 END) AS open_cnt,
+					SUM(CASE WHEN p.pos_stat IN ('OPEN') THEN p.hold_cnt ELSE 0 END) AS open_hold_cnt,
+					SUM(CASE WHEN p.pos_stat IN ('SELL') THEN 1 ELSE 0 END) AS sell_cnt,
+					SUM(CASE WHEN p.pos_stat IN ('SELL') THEN p.buy_cnt ELSE 0 END) AS sell_hold_cnt,
+					SUM(CASE WHEN p.pos_stat IN ('CLOSE') THEN 1 ELSE 0 END) AS close_cnt,
+					SUM(CASE WHEN p.pos_stat IN ('CLOSE') THEN p.hold_cnt ELSE 0 END) AS close_hold_cnt,
+					b.bal_tot,
+					b.curr_prc_usd,
+					b.curr_val_usd
+				FROM cbtrade.bals b
+				LEFT OUTER JOIN cbtrade.poss p 
+				ON p.buy_curr_symb = b.symb
+				AND p.ignore_tf = 0
+				AND p.test_txn_yn = 'N'
+				GROUP BY b.symb, b.bal_tot, b.curr_prc_usd, b.curr_val_usd
+			) x
+		) z
+		WHERE 1=1
+		ORDER BY z.bal_usd DESC;
+		"""
 
 	t = 'Current Balances'
 	sql = sql + "  order by z.bal_usd desc "
@@ -1629,6 +1645,7 @@ def add_report_summary_open(m, u, d) -> str:
 	m, u, d = add_report(
 		t='Summary - Open Status - *', 
 		inc_stat=True, 
+		inc_wl=True, 
 		stat='OPEN', 
 		test_txn_yn='N', 
 		m=m, u=u, d=d)

@@ -74,7 +74,7 @@ def ta_main_new(pair, st):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+	# t00 = time.perf_counter()
 
 	try:
 
@@ -86,31 +86,46 @@ def ta_main_new(pair, st):
 		dfs         = {}
 		dfs_ins_many = {}
 
+
+		# print('')
 		# Getting the Candlestick Data
+		# t0 = time.perf_counter()
 		dfs = ta_ohlcv(pair, st)
+		# t1 = time.perf_counter()
+		# secs = round(t1 - t0, 2)
+		# print(f'{func_name} - ta_ohlcv completed in {secs}')
 
 		# Assigning the Real Time Close Price
 		close_price = dfs['1min']['close'].iloc[-1]
 
+
+		# print('')
+		# database insert
+		# t0 = time.perf_counter()
 		rfreqs = ['1min','5min', '15min', '30min', '1h', '4h', '1d']
 		for rfreq in rfreqs:
 			dfs_ins_many[rfreq] = dfs[rfreq]
-			db_tbl_ohlcv_prod_id_insupd_many(prod_id, dfs_ins_many)
+		db_tbl_ohlcv_prod_id_insupd_many(prod_id, dfs_ins_many)
+		# t1 = time.perf_counter()
+		# secs = round(t1 - t0, 2)
+		# print(f'{func_name} - db_tbl_ohlcv_prod_id_insupd_many completed in {secs}')
 
+
+		# print('')
 		# reduced list, previous was used for forming current candles
+		# t0 = time.perf_counter()
 		rfreqs = ['5min', '15min', '30min', '1h', '4h', '1d']
 		# Adding the Technical Analysis Indicators
 		for rfreq in rfreqs:
+			# t0 = time.perf_counter()
 			ta[rfreq]            = AttrDict()
 			ta[rfreq].df         = None
 			ta[rfreq].curr       = AttrDict()
 			ta[rfreq].last       = AttrDict()
 			ta[rfreq].prev       = AttrDict()
-
 			df = dfs[rfreq]
 			df = ta_add_indicators(df, st, prc_mkt, rfreq)
 			ta[rfreq].df = df
-
 			for x in range(0,-6,-1):
 				desc = f'ago{abs(x)}'
 				y = x - 1
@@ -118,6 +133,10 @@ def ta_main_new(pair, st):
 					if not rfreq in ta: ta[rfreq] = AttrDict()
 					if not k in ta[rfreq]: ta[rfreq][k] = AttrDict()
 					ta[rfreq][k][desc] =  df[k].iloc[y]
+			# t1 = time.perf_counter()
+			# secs = round(t1 - t0, 2)
+			# print(f'{func_name} - ta_add_indicators {rfreq} completed in {secs}')
+
 
 		# Check that all forming candles have the same final close price since they are real time
 		for rfreq in rfreqs:
@@ -137,9 +156,11 @@ def ta_main_new(pair, st):
 		print(f'df {type(df)} :  {df}')
 		ta = None
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
-#	print(f'{func_name} completed in {secs}')
+	# t01 = time.perf_counter()
+	# secs = round(t01 - t00, 2)
+	# print('')
+	# print(f'{func_name} completed in {secs}')
+	# print('')
 
 	func_end(fnc)
 	return ta
@@ -153,7 +174,7 @@ def ta_ohlcv(pair, st):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=2)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 	try:
 
 		prod_id     = pair.prod_id
@@ -327,8 +348,8 @@ def ta_ohlcv(pair, st):
 				last_signal = df[df[col] == 1].index[-1]
 				print(f"Last {col}: {last_signal} {'↑' if 'buy' in col else '↓'}")
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -343,15 +364,15 @@ def ta_ohlcv_range(prod_id, freq='1h', sd='2024-01-01', td='2024-12-31'):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=2)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 	df          = None
 	sd          = int(pd.Timestamp(sd).timestamp())
 	td          = int(pd.Timestamp(td).timestamp())
 	df          = cb_candles_get(prod_id, start = sd, end = td, freq = freq)
 	df          = ta_df_dropna(df)
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -366,7 +387,7 @@ def ta_df_api_get(prod_id, rfreq) -> dict:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+	# t0 = time.perf_counter()
 	# print_adv(2)
 	df_db  = ta_df_hist_db(prod_id, rfreq)
 	df_api = cb_candles_get(product_id=prod_id, rfreq=rfreq, min_rows=299)
@@ -390,9 +411,9 @@ def ta_df_api_get(prod_id, rfreq) -> dict:
 	df = ta_df_dropna(df)
 	# print(f'df  : {len(df_api)}')
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
-#	print(f'{func_name} completed in {secs}')
+	# t1 = time.perf_counter()
+	# secs = round(t1 - t0, 2)
+	# print(f'{func_name} {rfreq} completed in {secs}')
 
 	func_end(fnc)
 	return df
@@ -405,7 +426,7 @@ def ta_df_hist_db(prod_id, freq):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+	# t0 = time.perf_counter()
 	df = None
 	try:
 		hist = db_ohlcv_freq_get(prod_id, freq, lmt=500)
@@ -448,6 +469,10 @@ def ta_df_hist_db(prod_id, freq):
 		raise
 		exit()
 
+	# t1 = time.perf_counter()
+	# secs = round(t1 - t0, 2)
+	# print(f'{func_name} {freq} completed in {secs}')
+
 	fnc = func_end(fnc)
 	return df
 
@@ -460,7 +485,7 @@ def ta_df_fill_rows(df, min_rows=300, time_index_col=None) -> dict:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 	
 	"""
 	Ensures the DataFrame has at least `min_rows` rows by prepending duplicates of the oldest row,
@@ -533,8 +558,8 @@ def ta_df_fill_rows(df, min_rows=300, time_index_col=None) -> dict:
 	if not time_index_col:
 		df.index = pd.DatetimeIndex(df.index)
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -549,12 +574,12 @@ def ta_df_dropna(df, cols=['open', 'high', 'low', 'close', 'volume']):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 	df = df.dropna(subset=cols)
 	df = df[(df[cols] != 0).any(axis=1)]
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -569,7 +594,7 @@ def ta_df_merge_db_and_api(prod_id, freq, df_db, df_api):
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+	# t0 = time.perf_counter()
 	"""
 	Fetches OHLCV data from the database and the API, merges them,
 	replaces overlapping data with API data, updates the database,
@@ -616,9 +641,9 @@ def ta_df_merge_db_and_api(prod_id, freq, df_db, df_api):
 		traceback.print_exc()
 		df_merged = None
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
-#	print(f'{func_name} completed in {secs}')
+	# t1 = time.perf_counter()
+	# secs = round(t1 - t0, 2)
+	# print(f'{func_name} {freq} completed in {secs}')
 
 	func_end(fnc)
 	return df_merged
@@ -632,7 +657,7 @@ def ta_add_indicators(df: pd.DataFrame, st, prc_mkt, rfreq) -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 	df['hl2']   = (df['high'] + df['low']) / 2
 	df['hlc3']  = (df['high'] + df['low'] + df['close']) / 3
 	df['ohlc4'] = (df['open'] + df['high'] + df['low'] + df['close']) / 4
@@ -643,9 +668,9 @@ def ta_add_indicators(df: pd.DataFrame, st, prc_mkt, rfreq) -> pd.DataFrame:
 
 	if len(df) < 10:
 		print('error gettings candles...')
-		t1 = time.perf_counter()
-		secs = round(t1 - t0, 2)
-	#	print(f'{func_name} completed in {secs}')
+		# t1 = time.perf_counter()
+		# secs = round(t1 - t0, 2)
+		# print(f'{func_name} completed in {secs}')
 		func_end(fnc)
 		return 'N','Y'
 
@@ -666,14 +691,13 @@ def ta_add_indicators(df: pd.DataFrame, st, prc_mkt, rfreq) -> pd.DataFrame:
 	# ATR
 	df = ta_add_atr(df)
 
-	# Simple Moving Averages - Fibonacci
-	for per in (5, 8, 13, 21, 34, 55, 89, 100, 150, 200, 300):
-		df = ta_add_sma(df, per, col='close', label=f'sma{per}')
+	# # Simple Moving Averages - Fibonacci
+	# for per in (5, 8, 13, 21, 34, 55, 89, 100, 150, 200, 300):
+	# 	df = ta_add_sma(df, per, col='close', label=f'sma{per}')
 
-	# Exponential Moving Averages - Fibonacci
-	for per in (5, 8, 13, 21, 34, 55, 89, 100, 150, 200, 300):
-		df = ta_add_ema(df, per, col='close', label=f'ema{per}')
-
+	# # Exponential Moving Averages - Fibonacci
+	# for per in (5, 8, 13, 21, 34, 55, 89, 100, 150, 200, 300):
+	# 	df = ta_add_ema(df, per, col='close', label=f'ema{per}')
 
 	try:
 		# New Strat Add Section
@@ -690,7 +714,6 @@ def ta_add_indicators(df: pd.DataFrame, st, prc_mkt, rfreq) -> pd.DataFrame:
 		traceback.print_stack()
 		print('error getting SHA...')
 		beep(4)
-
 
 	# STRAT IMP MACD
 	per_ma   = st.buy.strats.imp_macd.per_ma   # 34 
@@ -720,8 +743,8 @@ def ta_add_indicators(df: pd.DataFrame, st, prc_mkt, rfreq) -> pd.DataFrame:
 		df[f'max{x}'] = df['high'].rolling(window=x).max()
 		df[f'min{x}'] = df['low'].rolling(window=x).min()
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -735,11 +758,11 @@ def ta_add_color(df: pd.DataFrame) -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 	df['color'] = np.where(df['open'] < df['close'], 'green', 'red')
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -754,7 +777,7 @@ def ta_add_ha(df: pd.DataFrame) -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 	# Calculate Heikin Ashi Close
 	df['ha_close'] = (df['open'] + df['high'] + df['low'] + df['close']) / 4
 
@@ -792,8 +815,8 @@ def ta_add_ha(df: pd.DataFrame) -> pd.DataFrame:
 	# HA Candle Color
 	df['ha_color']                  = np.where(df['ha_open'] < df['ha_close'], 'green', 'red')
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -808,13 +831,13 @@ def ta_add_atr(df: pd.DataFrame, per=14) -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 	per = min(per, len(df))
 
 	df['atr'] = pta.atr(high=df['high'], low=df['low'], close=df['close'], length=per, mamode='SMA')
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -828,13 +851,13 @@ def ta_add_rsi(df: pd.DataFrame, per=14) -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 	per = min(per, len(df))
 
 	df['rsi'] = pta.rsi(df['close'], length=per)
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -849,7 +872,7 @@ def ta_add_roc(df: pd.DataFrame, col='close', label=None, per=3) -> pd.DataFrame
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 	per = min(per, len(df))
 
 	if not label:
@@ -864,8 +887,8 @@ def ta_add_roc(df: pd.DataFrame, col='close', label=None, per=3) -> pd.DataFrame
 	label4 = f'{label}_roc_dn'
 	df[label4]                  = df[label2]  < df[label2].shift(1)
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -880,7 +903,7 @@ def ta_add_sma(df: pd.DataFrame, per, col='close', label=None) -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 	per = min(per, len(df))
 
 	if not label:
@@ -890,8 +913,8 @@ def ta_add_sma(df: pd.DataFrame, per, col='close', label=None) -> pd.DataFrame:
 
 	df = ta_add_roc(df, col=label)
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -906,7 +929,7 @@ def ta_add_ema(df: pd.DataFrame, per, col='close', label=None) -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 	per = min(per, len(df))
 
 	if not label:
@@ -916,8 +939,8 @@ def ta_add_ema(df: pd.DataFrame, per, col='close', label=None) -> pd.DataFrame:
 
 	df = ta_add_roc(df, col=label)
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -932,7 +955,7 @@ def ta_add_sha(df: pd.DataFrame, prc_mkt, sha_len1=5, sha_len2=8, tag=None) -> p
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 	sha_len1 = min(sha_len1, len(df))
 	sha_len2 = min(sha_len2, len(df))
 
@@ -996,8 +1019,8 @@ def ta_add_sha(df: pd.DataFrame, prc_mkt, sha_len1=5, sha_len2=8, tag=None) -> p
 		for c in('sha_open', 'sha_close', 'sha_high', 'sha_low', 'sha_body', 'sha_wick_upper', 'sha_wick_lower', 'sha_color', 'prc_abv_sha', 'prc_bel_sha'):
 			df.pop(c)
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -1060,7 +1083,7 @@ def ta_add_sha(df: pd.DataFrame, prc_mkt, sha_len1=5, sha_len2=8, tag=None) -> p
 # 		df.pop(c)
 
 # 	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -1076,7 +1099,7 @@ def ta_add_imp_macd(df: pd.DataFrame, per_ma=34, per_sign=9, filter_strength=Tru
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 
 	per_ma = min(per_ma, len(df))
 	per_sign = min(per_sign, len(df))
@@ -1135,8 +1158,8 @@ def ta_add_imp_macd(df: pd.DataFrame, per_ma=34, per_sign=9, filter_strength=Tru
 	for c in ('hlc3', 'hi', 'lo', 'md', 'sb', 'sh', 'hist_avg'):
 		df.pop(c)
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -1152,7 +1175,7 @@ def ta_add_bb(df: pd.DataFrame, per=20, sd=2, tag='') -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 	per = min(per, len(df))
 
 	# Calculate Bollinger Bands
@@ -1177,8 +1200,8 @@ def ta_add_bb(df: pd.DataFrame, per=20, sd=2, tag='') -> pd.DataFrame:
 	df[f'bb{tag}_upwards']   = (df[f'bb_upper_roc{tag}'] > 0) & (df[f'bb_lower_roc{tag}'] > 0)
 	df[f'bb{tag}_downwards'] = (df[f'bb_upper_roc{tag}'] < 0) & (df[f'bb_lower_roc{tag}'] < 0)
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -1192,7 +1215,7 @@ def ta_add_nwe(df: pd.DataFrame, src='close', bandwidth=8.0, mult=3.0, tag='', r
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 
 	from scipy.ndimage import gaussian_filter1d
 
@@ -1385,8 +1408,8 @@ def ta_add_nwe(df: pd.DataFrame, src='close', bandwidth=8.0, mult=3.0, tag='', r
 		print_adv(2)
 		pass
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -1400,7 +1423,7 @@ def ta_add_nwe_env(df: pd.DataFrame, src='close', mult=3.0) -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 
 	try:
 		'''
@@ -1568,8 +1591,8 @@ def ta_add_nwe_env(df: pd.DataFrame, src='close', mult=3.0) -> pd.DataFrame:
 		print_adv(2)
 		pass
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -1583,7 +1606,7 @@ def ta_add_nwe_rev(df: pd.DataFrame) -> pd.DataFrame:
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 
 	try:
 		'''
@@ -1731,8 +1754,8 @@ def ta_add_nwe_rev(df: pd.DataFrame) -> pd.DataFrame:
 		print_adv(2)
 		pass
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
@@ -1746,7 +1769,7 @@ def ta_add_nwe_orig(df: pd.DataFrame, src='close', bandwidth=8.0, mult=3.0, tag=
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
 #	G(func_str)
 
-	t0 = time.perf_counter()
+#	t0 = time.perf_counter()
 
 	from scipy.ndimage import gaussian_filter1d
 
@@ -2113,390 +2136,12 @@ def ta_add_nwe_orig(df: pd.DataFrame, src='close', bandwidth=8.0, mult=3.0, tag=
 		print_adv(2)
 		pass
 
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
+#	t1 = time.perf_counter()
+#	secs = round(t1 - t0, 2)
 #	print(f'{func_name} completed in {secs}')
 
 	func_end(fnc)
 	return df
-
-#<=====>#
-
-def ta_add_nwex(df: pd.DataFrame, src='close', bandwidth=8.0, mult=3.0, tag='', rfreq='') -> pd.DataFrame:
-	func_name = 'ta_add_nwe'
-	func_str = f'{lib_name}.{func_name}(df, src={src}, bandwidth={bandwidth}, tag={tag})'
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
-
-	t0 = time.perf_counter()
-
-	from scipy.ndimage import gaussian_filter1d
-
-	try:
-		# Parameters
-		h = bandwidth
-		mult = mult
-		source = df[src].values
-		n = len(source)
-		
-		nwe = gaussian_filter1d(source, sigma=h, mode='nearest')
-
-		df['nwe_line'] = nwe
-
-		df['nwe_roc'] = pta.roc(df['nwe_line'], length=3)
-
-
-		# -------------------------------
-		# Calculate Envelope & Signals
-		# -------------------------------
-
-		# Compute MAE as mean absolute error over the entire series
-		mae = np.mean(np.abs(source - nwe)) * mult
-		df['nwe_mae'] = mae
-		
-		# Compute upper and lower bands
-		df['nwe_upper'] = df['nwe_line'] + mae
-		df['nwe_lower'] = df['nwe_line'] - mae
-
-		# Generate Buy and Sell Signals based on Envelopes crossing
-		df['nwe_env_buy_signal'] = (
-			(df[src].shift(1) < df['nwe_lower'].shift(1)) &
-			(df[src] >= df['nwe_lower'])
-			).astype(int)
-		df['nwe_env_sell_signal'] = (
-			(df[src].shift(1) > df['nwe_upper'].shift(1)) &
-			(df[src] <= df['nwe_upper'])
-			).astype(int)
-
-
-		# Compute derivative of NWE line
-		df['nwe_diff'] = df['nwe_line'].diff()
-		df['nwe_diff_prev'] = df['nwe_diff'].shift(1)
-
-		# Detect reversal points
-		df['reversal'] = (df['nwe_diff'] * df['nwe_diff_prev'] < 0)
-		df['reversal_up'] = df['reversal'] & (df['nwe_diff_prev'] < 0)
-		df['reversal_down'] = df['reversal'] & (df['nwe_diff_prev'] > 0)
-
-		# Generate Buy and Sell Signals based on reversals
-		df['nwe_rev_buy_signal'] = df['reversal_up'].astype(int)
-		df['nwe_rev_sell_signal'] = df['reversal_down'].astype(int)
-
-		# -------------------------------
-		# Calculate Color & Signals
-		# -------------------------------
-
-		# Color based on trend
-		df['nwe_color'] = np.where(df['nwe_diff'] > 0, 'green', 'red')
-#		df['nwe_color'] = np.where(df['nwe_line'] > df['nwe_line'].shift(1), 'green', 'red')
-
-		# Generate Buy and Sell Signals based on Color
-		df['nwe_3row_buy_signal'] = (
-			(df['nwe_color'] == 'green') &
-			(df['nwe_color'].shift(1) == 'green') &
-			(df['nwe_color'].shift(2) == 'green')
-			).astype(int)
-		# Generate Buy and Sell Signals based on Color
-		df['nwe_3row_sell_signal'] = (
-			(df['nwe_color'] == 'red') &
-			(df['nwe_color'].shift(1) == 'red')
-			).astype(int)
-
-		'''
-		# Assuming df is your DataFrame with OHLC data
-		df = ta_add_nwe(df, src='close', bandwidth=8.0, mult=3.0)
-
-		# Plotting (requires matplotlib)
-		import matplotlib.pyplot as plt
-
-		plt.figure(figsize=(12,6))
-		plt.plot(df.index, df['close'], label='Close Price')
-		plt.plot(df.index, df['nwe_line'], label='NWE Line')
-		plt.plot(df.index, df['nwe_upper'], label='Upper Band', linestyle='--')
-		plt.plot(df.index, df['nwe_lower'], label='Lower Band', linestyle='--')
-		plt.legend()
-		plt.show()
-		'''
-
-
-	except Exception as e:
-		print(f"{dttm_get()} {func_name} ==> Error: {e}")
-		traceback.print_exc()
-		traceback.print_stack()
-		print_adv(2)
-		pass
-
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
-#	print(f'{func_name} completed in {secs}')
-
-	func_end(fnc)
-	return df
-
-#<=====>#
-
-def ta_add_nwe_before(df: pd.DataFrame, src='close', bandwidth=8.0, mult=2.5, tag='', rfreq='') -> pd.DataFrame:
-	func_name = 'ta_add_nwe'
-	func_str = f'{lib_name}.{func_name}(df, src={src}, bandwidth={bandwidth}, tag={tag})'
-	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-#	G(func_str)
-
-	t0 = time.perf_counter()
-
-	from scipy.ndimage import gaussian_filter1d
-
-	try:
-		# Parameters
-		h = bandwidth
-		mult = mult
-		window = 500  # Max bars back, matching TradingView script
-		
-		# Define Gaussian kernel function
-		def gauss(x, h):
-			return np.exp(-((x ** 2) / (2 * h * h)))
-
-		# Compute Nadaraya-Watson Estimator (NWE)
-		source = df[src].values
-		n = len(source)
-		nwe = np.zeros(n)
-
-		for i in range(n):
-			# Use only past data to prevent look-ahead bias
-			start_idx = max(0, i - window + 1)
-			idx_range = np.arange(start_idx, i + 1)
-			distances = idx_range - i  # Distances from current index
-
-			# Compute weights using Gaussian kernel
-			weights = gauss(distances, h)
-			values = source[start_idx:i + 1]
-
-			# Calculate NWE
-			numerator = np.sum(values * weights)
-			denominator = np.sum(weights)
-			nwe[i] = numerator / denominator if denominator != 0 else values[-1]
-
-		df['nwe_line'] = nwe
-		df['nwe_roc'] = pta.roc(df['nwe_line'], length=3)
-
-
-		# -------------------------------
-		# Calculate Envelope & Signals
-		# -------------------------------
-
-		# Compute MAE
-		mae = np.zeros(n)
-		for i in range(n):
-			# Use the same window as NWE
-			start_idx = max(0, i - window + 1)
-			current_window = source[start_idx:i + 1]
-			nwe_window = nwe[start_idx:i + 1]
-			mae[i] = np.mean(np.abs(current_window - nwe_window))
-		df['nwe_mae'] = mae * mult
-
-		# Calculate Upper and Lower Envelopes
-		df['nwe_upper'] = df['nwe_line'] + df['nwe_mae']
-		df['nwe_lower'] = df['nwe_line'] - df['nwe_mae']
-
-		# Generate Buy and Sell Signals based on Envelopes
-		df['nwe_env_buy_signal'] = (
-			(df[src].shift(1) < df['nwe_lower'].shift(1)) &
-#			(df['low'].shift(1) < df['nwe_lower'].shift(1)) &
-			(df[src] >= df['nwe_lower'])
-#			(df['low'] <= df['nwe_lower'])
-			).astype(int)
-
-		df['nwe_env_sell_signal'] = (
-			(df[src].shift(1) > df['nwe_upper'].shift(1)) &
-#			(df['high'].shift(1) > df['nwe_upper'].shift(1)) &
-			(df[src] <= df['nwe_upper'])
-#			(df['high'] >= df['nwe_upper'])
-			).astype(int)
-
-		# -------------------------------
-		# Calculate Trend Reversals and Signals
-		# -------------------------------
-
-		# Calculate NWE difference and smooth it
-		df['nwe_diff'] = df['nwe_line'].diff()
-		df['nwe_diff_smooth'] = df['nwe_diff'].rolling(window=5).mean()
-
-		# Determine previous and current trends
-		df['prev_trend'] = np.where(df['nwe_diff_smooth'].shift(1) > 0, 'up', 'down')
-		df['curr_trend'] = np.where(df['nwe_diff_smooth'] > 0, 'up', 'down')
-
-		# Calculate momentum
-		df['momentum'] = df['nwe_diff_smooth'].rolling(window=5).mean()
-		min_move = df['nwe_line'].rolling(window=20).std() * 0.1
-
-		# Identify trend reversals
-		df['nwe_trend_reversal'] = (
-			(df['prev_trend'] != df['curr_trend']) &
-			(df['momentum'].abs() > min_move)
-		)
-
-		# Generate Buy and Sell Signals based on trend reversals
-		df['nwe_rev_buy_signal'] = np.where(
-			(df['nwe_trend_reversal']) &
-			(df['curr_trend'] == 'up') &
-			(df['momentum'] > 0),
-			1, 0
-		)
-
-		df['nwe_rev_sell_signal'] = np.where(
-			(df['nwe_trend_reversal']) &
-			(df['curr_trend'] == 'down') &
-			(df['momentum'] < 0),
-			1, 0
-		)
-
-		# -------------------------------
-		# Calculate Color & Signals
-		# -------------------------------
-
-		# Color based on trend
-		df['nwe_color'] = np.where(df['nwe_diff'] > 0, 'green', 'red')
-		# Generate Buy and Sell Signals based on Color
-		df['nwe_3row_buy_signal'] = (
-			(df['nwe_color'] == 'green') &
-			(df['nwe_color'].shift(1) == 'green') &
-			(df['nwe_color'].shift(2) == 'green')
-			).astype(int)
-		# Generate Buy and Sell Signals based on Color
-		df['nwe_3row_sell_signal'] = (
-			(df['nwe_color'] == 'red') &
-			(df['nwe_color'].shift(1) == 'red')
-			).astype(int)
-
-		# -------------------------------
-		# Combine Signals
-		# -------------------------------
-
-		df['nwe_combined_buy_signal'] = df['nwe_rev_buy_signal'] | df['nwe_env_buy_signal']
-		df['nwe_combined_sell_signal'] = df['nwe_rev_sell_signal'] | df['nwe_env_sell_signal']
-
-
-
-		# # Print most recent timestamp from df
-		# latest_time = df.index[-1]
-		# print('')
-		# print('')
-		# print(f"Max {rfreq} df DateTime: {latest_time}")
-
-		if 1==2:
-
-			print('#############################################################################')
-			print(f'{rfreq}')
-			print('#############################################################################')
-
-			# Display calculations at the specified timestamp for verification
-			timestamp_to_check = '2024-11-04 21:30:00'
-			if timestamp_to_check in df.index:
-				idx = df.index.get_loc(timestamp_to_check)
-				print(f"\nValues at {timestamp_to_check}:")
-				print(f"Close: {df[src].iloc[idx]}")
-				print(f"NWE Line: {df['nwe_line'].iloc[idx]}")
-				print(f"NWE Upper: {df['nwe_upper'].iloc[idx]}")
-				print(f"NWE Lower: {df['nwe_lower'].iloc[idx]}")
-				print(f"MAE: {df['nwe_mae'].iloc[idx]}")
-				print(f"Buy Signal: {df['nwe_env_buy_signal'].iloc[idx]}")
-				print(f"Sell Signal: {df['nwe_env_sell_signal'].iloc[idx]}")
-			else:
-				print(f"\nTimestamp {timestamp_to_check} not found in DataFrame.")
-
-			# Print most recent signal times
-			disp_cols = [
-				'open',
-				'high',
-				'low',
-				'close',
-				'nwe_trend_reversal',
-				'nwe_rev_buy_signal', 
-				'nwe_rev_sell_signal',
-				'nwe_upper', 
-				'nwe_lower',
-				'nwe_env_buy_signal', 
-				'nwe_env_sell_signal',
-				'nwe_combined_buy_signal',
-				'nwe_combined_sell_signal'
-			]
-
-			print(df[disp_cols].head(5))
-			print(df[disp_cols].tail(5))
-
-			# Print most recent signal times
-			signal_cols = [
-				'nwe_rev_buy_signal', 
-				'nwe_rev_sell_signal',
-				'nwe_upper', 
-				'nwe_lower',
-				'nwe_env_buy_signal', 
-				'nwe_env_sell_signal',
-				'nwe_combined_buy_signal',
-				'nwe_combined_sell_signal'
-			]
-
-			# for col in signal_cols:
-			# 	if df[col].any():  # Check if there are any signals
-			# 		last_signal = df[df[col] == 1].index[-1]
-			# 		print(f"NWE - {rfreq} - Last {col}: {last_signal} {'↑' if 'buy' in col else '↓'}")
-
-			for col in signal_cols:
-				if df[col].any():  # Check if there are any signals
-					signal_times = df[df[col] == 1].index.tolist()
-					print(f"\nNWE - {rfreq} - All {col} {'↑' if 'buy' in col else '↓'}:")
-					for signal_time in signal_times:
-						print(f"  {signal_time}")
-
-	except Exception as e:
-		print(f"{dttm_get()} {func_name} ==> Error: {e}")
-		traceback.print_exc()
-		traceback.print_stack()
-		print_adv(2)
-		pass
-
-	t1 = time.perf_counter()
-	secs = round(t1 - t0, 2)
-#	print(f'{func_name} completed in {secs}')
-
-	func_end(fnc)
-	return df
-
-#<=====>#
-
-# def ta_add_high_low(df: pd.DataFrame) -> pd.DataFrame:
-# 	# Higher Highs, Lower Lows
-# 	# Initialize variables to track the previous high and low
-# 	prev_high        = df['high'].iloc[0]
-# 	prev_low         = df['low'].iloc[0]
-# 	higher_highs     = True
-# 	higher_lows      = True
-# 	lower_highs      = True
-# 	lower_lows       = True
-# 	highest_close    = df['close'].iloc[0]
-# 	lowest_close     = df['close'].iloc[0]
-# 	# Loop through the DataFrame to check for higher highs and higher lows
-# 	for i in range(1, len(df)):
-# 		if df['close'].iloc[i] > highest_close: highest_close = df['close'].iloc[i]
-# 		if df['close'].iloc[i] < lowest_close: lowest_close = df['close'].iloc[i]
-# 		current_high = df['high'].iloc[i]
-# 		current_low  = df['low'].iloc[i]
-# 		if current_high <= prev_high: higher_highs = False
-# 		if current_low <= prev_low: higher_lows = False
-# 		if current_high >= prev_high: lower_highs = False
-# 		if current_low >= prev_low: lower_lows = False
-# 		# Update the previous values for the next iteration
-# 		prev_high = current_high
-# 		prev_low  = current_low
-# 	ta_ad = AttrDict()
-# 	ta_ad.curr.higher_highs =  higher_highs
-# 	ta_ad.curr.higher_lows  =  higher_lows
-# 	ta_ad.curr.lower_highs  =  lower_highs
-# 	ta_ad.curr.lower_lows   =  lower_lows
-# 	ta_ad.close_max         = float(highest_close)
-# 	ta_ad.close_min         = float(lowest_close)
-# 	ta_ad.prc_mkt_vs_highest_close_pct = round((prc_mkt - ta.close_max) / ta.close_max * 100, 2)
-# 	ta_ad.prc_mkt_vs_lowest_close_pct  = round((prc_mkt - ta.close_min) / ta.close_min * 100, 2)
-# 	return df, ta_ad
 
 #<=====>#
 # Post Variables

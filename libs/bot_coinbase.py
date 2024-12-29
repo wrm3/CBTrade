@@ -17,7 +17,8 @@ import os
 import re
 import traceback
 import uuid
-from coinbase_advanced_trader.enhanced_rest_client import EnhancedRESTClient as cbclient
+#from coinbase_advanced_trader.enhanced_rest_client import EnhancedRESTClient as cbclient
+from coinbase.rest import RESTClient
 from datetime import datetime
 from dateutil import parser as dt_prsr
 from dotenv import load_dotenv
@@ -59,7 +60,7 @@ load_dotenv()
 coinbase_api_key    = os.getenv('COINBASE_API_KEY')
 coinbase_api_secret = os.getenv('COINBASE_API_SECRET')
 
-cb = cbclient(api_key=coinbase_api_key, api_secret=coinbase_api_secret)
+cb = RESTClient(api_key=coinbase_api_key, api_secret=coinbase_api_secret)
 
 
 #<=====>#
@@ -239,7 +240,7 @@ def cb_candles_get(product_id, start = None, end = None, rfreq = None, granulari
 	func_name = 'cb_candles_get'
 	func_str = f'{lib_name}.{func_name}(product_id : {product_id}, start : {start}, end : {end}, rfreq : {rfreq}, min_rows : {min_rows})'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
-	# G(func_str)
+#	G(func_str)
 
 	secs = 0
 	now = int(round(datetime.now().timestamp()))
@@ -365,6 +366,7 @@ def cb_candles_get(product_id, start = None, end = None, rfreq = None, granulari
 			try:
 				attempts += 1
 				time.sleep(0.25)
+				# print(f'cb.get_candles(product_id={product_id}, temp_start={temp_start}, temp_end={temp_end}, granularity={granularity})')
 				r = cb.get_candles(product_id, temp_start, temp_end, granularity)
 				candles = r['candles']
 			except Exception as e:
@@ -386,10 +388,14 @@ def cb_candles_get(product_id, start = None, end = None, rfreq = None, granulari
 		if not candles:
 			no_more_candles = True
 		for x in candles:
+			x = x.to_dict()
+			# print(f'candle : {x} ({type(x)})')
 			for k in x:
+				# print(f'k : {k} ({type(k)})')
 				if k == 'start':
 					x[k] = int(x[k])
 				else:
+					# print(f'k : {k}, x[k] : {x[k]} ({type(x[k])})')
 					x[k] = float(x[k])
 			x['timestamp'] = x['start']
 			ohlcv.append(x)
@@ -694,6 +700,7 @@ def cb_ord_get(order_id):
 	r = None
 	try:
 		r = cb.get_order(order_id=order_id)
+		r = r.to_dict()
 	except Exception as e:
 		print('get_order errored...')
 		print(e)

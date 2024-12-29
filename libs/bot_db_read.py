@@ -281,7 +281,7 @@ def db_bot_spent(quote_curr_symb=None):
 	sql += "  , round((x.spent_dn_amt / (x.spent_up_amt + x.spent_dn_amt)) * 100, 2) as spent_dn_pct "
 	sql += "  from ( "
 	sql += "select p.quote_curr_symb as symb  "
-	sql += "  , p.prod_id "
+#	sql += "  , p.prod_id "
 	sql += "  , count(*) as open_cnt "
 	sql += "  , sum(case when p.buy_strat_type = 'up' then 1 else 0 end) as open_up_cnt "
 	sql += "  , sum(case when p.buy_strat_type = 'dn' then 1 else 0 end) as open_dn_cnt "
@@ -1027,6 +1027,7 @@ def db_mkt_elapsed_get(prod_id):
 	sql += "select TIMESTAMPDIFF(MINUTE, max(bo.buy_begin_dttm), NOW()) + 1 as bo_elapsed "
 	sql += "  from cbtrade.buy_ords bo "
 	sql += "  where bo.ignore_tf = 0 "
+	sql += f" and bo.test_txn_yn = 'N' "
 	sql += f" and bo.prod_id = '{prod_id}' "
 	sql += "  and bo.ord_stat in ('OPEN','FILL') "
 
@@ -1039,6 +1040,7 @@ def db_mkt_elapsed_get(prod_id):
 	sql += "select coalesce(TIMESTAMPDIFF(MINUTE, max(p.pos_begin_dttm), NOW()) + 1, 9999) as pos_elapsed "
 	sql += "  from cbtrade.poss p "
 	sql += "  where p.ignore_tf = 0 "
+	sql += f" and p.test_txn_yn = 'N' "
 	sql += f" and p.prod_id = '{prod_id}' "
 	sql += "  and p.pos_stat in ('OPEN','SELL') "
 
@@ -1152,9 +1154,8 @@ def db_trade_perf_get(pos_stat=None):
 	return mkts
 
 #<=====>#
-
 # => disp_strats_best, mkt_summary
-def db_trade_strat_perf_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_freq):
+def db_trade_strat_perf_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_freq, recent_cnt=None):
 	func_name = 'db_trade_strat_perf_get'
 	func_str = '{}.{}(prod_id={}, buy_strat_type={}, buy_strat_name={}, buy_strat_freq={})'.format(lib_name, func_name, prod_id, buy_strat_type, buy_strat_name, buy_strat_freq)
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
@@ -1221,7 +1222,17 @@ def db_trade_strat_perf_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_f
 	sql += "                  where 1=1 "
 	sql += "                  and bs.ignore_tf = 0 "
 	sql += "                  and f.ignore_tf = 0) x"
-	sql += "          left outer join cbtrade.poss p on p.buy_strat_type = x.buy_strat_type and p.buy_strat_name = x.buy_strat_name and p.buy_strat_freq = x.buy_strat_freq "
+	sql += "          left outer join ("
+	if recent_cnt:
+		sql += "                select * from cbtrade.poss where prod_id = '{}' ".format(prod_id)
+		sql += "                and buy_strat_type = '{}' ".format(buy_strat_type)
+		sql += "                and buy_strat_name = '{}' ".format(buy_strat_name)
+		sql += "                and buy_strat_freq = '{}' ".format(buy_strat_freq)
+		sql += "                order by pos_begin_dttm desc "
+		sql += "                limit {} ".format(recent_cnt)
+	else:
+		sql += "                select * from cbtrade.poss"
+	sql += "          ) p on p.buy_strat_type = x.buy_strat_type and p.buy_strat_name = x.buy_strat_name and p.buy_strat_freq = x.buy_strat_freq "
 	sql += "          where p.ignore_tf = 0 "
 	sql += "          and p.prod_id = '{}' ".format(prod_id)
 	sql += "          and p.buy_strat_type = '{}' ".format(buy_strat_type)
@@ -1670,7 +1681,7 @@ def db_pos_open_get_by_prod_id(prod_id):
 	sql += "   and p.prod_id = '{}' ".format(prod_id)
 	sql += "   and p.pos_stat in ('OPEN','SELL') "
 #	sql += "   order by p.buy_strat_name, p.buy_strat_freq "
-	sql += "   order by p.pos_id "
+	sql += "   order by p.gain_loss_amt desc "
 
 	poss = db.seld(sql)
 #	print(f'poss => len : {len(poss)}, typ: {type(poss)}')
@@ -1706,7 +1717,7 @@ def db_poss_open_max_trade_size_get(prod_id):
 
 #<=====>#
 
-def db_mkts_open_cnt_get():
+def db_mkts_open_cnt_get(mkt=None):
 	func_name = 'db_mkts_open_cnt_get'
 	func_str = f'{lib_name}.{func_name}()'
 	fnc = func_begin(func_name=func_name, func_str=func_str, logname=log_name, secs_max=lib_secs_max)
@@ -1716,6 +1727,8 @@ def db_mkts_open_cnt_get():
 	sql += "select count(distinct p.prod_id) "
 	sql += "  from poss p "
 	sql += "  where 1=1 "
+	if mkt:
+		sql += f"  and p.quote_curr_symb = '{mkt}'"
 	sql += "  and p.pos_stat in ('OPEN','SELL') "
 	sql += "  and p.ignore_tf = 0 "
 

@@ -230,33 +230,33 @@ def cs_pct_color(pct, msg):
 	# func_str = f'{lib_name}.{func_name}(pct={pct}, msg)'
 	# G(func_str)
 
-	if pct >= 22:       # >= 8
+	if pct >= 25:       # >= 8
 		r = WoG6(msg, print_yn='N')
-	elif pct >= 16 and  pct < 22:
+	elif pct >= 20 and  pct < 25:
 		r = WoG5(msg, print_yn='N')
-	elif pct >= 11 and  pct < 16:
+	elif pct >= 15 and  pct < 20:
 		r = WoG4(msg, print_yn='N')
-	elif pct >= 7 and  pct < 11:
+	elif pct >= 10 and  pct < 15:
 		r = WoG3(msg, print_yn='N')
-	elif pct >= 4 and  pct < 7:
+	elif pct >= 5 and  pct < 10:
 		r = WoG2(msg, print_yn='N')
-	elif pct >= 2 and  pct < 4:
+	elif pct >= 2 and  pct < 5:
 		r = WoG1(msg, print_yn='N')
 
 	elif pct > -2 and pct < 2:
 		r = msg
 
-	elif pct <= -2 and pct > -4:
+	elif pct <= -2 and pct > -5:
 		r = WoR1(msg, print_yn='N')
-	elif pct <= -4 and pct > -7:
+	elif pct <= -5 and pct > -10:
 		r = WoR2(msg, print_yn='N')
-	elif pct <= -7 and pct > -11:
+	elif pct <= -10 and pct > -15:
 		r = WoR3(msg, print_yn='N')
-	elif pct <= -11 and pct > -16:
+	elif pct <= -15 and pct > -20:
 		r = WoR4(msg, print_yn='N')
-	elif pct <= -16 and pct > -22:
+	elif pct <= -20 and pct > -25:
 		r = WoR5(msg, print_yn='N')
-	elif pct <= -22:
+	elif pct <= -25:
 		r = WoR6(msg, print_yn='N')
 
 	return r
