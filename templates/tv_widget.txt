@@ -1,0 +1,135 @@
+<<<<<<< Updated upstream
+<!--
+<!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com" rel="noopener" target="_blank"><span class="blue-text">Quotes</span></a> by TradingView</div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-tickers.js" async>
+  {
+  "symbols": [
+    {
+      "proName": "BITTREX:ADAUSD",
+      "title": "ADA/USD"
+    },
+    {
+      "proName": "BITTREX:ALGOUSD",
+      "title": "ALGO/USD"
+    },
+    {
+      "proName": "BITTREX:ATOMUSD",
+      "title": "ATOM/USD"
+    },
+    {
+      "proName": "BITTREX:BTCUSD",
+      "title": "BTC/USD"
+    },
+    {
+      "proName": "BITTREX:COMPUSD",
+      "title": "COMP/USD"
+    },
+    {
+      "proName": "BITTREX:ETHUSD",
+      "title": "ETH/USD"
+    },
+    {
+      "proName": "BITTREX:GRTUSD",
+      "title": "GRT/USD"
+    },
+    {
+      "proName": "BITTREX:LINKUSD",
+      "title": "LINK/USD"
+    },
+    {
+      "proName": "BITTREX:MATICUSD",
+      "title": "MATIC/USD"
+    },
+    {
+      "proName": "BITTREX:SNXUSD",
+      "title": "SNX/USD"
+    },
+    {
+      "proName": "BITTREX:UNIUSD",
+      "title": "UNI/USD"
+    },
+    {
+      "proName": "BITTREX:ZRXUSD",
+      "title": "ZRX/USD"
+    }
+  ],
+  "colorTheme": "dark",
+  "isTransparent": false,
+  "showSymbolLogo": true,
+  "locale": "en"
+}
+  </script>
+</div>
+<!-- TradingView Widget END -->
+-->
+=======
+<!--
+<!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com" rel="noopener" target="_blank"><span class="blue-text">Quotes</span></a> by TradingView</div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-tickers.js" async>
+  {
+  "symbols": [
+    {
+      "proName": "BITTREX:ADAUSD",
+      "title": "ADA/USD"
+    },
+    {
+      "proName": "BITTREX:ALGOUSD",
+      "title": "ALGO/USD"
+    },
+    {
+      "proName": "BITTREX:ATOMUSD",
+      "title": "ATOM/USD"
+    },
+    {
+      "proName": "BITTREX:BTCUSD",
+      "title": "BTC/USD"
+    },
+    {
+      "proName": "BITTREX:COMPUSD",
+      "title": "COMP/USD"
+    },
+    {
+      "proName": "BITTREX:ETHUSD",
+      "title": "ETH/USD"
+    },
+    {
+      "proName": "BITTREX:GRTUSD",
+      "title": "GRT/USD"
+    },
+    {
+      "proName": "BITTREX:LINKUSD",
+      "title": "LINK/USD"
+    },
+    {
+      "proName": "BITTREX:MATICUSD",
+      "title": "MATIC/USD"
+    },
+    {
+      "proName": "BITTREX:SNXUSD",
+      "title": "SNX/USD"
+    },
+    {
+      "proName": "BITTREX:UNIUSD",
+      "title": "UNI/USD"
+    },
+    {
+      "proName": "BITTREX:ZRXUSD",
+      "title": "ZRX/USD"
+    }
+  ],
+  "colorTheme": "dark",
+  "isTransparent": false,
+  "showSymbolLogo": true,
+  "locale": "en"
+}
+  </script>
+</div>
+<!-- TradingView Widget END -->
+-->
+>>>>>>> Stashed changes

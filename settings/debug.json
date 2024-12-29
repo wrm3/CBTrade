@@ -1,0 +1,22 @@
+<<<<<<< Updated upstream
+{
+    "edited_yn": "N",
+    "elapse_max": {
+        "***": 5,
+        "bot_cls_buy": 5,
+        "bot_cls_market": 5,
+        "bot_cls_pair": 5,
+        "bot_cls_main": 5,
+        "bot_cls_sell": 5
+    }
+=======
+{
+    "edited_yn": "N",
+    "elapse_max": {
+        "***": 0,
+        "bot_cls_buy": 1,
+        "bot_cls_main": 1,
+        "bot_cls_sell": 1
+    }
+>>>>>>> Stashed changes
+}
