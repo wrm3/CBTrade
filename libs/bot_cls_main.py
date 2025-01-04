@@ -1735,6 +1735,14 @@ class BOT():
 
 		if self.buy.prod_id == 'BTC-USDC':
 			speak_async("BTC - buy logic")
+		elif self.buy.prod_id == 'ETH-USDC':
+			speak_async("ETH - buy logic")	
+		elif self.buy.prod_id == 'SOL-USDC':
+			speak_async("SOL - buy logic")	
+		elif self.buy.prod_id == 'SUI-USDC':
+			speak_async("SUI - buy logic")	
+		elif self.buy.prod_id == 'XRP-USDC':
+			speak_async("XRP - buy logic")		
 
 
 		# Returns
@@ -2960,21 +2968,8 @@ class BOT():
 					for k in sorted(levels, reverse=True):
 						if self.pos.prc_chg_pct_high >= float(k):
 							max_drop_pct = -1 * levels[k]
-					# if self.pos.prc_chg_pct_high >= 34:
-					# 	max_drop_pct = -1 * self.pos.prc_chg_pct_high * .08
-					# elif self.pos.prc_chg_pct_high >= 21:
-					# 	max_drop_pct = -1 * self.pos.prc_chg_pct_high * .11
-					# elif self.pos.prc_chg_pct_high >= 13:
-					# 	max_drop_pct = -1 * self.pos.prc_chg_pct_high * .14
-					# elif self.pos.prc_chg_pct_high >= 5:
-					# 	max_drop_pct = -1 * self.pos.prc_chg_pct_high * .17
-					# elif self.pos.prc_chg_pct_high >= 3:
-					# 	max_drop_pct = -1 * self.pos.prc_chg_pct_high * .20
-					# elif self.pos.prc_chg_pct_high >= 2:
-					# 	max_drop_pct = -1 * self.pos.prc_chg_pct_high * .23
-					# elif self.pos.prc_chg_pct_high >= 1:
-					# 	max_drop_pct = -1 * self.pos.prc_chg_pct_high * .24
-
+							# print(f"k : {k}, levels[k] : {levels[k]}, self.pos.prc_chg_pct_high : {self.pos.prc_chg_pct_high}, max_drop_pct : {max_drop_pct}")
+							break
 					max_drop_pct = round(max_drop_pct, 2)
 
 					if self.pos.prc_chg_pct_drop <= max_drop_pct:
