@@ -3,13 +3,13 @@
 	"upd_msg": "These settings are from 2024-12-29 01:24pm",
 	"trade_yn": "Y",
 	"trade_live_yn": "Y",
-	"paper_trades_only_yn": "Y",
+	"paper_trades_only_yn": "N",
 	"stable_coins": ["DAI","GUSD","PAX","PYUSD","USD","USDC","USDT"],
 	"speak_yn": "Y",
 	"loop_secs": 15,
 	"budget": {
 		"max_tot_loss": -250.0,
-		"spend_max_amt": 3500.0,
+		"spend_max_amt": 4000.0,
 		"spend_up_max_pct": 65.0,
 		"spend_dn_max_pct": 35.0,
 		"spend_max_pcts": {
@@ -20,17 +20,17 @@
 		},
 		"mkt_shares": {
 			"shares_or_pcts": "pct",
-			"***": 3,
+			"***": 4,
 			"BTC-USDC":   50,
 			"ETH-USDC":   33,
 			"SOL-USDC":   33,
-			"ADA-USDC":    6,
-			"DOGE-USDC":   6,
-			"SHIB-USDC":   6,
-			"SUI-USDC":   10,
-			"XRP-USDC":   10
+			"ADA-USDC":    8,
+			"DOGE-USDC":   8,
+			"SHIB-USDC":   8,
+			"SUI-USDC":   12,
+			"XRP-USDC":   12
 		},
-		"reserve_amt": 100.0,
+		"reserve_amt": 500.0,
 		"reserve_addtl_daily_amt": 0
 	},
 	"pairs": {
@@ -80,9 +80,9 @@
 		"extra_pairs_top_bot_perf_yn": "Y",
 		"extra_pairs_top_bot_perf_cnt": 10,
 		"extra_pairs_top_bot_perf_pct_min": 0.1,
-		"extra_pairs_top_bot_gains_yn": "N",
+		"extra_pairs_top_bot_gains_yn": "Y",
 		"extra_pairs_top_bot_gains_cnt": 10,
-		"extra_pairs_prc_pct_chg_24h_yn": "N",
+		"extra_pairs_prc_pct_chg_24h_yn": "Y",
 		"extra_pairs_prc_pct_chg_24h_cnt": 5,
 		"extra_pairs_prc_pct_chg_24h_pct_min": 5,
 		"extra_pairs_vol_quote_24h_yn": "N",
@@ -119,10 +119,10 @@
 			"1d": 720
 		},
 		"open_poss_cnt_max": {
-			"***": 7,
-			"BTC-USDC": 35,
-			"ETH-USDC": 35,
-			"SOL-USDC": 35
+			"***": 15,
+			"BTC-USDC": 60,
+			"ETH-USDC": 60,
+			"SOL-USDC": 60
 		},
 		"strat_open_cnt_max": {
 			"***": 1,
@@ -314,7 +314,7 @@
 				"WCFG-USDC",
 				"MATIC-USDC"
 			],
-			"pos_ids": [34947,34868,34880]
+			"pos_ids": []
 		},
 		"never_sell": {
 			"all_yn": "N",
@@ -323,8 +323,8 @@
 		},
 		"never_sell_loss": {
 			"all_yn": "N",
-			"live_all_yn": "N",
-			"prod_ids": [],
+			"live_all_yn": "Y",
+			"prod_ids": ["BTC-USDC","ETH-USDC","SOL-USDC"],
 			"prod_ids_bk": [
 				"AAVE-USDC",
 				"ADA-USDC",
@@ -441,16 +441,16 @@
 		},
 		"rainy_day": {
 			"pocket_pct": {
-				"***": 10,
-				"BTC-USDC": 25,
-				"ETH-USDC": 25,
-				"SOL-USDC": 25
+				"***": 0,
+				"BTC-USDC": 0,
+				"ETH-USDC": 0,
+				"SOL-USDC": 0
 			},
 			"clip_pct": {
 				"***": 0,
-				"BTC-USDC": 5,
-				"ETH-USDC": 5,
-				"SOL-USDC": 5
+				"BTC-USDC": 0,
+				"ETH-USDC": 0,
+				"SOL-USDC": 0
 			}
 		}
 	}
