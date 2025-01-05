@@ -44,7 +44,7 @@ spacer = cs(' ' * 4, font_color='white', bg_color='black')
 def disp_sell_tests(msg, mkt, pos, pst, all_sells, all_hodls):
     prod_id = pos.prod_id
     if (pos.sell_yn == 'Y' and pos.sell_block_yn == 'N') or pst.sell.show_tests_yn in ('Y','F'):
-        msg = spacer + cs('==> ' + msg + f' * sell => {pos.sell_yn} * sell_block => {pos.sell_block_yn} * hodl => {pos.hodl_yn}', font_color='blue', bg_color='black')
+        msg = spacer + cs('==> ' + msg + f' * sell => {pos.sell_yn} * sell_block => {pos.sell_block_yn} * hodl => {pos.hodl_yn}', font_color='cyan', bg_color='black')
         chart_row(msg)
         if (pos.sell_yn == 'Y' and pos.sell_block_yn == 'N') or pst.sell.show_tests_yn in ('Y'):
             for e in all_sells:

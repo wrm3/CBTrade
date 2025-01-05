@@ -1,21 +1,21 @@
-drop database if exists cbtrade2;
-create database cbtrade2;
+drop database if exists cbtrade;
+create database cbtrade;
 
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
-drop user if exists cbtrade2@localhost;
-CREATE USER cbtrade2@localhost IDENTIFIED BY 'cbtrade2';
-GRANT ALL PRIVILEGES ON cbtrade2.* TO 'cbtrade2'@'localhost';
+drop user if exists cbtrade@localhost;
+CREATE USER cbtrade@localhost IDENTIFIED BY 'cbtrade';
+GRANT ALL PRIVILEGES ON cbtrade.* TO 'cbtrade'@'localhost';
 
-use cbtrade2;
-drop schema if exists cbtrade2;
-create schema cbtrade2 default character set utf8mb4;
+use cbtrade;
+drop schema if exists cbtrade;
+create schema cbtrade default character set utf8mb4;
 
 
-use cbtrade2;
+use cbtrade;
 drop table if exists currs;
 create table currs(
 	curr_id                                       int(11) primary key AUTO_INCREMENT comment 'pk for currs table'
@@ -39,7 +39,7 @@ create table currs(
 	);
 
 
-use cbtrade2;
+use cbtrade;
 drop table if exists bals;
 create table bals(
 	  bal_id                                      int(11) primary key AUTO_INCREMENT comment 'pk for bals table'
@@ -76,7 +76,7 @@ create table bals(
 	);
 
 
-use cbtrade2;
+use cbtrade;
 drop table if exists buy_ords;
 create table buy_ords(
 	bo_id                                         int(11) primary key AUTO_INCREMENT
@@ -127,7 +127,7 @@ create table buy_ords(
 
 
 
-use cbtrade2;
+use cbtrade;
 drop table if exists buy_strats;
 create table buy_strats(
 	bs_id                                         int(11) primary key AUTO_INCREMENT comment 'pk for buy_strats table'
@@ -139,17 +139,17 @@ create table buy_strats(
 	, upd_dttm                                    timestamp default current_timestamp on update current_timestamp
 	, dlm                                         timestamp default current_timestamp on update current_timestamp
 	);
-insert into cbtrade2.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'sha', 'double smoothed heikin ashi', 0);
-insert into cbtrade2.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'imp_macd', 'impulse macd', 0);
-insert into cbtrade2.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'bb_bo', 'bollinger band breakout', 0);
-insert into cbtrade2.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('dn', 'bb', 'bollinger band', 0);
-insert into cbtrade2.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('dn', 'drop', 'buy the dip', 0);
-insert into cbtrade2.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'nwe_3row', 'nwe 3 in a row', 0);
-insert into cbtrade2.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('dn', 'nwe_env', 'nwe envelope', 0);
-insert into cbtrade2.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('dn', 'nwe_rev', 'nwe reversal', 0);
+insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'sha', 'double smoothed heikin ashi', 0);
+insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'imp_macd', 'impulse macd', 0);
+insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'bb_bo', 'bollinger band breakout', 0);
+insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('dn', 'bb', 'bollinger band', 0);
+insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('dn', 'drop', 'buy the dip', 0);
+insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('up', 'nwe_3row', 'nwe 3 in a row', 0);
+insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('dn', 'nwe_env', 'nwe envelope', 0);
+insert into cbtrade.buy_strats (buy_strat_type, buy_strat_name, buy_strat_desc, ignore_tf) values ('dn', 'nwe_rev', 'nwe reversal', 0);
 
 
-use cbtrade2;
+use cbtrade;
 drop table if exists freqs;
 create table freqs(
 	f_id                                          int(11) primary key AUTO_INCREMENT comment 'pk for freq table'
@@ -185,7 +185,7 @@ insert into freqs (freq, freq_desc, minutes, ignore_tf) values ('987min', '987 m
 insert into freqs (freq, freq_desc, minutes, ignore_tf) values ('1597min', '1597 minute', 1597, 1);
 
 
-use cbtrade2;
+use cbtrade;
 drop table if exists mkt_checks;
 create table mkt_checks(
 	prod_id                                       varchar(64)
@@ -199,7 +199,7 @@ create table mkt_checks(
 	, unique(prod_id)
 	);
 
-use cbtrade2;
+use cbtrade;
 drop table if exists mkts;
 create table mkts(
 	mkt_id                                        int(11) primary key AUTO_INCREMENT comment 'pk for mkts table'
@@ -248,7 +248,7 @@ create table mkts(
 	);
 
 
-use cbtrade2;
+use cbtrade;
 drop table if exists ords;
 create table ords(
 	ord_id                                      int(11) primary key AUTO_INCREMENT
@@ -318,7 +318,7 @@ create table ords(
 	);
 
 
-use cbtrade2;
+use cbtrade;
 drop table if exists poss;
 create table poss(
 	pos_id                                        int(11) primary key AUTO_INCREMENT
@@ -407,13 +407,13 @@ create table poss(
 	, dlm                                         timestamp default current_timestamp on update current_timestamp
 	, unique(bo_uuid)
 	);
-alter table cbtrade2.poss add index idx_prod_id_quote_curr_symb (prod_id, quote_curr_symb);
-alter table cbtrade2.poss add index idx_prod_id (prod_id);
-alter table cbtrade2.poss add index idx_prod_id_stat (prod_id, pos_stat);
-alter table cbtrade2.poss add index idx_buy_strat_name_freq (buy_strat_name, buy_strat_freq);
+alter table cbtrade.poss add index idx_prod_id_quote_curr_symb (prod_id, quote_curr_symb);
+alter table cbtrade.poss add index idx_prod_id (prod_id);
+alter table cbtrade.poss add index idx_prod_id_stat (prod_id, pos_stat);
+alter table cbtrade.poss add index idx_buy_strat_name_freq (buy_strat_name, buy_strat_freq);
 
 
-use cbtrade2;
+use cbtrade;
 drop table if exists sell_ords;
 create table sell_ords(
 	so_id                                         int(11) primary key AUTO_INCREMENT
@@ -466,7 +466,7 @@ create table sell_ords(
 	);
 
 
-use cbtrade2;
+use cbtrade;
 drop view if exists view_bals;
 create view view_bals as
 select b.symb
@@ -481,12 +481,12 @@ select b.symb
   , round(case when b.symb in ('USD','USDC') then b.bal_tot else coalesce(sum(p.hold_cnt),0) * m.prc end, 8) as bot_val_usd
   , round(case when b.symb in ('USD','USDC') then b.bal_tot else (b.bal_tot - coalesce(sum(p.hold_cnt),0)) * m.prc end, 8) as free_val_usd
   , b.curr_uuid
-  from cbtrade2.bals b
-  left outer join (select m.base_curr_symb as symb, m.prc from cbtrade2.mkts m where m.quote_curr_symb = 'USDC'
+  from cbtrade.bals b
+  left outer join (select m.base_curr_symb as symb, m.prc from cbtrade.mkts m where m.quote_curr_symb = 'USDC'
 					union 
-                    select 'ETH2' as symb, m.prc from cbtrade2.mkts m where m.quote_curr_symb = 'USDC' and m.base_curr_symb = 'ETH'
+                    select 'ETH2' as symb, m.prc from cbtrade.mkts m where m.quote_curr_symb = 'USDC' and m.base_curr_symb = 'ETH'
 					) m on m.symb = b.symb
-  left outer join cbtrade2.poss p on p.base_curr_symb = b.symb and p.quote_curr_symb = 'USDC' and p.ignore_tf = 0 --  and p.pos_stat in ('OPEN', 'SELL')
+  left outer join cbtrade.poss p on p.base_curr_symb = b.symb and p.quote_curr_symb = 'USDC' and p.ignore_tf = 0 --  and p.pos_stat in ('OPEN', 'SELL')
   where b.bal_tot > 0
   
   group by b.symb, b.bal_avail, b.bal_hold, b.bal_tot, b.curr_prc_usd, m.prc, b.curr_uuid
@@ -495,8 +495,8 @@ select b.symb
   
 
 
-drop view if exists cbtrade2.view_mkt_perf;
-create view cbtrade2.view_mkt_perf as 
+drop view if exists cbtrade.view_mkt_perf;
+create view cbtrade.view_mkt_perf as 
 select p.prod_id
   , p.quote_curr_symb
   , count(p.pos_id) as tot_cnt 
@@ -506,8 +506,8 @@ select p.prod_id
   , coalesce(round(sum(case when p.tot_in_cnt + p.val_tot < p.tot_out_cnt then 1 else 0 end) / count(p.pos_id) * 100, 2),0) as lose_pct 
   , sum(p.age_mins) as age_mins
   , sum(p.age_mins) / 60 as age_hours
-  , (select coalesce(TIMESTAMPDIFF(SECOND, max(bo.buy_begin_dttm), NOW())/60, 9999) from cbtrade2.buy_ords bo where bo.prod_id = p.prod_id) as bo_elapsed
-  , (select coalesce(TIMESTAMPDIFF(SECOND, max(px.pos_begin_dttm), NOW())/60, 9999) from cbtrade2.poss px where px.prod_id = p.prod_id and px.pos_stat not in ('TIME') ) as pos_elapsed
+  , (select coalesce(TIMESTAMPDIFF(SECOND, max(bo.buy_begin_dttm), NOW())/60, 9999) from cbtrade.buy_ords bo where bo.prod_id = p.prod_id) as bo_elapsed
+  , (select coalesce(TIMESTAMPDIFF(SECOND, max(px.pos_begin_dttm), NOW())/60, 9999) from cbtrade.poss px where px.prod_id = p.prod_id and px.pos_stat not in ('TIME') ) as pos_elapsed
   , round(sum(p.tot_out_cnt), 2) as tot_out_cnt
   , round(sum(p.tot_in_cnt), 2) as tot_in_cnt
   , round(sum(p.buy_fees_cnt), 2) as buy_fees_cnt
@@ -530,7 +530,7 @@ select p.prod_id
   , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60), 8) as gain_loss_pct_hr
   , round(sum(p.gain_loss_amt) / sum(p.tot_out_cnt) * 100/ (sum(p.age_mins) / 60) * 24, 8) as gain_loss_pct_day
 --  , p.test_txn_yn
-  from cbtrade2.poss p
+  from cbtrade.poss p
   where ignore_tf = 0
   group by p.prod_id
   order by gain_loss_pct_day desc
@@ -539,8 +539,8 @@ select p.prod_id
 
 
 
-drop view if exists cbtrade2.view_pos;
-create view cbtrade2.view_pos as 
+drop view if exists cbtrade.view_pos;
+create view cbtrade.view_pos as 
 select p.pos_id
   , p.prod_id
   , p.pos_stat
@@ -598,7 +598,7 @@ select p.pos_id
   , p.fees_curr_symb
   , p.test_txn_yn
   , round(p.gain_loss_amt / p.tot_out_cnt * 100 / p.age_mins / 60, 8) as gain_loss_pct_hr
-  from cbtrade2.poss p
+  from cbtrade.poss p
   where ignore_tf = 0
   order by p.pos_id desc
   ;
