@@ -2593,8 +2593,6 @@ class BOT():
             msg = ''
             msg += self.spacer 
             msg += cs(f'==> SELL TESTS - {self.pos.prod_id} - Hard Take Profit', font_color='white', bg_color='green')
-            msg += ' '
-            msg += cs(msg, font_color='green')
             self.chrt.chart_row(msg)
             self.disp_sell_pos_test_details(msg, all_sells, all_hodls)
 
@@ -2623,6 +2621,10 @@ class BOT():
                 msg += f'==> HODL COND: ...hard stop loss => curr : {self.pos.prc_chg_pct:>.2f}%, high : {self.pos.prc_chg_pct_high:>.2f}%, drop : {self.pos.prc_chg_pct_drop:>.2f}%, stop_loss : {self.pst.sell.stop_loss.hard_stop_loss_pct:>.2f}%, sell_yn : {self.pos.sell_yn}'
                 # all_hodls.append(msg)
 
+            msg = ''
+            msg += self.spacer 
+            msg += cs(f'==> SELL TESTS - {self.pos.prod_id} - Hard Stop Loss', font_color='white', bg_color='red')
+            self.chrt.chart_row(msg)
             self.disp_sell_pos_test_details(msg, all_sells, all_hodls)
 
 
@@ -2661,7 +2663,8 @@ class BOT():
 
             msg = ''
             msg += self.spacer 
-            msg += f'==> SELL TESTS - {self.pos.prod_id} - Trailing Profit'
+            msg += cs(f'==> SELL TESTS - {self.pos.prod_id} - Trailing Profit', font_color='white', bg_color='green')
+            self.chrt.chart_row(msg)
             self.disp_sell_pos_test_details(msg, all_sells, all_hodls)
 
 
@@ -2687,7 +2690,8 @@ class BOT():
 
             msg = ''
             msg += self.spacer 
-            msg += f'==> SELL TESTS - {self.pos.prod_id} - Trailing Stop Loss'
+            msg += cs(f'==> SELL TESTS - {self.pos.prod_id} - Trailing Stop Loss', font_color='white', bg_color='red')
+            self.chrt.chart_row(msg)
             self.disp_sell_pos_test_details(msg, all_sells, all_hodls)
 
 
@@ -2696,26 +2700,6 @@ class BOT():
     def sell_pos_test_nwe_exit(self):
 
         if self.pos.buy_strat_name not in self.pst.sell.stop_loss.nwe_exit_strats_skip:
-#            if self.pos.buy_strat_name == 'drop':
-#                return
-#            if self.pos.buy_strat_name == 'bb':
-#                return
-
-            # nwe_disp = {}
-            # for freq in self.pair.ta:
-            #     msg_tail = f'{freq:>6} : '
-            #     cnt = 0
-            #     for ago in self.pair.ta[freq]['nwe_color']:
-            #         nwe_color = self.pair.ta[freq]['nwe_color'][ago]
-            #         nwe_diff_product = self.pair.ta[freq]['nwe_diff_product'][ago]
-            #         nwe_roc = self.pair.ta[freq]['nwe_roc'][ago]
-            #         if cnt > 0:
-            #             msg_tail += ', '
-            #         msg_tail += cs(f'{ago} : {nwe_diff_product:>18.12f} - {nwe_roc:>+8.6f}%', font_color="white", bg_color=nwe_color)
-            #         cnt += 1
-            #     nwe_disp[freq] = msg_tail
-            # for freq in nwe_disp:
-            #     print(nwe_disp[freq])
 
             all_sells  = []
             all_hodls   = []
@@ -2730,22 +2714,8 @@ class BOT():
             nwe_color_30min = self.pair.ta['30min']['nwe_color']['ago0']
             nwe_color_1h    = self.pair.ta['1h']['nwe_color']['ago0']
             nwe_color_4h    = self.pair.ta['4h']['nwe_color']['ago0']
-            # nwe_color_1d    = self.pair.ta['1d']['nwe_color']['ago0']
 
             nwe_color_5min_last  = self.pair.ta['5min']['nwe_color']['ago1']
-            # nwe_color_15min_last = self.pair.ta['15min']['nwe_color']['ago1']
-            # nwe_color_30min_last = self.pair.ta['30min']['nwe_color']['ago1']
-            # nwe_color_1h_last    = self.pair.ta['1h']['nwe_color']['ago1']
-            # nwe_color_4h_last    = self.pair.ta['4h']['nwe_color']['ago1']
-            # nwe_color_1d_last    = self.pair.ta['1d']['nwe_color']['ago1']
-
-            # nwe_color_5min_prev  = self.pair.ta['5min']['nwe_color']['ago2']
-            # nwe_color_15min_prev = self.pair.ta['15min']['nwe_color']['ago2']
-            # nwe_color_30min_prev = self.pair.ta['30min']['nwe_color']['ago2']
-            # nwe_color_1h_prev    = self.pair.ta['1h']['nwe_color']['ago2']
-            # nwe_color_4h_prev    = self.pair.ta['4h']['nwe_color']['ago2']
-            # nwe_color_1d_prev    = self.pair.ta['1d']['nwe_color']['ago2']
-
 
             if freq == '1d' and nwe_color == 'red' and nwe_color_last == 'red' and nwe_color_4h == 'red' and nwe_color_5min_last == 'red':
                 self.pos.sell_yn = 'Y'
@@ -2803,14 +2773,12 @@ class BOT():
                 msg += self.spacer 
                 msg += f'==> HODL COND: ...NWE Exit loss => nwe_color : {nwe_color}, nwe_color_last : {nwe_color_last}' + ', '
                 msg = WoG(msg, print_tf=False)
-                # all_hodls.append(msg)
-#            print(msg)
 
             msg = ''
             msg += self.spacer 
-            msg += f'==> SELL TESTS - {self.pos.prod_id} - NWE Exit'
+            msg += cs(f'==> SELL TESTS - {self.pos.prod_id} - NWE Exit', font_color='white', bg_color='blue')
+            self.chrt.chart_row(msg)
             self.disp_sell_pos_test_details(msg, all_sells, all_hodls)
-
 
     #<=====>#
 
@@ -2842,7 +2810,8 @@ class BOT():
 
             msg = ''
             msg += self.spacer 
-            msg += f'==> SELL TESTS - {self.pos.prod_id} - ATR Stop Loss'
+            msg += cs(f'==> SELL TESTS - {self.pos.prod_id} - ATR Stop Loss', font_color='white', bg_color='red')
+            self.chrt.chart_row(msg)
             self.disp_sell_pos_test_details(msg, all_sells, all_hodls)
 
 
@@ -2879,7 +2848,8 @@ class BOT():
 
             msg = ''
             msg += self.spacer 
-            msg += f'==> SELL TESTS - {self.pos.prod_id} - Trailing ATR Stop Loss'
+            msg += cs(f'==> SELL TESTS - {self.pos.prod_id} - Trailing ATR Stop Loss', font_color='white', bg_color='red')
+            self.chrt.chart_row(msg)
             self.disp_sell_pos_test_details(msg, all_sells, all_hodls)
 
 
@@ -3010,7 +2980,6 @@ class BOT():
                 for e in all_hodls:
                     WoG(e)
                     self.pair.show_sell_header_tf = True
-
 
     #<=====>#
 
