@@ -31,7 +31,7 @@ from fstrent_colors import (
 from fstrent_tools import (
     AttrDict, AttrDictConv, DictKey, beep, dec, dec_2_float, dttm_get,
     format_disp_age, format_disp_age2, play_cash,
-    play_thunder, print_adv, speak_async
+    play_thunder, print_adv, speak
 )
 from libs.bot_coinbase import (
     cb, cb_bal_get, cb_bid_ask_by_amt_get, cb_client_order_id,
@@ -118,7 +118,7 @@ class BOT():
     def auto_loop(self):
 
         # this is here just to proof that sounds alerts will be heard
-        if self.bst.speak_yn == 'Y': speak_async('Coinbase Trade Bot Online - Auto Mode')
+        if self.bst.speak_yn == 'Y': speak('Coinbase Trade Bot Online - Auto Mode')
 
         cnt = 0
         while True:
@@ -223,7 +223,7 @@ class BOT():
             mode_str = 'Full Mode'
 
         # this is here just to proof that sounds alerts will be heard
-        if self.bst.speak_yn == 'Y': speak_async(f'Coinbase Trade Bot Online - {mode_str}')
+        if self.bst.speak_yn == 'Y': speak(f'Coinbase Trade Bot Online - {mode_str}')
 
         cnt = 0
         while True:
@@ -422,11 +422,11 @@ class BOT():
         self.budget[self.mkt.symb].spendable_dn_amt   = min(self.budget[self.mkt.symb].spendable_amt, (self.budget[self.mkt.symb].spend_up_max_amt - self.budget[self.mkt.symb].spent_dn_amt))
 
         # cp('************************************************************************************','black','yellow')
-        # speak_async(f'check screen now {self.mkt.symb}!!!')
+        # speak(f'check screen now {self.mkt.symb}!!!')
         # print('400')
         # pprint(bot_spent_data)
         # pprint(self.budget[self.mkt.symb])
-        # speak_async(f'check screen now {self.mkt.symb}!!!')
+        # speak(f'check screen now {self.mkt.symb}!!!')
         # cp('************************************************************************************','black','yellow')
 
 
@@ -1551,15 +1551,15 @@ class BOT():
     def buy_main(self):
 
         if self.buy.prod_id == 'BTC-USDC':
-            speak_async("BTC - buy logic")
+            speak("BTC - buy logic")
         elif self.buy.prod_id == 'ETH-USDC':
-            speak_async("ETH - buy logic")    
+            speak("ETH - buy logic")    
         elif self.buy.prod_id == 'SOL-USDC':
-            speak_async("SOL - buy logic")    
+            speak("SOL - buy logic")    
         elif self.buy.prod_id == 'SUI-USDC':
-            speak_async("SUI - buy logic")    
+            speak("SUI - buy logic")    
         elif self.buy.prod_id == 'XRP-USDC':
-            speak_async("XRP - buy logic")        
+            speak("XRP - buy logic")        
 
 
         # Returns
@@ -1702,7 +1702,7 @@ class BOT():
                         msg = f'buying {self.buy.base_curr_symb} for {self.buy.trade_strat_perf.trade_size} {self.buy.quote_curr_symb} with strategy {self.buy.buy_strat_name} on the {self.buy.buy_strat_freq} timeframe'
                         self.chrt.chart_row(in_str=msg, font_color='white', bg_color='green')
 
-                        if self.pst.speak_yn == 'Y': speak_async(msg)
+                        if self.pst.speak_yn == 'Y': speak(msg)
 
                         self.buy.trade_perf.bo_elapsed        = 0
                         self.buy.trade_perf.pos_elapsed       = 0
@@ -2001,11 +2001,11 @@ class BOT():
         pair_spent_data                = AttrDictConv(d=pair_spent_data)
 
         # cp('************************************************************************************','black','yellow')
-        # speak_async('check screen now!!!')
+        # speak('check screen now!!!')
         # print('2176')
         # print(pair_spent_data)
-        # speak_async('check screen now!!!')
-        # speak_async('check screen now!!!')
+        # speak('check screen now!!!')
+        # speak('check screen now!!!')
         # cp('************************************************************************************','black','yellow')
 
         if pair_spent_data:
@@ -2200,7 +2200,7 @@ class BOT():
                         print(msg)
                         YoK(f'2 - another bot with mode sell has updated {prod_id} market since starting..., bot_guid : {self.bot_guid}, mkt_check_guid : {sell_check_guid}  skipping...')
 #                        beep()
-#                        speak_async('sell_guid preventing double processing...')
+#                        speak('sell_guid preventing double processing...')
                         break
 
                     self.pos_upd(pos=pos_data)
@@ -2381,16 +2381,16 @@ class BOT():
                 if self.pos.error_tf:
                     play_thunder()
                     self.pos.sell_yn = 'N'
-                    if self.pst.speak_yn == 'Y': speak_async(self.pos.reason)
+                    if self.pst.speak_yn == 'Y': speak(self.pos.reason)
                 else:
                     if self.pos.gain_loss_amt > 0:
                         msg = f'WIN, selling {self.pos.base_curr_symb} for {round(self.pos.gain_loss_amt_est,2)} dollars '
-                        if self.pst.speak_yn == 'Y': speak_async(msg)
+                        if self.pst.speak_yn == 'Y': speak(msg)
                         if self.pos.gain_loss_amt >= 1:
                             play_cash()
                     elif self.pos.gain_loss_amt < 0:
                         msg = f'LOSS, selling {self.pos.base_curr_symb} for {round(self.pos.gain_loss_amt_est,2)} dollars '
-                        if self.pst.speak_yn == 'Y': speak_async(msg)
+                        if self.pst.speak_yn == 'Y': speak(msg)
                         if self.pos.gain_loss_amt <= -1:
                             play_thunder()
 
@@ -2482,7 +2482,7 @@ class BOT():
             self.pos.sell_strat_name  = 'forced sell'
             msg = f'db => position marked as force sell... poss.force_sell_tf : {self.pos.force_sell_tf}'
             self.pos.sell_forces.append(msg)
-#            speak_async(msg)
+#            speak(msg)
 
         # sell_force_force_sell_all(self):
         if self.pst.sell.force_sell.all_yn == 'Y':

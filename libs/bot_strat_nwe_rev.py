@@ -157,10 +157,6 @@ def buy_strat_nwe_rev(buy, ta, pst):
         nwe_rev_sell_signal             = buy.ta[freq]['nwe_rev_sell_signal']['ago0']
         nwe_rev_buy_signal_last         = buy.ta[freq]['nwe_rev_buy_signal']['ago1']
 
-        # if buy.prod_id == 'BTC-USDC':
-        #     if nwe_rev_buy_signal:
-        #         speak_async(f"{buy.prod_id} has a Nadaraya Watson Reversal Buy Trigger on the {freq} timeframe")
-
         # -------------------------------
         # Integrate Buy Signals from Trend Reversal
         # -------------------------------
@@ -227,9 +223,6 @@ def sell_strat_nwe_rev(mkt, pos, ta, pst):
         nwe_rev_sell_signal            = ta[freq]['nwe_rev_sell_signal']['ago0']
         nwe_rev_sell_signal_last       = ta[freq]['nwe_rev_sell_signal']['ago1']
 
-        # if pos.prod_id == 'BTC-USDC':
-        #     if nwe_rev_sell_signal:
-        #         speak_async(f"{pos.prod_id} has a Nadaraya Watson Reversal Sell Trigger on the {freq} timeframe")
 
         if nwe_rev_sell_signal or (nwe_rev_sell_signal_last and not nwe_rev_buy_signal):
             pos.sell_yn = 'Y'

@@ -162,10 +162,6 @@ def buy_strat_nwe_env(buy, ta, pst):
         nwe_env_buy_signal_prev     = buy.ta[freq]['nwe_env_buy_signal']['ago2']
         nwe_env_buy_signal_3ago     = buy.ta[freq]['nwe_env_buy_signal']['ago3']
 
-        # if buy.prod_id == 'BTC-USDC':
-        #     if nwe_env_buy_signal:
-        #         speak_async(f"{buy.prod_id} has a Nadaraya Watson Envelope Buy Trigger on the {freq} timeframe")
-
         if nwe_env_buy_signal:
             msg = f'NWE_ENV {freq} Envelope Breach detected (BULL)'
             buy.reason = msg.strip()
