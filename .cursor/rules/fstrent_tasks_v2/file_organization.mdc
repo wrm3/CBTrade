@@ -1,0 +1,77 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# File Organization Rule
+
+## Purpose
+Ensures AI agents correctly distinguish between working files (`/.fstrent_tasks_v2/`) and template files (`/templates/fstrent_tasks_v2/`) to prevent confusion and maintain system integrity.
+
+## Activation Triggers
+- Any file creation/modification request
+- Task management operations
+- Rule development activities
+- Documentation updates
+- MCP deployment preparation
+
+## Critical File Location Rules
+
+### Working Directory: `/.fstrent_tasks_v2/` (99% of operations)
+**USE FOR**:
+- Active task management (TASKS.md updates)
+- Project planning (PRD creation, goals)
+- Rule development and testing
+- Documentation updates
+- Memory archival operations
+
+### Template Directory: `/templates/fstrent_tasks_v2/` (1% of operations)
+**USE ONLY FOR**:
+- Updating installation templates
+- Adding rules that ALL projects need
+- MCP server deployment preparation
+
+## Decision Logic
+
+**Default Action**: Use `/.fstrent_tasks_v2/` (working directory)
+
+**Template Action Required When**:
+- Creating rule that every fstrent_tasks_v2 installation should have
+- Updating blank template structure
+- Preparing MCP deployment files
+
+## Implementation Guidelines
+
+### File Operations
+```
+Task Management → /.fstrent_tasks_v2/TASKS.md
+Rule Development → /.fstrent_tasks_v2/.cursor/rules/fstrent_tasks_v2/
+Project Planning → /.fstrent_tasks_v2/plans/
+Documentation → /.fstrent_tasks_v2/*.md
+Memory Archive → /.fstrent_tasks_v2/memory/
+```
+
+### Template Operations (Rare)
+```
+Universal Rule → /templates/fstrent_tasks_v2/.cursor/rules/fstrent_tasks_v2/
+Empty Template → /templates/fstrent_tasks_v2/.fstrent_tasks_v2/
+MCP Structure → /templates/fstrent_tasks_v2/
+```
+
+## Anti-Patterns to Avoid
+- ❌ Putting active tasks in template TASKS.md
+- ❌ Creating project-specific files in templates
+- ❌ Leaving completed work in template directories
+- ❌ Modifying templates during regular development
+
+## Validation Checkpoints
+1. **Before file creation**: Is this project-specific? → Use working directory
+2. **Before template modification**: Will ALL projects need this? → Proceed with caution
+3. **After operation**: Are templates still clean and minimal?
+
+## Integration Points
+- **Task Management**: Always use working TASKS.md
+- **Memory System**: Archive to working memory directory
+- **Rule Development**: Start in working rules, copy to templates if universal
+- **MCP Setup**: Templates get copied to target projects
+

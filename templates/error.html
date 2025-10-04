@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Error - CBTrade{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header" style="background-color: #fee2e2; border-color: var(--danger-color);">
+        <h1 class="card-title" style="color: var(--danger-color);">⚠️ Error Occurred</h1>
+    </div>
+    <div class="card-body">
+        <div class="mb-4">
+            <h2 class="font-medium mb-2">Error Message:</h2>
+            <p class="text-lg">{{ error_message }}</p>
+        </div>
+        
+        {% if error_details %}
+        <div class="mb-4">
+            <h3 class="font-medium mb-2">Details:</h3>
+            <pre class="text-sm" style="background: #f3f4f6; padding: 1rem; border-radius: 0.375rem; overflow-x: auto;">{{ error_details }}</pre>
+        </div>
+        {% endif %}
+        
+        <div class="grid grid-cols-2">
+            <a href="/" class="btn btn-primary text-center">← Back to Dashboard</a>
+            <button onclick="window.location.reload()" class="btn btn-secondary text-center">🔄 Retry</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

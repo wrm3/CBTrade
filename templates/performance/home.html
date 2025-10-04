@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Performance Analysis - CBTrade{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex justify-between items-center">
+    <h1 class="text-lg font-bold">Performance Analysis</h1>
+    
+    <!-- Test Mode Toggle -->
+    <div class="flex gap-2">
+        <a href="/performance?test_mode=N" class="btn {% if test_mode == 'N' %}btn-primary{% else %}btn-secondary{% endif %}">Live</a>
+        <a href="/performance?test_mode=Y" class="btn {% if test_mode == 'Y' %}btn-primary{% else %}btn-secondary{% endif %}">Test</a>
+        <a href="/performance?test_mode=ALL" class="btn {% if test_mode == 'ALL' %}btn-primary{% else %}btn-secondary{% endif %}">All</a>
+    </div>
+</div>
+
+<!-- Overall Performance Summary -->
+<div class="card mb-6">
+    <div class="card-header">
+        <h2 class="card-title">Overall Performance - {{ 'Live Trading' if test_mode == 'N' else 'Test Mode' if test_mode == 'Y' else 'All Trades' }}</h2>
+    </div>
+    <div class="card-body">
+        <div class="grid grid-cols-4">
+            <div class="metric">
+                <div class="metric-value">{{ data.overall.total_positions or 0 }}</div>
+                <div class="metric-label">Total Positions</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value {{ 'positive' if (data.overall.win_rate or 0) > 50 else 'negative' if (data.overall.win_rate or 0) < 50 else 'neutral' }}">
+                    {{ "%.1f"|format(data.overall.win_rate or 0) }}%
+                </div>
+                <div class="metric-label">Win Rate</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value {{ 'positive' if (data.overall.total_pnl or 0) > 0 else 'negative' if (data.overall.total_pnl or 0) < 0 else 'neutral' }}">
+                    ${{ "%.2f"|format(data.overall.total_pnl or 0) }}
+                </div>
+                <div class="metric-label">Total P&L</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value {{ 'positive' if (data.overall.return_on_investment or 0) > 0 else 'negative' if (data.overall.return_on_investment or 0) < 0 else 'neutral' }}">
+                    {{ "%.2f"|format(data.overall.return_on_investment or 0) }}%
+                </div>
+                <div class="metric-label">ROI</div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-4 mt-4">
+            <div class="metric">
+                <div class="metric-value">{{ data.overall.open_positions or 0 }}</div>
+                <div class="metric-label">Currently Open</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">{{ data.overall.closed_positions or 0 }}</div>
+                <div class="metric-label">Closed</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">${{ "%.2f"|format(data.overall.total_fees or 0) }}</div>
+                <div class="metric-label">Total Fees</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">{{ "%.1f"|format(data.overall.avg_hold_hours or 0) }}h</div>
+                <div class="metric-label">Avg Hold Time</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Performance by Product -->
+<div class="card mb-6">
+    <div class="card-header">
+        <h2 class="card-title">Performance by Product</h2>
+    </div>
+    <div class="card-body">
+        {% if data.by_product and data.by_product|length > 0 %}
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th class="text-center">Positions</th>
+                        <th class="text-center">Win Rate</th>
+                        <th class="text-right">Total P&L</th>
+                        <th class="text-right">ROI %</th>
+                        <th class="text-right">%/Hour</th>
+                        <th class="text-right">Avg Hold</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in data.by_product %}
+                    <tr>
+                        <td class="font-bold">
+                            <a href="/performance/drill-down?product={{ product.prod_id }}&test_mode={{ test_mode }}" 
+                               class="text-primary-color hover:underline">
+                                {{ product.prod_id }}
+                            </a>
+                        </td>
+                        <td class="text-center">{{ product.total_positions or 0 }}</td>
+                        <td class="text-center {{ 'positive' if (product.win_rate or 0) > 50 else 'negative' if (product.win_rate or 0) < 50 else 'neutral' }}">
+                            {{ "%.1f"|format(product.win_rate or 0) }}%
+                        </td>
+                        <td class="text-right font-medium {{ 'positive' if (product.total_pnl or 0) > 0 else 'negative' if (product.total_pnl or 0) < 0 else 'neutral' }}">
+                            ${{ "%.2f"|format(product.total_pnl or 0) }}
+                        </td>
+                        <td class="text-right {{ 'positive' if (product.roi_pct or 0) > 0 else 'negative' if (product.roi_pct or 0) < 0 else 'neutral' }}">
+                            {{ "%.2f"|format(product.roi_pct or 0) }}%
+                        </td>
+                        <td class="text-right {{ 'positive' if (product.pct_per_hour or 0) > 0 else 'negative' if (product.pct_per_hour or 0) < 0 else 'neutral' }}">
+                            {{ "%.4f"|format(product.pct_per_hour or 0) }}%
+                        </td>
+                        <td class="text-right">{{ "%.1f"|format(product.avg_hold_hours_closed or 0) }}h</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center neutral">No performance data available for current filters</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Performance by Strategy -->
+<div class="card mb-6">
+    <div class="card-header">
+        <h2 class="card-title">Performance by Strategy</h2>
+    </div>
+    <div class="card-body">
+        {% if data.by_strategy and data.by_strategy|length > 0 %}
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Strategy</th>
+                        <th class="text-center">Frequency</th>
+                        <th class="text-center">Positions</th>
+                        <th class="text-center">Markets</th>
+                        <th class="text-center">Win Rate</th>
+                        <th class="text-right">Total P&L</th>
+                        <th class="text-right">ROI %</th>
+                        <th class="text-right">Avg Hold</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for strategy in data.by_strategy[:15] %}
+                    <tr>
+                        <td class="font-medium">
+                            <a href="/performance/drill-down?strategy={{ strategy.buy_strat_name }}&strategy_freq={{ strategy.buy_strat_freq }}&test_mode={{ test_mode }}" 
+                               class="text-primary-color hover:underline">
+                                {{ strategy.buy_strat_name }}
+                            </a>
+                        </td>
+                        <td class="text-center">{{ strategy.buy_strat_freq }}</td>
+                        <td class="text-center">{{ strategy.total_positions or 0 }}</td>
+                        <td class="text-center">{{ strategy.markets_traded or 0 }}</td>
+                        <td class="text-center {{ 'positive' if (strategy.win_rate or 0) > 50 else 'negative' if (strategy.win_rate or 0) < 50 else 'neutral' }}">
+                            {{ "%.1f"|format(strategy.win_rate or 0) }}%
+                        </td>
+                        <td class="text-right font-medium {{ 'positive' if (strategy.total_pnl or 0) > 0 else 'negative' if (strategy.total_pnl or 0) < 0 else 'neutral' }}">
+                            ${{ "%.2f"|format(strategy.total_pnl or 0) }}
+                        </td>
+                        <td class="text-right {{ 'positive' if (strategy.roi_pct or 0) > 0 else 'negative' if (strategy.roi_pct or 0) < 0 else 'neutral' }}">
+                            {{ "%.2f"|format(strategy.roi_pct or 0) }}%
+                        </td>
+                        <td class="text-right">{{ "%.1f"|format(strategy.avg_hold_hours or 0) }}h</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center neutral">No strategy performance data available</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Quick Analysis Tools -->
+<div class="grid grid-cols-4 gap-4">
+    <a href="/performance/by-product?test_mode={{ test_mode }}" class="btn btn-primary text-center">
+        📊 Product Analysis
+    </a>
+    <a href="/performance/by-strategy?test_mode={{ test_mode }}" class="btn btn-primary text-center">
+        🎯 Strategy Analysis  
+    </a>
+    <a href="/performance/drill-down?test_mode={{ test_mode }}" class="btn btn-secondary text-center">
+        🔍 Custom Drill-down
+    </a>
+    <a href="/positions/at-risk" class="btn btn-warning text-center" style="background: var(--warning-color); color: white;">
+        ⚠️ At-Risk Positions
+    </a>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Performance page auto-refresh every 2 minutes
+        startAutoRefresh(120);
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,132 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Context Optimization & Efficiency Monitoring
+
+Whenever you use this rule, start your message with:
+
+"Implementing context optimization protocols..."
+
+This rule implements Task 0: Context Window Optimization & Task Management Efficiency to ensure the fstrent_tasks_v2 system doesn't become counterproductive by consuming excessive context window space.
+
+## MCP Tools Available for Reference
+At the start of every new plan or task execution, reference the comprehensive MCP Tools Inventory:
+
+**📖 ALWAYS CONSULT**: `.fstrent_tasks_v2/MCP_TOOLS_INVENTORY.md` for complete tool catalog
+
+The inventory contains detailed documentation for all available MCP tools including:
+- **Database Tools**: MySQL/Oracle read-only and full CRUD operations
+- **Web & Browser Tools**: Search, scraping, and full browser automation
+- **Development Tools**: GitHub integration, documentation access, Python execution
+- **System Tools**: Environment setup, task management, computer automation  
+- **File Operations**: Complete file and codebase management capabilities
+- **Analysis Tools**: Sequential thinking, diagram creation, knowledge management
+
+**Key Integration Points:**
+- Reference inventory before starting complex tasks
+- Use tool combinations for comprehensive workflows  
+- Validate tool selection against task requirements
+- Consider resource efficiency when selecting tools
+
+## Context Monitoring Requirements
+
+### 1. Manual Context Tracking
+Every response SHOULD include estimated context metrics in the footer using manual calculations:
+
+```
+---
+Context Window: ~[estimated_current]/[model_limit] tokens (~[percentage]%)
+Task Overhead: ~[estimated_task_tokens] tokens (~[percentage]% of used context)
+MCP Tools Used: [manually_tracked_tools]
+Efficiency Status: [OPTIMAL|WARNING|CRITICAL based on manual threshold check]
+Timestamp: [current_UTC_timestamp]
+---
+```
+
+**Manual Calculation Example:**
+- Count characters in conversation: ~50,000 chars
+- Estimate tokens: 50,000 ÷ 4 = ~12,500 tokens  
+- Count task management lines: ~30 lines × 50 chars avg = 1,500 chars
+- Task tokens: 1,500 ÷ 4 = ~375 tokens
+- Overhead: 375 ÷ 12,500 × 100 = ~3% (OPTIMAL)
+
+### 2. Efficiency Thresholds
+- **OPTIMAL**: Task management overhead ≤ 15% of used context
+- **WARNING**: Task management overhead 16-25% of used context  
+- **CRITICAL**: Task management overhead > 25% of used context
+
+### 3. Automatic Optimization Triggers
+When efficiency status reaches WARNING or CRITICAL:
+- Suggest task archival to memory system
+- Recommend plan condensation strategies
+- Propose context cleanup actions
+- Alert user to potential performance impact
+
+### 4. Context Management Strategies
+
+#### When Context Usage > 75%:
+- Archive completed tasks to memory immediately
+- Condense verbose task descriptions 
+- Remove redundant rule repetition
+- Suggest breaking work into smaller focused sessions
+
+#### When Task Overhead > 20%:
+- Prioritize essential task information only
+- Defer detailed documentation to completion
+- Use task IDs instead of full descriptions when referencing
+- Streamline response formats
+
+#### When MCP Tool Usage is High:
+- Cache frequently accessed documentation
+- Combine related tool calls into single operations
+- Use parallel tool execution to minimize context buildup
+- Reference tool capabilities without repeating full descriptions
+
+### 5. Manual Measurement Techniques
+Calculate these metrics using manual estimation:
+- **Token Estimation**: Use ~4 characters = 1 token rule for rough calculations
+- **Context Window**: Assume 200,000 tokens for Claude models, 128,000 for GPT-4
+- **Task Content Detection**: Count lines containing fstrent_tasks_v2 patterns (see patterns list above)
+- **Overhead Calculation**: (Task content characters ÷ 4) ÷ (Total content characters ÷ 4) × 100
+- **Tool Tracking**: Manually track which MCP tools were used in current session
+- **Status Determination**: Apply thresholds to calculated overhead percentage
+
+### 6. Optimization Actions
+
+#### Immediate Actions (Auto-Execute):
+- Use abbreviated task references
+- Minimize rule repetition in responses
+- Combine related operations
+- Archive completed work
+
+#### Suggested Actions (User Approval):
+- Move completed tasks to memory archive
+- Condense verbose plans or documentation
+- Break large tasks into smaller focused sessions
+- Reset context with essential-only information
+
+### 7. Integration Points
+This rule activates automatically:
+- At start of every response
+- When new tasks are created
+- When plans are updated
+- When context efficiency drops below thresholds
+- When MCP tools are utilized extensively
+
+### 8. Emergency Context Management
+When context usage exceeds 90%:
+1. **IMMEDIATE**: Stop all non-essential operations
+2. **PRIORITY**: Complete current critical task only
+3. **ARCHIVE**: Move all completed work to memory
+4. **RESET**: Suggest starting fresh session with condensed context
+5. **ALERT**: Warn user of potential context overflow
+
+This context optimization system ensures the fstrent_tasks_v2 system enhances rather than hinders productivity by maintaining optimal context utilization at all times.
+
+
+
+
+
+

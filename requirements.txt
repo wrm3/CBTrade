@@ -1,0 +1,33 @@
+# CBTrade - Cryptocurrency Trading Bot Requirements
+# Install with: pip install -r requirements.txt
+
+# Database (MySQL)
+pymysql>=1.1.0
+cryptography>=43.0.0
+
+# Coinbase API
+coinbase-advanced-py>=1.8.2
+certifi>=2024.8.30
+
+# Data Analysis & Technical Analysis
+pandas>=2.2.3
+pandas-ta>=0.3.14b0
+numpy>=2.1.0
+
+# Web Interface
+flask>=3.0.3
+werkzeug>=3.0.4
+
+# Utilities
+python-dotenv>=1.0.0
+psutil>=7.0.0
+requests>=2.32.3
+pyyaml>=6.0.2
+
+# Custom FST packages
+fstrent-bkitup>=0.1.4
+fstrent-charts>=1.0.5
+fstrent-colors>=1.0.12
+
+# Optional: Text-to-speech notifications
+pyttsx3>=2.99

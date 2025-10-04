@@ -1,0 +1,147 @@
+# Context Management Rule
+
+Whenever you use this rule, start your message with:
+
+"Accessing project context..."
+
+This rule ensures AI agents maintain comprehensive project awareness during task execution by automatically referencing project context, validating task connections to project goals, and providing context-aware guidance throughout the development workflow.
+
+## Core Purpose
+
+The Context Management Rule serves as the bridge between individual task execution and overall project objectives, ensuring that every development action is aligned with project goals and that AI agents maintain situational awareness across sessions and task boundaries.
+
+## Automatic Rule Activation
+
+This rule activates automatically in the following scenarios:
+
+### 1. Task Start Workflow
+When beginning any task (status: pending → inprogress):
+- **MANDATORY**: Display PROJECT_CONTEXT.md overview
+- **VALIDATE**: Ensure task includes proper `project_context` field
+- **CONNECT**: Explain how current task relates to project goals
+- **ORIENT**: Reference current phase and success criteria
+
+### 2. Task Creation Workflow  
+When creating new tasks:
+- **REQUIRE**: Non-empty `project_context` field in YAML frontmatter
+- **VALIDATE**: Context description connects task to project goals
+- **SUGGEST**: Improvements to context clarity if description is vague
+- **CHECK**: Alignment with current project phase objectives
+
+### 3. Project Milestone Updates
+When project direction or goals change:
+- **ASSESS**: Impact on active tasks and their context fields
+- **RECOMMEND**: Updates to task context descriptions if needed
+- **NOTIFY**: Dependencies that may be affected by goal changes
+- **ARCHIVE**: Outdated context documentation with clear reasoning
+
+## Context Display Framework
+
+### Project Overview Template
+When displaying project context, use this structured format:
+
+```
+📋 **PROJECT CONTEXT OVERVIEW**
+
+🎯 **Mission**: [Brief mission from PROJECT_CONTEXT.md]
+📍 **Current Phase**: [Phase and focus area]
+✅ **Success Criteria**: [Key objectives for current phase]
+🔄 **Current Status**: [Active tasks, progress, blockers]
+
+🎯 **Task Connection**: [How current task advances project goals]
+```
+
+### Task Context Validation
+For each task's `project_context` field, verify:
+- **Clarity**: Description is specific and understandable
+- **Relevance**: Clear connection to project goals or current phase
+- **Accuracy**: Reflects current project direction (not outdated)
+- **Completeness**: Sufficient detail for context understanding
+
+## Context Management Operations
+
+### Context Retrieval Functions
+
+#### Primary Context Source
+- **File**: `.fstrent_tasks_v2/PROJECT_CONTEXT.md`
+- **Content**: Mission, current phase, success criteria, system purpose
+- **Usage**: Reference at task start and for context validation
+
+#### Secondary Context Sources
+- **Active Tasks**: `.fstrent_tasks_v2/TASKS.md` for current development focus
+- **System Status**: Overall progress and phase completion status
+- **Memory Archive**: Historical context for completed task patterns
+
+#### Context Update Workflows
+
+**When PROJECT_CONTEXT.md Changes:**
+1. **Identify**: Tasks with potentially outdated context fields
+2. **Review**: Active task `project_context` descriptions for accuracy
+3. **Recommend**: Updates to task context fields if needed
+4. **Document**: Reasons for context changes in task update notes
+
+**When Phase Transitions Occur:**
+1. **Archive**: Completed phase tasks and documentation
+2. **Update**: PROJECT_CONTEXT.md with new phase information
+3. **Assess**: Remaining active tasks for continued relevance
+4. **Realign**: Task context descriptions with new phase objectives
+
+### Context-Aware Task Templates
+
+#### Standard Task Context Template
+```yaml
+project_context: 'Advances [specific project goal] by [task contribution] during [current phase], supporting [success criteria]'
+```
+
+#### Bug Fix Context Template
+```yaml
+project_context: 'Resolves [impact] that prevents [project objective], restoring [capability] essential for [current phase]'
+```
+
+#### Retroactive Fix Context Template
+```yaml
+project_context: 'Documents previously completed [solution] that addressed [project need], maintaining [system capability]'
+```
+
+## Validation Logic
+
+### Project Context Field Requirements
+
+**For All Task Types:**
+- `project_context` field must be non-null and non-empty
+- Description must be at least 20 characters
+- Must reference specific project goals or phase objectives
+- Should explain task's contribution to overall mission
+
+**For Bug Fixes:**
+- Context must explain impact on project goals
+- Should identify which project capabilities are affected
+- Must connect resolution to continued project progress
+
+**For Retroactive Fixes:**
+- Context must explain why documentation is important for project
+- Should reference the project need that was originally addressed
+
+## Integration Points
+
+### Task Workflow Integration
+- **Before Starting**: Display project context overview
+- **During Execution**: Reference context when making design decisions
+- **At Completion**: Verify task outcomes align with stated context
+- **When Archiving**: Preserve context information in task log
+
+### Rule System Integration
+- **Memory Rule**: Use context for relevance assessment when consulting archives
+- **Expand Rule**: Consider project context when evaluating task complexity
+- **Tool Awareness**: Reference context when selecting appropriate MCP tools
+- **Planning Rules**: Ensure new PRDs align with established project context
+
+---
+
+This context management system ensures that individual task execution remains aligned with overall project objectives while providing AI agents with the situational awareness needed for effective collaboration.
+
+
+---
+
+This context management system ensures that individual task execution remains aligned with overall project objectives while providing AI agents with the situational awareness needed for effective collaboration.
+

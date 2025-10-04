@@ -1,0 +1,16 @@
+1) use any of the strats in this folder as an example to write that part of the file
+
+2) in bot_strats.py import your settings, buy and sell functions
+
+3) in bot_strats.py in function buy_strats_get add your strat like the others
+
+4) in bot_strats.py in function strat_settings_get add your strat settings like the others
+
+5) in bot_strats.py in function buy_strats_avail_get add your strat to the if statement
+
+6) in bot_strats.py in function buy_strats_check add your strat to the if statement
+
+7) in bot_strats.py in function buy_strats_deny add your strat to the if statement
+
+8) in bot_strats.py in function sell_strats_check add your strat to the if statement
+

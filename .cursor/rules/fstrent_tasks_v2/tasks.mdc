@@ -1,0 +1,117 @@
+# AI Task Management System Rule
+
+Whenever you use this rule, start your message with the following:
+
+"Checking fstrent_tasks_v2 tasks..."
+
+This rule specifies task creation and processing in the project's file-based AI task system. You are a senior software architect and product manager expert in analyzing PRDs to generate well-structured development tasks with logical order and full dependency awareness.
+
+## Core Concepts
+
+1. **Single Active Folder:** `.fstrent_tasks_v2/tasks/` holds all active task files. Status tracked in YAML frontmatter.
+2. **Master Checklist:** `.fstrent_tasks_v2/TASKS.md` is the primary control interface. **Agent must keep synchronized with task files.**
+3. **Archive:** `.fstrent_tasks_v2/memory/tasks/` stores completed/failed tasks no longer needing active tracking.
+4. **Archive Log:** `.fstrent_tasks_v2/memory/TASKS_LOG.md` is append-only log for archived task summaries.
+
+## Directory Structure
+
+```
+.fstrent_tasks_v2/
+  tasks/          # ALL active task files (task{id}_name.md)
+  memory/
+    tasks/        # Archived completed/failed task files
+    TASKS_LOG.md  # Append-only archived task log
+  TASKS.md        # Master checklist of active tasks
+```
+
+## Task File Format
+
+**Filename:** `task{id}_descriptive_name.md` (unique sequential ID, kebab-case)
+**Sub-tasks:** `task{parent_id}.{sub_id}_descriptive_name.md`
+
+**Next Task ID Process:**
+1. List `.fstrent_tasks_v2/tasks/` and `.fstrent_tasks_v2/memory/tasks/`
+2. Parse `task{id}_` pattern (top-level only)
+3. Find highest ID + 1 (or 1 if none found)
+
+**YAML Frontmatter:**
+
+```yaml
+---
+id: {id}                   # Numeric (42) or string ("42.1") for sub-tasks
+title: 'Task Title'
+type: task                 # task|bug_fix|retroactive_fix
+status: pending            # pending|inprogress|completed|failed
+priority: medium           # critical|high|medium|low
+feature: Feature Name
+subsystems:                # From SUBSYSTEMS.md registry
+  - Core Task Management
+project_context: Brief connection to project goal
+dependencies:              # Task IDs this depends on
+  - 3
+  - 5.2
+assigned_agent: null       # Agent working (null if not active)
+created_at: "YYYY-MM-DDTHH:MM:SSZ"  # Use date command, never hardcode
+started_at: null           # Set when -> inprogress
+completed_at: null         # Set when -> completed/failed
+error_log: null            # Failure reason
+story_points: null         # Effort estimation (optional)
+sprint: null               # Sprint/iteration (optional)
+---
+```
+
+## Task Content Structure
+
+- **Description:** Brief goal summary (for TASKS.md)
+- **Details:** Bulleted requirements and steps
+- **Test Strategy:** Completion verification method
+- **Agent Notes:** Optional execution notes
+
+## `TASKS.md` Master Checklist
+
+**CRITICAL:** Update immediately when task status changes or new tasks planned.
+
+**Format:**
+```markdown
+- [ICON] **ID {id}: {Title}** (Priority: {priority}) [{Type}] {STORY_POINTS}{STATUS_NOTE}
+> Dependencies: {dep_id1}, {dep_id2}... (if exist)
+> Subsystems: {subsystem1}, {subsystem2}... (if exist)
+> {Description}
+```
+
+**Icons:** `[ ]` Pending, `[-]` In Progress, `[x]` Completed, `[!]` Failed
+**Types:** `[Task]`, `[Bug]`, `[Fix]`
+**Story Points:** `(3 SP)` if specified
+**Status Note:** `(Failed)` if failed
+
+## Agent Responsibilities
+
+1. **Sync:** Keep `TASKS.md` aligned with task file status
+2. **File Synchronization Validation:** ENSURE every task in TASKS.md has corresponding `task{id}_*.md` file
+3. **Dependencies:** Verify all dependency IDs have `status: completed` before starting
+4. **Status Updates:**
+   - **Start:** Update YAML (`inprogress`, `assigned_agent`, `started_at`) + `TASKS.md` (`[-]`)
+   - **Complete:** Update YAML (`completed`, `assigned_agent: null`, `completed_at`) + `TASKS.md` (`[x]`)
+   - **Fail:** Update YAML (`failed`, `assigned_agent: null`, `completed_at`, `error_log`) + `TASKS.md` (`[!]`)
+   - **CRITICAL:** If task file doesn't exist during status update, CREATE IT immediately
+5. **Archive:** Move completed/failed tasks to memory, log to `TASKS_LOG.md`, remove from `TASKS.md`
+
+## Utilities
+
+**Timestamps:** Always use command, never hardcode:
+```bash
+date -u +"%Y-%m-%dT%H:%M:%SZ"
+```
+
+## Commands
+
+- **Show Tasks:** Display `TASKS.md`
+- **Create Task:** Plan all, update `TASKS.md`, create files
+- **Start Task:** Find first pending, check dependencies, update if met
+- **Complete Task:** Check Test Strategy section, update YAML + `TASKS.md`
+- **Archive:** Move completed/failed, log, remove from `TASKS.md`
+
+**Timestamps:** Always use command, never hardcode:
+```bash
+date -u +"%Y-%m-%dT%H:%M:%SZ"
+```

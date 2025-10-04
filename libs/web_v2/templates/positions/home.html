@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}Open Positions - CBTrade{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex justify-between items-center">
+    <h1 class="text-lg font-bold">Open Positions</h1>
+    
+    <!-- Sort Options -->
+    <div class="flex gap-2">
+        <select id="sortSelect" onchange="updateSort()" class="btn btn-secondary">
+            <option value="pnl_desc" {% if current_sort == 'pnl_desc' %}selected{% endif %}>P&L High to Low</option>
+            <option value="pnl_asc" {% if current_sort == 'pnl_asc' %}selected{% endif %}>P&L Low to High</option>
+            <option value="age_desc" {% if current_sort == 'age_desc' %}selected{% endif %}>Oldest First</option>
+            <option value="age_asc" {% if current_sort == 'age_asc' %}selected{% endif %}>Newest First</option>
+            <option value="invested_desc" {% if current_sort == 'invested_desc' %}selected{% endif %}>Largest Investment</option>
+            <option value="product" {% if current_sort == 'product' %}selected{% endif %}>By Product</option>
+            <option value="strategy" {% if current_sort == 'strategy' %}selected{% endif %}>By Strategy</option>
+        </select>
+    </div>
+</div>
+
+<!-- Positions Summary by Product -->
+<div class="card mb-6">
+    <div class="card-header">
+        <h2 class="card-title">Summary by Product</h2>
+    </div>
+    <div class="card-body">
+        {% if data.by_product and data.by_product|length > 0 %}
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th class="text-center">Count</th>
+                        <th class="text-right">Invested</th>
+                        <th class="text-right">Current Value</th>
+                        <th class="text-right">Unrealized P&L</th>
+                        <th class="text-center">Win/Lose</th>
+                        <th class="text-right">Avg Age</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in data.by_product %}
+                    <tr>
+                        <td class="font-bold">{{ product.prod_id }}</td>
+                        <td class="text-center">{{ product.open_count }}</td>
+                        <td class="text-right">${{ "%.2f"|format(product.total_invested or 0) }}</td>
+                        <td class="text-right">${{ "%.2f"|format(product.current_value or 0) }}</td>
+                        <td class="text-right font-medium {{ 'positive' if (product.total_unrealized_pnl or 0) > 0 else 'negative' if (product.total_unrealized_pnl or 0) < 0 else 'neutral' }}">
+                            ${{ "%.2f"|format(product.total_unrealized_pnl or 0) }}
+                        </td>
+                        <td class="text-center">
+                            <span class="positive">{{ product.currently_winning or 0 }}</span> / 
+                            <span class="negative">{{ product.currently_losing or 0 }}</span>
+                        </td>
+                        <td class="text-right">{{ "%.1f"|format(product.avg_hours_held or 0) }}h</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center neutral">No open positions found</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Individual Positions -->
+<div class="card mb-6">
+    <div class="card-header">
+        <h2 class="card-title">Individual Positions</h2>
+    </div>
+    <div class="card-body">
+        {% if data.open_positions and data.open_positions|length > 0 %}
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Product</th>
+                        <th>Strategy</th>
+                        <th class="text-right">Invested</th>
+                        <th class="text-right">Current Value</th>
+                        <th class="text-right">P&L</th>
+                        <th class="text-right">%</th>
+                        <th class="text-right">Hold Time</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pos in data.open_positions[:50] %}
+                    <tr>
+                        <td class="font-medium">#{{ pos.pos_id }}</td>
+                        <td class="font-medium">{{ pos.prod_id }}</td>
+                        <td class="text-sm">{{ pos.buy_strat_name }}-{{ pos.buy_strat_freq }}</td>
+                        <td class="text-right">${{ "%.2f"|format(pos.invested or 0) }}</td>
+                        <td class="text-right">${{ "%.2f"|format(pos.current_value or 0) }}</td>
+                        <td class="text-right font-medium {{ 'positive' if (pos.unrealized_pnl or 0) > 0 else 'negative' if (pos.unrealized_pnl or 0) < 0 else 'neutral' }}">
+                            ${{ "%.2f"|format(pos.unrealized_pnl or 0) }}
+                        </td>
+                        <td class="text-right {{ 'positive' if (pos.unrealized_pct or 0) > 0 else 'negative' if (pos.unrealized_pct or 0) < 0 else 'neutral' }}">
+                            {{ "%.2f"|format(pos.unrealized_pct or 0) }}%
+                        </td>
+                        <td class="text-right">
+                            <span class="{% if (pos.hours_held or 0) > 168 %}negative{% elif (pos.hours_held or 0) > 24 %}warning{% else %}neutral{% endif %}">
+                                {{ "%.1f"|format(pos.hours_held or 0) }}h
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge {% if pos.status == 'WINNING' %}badge-success{% elif pos.status == 'LOSING' %}badge-danger{% else %}badge-info{% endif %}">
+                                {{ pos.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% if data.open_positions|length > 50 %}
+        <p class="text-center text-sm neutral mt-4">Showing first 50 positions. Total: {{ data.open_positions|length }}</p>
+        {% endif %}
+        
+        {% else %}
+        <p class="text-center neutral">No open positions found</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- At-Risk Positions Alert -->
+{% if data.at_risk and data.at_risk|length > 0 %}
+<div class="card" style="border-color: var(--warning-color);">
+    <div class="card-header" style="background-color: #fef3c7;">
+        <h2 class="card-title" style="color: var(--warning-color);">⚠️ Positions Needing Attention</h2>
+    </div>
+    <div class="card-body">
+        <p class="mb-4">{{ data.at_risk|length }} positions may need attention (losing >5% or held >24h):</p>
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Product</th>
+                        <th>Strategy</th>
+                        <th class="text-right">P&L</th>
+                        <th class="text-right">%</th>
+                        <th class="text-right">Hold Time</th>
+                        <th class="text-center">Risk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pos in data.at_risk[:10] %}
+                    <tr>
+                        <td class="font-medium">#{{ pos.pos_id }}</td>
+                        <td>{{ pos.prod_id }}</td>
+                        <td class="text-sm">{{ pos.buy_strat_name }}-{{ pos.buy_strat_freq }}</td>
+                        <td class="text-right negative font-medium">${{ "%.2f"|format(pos.unrealized_pnl or 0) }}</td>
+                        <td class="text-right negative">{{ "%.2f"|format(pos.unrealized_pct or 0) }}%</td>
+                        <td class="text-right">{{ "%.1f"|format(pos.hours_held or 0) }}h</td>
+                        <td class="text-center">
+                            <span class="badge {% if pos.risk_category == 'HIGH_LOSS' %}badge-danger{% elif pos.risk_category == 'VERY_OLD' %}badge-warning{% else %}badge-info{% endif %}">
+                                {{ pos.risk_category.replace('_', ' ') }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-4">
+            <a href="/positions/at-risk" class="btn btn-warning" style="background: var(--warning-color); color: white;">View All At-Risk Positions →</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Quick Actions -->
+<div class="grid grid-cols-3 mt-6">
+    <a href="/positions/at-risk" class="btn btn-warning text-center" style="background: var(--warning-color); color: white;">
+        View At-Risk Positions
+    </a>
+    <a href="/performance/drill-down" class="btn btn-secondary text-center">
+        Performance Drill-down
+    </a>
+    <a href="/balances" class="btn btn-secondary text-center">
+        Check Balances
+    </a>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function updateSort() {
+        const select = document.getElementById('sortSelect');
+        const sortValue = select.value;
+        window.location.href = `/positions?sort=${sortValue}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-refresh every 30 seconds for positions
+        startAutoRefresh(30);
+    });
+</script>
+{% endblock %}

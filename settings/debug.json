@@ -1,0 +1,30 @@
+{
+    "edited_yn": "N",
+    "elapse_max": {
+        "***": 5
+    },
+    "performance_thresholds": {
+        "show_optimization_messages": false,
+        "show_on_slow_performance": true,
+        "cache_time_threshold": 0.5,
+        "total_time_threshold": 5.0,
+        "position_processing_threshold": 3.0,
+        "balance_cache_threshold": 1.0,
+        "strategy_cache_threshold": 0.5,
+        "ta_cache_threshold": 1.0
+    },
+    "error_handling": {
+        "log_errors": true,
+        "log_timing": false,
+        "continue_on_error": true,
+        "timing_threshold": 2.0,
+        "critical_exceptions": [
+            "SystemExit",
+            "KeyboardInterrupt",
+            "MemoryError",
+            "ConnectionError"
+        ],
+        "show_stack_trace": true,
+        "error_log_file": "logs/error_handler.log"
+    }
+}

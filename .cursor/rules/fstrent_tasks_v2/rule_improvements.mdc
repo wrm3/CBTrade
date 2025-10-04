@@ -1,0 +1,153 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Rule Improvement Framework
+
+Whenever you use this rule, start your message with the following:
+
+"Analyzing rule system for improvements..."
+
+This rule provides systematic analysis and evolution mechanisms for the fstrent_tasks_v2 rule system, ensuring rules remain effective, efficient, and aligned with system goals through continuous improvement.
+
+## Purpose
+
+Establish feedback loops and improvement mechanisms for rule effectiveness, identify optimization opportunities, and evolve the rule system based on usage patterns and outcomes.
+
+## Improvement Analysis Areas
+
+### Rule Effectiveness Metrics
+- **Activation Frequency**: How often each rule triggers versus expected frequency
+- **Success Rate**: Percentage of rule activations that achieve intended outcomes
+- **User Compliance**: Rate of user acceptance vs. bypass for mandatory rules
+- **Integration Efficiency**: How well rules coordinate with each other
+
+### Rule Quality Assessment
+- **Length Analysis**: Rule complexity versus effectiveness (anti-bloat compliance)
+- **Clarity Metrics**: User understanding and implementation success rates
+- **Coverage Gaps**: Scenarios where rules don't provide adequate guidance
+- **Redundancy Detection**: Overlapping functionality between rules
+
+## Improvement Triggers
+
+### Periodic Review Points
+- **Monthly Rule Audit**: Systematic review of all rule performance metrics
+- **System Evolution Events**: Major system changes requiring rule updates
+- **User Feedback Sessions**: Structured collection of rule usability feedback
+- **Anti-Pattern Detection**: Recurring issues indicating rule insufficiency
+
+### Performance-Based Triggers
+- **Low Activation Rate**: Rules that aren't triggering when expected
+- **High Bypass Rate**: Mandatory rules frequently overridden by users
+- **Poor Integration**: Rules that don't coordinate well with system workflows
+- **Length Violations**: Rules exceeding anti-bloat guidelines without justification
+
+## Analysis Framework
+
+### Rule Performance Data Collection
+```yaml
+rule_analysis:
+  rule_name: "{rule_name}"
+  period: "{time_period}"
+  metrics:
+    activations: {count}
+    successes: {count}
+    bypasses: {count}
+    user_satisfaction: {rating_1_to_5}
+    integration_efficiency: {percentage}
+    length_compliance: {within_guidelines_boolean}
+```
+
+### Improvement Recommendation Template
+```markdown
+## Rule Improvement Analysis: {Rule Name}
+
+### Current Performance
+- **Activation Rate**: {actual} vs {expected}
+- **Success Rate**: {percentage}
+- **User Compliance**: {percentage}
+- **Anti-Bloat Status**: {compliant/violating}
+
+### Identified Issues
+- {Issue 1}: {Description and impact}
+- {Issue 2}: {Description and impact}
+
+### Recommended Improvements
+1. **{Improvement Type}**: {Specific recommendation}
+2. **{Improvement Type}**: {Specific recommendation}
+
+### Implementation Priority
+- **High**: {Critical improvements}
+- **Medium**: {Quality improvements}
+- **Low**: {Enhancement improvements}
+```
+
+## Common Improvement Patterns
+
+### Anti-Bloat Optimization
+**Problem**: Rule exceeds length guidelines without proportional effectiveness
+**Solution**: Streamline content, remove redundancy, focus on core functionality
+**Example**: Condense verbose templates, eliminate repetitive examples
+
+### Integration Enhancement
+**Problem**: Rule operates in isolation without considering system context
+**Solution**: Add cross-rule coordination, shared data structures, unified workflows
+**Example**: Memory rule coordination with task creation rules
+
+### User Experience Improvements
+**Problem**: Rules create friction without proportional value
+**Solution**: Simplify interfaces, reduce mandatory checkpoints, improve clarity
+**Example**: Streamline scope clarification questionnaire based on user feedback
+
+### Coverage Gap Resolution
+**Problem**: System scenarios not addressed by existing rules
+**Solution**: Extend existing rules or create focused new rules
+**Example**: Add edge case handling to existing workflow rules
+
+## Implementation Guidelines
+
+### Step 1: Data Collection
+- Gather rule activation and outcome data from system logs
+- Collect user feedback through structured surveys or observation
+- Analyze rule length and complexity against anti-bloat guidelines
+- Document cross-rule interaction patterns and effectiveness
+
+### Step 2: Performance Analysis
+- Calculate effectiveness metrics for each rule
+- Identify rules with concerning performance patterns
+- Assess anti-bloat compliance across rule system
+- Evaluate overall system cohesion and workflow efficiency
+
+### Step 3: Improvement Planning
+- Prioritize improvements based on impact and effort
+- Design specific changes to address identified issues
+- Plan implementation sequence to minimize system disruption
+- Prepare success metrics for measuring improvement effectiveness
+
+### Step 4: Implementation and Validation
+- Implement approved improvements incrementally
+- Monitor system performance and user satisfaction changes
+- Validate that improvements achieve intended outcomes
+- Document lessons learned for future improvement cycles
+
+## Integration Points
+
+**Metrics Collection Integration:**
+- Use metrics collection rule to gather rule performance data
+- Leverage system health indicators for improvement prioritization
+- Track improvement outcomes using established measurement frameworks
+
+**Context Management Integration:**
+- Ensure rule improvements align with project context and goals
+- Maintain consistency with overall system architecture and philosophy
+- Consider rule changes impact on project workflow efficiency
+
+**Memory System Integration:**
+- Archive rule improvement decisions and outcomes
+- Build knowledge base of successful improvement patterns
+- Learn from past improvement attempts and their effectiveness
+
+---
+
+*This framework ensures the rule system evolves continuously to maintain optimal effectiveness and user experience.*

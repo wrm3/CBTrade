@@ -1,0 +1,109 @@
+# AI Memory System with Rule Activation
+
+Whenever you use this rule, start your message with the following:
+
+"Checking fstrent_tasks_v2 memory..."
+
+This memory system in `.fstrent_tasks_v2/memory/` stores history of completed, failed, or superseded work, providing context for development. Archives both tasks and plans.
+
+## Rule Activation
+
+```yaml
+rule_activation:
+  rule_name: "memory_management"
+  trigger_points: [PRE_TASK_CREATION, POST_TASK_COMPLETION, PRE_PLANNING, SYSTEM_MAINTENANCE]
+  activation_level: MANDATORY
+  bypass_conditions: ["emergency_override", "system_administration", "memory_maintenance"]
+  user_confirmation_required: true
+```
+
+## Activation Points
+
+### PRE_TASK_CREATION (MANDATORY)
+**Trigger:** Before any new task creation
+**Actions:**
+1. Search TASKS_LOG.md for similar keywords/subsystems
+2. Present historical findings with relevance scores
+3. Check task dependencies from archived work
+4. Require user acknowledgment before proceeding
+
+**User Confirmation:**
+```
+☐ Reviewed similar historical tasks
+☐ Understand context and implications  
+☐ Proceed with task creation
+☐ No similar work OR need different approach
+[ EMERGENCY OVERRIDE ] (requires justification)
+```
+
+### POST_TASK_COMPLETION (MANDATORY)
+**Trigger:** When 5+ completed tasks in `.fstrent_tasks_v2/tasks/`
+**Actions:**
+1. Auto-detect completed tasks
+2. Present archival list for confirmation
+3. Execute archival (move files, update logs)
+4. Validate completion
+
+### PRE_PLANNING (TRIGGERED)
+**Trigger:** Before creating/modifying PRDs
+**Actions:**
+1. Search PLANS_LOG.md for related history
+2. Check deprecated plans for value
+3. Reference superseded approaches
+4. Present planning context
+
+### SYSTEM_MAINTENANCE (TRIGGERED)
+**Actions:**
+1. Validate memory system integrity
+2. Check for orphaned files
+3. Ensure log consistency
+4. Optimize organization
+
+## Memory Structure
+
+### Task Archive
+- **`.fstrent_tasks_v2/memory/tasks/`**: Full archived task files (`task{id}_name.md`)
+- **`.fstrent_tasks_v2/memory/TASKS_LOG.md`**: Append-only chronological log
+
+**TASKS_LOG.md Format:**
+```markdown
+[YYYY-MM-DD HH:MM:SS] - Task ID - Status - Title - Agent - Duration
+> Dependencies: {deps} (if exist)
+> Subsystems: {subsystems} (if exist)
+> Description summary with context
+```
+
+### Plan Archive
+- **`.fstrent_tasks_v2/memory/plans/`**: Archived PRD files
+- **`.fstrent_tasks_v2/memory/PLANS_LOG.md`**: Append-only plan log
+
+**PLANS_LOG.md Format:**
+```markdown
+- **Archived Plan:** `.fstrent_tasks_v2/memory/plans/plan-name.md`
+  - **Archived On:** YYYY-MM-DD HH:MM:SS
+  - **Reason:** Completed/Deprecated/Superseded
+  - **Title:** Plan title
+```
+
+## Memory Consultation Process
+
+### Automatic Workflow
+1. **Trigger Activation:** Memory consultation at defined points
+2. **Context Search:** Semantic matching in logs
+3. **Relevance Scoring:** Present findings with scores
+4. **Mandatory Acknowledgment:** Cannot proceed without review
+5. **Activation Logging:** Log all consultations for tracking
+
+### Benefits
+- **Past Implementation Understanding:** How similar features were built
+- **Redundancy Avoidance:** Prevent duplicate tasks
+- **Planning Context:** Informed feature planning
+- **Failed Task Investigation:** Context for similar work
+- **Historical Decisions:** Reference archived plans
+
+This activated memory system ensures historical context consideration, prevents duplication, and maintains project continuity through mandatory workflow integration.
+
+- **Failed Task Investigation:** Context for similar work
+- **Historical Decisions:** Reference archived plans
+
+This activated memory system ensures historical context consideration, prevents duplication, and maintains project continuity through mandatory workflow integration.

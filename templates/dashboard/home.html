@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}CBTrade Dashboard{% endblock %}
+
+{% block content %}
+<h1 class="text-lg font-bold mb-6">Trading Dashboard</h1>
+
+<!-- Open Positions Summary -->
+<div class="card mb-6">
+    <div class="card-header">
+        <h2 class="card-title">Current Open Positions</h2>
+    </div>
+    <div class="card-body">
+        <div class="grid grid-cols-4">
+            <div class="metric">
+                <div class="metric-value">{{ data.open_summary.total_open or 0 }}</div>
+                <div class="metric-label">Open Positions</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value {{ 'positive' if (data.open_summary.unrealized_pnl or 0) > 0 else 'negative' if (data.open_summary.unrealized_pnl or 0) < 0 else 'neutral' }}">
+                    ${{ "%.2f"|format(data.open_summary.unrealized_pnl or 0) }}
+                </div>
+                <div class="metric-label">Unrealized P&L</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">${{ "%.2f"|format(data.open_summary.total_invested or 0) }}</div>
+                <div class="metric-label">Total Invested</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">{{ "%.1f"|format(data.open_summary.avg_hours_held or 0) }}h</div>
+                <div class="metric-label">Avg Hold Time</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Time Period Performance -->
+<div class="grid grid-cols-2 mb-6">
+    {% for period in ['today', 'week', 'month', 'year'] %}
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">{{ period.title() }} Performance</h3>
+        </div>
+        <div class="card-body">
+            {% set period_data = data.periods[period].summary %}
+            <div class="grid grid-cols-2 mb-4">
+                <div class="metric">
+                    <div class="metric-value">{{ period_data.total_positions or 0 }}</div>
+                    <div class="metric-label">Positions</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value {{ 'positive' if (period_data.win_rate or 0) > 50 else 'negative' if (period_data.win_rate or 0) < 50 else 'neutral' }}">
+                        {{ "%.1f"|format(period_data.win_rate or 0) }}%
+                    </div>
+                    <div class="metric-label">Win Rate</div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2">
+                <div class="metric">
+                    <div class="metric-value {{ 'positive' if (period_data.total_pnl or 0) > 0 else 'negative' if (period_data.total_pnl or 0) < 0 else 'neutral' }}">
+                        ${{ "%.2f"|format(period_data.total_pnl or 0) }}
+                    </div>
+                    <div class="metric-label">Total P&L</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">{{ "%.1f"|format(period_data.avg_hours_held or 0) }}h</div>
+                    <div class="metric-label">Avg Hold</div>
+                </div>
+            </div>
+            
+            {% if data.periods[period].by_market and data.periods[period].by_market|length > 0 %}
+            <div class="mt-4">
+                <h4 class="font-medium mb-2">Top Markets</h4>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Market</th>
+                                <th>Positions</th>
+                                <th class="text-right">P&L</th>
+                                <th class="text-right">%/Hr</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for market in data.periods[period].by_market[:5] %}
+                            <tr>
+                                <td class="font-medium">{{ market.prod_id }}</td>
+                                <td>{{ market.positions }}</td>
+                                <td class="text-right {{ 'positive' if (market.total_pnl or 0) > 0 else 'negative' if (market.total_pnl or 0) < 0 else 'neutral' }}">
+                                    ${{ "%.2f"|format(market.total_pnl or 0) }}
+                                </td>
+                                <td class="text-right {{ 'positive' if (market.pct_per_hour or 0) > 0 else 'negative' if (market.pct_per_hour or 0) < 0 else 'neutral' }}">
+                                    {{ "%.4f"|format(market.pct_per_hour or 0) }}%
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="mt-4">
+                <a href="/dashboard/{{ period }}" class="btn btn-secondary btn-sm">View Details →</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Recent Activity -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Recent Activity</h3>
+    </div>
+    <div class="card-body">
+        {% if data.recent_activity and data.recent_activity|length > 0 %}
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Market</th>
+                        <th>Strategy</th>
+                        <th>Status</th>
+                        <th class="text-right">P&L</th>
+                        <th class="text-right">Hold Time</th>
+                        <th>Last Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for activity in data.recent_activity %}
+                    <tr>
+                        <td class="font-medium">#{{ activity.pos_id }}</td>
+                        <td>{{ activity.prod_id }}</td>
+                        <td class="text-sm">{{ activity.buy_strat_name }}-{{ activity.buy_strat_freq }}</td>
+                        <td>
+                            <span class="badge {% if activity.pos_stat == 'OPEN' %}badge-info{% elif activity.pos_stat == 'CLOSE' %}badge-success{% else %}badge-warning{% endif %}">
+                                {{ activity.pos_stat }}
+                            </span>
+                        </td>
+                        <td class="text-right {{ 'positive' if (activity.pnl or 0) > 0 else 'negative' if (activity.pnl or 0) < 0 else 'neutral' }}">
+                            ${{ "%.2f"|format(activity.pnl or 0) }}
+                        </td>
+                        <td class="text-right">{{ "%.1f"|format(activity.hours_held or 0) }}h</td>
+                        <td class="text-sm">{{ activity.last_update }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center neutral">No recent activity found</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="grid grid-cols-4 mt-6">
+    <a href="/balances" class="btn btn-primary text-center">View Balances</a>
+    <a href="/positions" class="btn btn-primary text-center">Open Positions</a>
+    <a href="/performance" class="btn btn-primary text-center">Performance Analysis</a>
+    <a href="/performance/drill-down" class="btn btn-secondary text-center">Drill Down →</a>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Dashboard-specific JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-refresh every 30 seconds for dashboard
+        startAutoRefresh(30);
+        
+        // Add timestamp to show when page was last updated
+        const now = new Date();
+        const timestamp = now.toLocaleString();
+        
+        // Add last updated info
+        const header = document.querySelector('h1');
+        if (header) {
+            const lastUpdated = document.createElement('span');
+            lastUpdated.className = 'text-sm neutral ml-4';
+            lastUpdated.textContent = `Last updated: ${timestamp}`;
+            header.appendChild(lastUpdated);
+        }
+    });
+</script>
+{% endblock %}

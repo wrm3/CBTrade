@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Account Balances - CBTrade{% endblock %}
+
+{% block content %}
+<h1 class="text-lg font-bold mb-6">Account Balances</h1>
+
+<!-- Balance Summary -->
+<div class="card mb-6">
+    <div class="card-header">
+        <h2 class="card-title">Portfolio Summary</h2>
+    </div>
+    <div class="card-body">
+        <div class="grid grid-cols-4">
+            <div class="metric">
+                <div class="metric-value">${{ "%.2f"|format(data.summary.total_portfolio_value or 0) }}</div>
+                <div class="metric-label">Total Portfolio Value</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">${{ "%.2f"|format(data.summary.available_value or 0) }}</div>
+                <div class="metric-label">Available Cash</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">{{ data.summary.total_open_positions or 0 }}</div>
+                <div class="metric-label">Open Positions</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value {{ 'positive' if (data.summary.unrealized_pnl or 0) > 0 else 'negative' if (data.summary.unrealized_pnl or 0) < 0 else 'neutral' }}">
+                    ${{ "%.2f"|format(data.summary.unrealized_pnl or 0) }}
+                </div>
+                <div class="metric-label">Unrealized P&L</div>
+            </div>
+        </div>
+        
+        <!-- Investment & Out-of-Balance Summary -->
+        <div class="grid grid-cols-4 mt-4">
+            <div class="metric">
+                <div class="metric-value">${{ "%.2f"|format(data.summary.total_invested or 0) }}</div>
+                <div class="metric-label">Invested in Positions</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">${{ "%.2f"|format(data.summary.total_pocket_value or 0) }}</div>
+                <div class="metric-label">Total Pocket Value</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">${{ "%.2f"|format(data.summary.total_clip_value or 0) }}</div>
+                <div class="metric-label">Total Clip Value</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value {{ 'negative' if (data.summary.out_of_balance_count or 0) > 0 else 'positive' }}">
+                    {{ data.summary.out_of_balance_count or 0 }}
+                </div>
+                <div class="metric-label">Out-of-Balance Items</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Out of Balance Alert -->
+{% if data.out_of_balance and data.out_of_balance|length > 0 %}
+<div class="card mb-6" style="border-color: var(--danger-color);">
+    <div class="card-header" style="background-color: #fee2e2;">
+        <h2 class="card-title" style="color: var(--danger-color);">⚠️ Out of Balance Alert</h2>
+    </div>
+    <div class="card-body">
+        <p class="mb-4">{{ data.out_of_balance|length }} currencies have balance discrepancies:</p>
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Currency</th>
+                        <th class="text-right">Exchange Balance</th>
+                        <th class="text-right">Calculated Balance</th>
+                        <th class="text-right">Variance</th>
+                        <th class="text-right">Variance USD</th>
+                        <th class="text-center">Positions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in data.out_of_balance[:10] %}
+                    <tr>
+                        <td class="font-bold">{{ item.symb }}</td>
+                        <td class="text-right">{{ "%.8f"|format(item.exchange_balance or 0) }}</td>
+                        <td class="text-right">{{ "%.8f"|format(item.calculated_balance or 0) }}</td>
+                        <td class="text-right font-medium {{ 'positive' if (item.variance or 0) > 0 else 'negative' if (item.variance or 0) < 0 else 'neutral' }}">
+                            {{ "%.8f"|format(item.variance or 0) }}
+                        </td>
+                        <td class="text-right font-medium {{ 'positive' if (item.variance_usd or 0) > 0 else 'negative' if (item.variance_usd or 0) < 0 else 'neutral' }}">
+                            ${{ "%.2f"|format(item.variance_usd or 0) }}
+                        </td>
+                        <td class="text-center">{{ item.affecting_positions or 0 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-4">
+            <a href="/balances/out-of-balance" class="btn btn-primary">View All Out-of-Balance →</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Current Balances -->
+<div class="card mb-6">
+    <div class="card-header">
+        <h2 class="card-title">Current Balances</h2>
+    </div>
+    <div class="card-body">
+        {% if data.balances and data.balances|length > 0 %}
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Currency</th>
+                        <th class="text-right">Total Balance</th>
+                        <th class="text-right">Position Holdings</th>
+                        <th class="text-right">Variance</th>
+                        <th class="text-right">USD Value</th>
+                        <th class="text-center">Open Pos</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bal in data.balances[:15] %}
+                    <tr>
+                        <td class="font-bold">{{ bal.symb }}</td>
+                        <td class="text-right">{{ "%.8f"|format(bal.total_balance or 0) }}</td>
+                        <td class="text-right">{{ "%.8f"|format(bal.position_holdings or 0) }}</td>
+                        <td class="text-right {{ 'positive' if (bal.balance_variance or 0) > 0 else 'negative' if (bal.balance_variance or 0) < 0 else 'neutral' }}">
+                            {{ "%.8f"|format(bal.balance_variance or 0) }}
+                        </td>
+                        <td class="text-right font-medium">${{ "%.2f"|format(bal.value_usd or 0) }}</td>
+                        <td class="text-center">{{ bal.open_positions or 0 }}</td>
+                        <td class="text-center">
+                            {% if bal.balance_status == 'OUT_OF_BALANCE' %}
+                                <span class="badge badge-danger">OOB</span>
+                            {% else %}
+                                <span class="badge badge-success">OK</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center neutral">No balance data available</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Pocket/Clips Breakdown -->
+{% if data.pocket_clip_breakdown and data.pocket_clip_breakdown|length > 0 %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Pocket & Clips Breakdown</h2>
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Currency</th>
+                        <th class="text-center">Positions</th>
+                        <th class="text-right">Pocket Amount</th>
+                        <th class="text-right">Clip Amount</th>
+                        <th class="text-right">Pocket USD</th>
+                        <th class="text-right">Clip USD</th>
+                        <th class="text-right">Pocket %</th>
+                        <th class="text-right">Clip %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in data.pocket_clip_breakdown %}
+                    <tr>
+                        <td class="font-bold">{{ item.symb }}</td>
+                        <td class="text-center">{{ item.open_positions }}</td>
+                        <td class="text-right">{{ "%.8f"|format(item.total_pocket or 0) }}</td>
+                        <td class="text-right">{{ "%.8f"|format(item.total_clips or 0) }}</td>
+                        <td class="text-right font-medium">${{ "%.2f"|format(item.pocket_value_usd or 0) }}</td>
+                        <td class="text-right font-medium">${{ "%.2f"|format(item.clip_value_usd or 0) }}</td>
+                        <td class="text-right">{{ "%.2f"|format(item.pocket_pct or 0) }}%</td>
+                        <td class="text-right">{{ "%.2f"|format(item.clip_pct or 0) }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-4">
+            <a href="/balances/pocket-clips" class="btn btn-secondary">Detailed Pocket/Clips →</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Quick Actions -->
+<div class="grid grid-cols-3 mt-6">
+    <a href="/balances/out-of-balance" class="btn btn-primary text-center">Check Out-of-Balance</a>
+    <a href="/balances/pocket-clips" class="btn btn-secondary text-center">Pocket/Clips Details</a>
+    <a href="/positions" class="btn btn-secondary text-center">View Open Positions</a>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-refresh every 60 seconds for balance page
+        startAutoRefresh(60);
+        
+        // Highlight out-of-balance rows
+        const oobRows = document.querySelectorAll('tbody tr');
+        oobRows.forEach(row => {
+            const statusCell = row.querySelector('.badge-danger');
+            if (statusCell) {
+                row.style.backgroundColor = '#fef2f2';
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,15 @@
+{
+    "reportAttributeAccessIssue": "none",
+    "reportUnknownMemberType": "none",
+    "reportArgumentType": "none",
+    "reportUnknownArgumentType": "none",
+    "reportGeneralTypeIssues": "none",
+    "reportOptionalMemberAccess": "none",
+    "reportUnknownVariableType": "none",
+    "reportCallIssue": "none",
+    "reportUndefinedVariable": "warning",
+    "reportOperatorIssue": "none",
+    "reportIndexIssue": "none",
+    "reportInvalidTypeForm": "none",
+    "reportAssignmentType": "none"
+}

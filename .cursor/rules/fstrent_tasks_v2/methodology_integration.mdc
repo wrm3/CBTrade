@@ -1,0 +1,140 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Modern Methodology Integration Rule
+
+Whenever you use this rule, start your message with the following:
+
+"Applying modern development methodologies..."
+
+This rule adds Kanban flow tracking, Work-In-Progress (WIP) limits, and DevOps practices to the fstrent_tasks_v2 system for improved workflow management and delivery efficiency.
+
+## Purpose
+
+Integrate essential modern development practices into the existing task system without imposing heavy methodology overhead, focusing on flow optimization and delivery predictability.
+
+## Activation Points
+
+### WIP_LIMIT_CHECK (AUTOMATIC)
+**When:** Task status changes to in-progress
+**Actions:**
+1. Check current WIP count against limits
+2. Enforce WIP constraints before task assignment
+3. Suggest workflow optimization when limits exceeded
+4. Block new task starts until WIP reduced
+
+### FLOW_TRACKING (CONTINUOUS)
+**When:** Task moves between status columns
+**Actions:**
+1. Record flow metrics (cycle time, lead time)
+2. Identify bottlenecks in task pipeline
+3. Update flow efficiency indicators
+4. Trigger flow optimization recommendations
+
+### DEVOPS_INTEGRATION (TRIGGERED)
+**When:** Tasks involve deployment, testing, or infrastructure
+**Actions:**
+1. Apply DevOps task templates and checklists
+2. Enforce pipeline stage requirements
+3. Track deployment frequency and success rates
+4. Integrate feedback loops and monitoring
+
+## Kanban Flow Configuration
+
+### Default WIP Limits
+```yaml
+wip_limits:
+  pending: unlimited
+  in_progress: 3
+  review: 2
+  testing: 2
+  deployment: 1
+  completed: unlimited
+```
+
+### Flow Metrics Tracking
+- **Lead Time**: Total time from task creation to completion
+- **Cycle Time**: Time from work start to completion
+- **Throughput**: Tasks completed per time period
+- **Flow Efficiency**: Active work time vs. total lead time
+
+### Bottleneck Detection
+- Tasks aging beyond normal cycle time
+- Status columns exceeding WIP limits consistently
+- Dependencies blocking multiple task flows
+- Resource allocation imbalances
+
+## DevOps Practice Integration
+
+### Deployment Tasks
+- Automated testing requirements before deployment
+- Rollback plan documentation mandatory
+- Post-deployment monitoring checkpoints
+- Infrastructure-as-code validation
+
+### Feedback Loop Implementation
+- Monitor → Alert → Respond → Learn cycle
+- Performance metrics integration with task completion
+- User feedback capture and task prioritization
+- Continuous improvement based on production data
+
+### Pipeline Stage Requirements
+```yaml
+devops_stages:
+  development:
+    - Code review completed
+    - Unit tests passing
+    - Static analysis clean
+  
+  testing:
+    - Integration tests passing
+    - Performance benchmarks met
+    - Security scan completed
+  
+  deployment:
+    - Staging validation successful
+    - Deployment scripts tested
+    - Monitoring alerts configured
+    
+  monitoring:
+    - Health checks active
+    - Metrics collection verified
+    - Alert thresholds configured
+```
+
+## Workflow Optimization
+
+### Flow State Management
+- **Smooth Flow**: Tasks moving predictably through pipeline
+- **Blocked Flow**: Dependencies or resource constraints identified
+- **Chaotic Flow**: WIP limits exceeded, context switching high
+- **Optimized Flow**: Continuous delivery with minimal waste
+
+### Continuous Improvement Triggers
+- Weekly flow retrospectives based on metrics
+- WIP limit adjustments based on team capacity
+- Bottleneck elimination through process refinement
+- Tool and automation opportunities identification
+
+## Integration with Existing Rules
+
+**Sprint Planning Integration:**
+- Respect WIP limits during sprint capacity planning
+- Align sprint goals with flow optimization objectives
+- Include flow metrics in sprint retrospectives
+
+**Task System Integration:**
+- Add flow stage metadata to task files
+- Update TASKS.md with flow status indicators
+- Maintain dependency validation with flow constraints
+
+**Metrics Integration:**
+- Combine flow metrics with existing task completion tracking
+- Dashboard views showing flow efficiency alongside sprint progress
+- Historical trend analysis for methodology effectiveness
+
+---
+
+*This rule brings modern development practices into the fstrent_tasks_v2 system while maintaining simplicity and integration with existing workflows.*
