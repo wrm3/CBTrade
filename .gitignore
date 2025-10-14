@@ -46,6 +46,7 @@ mysql_restart.bat
 .fstrent_tasks_v2/
 
 # Never ignore these (make them explicit)
+!.env.sample
 !README.md
 !requirements.txt
 !.env.example
