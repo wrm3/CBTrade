@@ -181,7 +181,8 @@ def buy_logic_strat_deny_force_sell(self):
         # self.buy.all_live_or_test.append(msg)
 
         self.buy.setting_name = 'self.st_pair.sell.force_sell.prod_ids'
-        self.buy.setting_value = self.st_pair.sell.force_sell.prod_ids
+        # 🔴 GILFOYLE FIX: Convert list to comma-separated string for database insert
+        self.buy.setting_value = ','.join(self.st_pair.sell.force_sell.prod_ids) if isinstance(self.st_pair.sell.force_sell.prod_ids, list) else str(self.st_pair.sell.force_sell.prod_ids)
         self.buy.buy_stat_name = 'prod_id'
         self.buy.buy_stat_value = prod_id
         self.buy.test_fnc_name = sys._getframe().f_code.co_name
