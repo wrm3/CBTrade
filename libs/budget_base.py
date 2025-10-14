@@ -117,7 +117,10 @@ def wallet_refresh(self, force_tf=False):
                 # print(f"curr {curr} == self.mkt_symb {self.mkt_symb}")
                 self.budget.bal_avail = bal.bal_avail
                 self.budget_reserves_calc()
-                self.budget.spendable_amt = self.budget.bal_avail - self.budget.reserve_amt 
+                
+                # Calculate spendable amount (only base reserve, no select_pair logic)
+                self.budget.spendable_amt = self.budget.bal_avail - self.budget.reserve_amt
+                
                 if curr in open_trade_amts:
                     self.budget.open_trade_amt = open_trade_amts[curr]
                     self.budget.spendable_amt -= self.budget.open_trade_amt
@@ -218,6 +221,33 @@ def budget_refresh(self):
     self.budget.spend_dn_max_pct   = self.st_mkt.budget.spend_up_max_pct
     self.budget.spend_up_max_amt   = self.budget.spend_up_max_pct / 100 * self.budget.spend_max_amt
     self.budget.spend_dn_max_amt   = self.budget.spend_dn_max_pct / 100 * self.budget.spend_max_amt
+
+    # 🔴 GILFOYLE: Calculate undesignated pair budget limits
+    self.budget.undesignated_max_pct = self.st_mkt.budget.get('undesignated_max_pct', 10.0)
+    self.budget.undesignated_max_spend = self.budget.spend_max_amt * (self.budget.undesignated_max_pct / 100)
+    self.budget.undesignated_pair_max_pct = self.st_mkt.budget.get('undesignated_pair_max_pct', 10.0)
+    self.budget.undesignated_individual_max = self.budget.undesignated_max_spend * (self.budget.undesignated_pair_max_pct / 100)
+    
+    # Query database for current undesignated spending
+    designated_pairs = self.st_mkt.pairs.trade_pairs  # List of designated pairs
+    if designated_pairs:
+        designated_pairs_str = "','".join(designated_pairs)
+        sql = f"""
+            SELECT COALESCE(SUM(p.tot_out_cnt * p.prc_buy), 0) as undesignated_spend
+            FROM poss p
+            WHERE p.quote_curr_symb = '{self.mkt_symb}'
+              AND p.pos_stat IN ('OPEN','SELL')
+              AND p.prod_id NOT IN ('{designated_pairs_str}')
+              AND p.test_txn_yn = 'N'
+              AND p.ignore_tf = 0
+        """
+        result = self.cbtrade_db.seld(sql, always_list_yn='Y')
+        self.budget.undesignated_current_spend = float(result[0]['undesignated_spend']) if result and result[0]['undesignated_spend'] else 0.0
+    else:
+        # No designated pairs defined, all pairs are undesignated
+        self.budget.undesignated_current_spend = self.budget.open_trade_amt
+    
+    print(f"🔍 budget_refresh UNDESIGNATED: max_pct={self.budget.undesignated_max_pct}%, max_spend=${self.budget.undesignated_max_spend:.2f}, current_spend=${self.budget.undesignated_current_spend:.2f}, individual_max=${self.budget.undesignated_individual_max:.2f}")
 
     self.budget.spent_pct          = round((self.budget.spent_amt / self.budget.spend_max_amt) * 100)
 
@@ -332,10 +362,10 @@ def budget_reserves_calc(self):
 #<=====>#
 
 @narc(1)
-def disp_budget(self):
+def disp_budget(self): 
     if self.debug_tf: G(f'==> budget_base.disp_budget()')
     # self.chrt.chart_mid(bold=True)
-
+    
     hmsg = ""
     hmsg += f"    | "
     hmsg += f"{'lvl':<5} | "

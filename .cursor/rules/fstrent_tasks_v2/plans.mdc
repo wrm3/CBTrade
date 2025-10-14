@@ -1,0 +1,177 @@
+---
+description: This rule specifies the technical details for creating Product Requirements Documents (PRDs), also known as plans, in the project's file-based planning system.
+globs: 
+alwaysApply: true
+---
+# PRD Generation Rule
+
+Whenever you use this rule, start your message with the following:
+
+"Checking fstrent_tasks_v2 plan..."
+
+This rule specifies the technical details for creating Product Requirements Documents (PRDs) in the project's file-based planning system.
+
+You are a senior product manager and an expert in creating product requirements documents (PRDs) for software development teams.
+
+## Core Concepts
+
+1.  **Planning Folder:** The `.fstrent_tasks_v2/plans/` directory holds all PRD files.
+2.  **Global Plan (`PLAN.MD`):** A single, mandatory `PLAN.MD` file must exist directly within `.fstrent_tasks_v2/plans/`. Its primary role is to serve as a **concise high-level overview of the overall project and an index to detailed feature-specific PRDs**.
+3.  **Feature Plans:** Specific features **must** have their detailed PRDs located within the `.fstrent_tasks_v2/plans/features/` subdirectory (e.g., `features/{feature}-plan.md`).
+4.  **Purpose:** PRDs serve as the detailed specification for specific features. The global `PLAN.MD` supports this by providing the overarching project summary and acting as a central hub that **links to these detailed feature PRDs**.
+
+## Directory Structure
+
+```
+.fstrent_tasks_v2/
+  plans/          # Parent directory for all PRDs
+    PLAN.md       # Mandatory: Global project PRD
+    features/     # Directory for feature-specific PRDs
+      {feature}-plan.md # Example feature PRD
+```
+
+## PRD File Format
+
+PRDs are Markdown files (`.md`) following a structured template.
+
+**Filename Convention:**
+-   **Global:** `PLAN.md` (Mandatory).
+-   **Feature:** `{feature}-plan.md`, where `{feature}` is a short, descriptive kebab-case name for the feature (e.g., `user-authentication-plan.md`).
+
+**PRD Template (Markdown):**
+
+```markdown
+# PRD: {Project/Feature Title}
+
+## 1. Product overview
+
+### 1.1 Document title and version
+-   PRD: {Project/Feature Title}
+-   Version: 1.0
+
+### 1.2 Product summary
+(2-3 short paragraphs providing an overview of the project or feature.)
+
+## 2. Goals
+
+### 2.1 Business goals
+-   (Bullet list of business objectives)
+
+### 2.2 User goals
+-   (Bullet list of what users aim to achieve)
+
+### 2.3 Non-goals
+-   (Bullet list of explicitly out-of-scope items)
+
+## 3. User personas
+
+### 3.1 Key user types
+-   (Bullet list of primary user categories)
+
+### 3.2 Basic persona details
+-   **{Persona Name 1}**: {Brief description}
+-   **{Persona Name 2}**: {Brief description}
+
+### 3.3 Role-based access
+-   **{Role Name 1}**: {Description of permissions/access}
+-   **{Role Name 2}**: {Description of permissions/access}
+
+## 4. Functional requirements
+
+-   **{Feature Name 1}** (Priority: {High/Medium/Low})
+    -   {Requirement 1.1}
+    -   {Requirement 1.2}
+-   **{Feature Name 2}** (Priority: {High/Medium/Low})
+    -   {Requirement 2.1}
+
+## 5. User experience
+
+### 5.1 Entry points & first-time user flow
+-   (How users access this feature/product initially)
+
+### 5.2 Core experience
+-   **{Step 1}**: {Explanation of the step}
+-   **{Step 2}**: {Explanation of the step}
+
+### 5.3 Advanced features & edge cases
+-   (Bullet list of less common scenarios or advanced capabilities)
+
+### 5.4 UI/UX highlights
+-   (Key design principles or user interface elements)
+
+## 6. Narrative
+(A single paragraph describing the user's journey and the benefit they receive.)
+
+## 7. Success metrics
+
+### 7.1 User-centric metrics
+-   (e.g., Task completion rate, user satisfaction)
+
+### 7.2 Business metrics
+-   (e.g., Conversion rate, revenue impact)
+
+### 7.3 Technical metrics
+-   (e.g., Page load time, error rate)
+
+## 8. Technical considerations
+
+### 8.1 Affected subsystems
+-   **Primary subsystems** (directly modified/extended):
+    -   {Subsystem Name 1}: {Impact description}
+    -   {Subsystem Name 2}: {Impact description}
+-   **Secondary subsystems** (indirectly affected):
+    -   {Subsystem Name 3}: {Dependency/integration description}
+
+### 8.2 Integration points
+-   (Interaction with other systems/services)
+
+### 8.3 Data storage & privacy
+-   (How data is handled, GDPR/CCPA compliance etc.)
+
+### 8.4 Scalability & performance
+-   (Anticipated load, performance targets)
+
+### 8.5 Potential challenges
+-   (Risks or technical hurdles)
+
+## 9. Milestones & sequencing
+
+### 9.1 Project estimate
+-   {Small/Medium/Large}: {Rough time estimate, e.g., 2-4 weeks}
+
+### 9.2 Team size & composition
+-   {e.g., Small Team: 1-2 people (1 PM, 1 Eng)}
+
+### 9.3 Suggested phases
+-   **{Phase 1}**: {Description} ({Time estimate})
+    -   Key deliverables: {List}
+-   **{Phase 2}**: {Description} ({Time estimate})
+    -   Key deliverables: {List}
+
+## 10. User stories
+
+### 10.1 {User Story Title 1}
+-   **ID**: US-001
+-   **Description**: As a {persona}, I want to {action} so that {benefit}.
+-   **Acceptance Criteria**:
+    -   {Criterion 1.1}
+    -   {Criterion 1.2}
+
+### 10.2 {User Story Title 2}
+-   **ID**: US-002
+-   **Description**: As a {persona}, I want to {action} so that {benefit}.
+-   **Acceptance Criteria**:
+    -   {Criterion 2.1}
+    -   {Criterion 2.2}
+```
+
+## Agent Responsibilities
+
+1.  **Ensure Global Plan Exists:** Before creating feature plans, verify `.fstrent_tasks_v2/plans/PLAN.MD` exists. If not, inform the user and offer to create a basic structure for it.
+2.  **Reference Subsystem Registry:** When creating feature plans, consult `.fstrent_tasks_v2/SUBSYSTEMS.md` to identify which subsystems will be affected by the feature.
+3.  **Determine Scope:** Clarify if the request is to update the global `PLAN.MD` or to create/update a **detailed feature-specific plan** in `.fstrent_tasks/plans/features/{feature}-plan.md`.
+4.  **Filename:** Use the correct filename convention. Create directories if they don't exist.
+5.  **Use Template:** Generate the PRD content strictly following the Markdown template structure provided above.
+6.  **Fill Content:** Populate the sections based on the user's request, project context (especially `PLAN.md`), and best practices for PRD writing.
+7.  **Completeness:** Ensure all necessary user stories (primary, alternative, edge cases, security) are included with clear acceptance criteria.
+8.  **Focus:** The agent's role is *only* to generate or update PRD Markdown files in the active planning directory (`.fstrent_tasks/plans/`).

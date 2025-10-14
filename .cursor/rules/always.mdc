@@ -1,0 +1,21 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+0. Never Kill Python Processes without asking the user for permission first.
+  * All your MCP tools are python processes
+  * All programs that the developer has both in and out of your current project are python processes
+
+1. include in the final line(s) on every response the the user 
+  * the current timestamp 
+  * list the tools used during the call 
+
+2. if any particular file in the code base exceeds 800 lines of code...
+  * begin asking the user if they would like to refactor the code to keep the file sizes smaller
+  * become more insistant with every 100 lines added thereafter
+  * become very insistant on refactoring once a file has hit 1000 lines
+
+3. check your MCP tool lists, you seem to forget you have a lot of tools
+
+

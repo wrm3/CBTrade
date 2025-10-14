@@ -5,7 +5,7 @@
 # It calculates Bollinger Bands using a given period and standard deviation,
 # computes rate of change (ROC) for the upper and lower bands, and determines 
 # whether the bands are expanding, contracting, or moving upward/downward.
-#
+# 
 # A buy signal is generated when the current price is above the upper Bollinger band
 # and at least one of the previous three candles had a price below the upper band,
 # with additional color conditions (both 'color' and 'ha_color' must be green).

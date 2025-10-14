@@ -37,7 +37,7 @@ import traceback
 from libs.common import beep, dttm_get, narc
 from libs.common import print_adv
 from libs.strats._strat_common import disp_sell_tests, exit_if_logic
-
+ 
 #<=====>#
 # Variables
 #<=====>#

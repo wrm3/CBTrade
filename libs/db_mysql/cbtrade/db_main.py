@@ -4,7 +4,7 @@
 """
 CBTrade Database Main Module - MySQL Implementation
 """
-
+ 
 #<=====>#
 # Known To Do List
 #<=====>#
@@ -115,17 +115,21 @@ class CBTRADE_DB(MySQLDB):
     from libs.db_mysql.cbtrade.tbl_buy_decisions import  (
         db_buy_decisions_exists
         , db_buy_decisions_ins
+        , db_buy_decisions_cleanup_old
     )
     db_buy_decisions_exists            = db_buy_decisions_exists
     db_buy_decisions_ins               = db_buy_decisions_ins
+    db_buy_decisions_cleanup_old       = db_buy_decisions_cleanup_old
 
     # tbl_buy_signals
     from libs.db_mysql.cbtrade.tbl_buy_signals import (
         db_buy_signals_exists
         , db_buy_signals_ins
+        , db_buy_signals_cleanup_old
     )
     db_buy_signals_exists              = db_buy_signals_exists
     db_buy_signals_ins                 = db_buy_signals_ins
+    db_buy_signals_cleanup_old         = db_buy_signals_cleanup_old
 
     # tbl_buy_ords
     from libs.db_mysql.cbtrade.tbl_buy_ords import  (

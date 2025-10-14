@@ -8,7 +8,7 @@
 # and a sell when three consecutive candles show a red NWE color and negative ROC. Additional checks 
 # (including Heikin‑Ashi candle confirmation across multiple timeframes) are applied to further validate signals.
 #<=====>#
-
+ 
 
 #<=====>#
 # Known To Do List

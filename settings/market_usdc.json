@@ -20,7 +20,9 @@
 	"loop_secs": 15,
 	"budget": {
 		"max_tot_loss": -250.0,
-		"spend_max_amt": 13500.0,
+		"spend_max_amt": 14000.0,
+		"undesignated_max_pct": 10.0,
+		"undesignated_pair_max_pct": 10.0,
 		"spend_up_max_pct": 50.0,
 		"spend_dn_max_pct": 50.0,
 		"spend_max_pcts": {
@@ -64,29 +66,51 @@
 			"XRP-USDC":    600
 		},
 		"mkt_shares": {
-			"shares_or_pcts": "pct",
+			"shares_or_pcts": "shares",
 			"***":         1,
+			"BTC-USDC":   70,
+			"ETH-USDC":   60,
+			"SOL-USDC":   50,
 			"AAVE-USDC":   2,
 			"ADA-USDC":    2,
 			"ARB-USDC":    2,
+			"ALGO-USDC":   2,
+			"ATOM-USDC":   2,
+			"AVAX-USDC":   2,
 			"BASE-USDC":   2,
-			"BNB-USDC":    6,
-			"BTC-USDC":   40,
+			"BNB-USDC":    2,
+			"CAKE-USDC":   2,
 			"CRO-USDC":    2,
-			"ETH-USDC":   40,
-			"IP-USDC":     6,
+			"CRV-USDC":    2,
+			"DOT-USDC":    2,
+			"FIL-USDC":    2,
+			"GRT-USDC":    2,
+			"HBAR-USDC":   2,
+			"ICP-USDC":    2,
+			"IMX-USDC":    2,
+			"IP-USDC":     2,
 			"JASMY-USDC":  2,
 			"JTO-USDC":    2,
+			"JUP-USDC":    2,
+			"LDO-USDC":    2,
 			"LINK-USDC":   2,
 			"OP-USDC":     2,
+			"ORCA-USDC":   2,
 			"PAXG-USDC":   2,
 			"POL-USDC":    2,
+			"PYTH-USDC":   2,
+			"RAY-USDC":    2,
 			"RENDER-USDC": 2,
-			"SOL-USDC":   40,
+			"RUNE-USDC":   2,
+			"SUI-USDC":    2,
 			"SYRUP-USDC":  2,
-			"XRP-USDC":    6
+			"TON-USDC":    2,
+			"UNI-USDC":    2,
+			"VET-USDC":    2,
+			"XLM-USDC":    2,
+			"XRP-USDC":    2
 		},
-		"reserve_amt": 100.0,
+		"reserve_amt": 250.0,
 		"reserve_addtl_daily_amt": 0
 		},
 	"pairs": {
@@ -198,7 +222,7 @@
 			},
 			"top_bot_perf": {
 				"use_yn": "Y",
-				"cnt": 4,
+				"cnt": 7,
 				"pct_min": 0.05
 			},
 			"top_bot_gains": {
@@ -213,7 +237,7 @@
 			},
 			"vol_quote_24h": {
 				"use_yn": "Y",
-				"min_volume": 2000000
+				"min_volume": 5000000
 			},
 			"vol_pct_chg_24h": {
 				"use_yn": "N",
@@ -234,6 +258,12 @@
 			"BTC-USDC": 3,
 			"ETH-USDC": 3,
 			"SOL-USDC": 3
+			},
+		"profitability_threshold_pct_day": {
+			"***": 0.025,
+			"BTC-USDC": 0.00,
+			"ETH-USDC": 0.00,
+			"SOL-USDC": 0.00
 			}
 		},
 	"buy": {
@@ -254,11 +284,11 @@
 			},
 		"buy_strat_delay_minutes": {
 			"***": 30,
-			"15min": 8,
-			"30min": 16,
-			"1h": 31,
-			"4h": 121,
-			"1d": 721
+			"15min": 5,
+			"30min": 10,
+			"1h": 20,
+			"4h": 40,
+			"1d": 240
 			},
 		"open_poss_cnt_max": {
 			"***": 15,
@@ -301,7 +331,8 @@
 			"BTC-USDC": 400,
 			"ETH-USDC": 400,
 			"SOL-USDC": 400
-			}
+			},
+		"trade_size_boost_thresholds_pct_day": [0.10, 0.25, 0.5, 1.0, 3.0, 5.0, 8.0, 13.0, 21.0, 34.0, 55.0, 89.0]
 		},
 	"sell": {
 		"selling_on_yn": "Y",
@@ -316,7 +347,7 @@
 			"hard_take_profit_strats_skip": ["nwe_3row","nwe_env","nwe_rev","bb_bo"],
 			"trailing_profit_yn": "Y",
 			"trailing_profit_trigger_pct": {
-				"***": 8,
+				"***": 6,
 				"BTC-USDC": 4,
 				"ETH-USDC": 5,
 				"SOL-USDC": 5
@@ -353,9 +384,9 @@
 			"pos_ids": []
 		},
 		"never_sell_loss": {
-			"all_yn": "N",
+			"all_yn": "Y",
 			"live_all_yn": "Y",
-			"live_max_loss_usd_acceptable": -1.5,
+			"live_max_loss_usd_acceptable": -2,
 			"live_prod_ids": ["BTC-USDC","ETH-USDC","SOL-USDC"],
 			"prod_ids": [],
 			"prod_ids_bk": ["A8-USDC","AAVE-USDC","ADA-USDC","ALGO-USDC","ATOM-USDC","AVAX-USDC","BTC-USDC","DEXT-USDC","DOGE-USDC","DOT-USDC","ETH-USDC","FTM-USDC","GRT-USDC","HBAR-USDC","IP-USDC","LINK-USDC","POL-USDC","PNUT-USDC","RENDER-USDC","RNDR-USDC","SOL-USDC","SUI-USDC","TON-USDC","UNI-USDC"],
@@ -378,7 +409,7 @@
 				}
 		},
 		"rainy_day": {
-			"pocket_pct": {"***":20,"BTC-USDC":50,"ETH-USDC":50,"SOL-USDC":50},
+			"pocket_pct": {"***":0,"BTC-USDC":50,"ETH-USDC":50,"SOL-USDC":50},
 			"clip_pct": {"***":0,"BTC-USDC":20,"ETH-USDC":20,"SOL-USDC":20}
 		}
 		},

@@ -1,0 +1,175 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Rule Activation Framework
+
+Whenever you use this rule, start your message with the following:
+
+"Activating rule framework..."
+
+This rule establishes the framework for transforming passive guidance rules into active workflow triggers with mandatory checkpoints and bypass prevention mechanisms.
+
+## Purpose
+
+Transform passive rules into mandatory workflow components that automatically trigger at defined points, ensure compliance, and prevent bypassing of critical system guidance.
+
+## Rule Activation States
+
+1. **PASSIVE** - Traditional guidance document (current state)
+2. **TRIGGERED** - Automatically invoked at workflow points
+3. **MANDATORY** - Cannot be bypassed, requires acknowledgment
+
+## Trigger Point Framework
+
+### Universal Trigger Points
+
+1. **PRE_TASK_CREATION** - Before any new task is created
+2. **TASK_START** - When changing status from pending to inprogress
+3. **TASK_EXECUTION** - During active task work (periodic checks)
+4. **PRE_TASK_COMPLETION** - Before marking task as completed
+5. **PRE_PLANNING** - Before creating or modifying PRDs
+6. **SESSION_START** - At beginning of new conversation/session
+
+### Trigger Point Registration
+
+```yaml
+rule_activation:
+  rule_name: "memory_management"
+  trigger_points:
+    - PRE_TASK_CREATION
+    - POST_TASK_COMPLETION
+  activation_level: MANDATORY
+  bypass_conditions: ["emergency_override"]
+  user_confirmation_required: true
+```
+
+## Rule Activation Engine
+
+### Activation Process Flow
+
+```
+1. Workflow Event Occurs
+2. Rule Engine Identifies Registered Rules for Trigger Point
+3. Rule Activation Sequence Begins
+4. Execute Rule Logic and Collect Recommendations
+5. Apply Bypass Prevention (if MANDATORY)
+6. Present Unified Action Plan to User
+7. Execute Approved Actions
+8. Log Activation Results
+```
+
+### Bypass Prevention Mechanisms
+
+For rules marked as `MANDATORY`:
+1. **User Cannot Skip** - No "skip this check" option
+2. **Explicit Acknowledgment Required** - Must confirm understanding
+3. **Action Blocking** - Cannot proceed until rule requirements met
+4. **Audit Trail** - All bypasses logged with justification
+
+### Override Pattern
+
+```markdown
+🚨 MANDATORY RULE ACTIVATION: Memory Management
+┌─────────────────────────────────────────┐
+│ Before creating new tasks, you must:    │
+│ • Check TASKS_LOG.md for similar work   │
+│ • Review relevant historical context    │
+└─────────────────────────────────────────┘
+
+Found 3 related tasks in memory
+
+☐ I have reviewed the historical context
+☐ I understand the implications for my new task
+☐ I want to proceed with task creation
+
+[ EMERGENCY OVERRIDE ] (requires justification)
+```
+
+## Rule-Specific Activation Patterns
+
+### Memory Management Rule Activation
+**Trigger Points:** PRE_TASK_CREATION, POST_TASK_COMPLETION
+**Mandatory Actions:** Search TASKS_LOG.md for related work, present findings, require acknowledgment
+
+### Task Expansion Rule Activation
+**Trigger Points:** PRE_TASK_CREATION, TASK_START
+**Mandatory Actions:** Apply complexity criteria, generate expansion recommendations, require user decision
+
+### Tool Awareness Rule Activation
+**Trigger Points:** TASK_START, TASK_EXECUTION, PRE_TASK_COMPLETION
+**Mandatory Actions:** Reference MCP_TOOLS_INVENTORY.md, flag manual approaches, require tool consideration
+
+## Integration Framework
+
+### Task Creation Pipeline Integration
+
+```
+User Requests Task Creation
+    ↓
+PRE_TASK_CREATION Trigger (MANDATORY)
+    ↓
+Memory Rule: Check for similar past work
+    ↓  
+Expansion Rule: Assess complexity
+    ↓
+User Confirms Findings and Decisions
+    ↓
+Task Created with Enhanced Context
+```
+
+### Task Execution Integration
+
+```
+Task Status Changed to InProgress
+    ↓
+TASK_START Trigger (MANDATORY)
+    ↓
+Tool Awareness Rule: Present relevant tools
+    ↓
+Context Management Rule: Display project alignment
+    ↓
+User Acknowledges and Begins Work
+```
+
+## Implementation Guidelines
+
+### Rule Template
+
+```markdown
+# [Rule Name] Activation
+
+## Trigger Configuration
+trigger_points: [PRE_TASK_CREATION, TASK_START]
+activation_level: MANDATORY
+bypass_conditions: [emergency_override]
+
+## Rule Logic
+- Analyze current situation
+- Generate recommendations
+- Return activation result with user confirmation required
+
+## User Interface Template
+🔍 [RULE NAME] ACTIVATION
+Analysis: [findings summary]
+Recommendations: [actions]
+
+Required Actions:
+☐ [action 1]
+☐ [action 2]
+```
+
+### Emergency Protocols
+
+Valid reasons for emergency rule bypass:
+- **Critical Production Issue** - Immediate fix required
+- **Rule System Malfunction** - Activation logic failing
+- **Time-Sensitive Deadline** - Rule process too slow
+
+---
+
+*This architecture transforms the fstrent_tasks_v2 rule system from passive guidance into an active, intelligent workflow enhancement system.*
+
+
+

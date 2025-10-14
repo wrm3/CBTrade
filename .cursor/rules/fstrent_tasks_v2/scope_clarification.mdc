@@ -1,0 +1,158 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Scope Clarification Rule
+
+Whenever you use this rule, start your message with:
+
+"Clarifying project scope before proceeding..."
+
+This rule prevents AI over-engineering by establishing mandatory scope validation checkpoints requiring explicit user confirmation before adding complexity, features, or assumptions not clearly specified.
+
+## Core Purpose
+
+Safeguard against scope creep and over-engineering by forcing AI agents to validate assumptions about requirements, expectations, and complexity with users before detailed planning or implementation.
+
+## Mandatory Activation
+
+This rule **MUST** activate:
+
+### 1. PRD Creation - **BEFORE** generating PRD:
+- Present scope clarification questionnaire
+- Validate user responses to critical dimensions
+- Confirm explicit boundaries and limitations
+- Document scope decisions for reference
+
+### 2. Feature Planning - **BEFORE** detailed specifications:
+- Check feature alignment with confirmed scope
+- Validate no assumptions beyond user requirements
+- Confirm feature complexity matches expectations
+
+### 3. Task Creation - **BEFORE** architectural decisions:
+- Validate technical approach aligns with scope
+- Check no gold-plating or unnecessary complexity
+- Confirm implementation matches expectations
+
+## Scope Clarification Questions
+
+**MANDATORY** - Do not proceed until relevant questions answered:
+
+### 1. User Context & Deployment
+"Intended for personal use, small team, or broader deployment?"
+- **Personal** (1 user): Simple, file-based, minimal security
+- **Small team** (2-10): Basic sharing, simple user management
+- **Broader** (10+): Full authentication, role management, scalability
+
+### 2. Security Requirements
+"Security expectations?"
+- **Minimal**: Basic validation, no authentication
+- **Standard**: User auth, session management, basic authorization
+- **Enhanced**: Role-based access, encryption, audit trails
+- **Enterprise**: SAML/SSO, compliance, advanced security
+
+### 3. Scalability Expectations
+"Performance and scalability expectations?"
+- **Basic**: Works for expected load, simple architecture
+- **Moderate**: Handles growth, some optimization
+- **High**: Speed-optimized, caching, efficient queries
+- **Enterprise**: Load balancing, clustering, horizontal scaling
+
+### 4. Feature Complexity
+"How much complexity comfortable with?"
+- **Minimal**: Core functionality, keep simple
+- **Standard**: Core plus reasonable conveniences
+- **Feature-Rich**: Comprehensive with advanced options
+- **Enterprise**: Full-featured with extensive configuration
+
+### 5. Integration Requirements
+"Integration needs?"
+- **Standalone**: No external integrations
+- **Basic**: File import/export, basic API
+- **Standard**: REST API, webhooks, common integrations
+- **Enterprise**: Comprehensive API, message queues, enterprise systems
+
+### 6. Timeline & Resources
+"Timeline and resource constraints?"
+- **Quick**: Prioritize delivery speed over features
+- **Balanced**: Good balance features/delivery time
+- **Comprehensive**: Take time for complete solution
+- **Iterative**: Start simple, incremental improvement
+
+## Over-Engineering Prevention
+
+### Authentication Over-Engineering
+**User Says**: "User login" → **Prevent**: Role permissions (unless requested), password complexity beyond basic, social login, MFA (unless security level requires)
+
+### Database Over-Engineering  
+**User Says**: "Store data" → **Prevent**: Complex normalization for simple cases, full audit logging (unless compliance), clustering (unless scale needs), advanced indexing (unless performance critical)
+
+### API Over-Engineering
+**User Says**: "Add API" → **Prevent**: Comprehensive REST beyond required, GraphQL (unless requested), API versioning (unless long-term planned), rate limiting (unless scale requires)
+
+### Architecture Over-Engineering
+**User Says**: "Web application" → **Prevent**: Microservices (unless scale needs), event-driven (unless needed), advanced caching (unless performance critical), container orchestration (unless deployment requires)
+
+### Feature Over-Engineering
+**User Says**: "Track tasks" → **Prevent**: Advanced reporting (unless requested), team features (unless multi-user), external integrations (unless specified), workflow automation (unless needed)
+
+## Scope Documentation
+
+### PRD Scope Section
+```markdown
+## Scope Definition
+
+### Confirmed Requirements
+- **User Context**: {Personal/Team/Enterprise}
+- **Security**: {Minimal/Standard/Enhanced/Enterprise}
+- **Scalability**: {Basic/Moderate/High/Enterprise}
+- **Complexity**: {Minimal/Standard/Feature-Rich/Enterprise}
+- **Integration**: {Standalone/Basic/Standard/Enterprise}
+- **Timeline**: {Quick/Balanced/Comprehensive/Iterative}
+
+### Explicit Boundaries
+- **Out of Scope**: {Features/complexity excluded}
+- **Future Considerations**: {Potential additions}
+- **Assumptions**: {Key validated assumptions}
+```
+
+## Validation Checkpoints
+
+### Before PRD Completion
+- [ ] All scope questions answered
+- [ ] Boundaries documented
+- [ ] Out-of-scope items listed
+- [ ] User confirmed scope summary
+
+### Before Task Creation
+- [ ] Tasks align with scope level
+- [ ] No gold-plating
+- [ ] Technical approach matches complexity
+- [ ] Implementation within boundaries
+
+### During Implementation
+- [ ] New requirements validated against scope
+- [ ] Scope changes user-approved
+- [ ] Documentation updated
+- [ ] Boundary violations prevented/approved
+
+## Integration with Other Rules
+
+### Planning Rule
+- Scope clarification MUST occur before detailed planning
+- Scope decisions populate PRD templates
+- Planning cannot exceed scope without user approval
+
+### Task Rule
+- Tasks reference confirmed scope decisions
+- Task creation validates against scope complexity
+- Prevents out-of-scope feature addition
+
+### Context Management
+- Context includes scope boundaries
+- Scope decisions become project context
+- System alerts to scope constraints
+
+This system ensures AI agents build exactly what users need without unnecessary complexity, preventing over-engineering while maintaining flexibility to expand scope when required.
+

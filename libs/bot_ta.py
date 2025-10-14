@@ -24,7 +24,7 @@ import pandas as pd
 import pandas_ta as pta
 
 # Local imports
-from fstrent_tools import (
+from libs.common import (
     AttrDict,
     beep,
     dir_val,
@@ -577,7 +577,7 @@ def ta_add_indicators(df: pd.DataFrame, st, prc_mkt, rfreq) -> pd.DataFrame:
         traceback.print_exc()
         traceback.print_stack()
         print('error getting SHA...')
-        beep(4)
+        beep(4) 
 
     # STRAT IMP MACD
     per_ma   = st.buy.strats.imp_macd.per_ma   # 34 

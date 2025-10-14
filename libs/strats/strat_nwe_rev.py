@@ -9,7 +9,7 @@
 # The strategy is designed to capture trend reversals by generating signals when the
 # product of consecutive differences of the NWE line changes sign.
 #<=====>#
-
+ 
 #<=====>#
 # Known To Do List
 #

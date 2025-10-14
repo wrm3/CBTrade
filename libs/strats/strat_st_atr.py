@@ -12,7 +12,7 @@
 # - Optimize ATR period and multiplier values
 # - Add volatility contraction/expansion detection
 #<=====>#
-
+ 
 #<=====>#
 # Imports
 #<=====>#

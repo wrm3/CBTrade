@@ -12,7 +12,7 @@
 # - Optimize fractal detection window
 # - Add multi-timeframe confirmation
 #<=====>#
-
+ 
 #<=====>#
 # Imports
 #<=====>#

@@ -8,7 +8,7 @@
 # color and the Heikin‑Ashi color are green.
 #<=====>#
 
-
+ 
 #<=====>#
 # Known To Do List
 #

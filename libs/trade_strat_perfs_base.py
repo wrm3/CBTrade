@@ -40,7 +40,7 @@ cbtrade_db = CBTRADE_DB()  # Create instance for backward compatibility
 #<=====>#
 # BackItUp
 #<=====>#
-bks(__file__)
+# bks(__file__)
 
 #<=====>#
 # Variables
@@ -385,7 +385,7 @@ def trade_strat_perfs_get(prod_id:str='', buy_strat_type:str='', buy_strat_name:
     return results
 
 #<=====>#
-
+ 
 @narc(1)
 def trade_strat_perfs_get_all(self, prod_id:str='', buy_strat_type:str='', buy_strat_name:str='', buy_strat_freq:str='', lta:str='', force_recalc:bool=False, buy_strats:dict={}):
     if debug_tf: G(f'==> trade_strat_perfs_base.trade_strat_perfs_get(prod_id={prod_id}, buy_strat_type={buy_strat_type}, buy_strat_name={buy_strat_name}, buy_strat_freq={buy_strat_freq}, lta={lta}, force_recalc={force_recalc})')

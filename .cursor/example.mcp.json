@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "hanx": {
+      "name": "HANX MCP",
+      "version": "1.0.0",
+      "description": "Hanx MCP with tools",
+      "url": "http://localhost:8080",
+      "env": {
+      }
+    }
+  }
+}

@@ -1,0 +1,434 @@
+---
+alwaysApply: true
+---
+# Comprehensive AI Task Management System
+
+Whenever you use this rule, start your message with the following:
+
+"Checking fstrent_tasks_v2 comprehensive task system..."
+
+This comprehensive rule integrates task management, complexity intelligence, and memory systems into a unified framework for AI task coordination. It provides sophisticated task lifecycle management with intelligent expansion, mandatory memory consultation, and foundation patterns for multi-agent coordination.
+
+## Rule Activation Framework
+
+```yaml
+rule_activation:
+  rule_name: "comprehensive_task_management"
+  activation_triggers:
+    - PRE_TASK_CREATION        # Memory consultation + complexity assessment
+    - TASK_COMPLEXITY_CHECK    # Expansion evaluation
+    - TASK_LIFECYCLE_EVENTS    # Status changes and workflow management
+    - POST_TASK_COMPLETION     # Archival and memory integration
+    - SYSTEM_MAINTENANCE       # Archive and consistency management
+  activation_level: MANDATORY
+  bypass_conditions: ["emergency_override", "system_administration", "simple_maintenance"]
+  smart_activation_ready: true  # Structured for progressive disclosure
+  agent_coordination_patterns: true  # Foundation for multi-agent workflows
+```
+
+---
+
+## I. CORE TASK MANAGEMENT SYSTEM
+
+### Foundational Architecture
+
+**Single Active Folder:** `.fstrent_tasks_v2/tasks/` holds all active task files with status in YAML frontmatter
+**Master Checklist:** `.fstrent_tasks_v2/TASKS.md` - primary control interface kept synchronized
+**Archive System:** `.fstrent_tasks_v2/memory/tasks/` for completed/failed tasks with chronological logging
+**Memory Integration:** Mandatory consultation system preventing duplication and providing context
+
+### Directory Structure
+
+```
+.fstrent_tasks_v2/
+  tasks/          # ALL active task files (task{id}_name.md)
+  memory/
+    tasks/        # Archived completed/failed task files
+    plans/        # Archived PRD files  
+    TASKS_LOG.md  # Append-only archived task log
+    PLANS_LOG.md  # Append-only plan log
+  TASKS.md        # Master checklist of active tasks
+```
+
+### Task File Format
+
+**Filename:** `task{id}_descriptive_name.md` (unique sequential ID, kebab-case)
+**Sub-tasks:** `task{parent_id}.{sub_id}_descriptive_name.md`
+
+**Next Task ID Process:**
+1. List `.fstrent_tasks_v2/tasks/` and `.fstrent_tasks_v2/memory/tasks/`
+2. Parse `task{id}_` pattern (top-level only)
+3. Find highest ID + 1 (or 1 if none found)
+
+**YAML Frontmatter:**
+
+```yaml
+---
+id: {id}                   # Numeric (42) or string ("42.1") for sub-tasks
+title: 'Task Title'
+type: task                 # task|bug_fix|retroactive_fix
+status: pending            # pending|inprogress|completed|failed
+priority: medium           # critical|high|medium|low
+feature: Feature Name
+subsystems:                # From SUBSYSTEMS.md registry
+  - Core Task Management
+project_context: Brief connection to project goal
+dependencies:              # Task IDs this depends on
+  - 3
+  - 5.2
+assigned_agent: null       # Agent working (null if not active)
+created_at: "YYYY-MM-DDTHH:MM:SSZ"  
+started_at: null           # Set when -> inprogress
+completed_at: null         # Set when -> completed/failed
+error_log: null            # Failure reason
+complexity_score: null     # Automatic assessment (1-10+ scale)
+expansion_decision: null   # expansion_applied|bypassed|override
+memory_consultation: null  # Historical context reviewed
+story_points: null         # Effort estimation (optional)
+sprint: null               # Sprint/iteration (optional)
+---
+```
+
+### Task Priority Assignment
+
+- **critical:** Essential functionality, blocks critical/high tasks
+- **high:** Key features, blocks multiple medium/high tasks  
+- **medium:** Standard work, valuable but not blocking
+- **low:** Nice-to-have, can be deferred
+
+### Task Content Structure
+
+- **Description:** Brief goal summary (for TASKS.md)
+- **Details:** Bulleted requirements and steps
+- **Test Strategy:** Completion verification method
+- **Agent Notes:** Optional execution notes
+- **Memory Context:** Historical insights from consultation
+- **Complexity Analysis:** Expansion rationale and decisions
+
+---
+
+## II. TASK COMPLEXITY INTELLIGENCE SYSTEM
+
+### Automatic Complexity Assessment
+
+**PRE_TASK_CREATION Trigger (MANDATORY)**
+**Required Actions:**
+1. **Evaluate Task Complexity** using established criteria
+2. **Calculate Complexity Score** (1-10+ scale)
+3. **Present Expansion Recommendation** if score > 6
+4. **Require User Decision** on expansion before proceeding
+
+### Automated Complexity Scoring Criteria
+
+#### Primary Complexity Indicators (High Weight)
+*   **Estimated Effort (4 points):** Task likely takes >2-3 developer days
+*   **Cross-Subsystem Impact (3 points):** Affects multiple subsystems with different architectural boundaries  
+*   **Multiple Distinct Components (3 points):** Changes across unrelated modules, services, or UI areas
+
+#### Secondary Complexity Indicators (Medium Weight)
+*   **High Uncertainty/Ambiguity (2 points):** Requirements unclear or many unknown technical challenges
+*   **Multiple Logical Outcomes (2 points):** Several distinct, independently verifiable outcomes
+*   **Dependency Blocking (2 points):** Large prerequisite for significant number of subsequent tasks
+
+#### Tertiary Complexity Indicators (Low Weight)
+*   **Numerous Acceptance Criteria (1 point):** Exceptionally long Details/Test Strategy sections
+*   **Story Point Threshold (1 point):** Task assigned >5 story points
+
+### Complexity Scoring Matrix
+
+```
+Total Score | Recommendation | Action Required
+0-3 points  | Simple Task    | Proceed normally
+4-6 points  | Moderate Task  | Consider expansion (TRIGGERED)
+7-10 points | Complex Task   | Expansion required (MANDATORY)
+11+ points  | High Complex   | Must expand before creation (BLOCKING)
+```
+
+### Mandatory Expansion Process
+
+When a task scores ≥7 complexity points:
+
+1.  **Sub-Goal Identification:** System analyzes task objective and breaks into logical, sequential sub-goals
+2.  **Subsystem Boundary Alignment:** Sub-tasks aligned with SUBSYSTEMS.md boundaries
+3.  **Sub-Task Generation:** System generates structured sub-task proposals
+4.  **Mandatory User Confirmation:** User must approve expansion before proceeding
+
+#### Expansion Presentation Format
+
+```
+🚨 MANDATORY TASK EXPANSION REQUIRED
+Complexity Score: X/10 (EXPANSION REQ'D)
+Original Task: "{Original Task Title}"
+
+Proposed Sub-Tasks:
+[Detailed sub-task breakdown with priorities and dependencies]
+
+Required Actions:
+☐ I approve the expansion into sub-tasks
+☐ I want to modify the expansion proposal
+☐ I need to reduce original task scope instead
+[ EMERGENCY OVERRIDE ] (requires detailed justification)
+```
+
+### Sub-Task Creation Workflow
+
+**If expansion approved:**
+1. Get sub-task definitions with titles, priorities, dependencies
+2. Use `task{parent_id}.{sub_id}_name.md` format
+3. List `task{parent_id}.*_*.md`, use highest sub_id + 1
+4. Create files with string ID in YAML (e.g., `id: "42.1"`)
+5. Update parent task to note expansion
+6. Add sub-task entries to `TASKS.md`
+
+### Bypass and Override Mechanisms
+
+#### Approved Bypass Conditions
+1. **Simple Maintenance Tasks** - Score ≤2 points, routine updates
+2. **Emergency Fixes** - Critical production issues requiring immediate action  
+3. **Story Points Under 2** - Explicitly small tasks with validated scope
+4. **System Administration** - Infrastructure and tooling maintenance
+
+---
+
+## III. INTEGRATED MEMORY CONSULTATION SYSTEM
+
+### Memory Architecture
+
+#### Task Archive
+- **`.fstrent_tasks_v2/memory/tasks/`**: Full archived task files (`task{id}_name.md`)
+- **`.fstrent_tasks_v2/memory/TASKS_LOG.md`**: Append-only chronological log
+
+#### Plan Archive
+- **`.fstrent_tasks_v2/memory/plans/`**: Archived PRD files
+- **`.fstrent_tasks_v2/memory/PLANS_LOG.md`**: Append-only plan log
+
+### Mandatory Consultation Triggers
+
+#### PRE_TASK_CREATION (MANDATORY)
+**Trigger:** Before any new task creation
+**Actions:**
+1. Search TASKS_LOG.md for similar keywords/subsystems
+2. Present historical findings with relevance scores
+3. Check task dependencies from archived work
+4. Require user acknowledgment before proceeding
+
+**User Confirmation:**
+```
+Historical Context Review:
+[Historical findings with relevance scores]
+
+☐ Reviewed similar historical tasks
+☐ Understand context and implications  
+☐ Proceed with task creation
+☐ No similar work OR need different approach
+[ EMERGENCY OVERRIDE ] (requires justification)
+```
+
+#### POST_TASK_COMPLETION (MANDATORY)
+**Trigger:** When 5+ completed tasks in `.fstrent_tasks_v2/tasks/`
+**Actions:**
+1. Auto-detect completed tasks
+2. Present archival list for confirmation
+3. Execute archival (move files, update logs)
+4. Validate completion
+
+#### PRE_PLANNING (TRIGGERED)
+**Trigger:** Before creating/modifying PRDs
+**Actions:**
+1. Search PLANS_LOG.md for related history
+2. Check deprecated plans for value
+3. Reference superseded approaches
+4. Present planning context
+
+### Memory Log Formats
+
+**TASKS_LOG.md Format:**
+```markdown
+[YYYY-MM-DD HH:MM:SS] - Task ID - Status - Title - Agent - Duration
+> Dependencies: {deps} (if exist)
+> Subsystems: {subsystems} (if exist)
+> Complexity: {score}/10 (if assessed)
+> Description summary with context
+```
+
+**PLANS_LOG.md Format:**
+```markdown
+- **Archived Plan:** `.fstrent_tasks_v2/memory/plans/plan-name.md`
+  - **Archived On:** YYYY-MM-DD HH:MM:SS
+  - **Reason:** Completed/Deprecated/Superseded
+  - **Title:** Plan title
+```
+
+---
+
+## IV. UNIFIED WORKFLOW ORCHESTRATION
+
+### Integrated Task Creation Process
+
+```
+User Requests New Task
+    ↓
+🔍 PRE_TASK_CREATION TRIGGERS (MANDATORY)
+    ↓
+1. Memory Consultation (Historical Context)
+    ↓
+2. Complexity Assessment (Expansion Evaluation)
+    ↓
+Complexity Score ≥7? → YES: Mandatory Expansion
+    ↓                → NO: Continue
+Memory Review Complete? → NO: Require Review
+    ↓                   → YES: Continue
+Generate Task with Full Context
+    ↓
+Update TASKS.md Master Checklist
+    ↓
+Log Decision and Effectiveness
+```
+
+### `TASKS.md` Master Checklist
+
+**CRITICAL:** Update immediately when task status changes or new tasks planned.
+
+**Format:**
+```markdown
+- [ICON] **ID {id}: {Title}** (Priority: {priority}) [{Type}] {STORY_POINTS}{STATUS_NOTE}
+> Dependencies: {dep_id1}, {dep_id2}... (if exist)
+> Subsystems: {subsystem1}, {subsystem2}... (if exist)
+> Complexity: {score}/10 (if assessed)
+> {Description}
+```
+
+**Icons:** `[ ]` Pending, `[-]` In Progress, `[x]` Completed, `[!]` Failed
+
+### Task Execution Workflow
+
+```mermaid
+graph TD
+    A[Task Creation] --> B[Memory Consultation];
+    B --> C[Complexity Assessment];
+    C --> D{Complex?};
+    D --Yes--> E[Mandatory Expansion];
+    D --No--> F[Create Task];
+    E --> F;
+    F --> G[Update TASKS.md];
+    G --> H[Start Task];
+    H --> I{Dependencies Met?};
+    I --Yes--> J[Execute];
+    I --No--> K[Wait];
+    J --> L{Success?};
+    L --Yes--> M[Complete];
+    L --No--> N[Fail];
+    M --> O[Archive When 5+ Complete];
+    N --> O;
+```
+
+---
+
+## V. AGENT COORDINATION FOUNDATION
+
+### Multi-Agent Task Patterns
+
+This comprehensive system provides foundation patterns for future multi-agent coordination:
+
+#### Specialized Agent Roles
+```yaml
+agent_specializations:
+  task_planning_agent:
+    focus: ["dependency_analysis", "complexity_assessment", "timeline_planning"]
+    
+  memory_intelligence_agent:
+    focus: ["historical_analysis", "pattern_recognition", "knowledge_synthesis"]
+    
+  complexity_assessment_agent:
+    focus: ["expansion_evaluation", "sub_task_design", "scope_optimization"]
+    
+  execution_coordination_agent:
+    focus: ["workflow_orchestration", "status_tracking", "resource_allocation"]
+```
+
+#### Coordination Protocols
+- **Task Assignment Negotiation**: Agents bid on tasks based on capability match
+- **Memory Consultation Sharing**: Distributed historical knowledge access
+- **Complexity Assessment Collaboration**: Multi-agent expansion evaluation
+- **Resource Coordination**: Shared access to task files and status tracking
+
+#### Scaling Patterns
+- **Parallel Task Execution**: Independent tasks executed simultaneously
+- **Collaborative Decision Making**: Multi-agent consensus on complex decisions
+- **Distributed Memory Access**: Agents share historical insights across domains
+- **Dynamic Resource Allocation**: Task routing based on agent specialization
+
+---
+
+## VI. SYSTEM OPERATIONS
+
+### Safe File Operations
+
+1. **Check Existence:** Use `list_dir` or `file_search` before operations
+2. **File Creation:** Use `edit_file` with initial content if missing
+3. **File Moving:** Use `run_terminal_cmd` with `mv` for archival
+4. **Appending:** Read existing, append new, write combined content
+
+### Agent Responsibilities
+
+1. **Sync:** Keep `TASKS.md` aligned with task file status
+2. **Dependencies:** Verify all dependency IDs have `status: completed` before starting
+3. **Memory Consultation:** Execute mandatory historical review
+4. **Complexity Assessment:** Evaluate and apply expansion rules
+5. **Status Updates:**
+   - **Start:** Update YAML (`inprogress`, `assigned_agent`, `started_at`) + `TASKS.md` (`[-]`)
+   - **Complete:** Update YAML (`completed`, `assigned_agent: null`, `completed_at`) + `TASKS.md` (`[x]`)
+   - **Fail:** Update YAML (`failed`, `assigned_agent: null`, `completed_at`, `error_log`) + `TASKS.md` (`[!]`)
+6. **Archive:** Move completed/failed tasks to memory, log to appropriate logs, remove from `TASKS.md`
+
+### Utilities
+
+**Timestamps:** Always use command, never hardcode:
+```bash
+date -u +"%Y-%m-%dT%H:%M:%SZ"
+```
+
+### Commands
+
+- **Show Tasks:** Display `TASKS.md`
+- **Create Task:** Memory consultation + complexity assessment + planning + file creation
+- **Start Task:** Find first pending, check dependencies, update if met
+- **Complete Task:** Check Test Strategy section, update YAML + `TASKS.md`
+- **Archive:** Move completed/failed, log appropriately, remove from active tracking
+
+---
+
+## VII. SMART ACTIVATION OPTIMIZATION
+
+This comprehensive rule is structured for smart activation through:
+
+### Progressive Disclosure Levels
+
+#### Level 1: Essential Operations
+- Core task creation and status workflows
+- Basic TASKS.md synchronization
+- Simple dependency checking
+
+#### Level 2: Intermediate Intelligence
+- Memory consultation triggers
+- Basic complexity assessment
+- Archive management
+
+#### Level 3: Advanced Sophistication
+- Full expansion evaluation and sub-task creation
+- Comprehensive memory analysis
+- Complex workflow orchestration
+
+#### Level 4: Agent Research Mode
+- Multi-agent coordination patterns
+- Distributed task management concepts
+- Advanced intelligence frameworks
+
+### Context Efficiency Features
+
+- **Modular Section Access**: Each major section can be activated independently
+- **Trigger-Based Loading**: Only relevant subsections loaded based on current operation
+- **Agent Coordination Concepts**: Available for research mode without impacting basic operations
+- **Intelligent Rule Activation**: System selects relevant sections based on task context
+
+This comprehensive task management system preserves all sophisticated concepts while providing logical organization for efficient activation and future agent coordination development.

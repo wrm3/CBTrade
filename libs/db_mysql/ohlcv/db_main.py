@@ -4,7 +4,7 @@
 """
 🔧 OHLCV UNIFIED DATABASE MODULE
 CBTrade Centralized OHLCV Operations - MySQL Implementation
-
+ 
 This module provides OHLCV operations for trading pair data:
 - Database operations (MySQL) 
 - Single table per trading pair with freq column to differentiate timeframes

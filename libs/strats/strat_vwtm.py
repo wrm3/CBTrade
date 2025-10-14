@@ -5,7 +5,7 @@
 # Combines Elder Ray Index, Vortex Indicator, and Volume-Weighted Momentum
 # Specifically designed for Bitcoin's volatility and volume patterns
 #<=====>#
-
+ 
 #<=====>#
 # Known To Do List
 #

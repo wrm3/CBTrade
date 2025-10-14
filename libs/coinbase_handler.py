@@ -630,7 +630,8 @@ Parameters: {operation_params}
         
         for acct in accts:
             curr = self.shape_curr(acct)
-            if (acct['active'] and float(acct['available_balance']['value']) > 0):
+            # if (acct['active'] and float(acct['available_balance']['value']) > 0):
+            if acct['active']:
                 all_bals.append(curr)
             all_currs.append(curr)
 
@@ -1436,13 +1437,107 @@ Parameters: {operation_params}
 
     #<=====>#
 
+    def _calculate_decimal_places(self, increment: float) -> int:
+        """
+        Calculate number of decimal places from an increment value.
+        
+        Args:
+            increment: The increment value (e.g., 0.01, 0.001)
+            
+        Returns:
+            Number of decimal places (e.g., 2, 3)
+        """
+        if increment >= 1:
+            return 0
+        
+        # Count decimal places by converting to string
+        incr_str = f"{increment:.12f}".rstrip('0')
+        if '.' in incr_str:
+            return len(incr_str.split('.')[1])
+        return 0
+ 
+    def format_quote_size(self, prod_id: str, amount: float) -> str:
+        """
+        Format quote size with proper precision based on market's quote_size_incr.
+        
+        Args:
+            prod_id: Product ID (e.g., 'ETH-USDC')
+            amount: The amount to format
+            
+        Returns:
+            String formatted to the correct decimal places
+        """
+        # Get market info from database
+        mkt_rows = cbtrade_db.seld(
+            "SELECT quote_size_incr FROM cbtrade.mkts WHERE prod_id = %s",
+            [prod_id]
+        )
+        
+        # seld() returns a list, get first element
+        if not mkt_rows or len(mkt_rows) == 0:
+            # Fallback to 2 decimal places if market info not found
+            print(f"⚠️ WARNING: Could not find quote_size_incr for {prod_id}, using 2 decimal places")
+            return f"{amount:.2f}"
+        
+        mkt = mkt_rows[0] if isinstance(mkt_rows, list) else mkt_rows
+        
+        if not mkt.get('quote_size_incr'):
+            print(f"⚠️ WARNING: quote_size_incr is null for {prod_id}, using 2 decimal places")
+            return f"{amount:.2f}"
+        
+        quote_incr = float(mkt['quote_size_incr'])
+        decimal_places = self._calculate_decimal_places(quote_incr)
+        
+        # Round to proper precision and format
+        rounded_amt = round(amount, decimal_places)
+        return f"{rounded_amt:.{decimal_places}f}"
+
+    def format_base_size(self, prod_id: str, amount: float) -> str:
+        """
+        Format base size with proper precision based on market's base_size_incr.
+        
+        Args:
+            prod_id: Product ID (e.g., 'ETH-USDC')
+            amount: The amount to format
+            
+        Returns:
+            String formatted to the correct decimal places
+        """
+        # Get market info from database
+        mkt_rows = cbtrade_db.seld(
+            "SELECT base_size_incr FROM cbtrade.mkts WHERE prod_id = %s",
+            [prod_id]
+        )
+        
+        # seld() returns a list, get first element
+        if not mkt_rows or len(mkt_rows) == 0:
+            # Fallback to 8 decimal places if market info not found (common for crypto)
+            print(f"⚠️ WARNING: Could not find base_size_incr for {prod_id}, using 8 decimal places")
+            return f"{amount:.8f}"
+        
+        mkt = mkt_rows[0] if isinstance(mkt_rows, list) else mkt_rows
+        
+        if not mkt.get('base_size_incr'):
+            print(f"⚠️ WARNING: base_size_incr is null for {prod_id}, using 8 decimal places")
+            return f"{amount:.8f}"
+        
+        base_incr = float(mkt['base_size_incr'])
+        decimal_places = self._calculate_decimal_places(base_incr)
+        
+        # Round to proper precision and format
+        rounded_amt = round(amount, decimal_places)
+        return f"{rounded_amt:.{decimal_places}f}"
+
+    #<=====>#
+
     @narc(1)
     def ord_mkt_buy(self):
         if debug_tf: Y(f'coinbase_handler.ord_mkt_buy()')
         """Market buy order with business logic"""
         
         prod_id = self.buy.prod_id
-        spend_amt = str(self.buy.trade_size)
+        # Format quote size with proper precision
+        spend_amt = self.format_quote_size(prod_id, self.buy.trade_size)
         self.buy.refresh_wallet_tf = True
 
         # Use API client for order placement
@@ -1500,7 +1595,8 @@ Parameters: {operation_params}
 
         oc = {}
         oc['market_market_ioc'] = {}
-        oc['market_market_ioc']['quote_size'] = str(spend_amt)
+        # Format quote size with proper precision based on market's quote_size_incr
+        oc['market_market_ioc']['quote_size'] = self.format_quote_size(prod_id, spend_amt)
 
         o = cb.create_order(
                 client_order_id = client_order_id, 
@@ -1819,7 +1915,9 @@ Parameters: {operation_params}
         if debug_tf: Y(f'coinbase_handler.api_market_sell_orig() ==> {product_id}')
         """Market sell original alias"""
         client_order_id = self.gen_client_order_id()
-        oc = {'market_market_ioc': {'base_size': f'{base_size:>.8f}'}}
+        # Format base size with proper precision
+        formatted_base_size = self.format_base_size(product_id, base_size)
+        oc = {'market_market_ioc': {'base_size': formatted_base_size}}
         return self.create_order(client_order_id, product_id, 'SELL', oc)
 
     #<=====>#
@@ -1830,7 +1928,8 @@ Parameters: {operation_params}
         """Market sell order with business logic"""
         
         prod_id = pos.prod_id
-        sell_cnt = str(pos.trade_size)
+        # Format base size with proper precision
+        sell_cnt = self.format_base_size(prod_id, pos.trade_size)
 
         # Use API client for order placement
         order = self.market_sell(prod_id, sell_cnt)
@@ -1897,7 +1996,8 @@ Parameters: {operation_params}
         else:
             oc = {}
             oc['market_market_ioc'] = {}
-            oc['market_market_ioc']['base_size'] = f'{pos.sell_cnt:>.8f}'
+            # Format base size with proper precision based on market's base_size_incr
+            oc['market_market_ioc']['base_size'] = self.format_base_size(prod_id, pos.sell_cnt)
 
             o = cb.create_order(
                     client_order_id = client_order_id, 

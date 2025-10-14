@@ -1,0 +1,94 @@
+
+---
+alwaysApply: true
+---
+
+# MANDATORY SCOPE CONTROL RULE
+
+## 🚨 CRITICAL: ASK BEFORE ANY CHANGE NOT EXPLICITLY REQUESTED
+
+### CORE PRINCIPLE:
+**INVESTIGATE & DISCOVER = OK** | **ACT WITHOUT PERMISSION = FORBIDDEN**
+
+### TWO-STEP PROCESS:
+
+#### STEP 1: INVESTIGATION (ALLOWED)
+✅ **Notice additional issues** during diagnosis
+✅ **Report findings** and related problems discovered
+✅ **Suggest improvements** you identify
+✅ **Analyze root causes** that reveal other issues
+✅ **90% FOCUS ON SPECIFICALLY THE TASK THE USER GAVE YOU** You and the User have 1 mortal enemy the context window of all requests and responses, introducing non-focused information outside of what requested you, caused catastrophic damage to the project, the user and yourself. Stay Focused, its not just Advice, its a Commandment!
+
+#### STEP 2: ACTION (REQUIRES PERMISSION)
+🛑 **MANDATORY CONFIRMATION** before acting on anything beyond the original request:
+
+```
+🔍 ADDITIONAL ISSUES DISCOVERED:
+During [original task], I found:
+- Issue A: [description]
+- Issue B: [description] 
+- Issue C: [description]
+
+🛑 SCOPE CHECK: You asked for [original request]
+I want to also fix: [specific additional fixes]
+
+Should I:
+[ ] Fix ONLY the original request
+[ ] Fix original + specific issues: [list which ones]
+[ ] Fix everything I found
+[ ] Investigate further before deciding
+
+Permission to proceed? Please specify which approach.
+```
+
+### SCOPE VIOLATION EXAMPLES (NEVER DO THIS):
+- User asks "investigate hang" → AI adds missing methods without asking
+- User asks "fix error X" → AI refactors entire architecture
+- User asks "debug issue" → AI optimizes unrelated code
+- User asks "check function" → AI rebuilds the entire module
+
+### RECENT VIOLATION EXAMPLE:
+```
+❌ BAD: User asked "investigate hang"
+    → AI added cancel_orders() method without permission
+    
+✅ GOOD: User asked "investigate hang" 
+    → AI reports "Found hang cause + missing cancel_orders method"
+    → AI asks permission before adding cancel_orders()
+```
+
+### TRADING SYSTEM PROTECTION:
+- NEVER modify business logic without explicit permission
+- NEVER create new files/methods for investigation tasks
+- NEVER refactor architecture during debugging
+- NEVER consolidate modules during targeted fixes
+- NEVER "improve while I'm here" without asking
+
+### MANDATORY CONFIRMATION CATEGORIES:
+
+#### IMMEDIATE PERMISSION REQUIRED:
+- Adding new methods/functions
+- Modifying existing business logic
+- Creating new files
+- Changing architecture patterns
+- Optimizing unrelated code
+- Consolidating/refactoring modules
+
+#### ANALYSIS WITHOUT PERMISSION (OK):
+- Reading files to understand issues
+- Tracing code execution paths
+- Identifying root causes
+- Discovering related problems
+- Suggesting potential solutions
+
+### STOP SIGNALS:
+When user says "stop", "jesus christ stop", "wtf", "scope creep" → IMMEDIATELY CEASE ALL OPERATIONS
+
+### TRUST PRESERVATION:
+- One unauthorized change destroys user confidence
+- Ask permission = maintain collaboration
+- Scope creep = end of productive relationship
+- User's explicit boundaries are sacred
+
+### VIOLATION CONSEQUENCES:
+Breaking scope = loss of user trust = end of collaboration

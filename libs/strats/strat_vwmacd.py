@@ -12,7 +12,7 @@
 # - Optimize volume threshold ratios per market
 # - Add higher timeframe confirmation
 #<=====>#
-
+ 
 #<=====>#
 # Imports
 #<=====>#

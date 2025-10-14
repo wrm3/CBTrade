@@ -1,0 +1,99 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Sprint Planning Rule
+
+Whenever you use this rule, start your message with the following:
+
+"Initiating sprint planning workflow..."
+
+This rule extends the task system with iteration planning capabilities, story point estimation, and sprint tracking to organize development work into manageable time-boxed periods.
+
+## Purpose
+
+Provide lightweight sprint planning functionality that integrates with the existing fstrent_tasks_v2 system, enabling iterative development cycles without complex methodology overhead.
+
+## Activation Points
+
+### SPRINT_CREATION (TRIGGERED)
+**When:** User requests sprint planning or task backlog grows beyond single iteration
+**Actions:**
+1. Create sprint planning session
+2. Estimate story points for unassigned tasks
+3. Assign tasks to sprint based on capacity
+4. Generate sprint backlog and goals
+
+### TASK_ASSIGNMENT (AUTOMATIC)
+**When:** New tasks created during active sprint
+**Actions:**
+1. Estimate story points for new task
+2. Evaluate sprint capacity impact
+3. Recommend sprint assignment or backlog placement
+
+## Sprint Planning Workflow
+
+### Sprint Creation Template
+```yaml
+# Sprint {number}: {sprint_name}
+dates: {start_date} to {end_date}
+capacity: {total_story_points}
+goals: {2-3 primary objectives}
+
+assigned_tasks:
+  - task_id: {ID}
+    title: {task_title}
+    story_points: {1|2|3|5|8}
+    status: pending
+
+sprint_metrics:
+  planned_points: {total}
+  completed_points: {running_total}
+  burn_rate: {points_per_day}
+```
+
+### Story Point Estimation Scale
+- **1 SP**: Minor fixes, simple changes (< 1 hour)
+- **2 SP**: Small features, straightforward tasks (1-4 hours)
+- **3 SP**: Medium complexity, requires research (4-8 hours)
+- **5 SP**: Complex features, multiple components (1-2 days)
+- **8 SP**: Large tasks requiring expansion into sub-tasks
+
+### Sprint Assignment Logic
+1. **Capacity Planning**: Target 70% of estimated velocity for safety buffer
+2. **Priority Mapping**: Critical/High priority tasks first
+3. **Dependency Ordering**: Respect task dependencies within sprint
+4. **Skill Balancing**: Mix of complex and simple tasks for flow
+
+## Integration Points
+
+**Task System Integration:**
+- Add `sprint_id` and `story_points` fields to task metadata
+- Update TASKS.md with sprint columns and story point indicators
+- Maintain task dependency validation within sprint constraints
+
+**Metrics Integration:**
+- Track sprint velocity and completion rates
+- Measure estimation accuracy for continuous improvement
+- Record sprint goal achievement patterns
+
+**Memory Integration:**
+- Archive completed sprints with performance metrics
+- Maintain sprint retrospective notes for lessons learned
+
+## Sprint Tracking
+
+### Daily Progress Updates
+- Update story point completion in sprint backlog
+- Track burn-down rate against planned velocity
+- Identify at-risk sprint goals early
+
+### Sprint Completion
+- Archive sprint with final metrics
+- Capture lessons learned for retrospective
+- Roll incomplete tasks to next sprint or backlog
+
+---
+
+*This rule provides essential sprint planning capabilities while maintaining integration with the existing fstrent_tasks_v2 system and anti-bloat principles.*

@@ -16,7 +16,7 @@
 # smoothed HA close, the respective candle bodies are shrinking and bottom-heavy, and both the
 # overall candle color and Heikin-Ashi color are red.
 #<=====>#
-
+ 
 #<=====>#
 # Known To Do List
 #

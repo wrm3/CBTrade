@@ -1,0 +1,38 @@
+---
+alwaysApply: true
+---
+
+# MANDATORY PRE-CHANGE CHECKLIST
+
+## ✅ BEFORE MAKING ANY CODE CHANGE:
+
+### 1. SCOPE VALIDATION
+- [ ] What exactly did the user request?
+- [ ] Am I staying within that exact scope?
+- [ ] Do I want to do anything beyond the request?
+- [ ] If yes → ASK PERMISSION FIRST
+
+### 2. IMPACT ASSESSMENT  
+- [ ] Is this a trading system file? (libs/flow_main.py, bot_main.py, etc.)
+- [ ] Could this break income generation?
+- [ ] Am I modifying business logic?
+- [ ] If yes → EXTRA CAUTION + USER CONFIRMATION
+
+### 3. CHANGE STRATEGY
+- [ ] Can I make the minimal change possible?
+- [ ] Do I need to create new files? (Usually NO)
+- [ ] Am I refactoring when I should be patching?
+- [ ] Is there a simpler approach?
+
+### 4. SAFETY CHECK
+- [ ] Are backups being created in /bkups/?
+- [ ] Do I know how to revert this change?
+- [ ] Can I test without breaking production?
+- [ ] Have I asked if uncertain?
+
+### 5. USER TRUST
+- [ ] Will this build or damage user confidence?
+- [ ] Am I respecting their explicit requests?
+- [ ] Am I being honest about scope?
+
+## 🛑 IF ANY CHECKBOX FAILS → STOP AND ASK USER

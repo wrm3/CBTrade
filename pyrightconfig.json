@@ -1,4 +1,10 @@
 {
+    // Python environment configuration - CRITICAL for UV virtual environment
+    "venvPath": ".",
+    "venv": ".venv",
+    "pythonVersion": "3.13",
+    
+    // Type checking strictness - relaxed for working code
     "reportAttributeAccessIssue": "none",
     "reportUnknownMemberType": "none",
     "reportArgumentType": "none",
@@ -11,5 +17,22 @@
     "reportOperatorIssue": "none",
     "reportIndexIssue": "none",
     "reportInvalidTypeForm": "none",
-    "reportAssignmentType": "none"
+    "reportAssignmentType": "none",
+    
+    // Silence Pylance licensing change noise
+    "reportOptionalSubscript": "none",
+    "reportOptionalIterable": "none",
+    "reportOptionalOperand": "none",
+    "reportReturnType": "none",
+    "reportPossiblyUnboundVariable": "none",
+    "reportUnboundVariable": "none",
+    "reportRedeclaration": "none",
+    "reportMissingImports": "warning",
+    
+    // General strictness settings
+    "typeCheckingMode": "basic",
+    "useLibraryCodeForTypes": true,
+    "strictListInference": false,
+    "strictDictionaryInference": false,
+    "strictSetInference": false
 }

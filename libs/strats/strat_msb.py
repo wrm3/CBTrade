@@ -12,7 +12,7 @@
 # - Optimize liquidity zone detection parameters
 # - Add order block confirmation from higher timeframes
 #<=====>#
-
+ 
 #<=====>#
 # Imports
 #<=====>#

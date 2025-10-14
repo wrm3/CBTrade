@@ -92,6 +92,7 @@ def pair_new(self, pair_dict:AttrDict):
 #    self.pair.class_name           = 'PAIR'
     for k, v in pair_dict.items():
         self.pair[k] = v
+    self.prod_id                   = self.pair.prod_id
     self.pair.symb                 = self.mkt.symb
     self.st_pair                   = self.pair_settings_get(self.st_mkt, self.prod_id)
     self.pair.buy_strats           = self.buy_strats_get()
@@ -442,7 +443,7 @@ def pair_logic(self):
     # self.chrt.chart_bottom(len_cnt=260)
 
     self.disp_pair()
-
+ 
     # Market Buy Logic
     if self.mode in ('buy','full') and prod_id in self.mkt.buy_pairs:
         # 🔒 CRITICAL: If lock verification fails, skip to next pair entirely

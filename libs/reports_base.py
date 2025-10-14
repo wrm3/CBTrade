@@ -1221,7 +1221,7 @@ def report_open_test_by_gain(quote_symb=None, ):
     sql += " and test_txn_yn = 'Y' "
     sql += " order by prod_id, buy_strat_name, buy_strat_freq, pos_id "
     poss = cbtrade_db.seld(sql, always_list_yn='Y')
-
+ 
     if poss:
         print_adv(2)
         title = 'Test Open Positions - Prod, Strat, Freq, Pos_Id'

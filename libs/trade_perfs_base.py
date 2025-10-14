@@ -39,7 +39,7 @@ cbtrade_db = CBTRADE_DB()  # Create instance for backward compatibility
 #<=====>#
 # BackItUp
 #<=====>#
-bks(__file__)
+# bks(__file__)
 
 #<=====>#
 # Variables
@@ -383,7 +383,7 @@ def trade_perfs_get_by_prod_id(self, prod_id:str, force_recalc:bool=False):
     results['L'] = TRADE_PERF({'prod_id': prod_id, 'lta': 'L'})
     results['T'] = TRADE_PERF({'prod_id': prod_id, 'lta': 'T'}) 
     results['A'] = TRADE_PERF({'prod_id': prod_id, 'lta': 'A'})
-
+ 
     now_unix = dttm_unix()
     for x in trade_perfs:
         x.prod_id = prod_id

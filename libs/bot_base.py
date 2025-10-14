@@ -1,6 +1,6 @@
 # #<=====>#
 # Description
-#<=====>#
+#<=====># 
 
 
 
@@ -39,18 +39,27 @@ from libs.db_mysql.cbtrade.db_main import CBTRADE_DB
 from libs.db_mysql.ohlcv.db_main import OHLCV_DB  # MySQL-only OHLCV
 from libs.coinbase_handler import cb
 
+from libs.settings_base import *
+from libs.theme import *
+
 from libs.mkt_base import *
 from libs.budget_base import *
 from libs.pair_base import *
+
 from libs.buy_base import *
+from libs.buy_base_boosts import *
+from libs.buy_base_deny import *
+from libs.buy_base_deny_test import *
+from libs.buy_base_deny_live import *
+
 from libs.sell_base import *
-from libs.reports_base import *
-from libs.settings_base import *
-from libs.strat_base import *
+
 from libs.ta_base import *
-from libs.theme import *
+from libs.strat_base import *
 from libs.trade_perfs_base import *
 from libs.trade_strat_perfs_base import *
+
+from libs.reports_base import *
 
 #<=====>#
 # Variables
@@ -95,19 +104,32 @@ class BOT(AttrDict):
     disp_buy_test_reasons                                  = disp_buy_test_reasons
     disp_buy_live_or_test                                  = disp_buy_live_or_test
     buy_new                                                = buy_new
+    buy_signal_create                                      = buy_signal_create
+    buy_decision_add                                       = buy_decision_add
     buy_decision_log                                       = buy_decision_log
     set_test_mode                                          = set_test_mode
     set_deny_mode                                          = set_deny_mode
     buy_main                                               = buy_main
+    cb_buy_base_size_calc                                  = cb_buy_base_size_calc
+    buy_size_budget_calc                                   = buy_size_budget_calc
+    buy_save                                               = buy_save
+    buy_live                                               = buy_live
+    buy_test                                               = buy_test
+
+    # buy_base_boosts.py
     buy_logic_mkt_boosts                                   = buy_logic_mkt_boosts
     buy_logic_strat_boosts                                 = buy_logic_strat_boosts
     buy_logic_strat_boosts_position_max                    = buy_logic_strat_boosts_position_max
     buy_logic_strat_boosts_trade_size                      = buy_logic_strat_boosts_trade_size
+
+    # buy_base_deny.py
     buy_logic_deny                                         = buy_logic_deny
     buy_logic_mkt_deny                                     = buy_logic_mkt_deny
     buy_logic_strat_deny                                   = buy_logic_strat_deny
     buy_logic_strat_deny_buying_on                         = buy_logic_strat_deny_buying_on
     buy_logic_strat_deny_force_sell                        = buy_logic_strat_deny_force_sell
+
+    # buy_base_deny_live.py
     buy_logic_strat_deny_live                              = buy_logic_strat_deny_live
     buy_logic_strat_deny_live_paper_trades_mode            = buy_logic_strat_deny_live_paper_trades_mode
     buy_logic_strat_deny_live_test_mode_switch             = buy_logic_strat_deny_live_test_mode_switch
@@ -119,16 +141,13 @@ class BOT(AttrDict):
     buy_logic_strat_deny_live_budget_pair_spending_limit   = buy_logic_strat_deny_live_budget_pair_spending_limit
     buy_logic_strat_deny_live_market_limit_only            = buy_logic_strat_deny_live_market_limit_only
     buy_logic_strat_deny_live_large_bid_ask_spread         = buy_logic_strat_deny_live_large_bid_ask_spread
+
+    # buy_base_deny_test.py
     buy_logic_strat_deny_test                              = buy_logic_strat_deny_test
     buy_logic_strat_deny_test_strategy_open_position_limit = buy_logic_strat_deny_test_strategy_open_position_limit
     buy_logic_strat_deny_test_product_timing_delay         = buy_logic_strat_deny_test_product_timing_delay
     buy_logic_strat_deny_test_strategy_timing_delay        = buy_logic_strat_deny_test_strategy_timing_delay
     buy_logic_strat_deny_test_large_bid_ask_spread         = buy_logic_strat_deny_test_large_bid_ask_spread
-    cb_buy_base_size_calc                                  = cb_buy_base_size_calc
-    buy_size_budget_calc                                   = buy_size_budget_calc
-    buy_save                                               = buy_save
-    buy_live                                               = buy_live
-    buy_test                                               = buy_test
 
     # mkt_base.py
     mkt_new                                                = mkt_new
@@ -231,7 +250,20 @@ class BOT(AttrDict):
         if self.debug_tf: C(f'==> bot_base.__init__()')
         self.bot_guid                  = self.gen_guid()
         self.cbtrade_db                = CBTRADE_DB()
-        # self.ohlcv_db                  = OHLCV_DB()
+        
+        # 🧹 FORENSIC TABLE CLEANUP: Delete buy_signals/buy_decisions older than 90 days
+        # Prevents tables from growing unbounded while maintaining 3 months of forensic history
+        try:
+            signals_deleted = self.cbtrade_db.db_buy_signals_cleanup_old(days_to_keep=90)
+            decisions_deleted = self.cbtrade_db.db_buy_decisions_cleanup_old(days_to_keep=90)
+            if signals_deleted > 0 or decisions_deleted > 0:
+                print(f"🧹 Forensic Cleanup: Deleted {signals_deleted} old buy_signals, {decisions_deleted} old buy_decisions (>90 days)")
+        except Exception as e:
+            print(f"⚠️  Forensic cleanup warning: {e}")
+            # Don't fail bot startup if cleanup fails - just warn
+        
+        # Note: ohlcv_db not initialized here - it's product-specific
+        # For backtesting, pass db_ohlcv directly to BacktestEngine
         self.cb                        = cb
 
         self.mode                      = mode

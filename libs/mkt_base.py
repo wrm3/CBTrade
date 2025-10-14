@@ -210,7 +210,7 @@ def mkt_pairs_list_buy_get(self):
             hmsg = f'skipping self.mkts top bot gain loss performers ({len(self.mkts)}) :'
             self.chrt.chart_mid(in_str=hmsg, len_cnt=260)
             prt_cols(self.mkts, cols=10, clr='GoW')
-
+ 
     # Get The Markets with the top 24h price increase
     # Settings how many of these we will look at
     hmsg = 'self.mkts top 24h price increase'

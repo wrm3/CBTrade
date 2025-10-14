@@ -1,0 +1,448 @@
+---
+alwaysApply: true
+---
+# Advanced Tool Orchestration System
+
+Whenever you use this rule, start your message with the following:
+
+"Orchestrating multi-agent tool coordination..."
+
+This comprehensive tool orchestration system evolves from sophisticated tool awareness into advanced multi-agent coordination framework, enabling intelligent tool sharing, workflow delegation, and collaborative automation. Essential for complex projects requiring multiple agents to coordinate database tools, translation services, validation systems, and workflow automation.
+
+## Rule Activation Framework
+
+```yaml
+rule_activation:
+  rule_name: "advanced_tool_orchestration_system"
+  activation_triggers:
+    - MULTI_AGENT_TASK_START
+    - TOOL_COORDINATION_REQUIRED  
+    - COMPLEX_WORKFLOW_DETECTION
+    - AGENT_COLLABORATION_SETUP
+  activation_level: MANDATORY
+  coordination_scope: CROSS_AGENT
+  bypass_conditions: ["emergency_override", "single_agent_simple_task"]
+  agent_confirmation_required: true
+```
+
+## Section I: Multi-Agent Tool Coordination Foundation
+
+### Core Orchestration Principles
+
+**TOOL-FIRST COLLABORATIVE APPROACH**: Before any agent implements manual solutions, the orchestration system MUST coordinate available MCP tools across all active agents, optimize tool allocation, and establish collaborative workflows.
+
+**AGENT COORDINATION PRIORITY**:
+1. **Cross-Agent Tool Sharing**: Tools utilized by multiple agents for parallel execution
+2. **Specialized Agent Tool Assignment**: Dedicated tool ownership for complex operations
+3. **Workflow Delegation**: Intelligent task-tool-agent allocation based on capabilities
+4. **Collaborative Evidence Gathering**: Multi-agent verification and validation systems
+
+### Always Available Foundational Tools
+
+#### Core System Tools (Available Across All Agents)
+- **`fstrent_tasks_v2_setup`** - Initialize coordinated task management across agents
+- **`get_datetime`** - Synchronized timestamp functionality for multi-agent coordination
+- **`silicon_valley_setup`** - Deploy collaborative development environment
+- **`python_execute`** - Distributed code execution and analysis
+
+#### Cross-Agent Communication Tools
+- **Agent State Synchronization**: Real-time agent status and capability sharing
+- **Tool Availability Broadcasting**: Dynamic tool inventory sharing across agents
+- **Workflow Coordination Messaging**: Inter-agent task and tool coordination
+- **Evidence Aggregation**: Centralized verification and validation results
+
+### Multi-Agent Tool Discovery & Orchestration
+
+#### Collaborative Tool Inventory Management
+When coordinating multi-agent work, maintain **`AGENT_TOOL_ORCHESTRATION.md`** in `.fstrent_tasks_v2/`:
+
+```markdown
+# Multi-Agent Tool Orchestration Registry
+
+## Agent Coordination Overview
+- **Primary Agent**: [Agent responsible for orchestration]
+- **Specialized Agents**: [Agents with dedicated tool assignments]
+- **Active Agents**: [Currently participating agents]
+- **Tool Sharing Matrix**: [Cross-agent tool accessibility]
+
+## Agent-Specific Tool Assignments
+
+### Database Translation Agent
+- **Primary Tools**: Oracle query/execute, translation services, schema analysis
+- **Shared Tools**: Evidence capture, file operations, coordination messaging
+- **Exclusive Access**: Complex database modification operations
+
+### Validation Agent  
+- **Primary Tools**: Testing frameworks, verification tools, quality assurance
+- **Shared Tools**: Database read access, documentation tools, reporting
+- **Exclusive Access**: Final validation and approval workflows
+
+### Coordination Agent
+- **Primary Tools**: Workflow orchestration, agent communication, progress tracking
+- **Shared Tools**: All tool categories for oversight and intervention
+- **Exclusive Access**: Agent assignment, tool allocation, conflict resolution
+
+## Cross-Agent Tool Categories
+
+### Database Coordination Tools
+- **Oracle Operations**: `oracle_query`, `oracle_execute` - Shared read, exclusive write
+- **Schema Management**: Advanced database tools for structure analysis
+- **Translation Integration**: Database-to-translation tool workflows
+
+### Translation & Linguistic Tools  
+- **Language Processing**: Text analysis, translation services, linguistic validation
+- **Content Verification**: Translated content accuracy checking
+- **Cultural Adaptation**: Context-aware translation refinement
+
+### Quality Assurance & Validation Tools
+- **Automated Testing**: Database integrity, translation accuracy, system functionality
+- **Evidence Aggregation**: Multi-source validation result compilation
+- **Compliance Verification**: Regulatory and standard compliance checking
+
+### Workflow Orchestration Tools
+- **Agent Coordination**: Task delegation, progress synchronization, conflict resolution
+- **Tool Allocation**: Dynamic tool assignment based on agent capabilities and workload
+- **Performance Monitoring**: Multi-agent efficiency and collaboration optimization
+```
+
+## Section II: Advanced Tool Categorization & Agent Allocation
+
+### Collaborative Tool Framework
+
+#### Database Operations (Oracle Translation Focus)
+**Agent Allocation Strategy**:
+- **Lead Database Agent**: Complex schema modifications, critical data operations
+- **Validation Agent**: Read-only verification, integrity checking, rollback validation
+- **Translation Agent**: Content extraction, linguistic processing, translated content insertion
+
+**Tool Workflow Patterns**:
+```
+Oracle Schema Analysis:
+Database Agent: oracle_query (schema analysis) → 
+Translation Agent: content_extraction → linguistic_processing →
+Validation Agent: oracle_query (verification) → integrity_validation →
+Coordination Agent: workflow_approval → execution_coordination
+```
+
+#### Multi-Agent Web & Research Coordination
+**Agent Allocation Strategy**:
+- **Research Agent**: Web search, content scraping, reference gathering
+- **Analysis Agent**: Content processing, pattern recognition, insight extraction
+- **Documentation Agent**: Evidence compilation, report generation, knowledge archival
+
+**Collaborative Patterns**:
+```
+Multi-Source Research Workflow:
+Research Agent: web_search + web_scrape_urls (parallel) →
+Analysis Agent: python_execute (data processing) →
+Documentation Agent: evidence_compilation + reporting →
+All Agents: shared_knowledge_integration
+```
+
+#### Visual Documentation & Evidence Coordination
+**Shared Visual Tools**:
+- **screenshot_url**, **screenshot_local**, **browser_screenshot** - All agents can capture evidence
+- **Evidence aggregation**: Centralized visual documentation repository
+- **Cross-validation**: Multiple agents verify visual evidence independently
+
+#### Advanced System & Automation Coordination
+**Agent Specialization**:
+- **System Agent**: computer_use, environment_management, infrastructure_operations
+- **Integration Agent**: Tool workflow orchestration, API coordination, service integration
+- **Monitoring Agent**: Performance tracking, error detection, optimization recommendations
+
+## Section III: Multi-Agent Workflow Orchestration
+
+### Task Distribution & Tool Allocation Algorithms
+
+#### Complex Task Decomposition for Agent Coordination
+```yaml
+workflow_decomposition:
+  oracle_translation_task:
+    agent_assignments:
+      database_agent:
+        tools: [oracle_query, oracle_execute, schema_analysis]
+        responsibilities: [schema_extraction, structure_analysis, safe_modifications]
+      translation_agent:
+        tools: [content_extraction, linguistic_processing, cultural_adaptation]
+        responsibilities: [text_identification, translation_execution, context_preservation]
+      validation_agent:
+        tools: [oracle_query, integrity_checking, compliance_validation]
+        responsibilities: [accuracy_verification, data_integrity, quality_assurance]
+      coordination_agent:
+        tools: [workflow_orchestration, progress_tracking, conflict_resolution]
+        responsibilities: [agent_synchronization, tool_allocation, timeline_management]
+```
+
+#### Dynamic Tool Sharing & Conflict Resolution
+**Tool Access Hierarchy**:
+1. **Exclusive Access**: Critical operations requiring single-agent control
+2. **Shared Read Access**: Multiple agents can read, single agent writes
+3. **Collaborative Access**: Multiple agents coordinate for complex operations
+4. **Emergency Override**: Coordination agent can reassign tools during critical situations
+
+**Conflict Resolution Protocol**:
+```
+Tool Conflict Detection:
+├── Multiple agents request exclusive tool access
+├── Coordination agent evaluates priority and dependencies
+├── Dynamic tool scheduling with timeline optimization
+└── Alternative tool suggestion or workflow modification
+```
+
+### Advanced Anti-Pattern Prevention for Multi-Agent Systems
+
+#### Agent Coordination Anti-Patterns
+
+**❌ Agent Isolation Anti-Pattern**
+- **Problem**: Agents working independently without tool coordination
+- **Solution**: Mandatory tool orchestration registry and cross-agent communication
+- **Detection**: Agents suggesting manual approaches when other agents have relevant tools
+
+**❌ Tool Duplication Anti-Pattern**  
+- **Problem**: Multiple agents using same tools for redundant operations
+- **Solution**: Intelligent tool allocation and workflow delegation
+- **Detection**: Parallel tool usage without coordination or efficiency justification
+
+**❌ Sequential Workflow Anti-Pattern**
+- **Problem**: Agents waiting unnecessarily when parallel execution possible
+- **Solution**: Advanced workflow analysis and parallel task identification
+- **Detection**: Agent idle time when compatible tools and tasks available
+
+**❌ Evidence Fragmentation Anti-Pattern**
+- **Problem**: Agents capturing evidence independently without aggregation
+- **Solution**: Centralized evidence repository with cross-agent validation
+- **Detection**: Duplicated verification efforts without coordination
+
+#### Oracle Database Translation Specific Anti-Patterns
+
+**❌ Uncoordinated Schema Modification**
+- **Problem**: Multiple agents modifying database structure simultaneously
+- **Solution**: Exclusive database agent with validation agent oversight
+- **Detection**: Concurrent schema modification attempts or structure conflicts
+
+**❌ Translation Inconsistency**
+- **Problem**: Inconsistent translation approaches across database elements
+- **Solution**: Centralized translation agent with standardized linguistic rules
+- **Detection**: Terminology variation or cultural adaptation conflicts
+
+**❌ Validation Bypass**
+- **Problem**: Database changes without multi-agent verification
+- **Solution**: Mandatory validation agent approval for all modifications
+- **Detection**: Direct database commits without validation workflow
+
+## Section IV: Intelligent Agent-Tool Mapping
+
+### Dynamic Agent Capability Assessment
+
+#### Agent Skill & Tool Proficiency Matrix
+```yaml
+agent_capabilities:
+  database_specialist_agent:
+    tool_proficiency:
+      oracle_operations: EXPERT
+      schema_analysis: EXPERT  
+      data_migration: ADVANCED
+      translation_integration: INTERMEDIATE
+    coordination_level: HIGH_AUTONOMY
+    
+  translation_specialist_agent:
+    tool_proficiency:
+      linguistic_processing: EXPERT
+      cultural_adaptation: EXPERT
+      content_extraction: ADVANCED
+      database_integration: INTERMEDIATE
+    coordination_level: COLLABORATIVE
+    
+  validation_specialist_agent:
+    tool_proficiency:
+      quality_assurance: EXPERT
+      integrity_checking: EXPERT
+      compliance_validation: ADVANCED
+      cross_verification: ADVANCED
+    coordination_level: OVERSIGHT
+```
+
+#### Adaptive Tool Assignment Based on Context
+
+**Simple Task Auto-Assignment**:
+- Single agent with appropriate tool proficiency
+- Minimal coordination overhead
+- Standard verification protocols
+
+**Complex Task Collaborative Assignment**:
+- Multiple agents with complementary tool skills
+- Advanced coordination protocols
+- Cross-agent validation requirements
+
+**Critical Task Enhanced Oversight**:
+- Specialized agents with expert tool proficiency  
+- Mandatory validation agent involvement
+- Coordination agent oversight and approval
+
+### Workflow Intelligence & Learning
+
+#### Agent Performance Optimization
+- **Tool Usage Efficiency**: Track agent-tool combination effectiveness
+- **Collaboration Success Rates**: Measure multi-agent workflow outcomes
+- **Learning Integration**: Adapt tool assignments based on performance data
+- **Predictive Allocation**: Suggest optimal agent-tool combinations for new tasks
+
+#### Cross-Agent Knowledge Sharing
+- **Tool Technique Broadcasting**: Share effective tool usage patterns
+- **Workflow Innovation**: Distribute successful collaboration approaches
+- **Error Pattern Recognition**: Collective learning from multi-agent mistakes
+- **Best Practice Evolution**: Continuous improvement of orchestration strategies
+
+## Section V: Agent Coordination Integration Points
+
+### Task Lifecycle Integration with Agent Orchestration
+
+#### MULTI_AGENT_TASK_START (MANDATORY)
+**When:** Complex task requiring multiple agents
+**Orchestration Actions:**
+1. **Agent Capability Assessment**: Evaluate available agents and tool proficiencies
+2. **Tool Allocation Planning**: Design optimal agent-tool assignments
+3. **Coordination Protocol Setup**: Establish communication and validation workflows
+4. **Shared Resource Configuration**: Initialize collaborative tool access and evidence sharing
+
+#### COLLABORATIVE_TASK_EXECUTION (CONTINUOUS)
+**When:** Multiple agents actively working with coordinated tools
+**Monitoring Actions:**
+1. **Real-Time Coordination**: Monitor agent progress and tool usage efficiency
+2. **Dynamic Reallocation**: Adjust tool assignments based on performance and bottlenecks
+3. **Conflict Resolution**: Mediate tool access conflicts and workflow dependencies
+4. **Quality Assurance**: Ensure cross-agent validation and evidence aggregation
+
+#### MULTI_AGENT_VALIDATION (MANDATORY)
+**When:** Before complex task completion
+**Validation Actions:**
+1. **Cross-Agent Evidence Review**: Compile and verify outputs from all participating agents
+2. **Tool Output Correlation**: Ensure consistent results across different agent-tool combinations
+3. **Collaborative Approval**: Require consensus from specialized agents on critical decisions
+4. **Comprehensive Documentation**: Archive multi-agent workflow and tool usage patterns
+
+### Integration with fstrent_tasks_v2 Workflow Evolution
+
+**Enhanced Task Creation for Multi-Agent Coordination**:
+- Agent assignment recommendations in task YAML frontmatter
+- Tool allocation suggestions based on task complexity
+- Collaboration requirements and validation protocols
+- Evidence aggregation and approval workflows
+
+**Agent-Aware Planning Phase**:
+1. **Multi-Agent Task Decomposition**: Break complex tasks into agent-specific components
+2. **Tool Orchestration Design**: Plan collaborative tool usage patterns
+3. **Coordination Protocol Definition**: Establish agent communication and validation frameworks
+4. **Performance Monitoring Setup**: Initialize multi-agent efficiency tracking
+
+**Collaborative Task Execution Enhancement**:
+- **Lead Agent Designation**: Primary responsibility with collaborative support
+- **Tool Sharing Protocols**: Dynamic tool access and conflict resolution
+- **Progress Synchronization**: Real-time agent status and milestone coordination
+- **Quality Gate Enforcement**: Multi-agent validation before critical progression
+
+## Section VI: Emergency Protocols & Bypass Management
+
+### Multi-Agent Emergency Coordination
+
+#### Agent Failure Recovery Protocols
+**Single Agent Failure**:
+1. **Automatic Tool Reallocation**: Redistribute failed agent's tools to capable agents
+2. **Workflow Adaptation**: Modify coordination patterns to accommodate agent loss
+3. **Performance Compensation**: Increase parallel execution to maintain timeline
+4. **Recovery Planning**: Strategy for failed agent restoration and reintegration
+
+**Coordination System Failure**:
+1. **Autonomous Mode Activation**: Agents operate independently with predefined protocols
+2. **Critical Tool Protection**: Maintain exclusive access to high-risk operations
+3. **Emergency Communication**: Fallback coordination mechanisms
+4. **Manual Override Preparation**: Enable direct agent control when necessary
+
+#### Bypass Authorization Framework for Multi-Agent Systems
+
+```markdown
+## Multi-Agent Tool Orchestration Analysis: [Task Title]
+
+**Agent Coordination Assessment:**
+- **Available Agents**: [list participating agents and capabilities]
+- **Tool Allocation**: [recommended agent-tool assignments]
+- **Collaboration Complexity**: [coordination requirements and protocols]
+
+**Orchestration Decision:**
+☐ Full multi-agent coordination with tool orchestration
+☐ Simplified agent assignment with basic tool sharing
+☐ Single agent with tool orchestration oversight
+☐ Emergency bypass with manual coordination (requires detailed justification)
+
+**Risk Assessment:**
+- **Coordination Overhead**: [estimated efficiency impact]
+- **Quality Impact**: [validation and verification implications]  
+- **Timeline Considerations**: [delivery timeline effects]
+- **Agent Learning Value**: [knowledge and capability development benefits]
+```
+
+### Valid Emergency Bypass Conditions for Advanced Orchestration
+- **Critical System Failure**: Immediate intervention required without coordination delay
+- **Agent Communication Breakdown**: Coordination protocols unavailable
+- **Time-Critical Emergency**: Coordination overhead threatens critical deadlines
+- **Single Agent Expertise**: Task requires exclusive specialized knowledge
+- **Testing/Learning Mode**: Experimental agent coordination development
+
+## Section VII: Smart Activation & Progressive Disclosure
+
+### Context-Aware Orchestration Activation
+
+#### Level 1: Essential Coordination (Basic Projects)
+- **Agent Assignment**: Simple task delegation to most capable agent
+- **Tool Allocation**: Direct tool assignment without complex sharing
+- **Validation**: Basic cross-agent verification
+- **Communication**: Standard progress reporting
+
+#### Level 2: Collaborative Orchestration (Medium Complexity)
+- **Multi-Agent Planning**: Coordinated task decomposition and assignment
+- **Shared Tool Management**: Dynamic tool sharing with conflict resolution
+- **Cross-Agent Validation**: Multiple agents verify each other's work
+- **Workflow Synchronization**: Progress coordination and dependency management
+
+#### Level 3: Advanced Coordination (Complex Projects)
+- **Intelligent Agent Allocation**: AI-driven agent-task optimization
+- **Dynamic Tool Orchestration**: Real-time tool reallocation based on performance
+- **Predictive Coordination**: Anticipate agent needs and prepare tool resources
+- **Learning Integration**: Continuous improvement of coordination strategies
+
+#### Level 4: Research-Grade Orchestration (Next-Generation Development)
+- **Autonomous Agent Coordination**: Self-organizing agent teams with minimal human oversight
+- **Adaptive Tool Evolution**: Tools that learn and adapt to agent usage patterns
+- **Cross-Project Learning**: Agent coordination insights shared across projects
+- **Next-Gen Foundation**: Prototype for AI agent coordination system development
+
+### Oracle Database Translation Project Orchestration
+
+#### Project-Specific Agent Coordination
+**Database Translation Workflow**:
+```
+Translation Coordination Agent: project_planning + agent_assignment →
+Database Specialist Agent: schema_analysis + content_extraction →
+Translation Specialist Agent: linguistic_processing + cultural_adaptation →
+Validation Specialist Agent: accuracy_verification + integrity_checking →
+Coordination Agent: workflow_approval + progress_tracking
+```
+
+**Tool Sharing Matrix for Oracle Translation**:
+- **oracle_query**: Shared read access (all agents), exclusive write (database agent)
+- **translation_services**: Exclusive access (translation agent), validation access (validation agent)  
+- **evidence_capture**: Shared access (all agents), aggregation (coordination agent)
+- **workflow_orchestration**: Exclusive access (coordination agent)
+
+#### Multi-Agent Success Metrics
+- **Coordination Efficiency**: Time saved through parallel agent execution
+- **Quality Enhancement**: Improvement through multi-agent validation
+- **Agent Learning**: Capability development through collaborative experience
+- **Workflow Innovation**: Novel coordination patterns discovered during execution
+
+---
+
+**Integration Foundation**: This advanced tool orchestration system provides the sophisticated foundation for next-generation AI agent coordination research, enabling complex projects like Oracle database translation to benefit from intelligent multi-agent collaboration while preserving all sophisticated automation concepts and extending them for collaborative environments.
+
+**Research Value**: Every coordination pattern, agent interaction, and tool orchestration strategy contributes to understanding how AI agents can effectively collaborate on complex technical projects, providing essential insights for future autonomous agent system development.

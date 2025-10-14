@@ -8,7 +8,7 @@
 # Known To Do List
 #<=====>#
 
-
+ 
 
 #<=====>#
 # Imports - Public
@@ -277,6 +277,8 @@ def mkt_settings_get(self, mkt_symb:str):
         "budget": {
             "max_tot_loss": -250.0,
             "spend_max_amt": 10000.0,
+            "undesignated_max_pct": 10.0,
+            "undesignated_pair_max_pct": 10.0,
             "spend_up_max_pct": 60.0,
             "spend_dn_max_pct": 60.0,
             "spend_max_pcts": {

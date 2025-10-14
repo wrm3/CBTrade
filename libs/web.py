@@ -3258,7 +3258,7 @@ def add_fast_strategy_summary(title="Strategy Performance Summary", status_filte
     h = build_sql_display(sql, title)
     m, u, d = html_add(more=h, m=m, u=u, d=d)
     return m, u, d
-
+ 
 def add_fast_overall_summary(title="Overall Performance Summary", m=None, u=None, d=None) -> tuple[str, str, str]:
     """Fast overall performance aggregating trade_perfs table"""
     

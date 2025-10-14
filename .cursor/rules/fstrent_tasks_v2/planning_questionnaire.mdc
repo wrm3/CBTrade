@@ -1,0 +1,134 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Planning Questionnaire System
+
+Whenever you use this rule, start your message with:
+
+"Initiating planning questionnaire to capture requirements..."
+
+This rule implements structured questioning that works with Scope Clarification to capture detailed user expectations, technical constraints, and project parameters during PRD creation.
+
+## Core Purpose
+
+**Purpose**: Structured, sequential questioning for consistent requirement gathering across projects while preventing scope assumptions.
+
+**Integration**: Extends scope boundaries with detailed follow-ups, conditional branching, technical requirements capture, and risk identification.
+
+## 27-Question Framework
+
+### Phase 1: Project Context (Q1-Q7)
+**Q1**: Primary problem this system solves? → Follow-up: Who experiences it, how handled today?
+**Q2**: What does success look like? → Follow-up: How measured, failure indicators?
+**Q3**: Replacing existing or creating new? → If replacing: pain points; If new: why needed now?
+**Q4**: Primary users? (End users, Admins, Stakeholders, External)
+**Q5**: User count? (Single, 2-10, 11-50, 51-200, 200+)
+**Q6**: Usage frequency? (Occasional, Daily, Continuous, Peak periods)
+**Q7**: Access locations? (Local, Office, Remote, Internet, Mobile)
+
+### Phase 2: Technical Requirements (Q8-Q16)
+**Q8**: Deployment? (Local desktop, Local server, Cloud, Hybrid, No preference)
+**Q9**: Maintenance comfort? (Minimal, Basic, Intermediate, Advanced)
+**Q10**: Integration needs? (AD, Databases, Business apps, Monitoring, Backup)
+**Q11**: Data types? (Public, Internal, PII, Financial, Healthcare, Regulated)
+**Q12**: Security requirements? (Basic, Industry compliance, Government, Custom, None)
+**Q13**: Access control? (All see all, Role-based, Department, Individual, External)
+**Q14**: Performance expectations? (Basic seconds, Good <1s, High instant, Not critical)
+**Q15**: Data volume? (Thousands, Hundreds of thousands, Millions, Billions, Growing)
+**Q16**: Peak usage? (Consistent, Business hours, Month/quarter, Seasonal, Event-driven)
+
+### Phase 3: Feature Scope (Q17-Q22)
+**Q17**: Essential features (MVP)? → List core features and deal-breakers
+**Q18**: Nice-to-have features? → List convenience and future enhancements
+**Q19**: Features to avoid? → Over-complexity, specific integrations, approaches
+**Q20**: Priority: ease vs power? (Ease, Power, Balanced, Depends on user)
+**Q21**: Interface examples you like? → Reference apps, patterns, accessibility
+**Q22**: User training investment? (Self-explanatory, Brief, Formal, Complex OK)
+
+### Phase 4: Timeline & Resources (Q23-Q27)
+**Q23**: Timeline drivers? (Business deadline, Budget, Competition, Regulatory, Personal)
+**Q24**: Delivery preference? (Quick prototype, Phased, Complete, Iterative)
+**Q25**: Trade-offs? (Core over polish, Polish over features, Speed over performance)
+**Q26**: Available resources? (Dev time, Expertise, Budget, Third-party services)
+**Q27**: Hard constraints? (Specific tech, No cloud, Budget limits, Policies)
+
+## Conditional Branching
+
+**Single User (Q5)**: Skip Q13, simplify Q11, focus Q20 on productivity
+**Enterprise (Q5)**: Expand Q13 hierarchy, add infrastructure, change management
+**Regulated (Q12)**: Add compliance details, audit trails, retention policies
+**Cloud (Q8)**: Add provider preferences, data residency, backup/DR
+**Integration (Q10)**: Expand details, authentication, data sync
+
+## Response Processing
+
+### Categories
+- **Functional**: What system must do
+- **Non-Functional**: How system must perform  
+- **Technical Constraints**: Technology/infrastructure limits
+- **Business Constraints**: Timeline, budget, organizational
+- **Risk Factors**: Potential challenges
+
+### Validation
+- **Completeness**: No critical questions skipped
+- **Consistency**: No contradictory responses
+- **Feasibility**: Flag unrealistic combinations
+- **Clarification**: Identify vague responses
+
+### PRD Documentation
+```markdown
+## Requirements Summary
+- **Problem/Success**: [Q1/Q2] | **Type**: [Q3]
+- **Users**: [Q4] Count: [Q5] Frequency: [Q6] Access: [Q7]
+- **Tech**: Deploy: [Q8] Maintenance: [Q9] Integration: [Q10]
+- **Security**: Data: [Q11] Security: [Q12] Access: [Q13]
+- **Performance**: [Q14] Volume: [Q15] Patterns: [Q16]
+- **Scope**: Essential: [Q17] Nice: [Q18] Avoid: [Q19]
+- **UX**: Priority: [Q20] Refs: [Q21] Training: [Q22]
+- **Constraints**: Timeline: [Q23] Delivery: [Q24] Trade-offs: [Q25] Resources: [Q26] Hard: [Q27]
+
+### Derived Requirements
+- **Architecture**: [Based on deployment + scale + security]
+- **Technology**: [Based on constraints + maintenance]
+- **Method**: [Based on timeline + delivery]
+- **Risks**: [Based on identified factors]
+```
+
+## Guidelines
+
+### For AI Agents
+- Group questions logically (3-5 per interaction)
+- Use plain language unless user shows expertise
+- Provide context for question importance
+- Acknowledge answers before proceeding
+- Ask clarifying follow-ups for vague responses
+- Skip irrelevant questions based on answers
+- Adjust technical depth to user expertise
+
+### User Prep
+"Consider: Who will use this and how often? What problem solving? Technical constraints? Timeline drivers? Examples you like/dislike?"
+
+**Response Tips**: Be specific, mention edge cases, describe current workarounds, think about growth.
+
+## Workflow Integration
+
+1. **Initial Request** → Trigger questionnaire
+2. **Complete Phases 1-4** → Capture requirements  
+3. **Validate & Summarize** → Confirm understanding
+4. **Generate Requirements** → Feed into PRD
+5. **Reference During Planning** → Guide decisions
+6. **Post-Planning Validation** → Verify alignment
+
+## Scenario Adaptations
+
+- **Startup**: Focus MVP, budget constraints, market validation
+- **Enterprise**: Expand infrastructure/security, change management
+- **Personal**: Simplify technical, focus learning goals
+- **Regulated**: Expand compliance, audit trails, governance
+
+This system ensures projects begin with solid requirements, reducing scope creep, over-engineering, and failure rates.
+
+
+

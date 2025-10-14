@@ -507,6 +507,10 @@ def buy_new(self):
     self.buy.test_fnc_name              = None
     self.buy.test_msg                   = None
 
+    # 🔴 GILFOYLE FIX: Initialize signal_id for forensic tracking
+    # Will be auto-created on first buy_decision_add() call
+    self.buy.signal_id                  = None
+
     self.buy.pair_budget_multiplier         = 1.0
     self.buy.pair_strat_budget_multiplier   = 1.0
     self.buy.buy_hist                   = []
@@ -516,33 +520,60 @@ def buy_new(self):
 #<=====>#
 
 @narc(1)
-def buy_decision_log(self) -> None:
+def buy_signal_create(self) -> None:
     """
-    Centralized function to set test_txn_yn = 'Y' and immediately update audit table.
+    🔴 GILFOYLE FIX: Create the buy signal ONCE at evaluation start.
     
-    Args:
-        self: The class instance with buy object
-        reason: The reason why switching to test mode
-        context: The context/location where the switch occurred
+    Creates the compact buy_signals row and stores signal_id for all subsequent decisions.
+    This should be called ONCE per buy evaluation cycle, not multiple times.
+    
+    Returns signal_id for forensic linkage to multiple buy_decisions rows.
+    
+    Raises:
+        Exception: If signal insert fails - NO silent failures for forensic integrity
+    """
+    # Ensure event timestamp exists
+    if not getattr(self.buy, 'event_dttm', None):
+        self.buy.event_dttm = dttm_get()
+    
+    # Insert compact signal row - RETURNS signal_id for forensic linkage
+    # 🔴 NO TRY/CATCH - Let errors propagate for full script stop
+    signal_id = self.cbtrade_db.db_buy_signals_ins(self.buy)
+    
+    # Store signal_id in buy object for ALL subsequent decision inserts
+    # CRITICAL: Must be named 'signal_id' to match column name in db_buy_decisions_ins
+    self.buy.signal_id = signal_id
+    
+    return signal_id
+
+#<=====>#
+
+@narc(1)
+def buy_decision_add(self) -> None:
+    """
+    🔴 GILFOYLE FIX: Smart decision logging with auto-signal creation.
+    
+    If self.buy.signal_id is None (first decision for this strat/freq):
+        1. Automatically calls buy_signal_create() to create signal
+        2. Stores signal_id in self.buy.signal_id
+    
+    Then inserts decision row to buy_decisions table using self.buy.signal_id.
+    Called multiple times during evaluation (test checks, deny checks, etc).
+    
+    This defensive design makes it impossible to log decisions without a signal.
         
-    Returns:
-        bool: True if successful, False if failed (non-blocking)
-    
+    Raises:
+        Exception: If signal creation or decision insert fails
     """
-    # Compact signal row for quick verification
-    try:
-        if not getattr(self.buy, 'event_dttm', None):
-            self.buy.event_dttm = dttm_get()
-    except Exception:
-        pass
-    try:
-        self.cbtrade_db.db_buy_signals_ins(self.buy)
-    except Exception:
-        pass
-
-    # Full decision audit row
+    # 🔴 DEFENSIVE: If signal_id doesn't exist, create signal first
+    if not getattr(self.buy, 'signal_id', None):
+        self.buy_signal_create()
+    
+    # Insert decision row ONLY - signal already exists (either created above or earlier)
+    # 🔴 NO TRY/CATCH - Let errors propagate for full script stop
     self.cbtrade_db.db_buy_decisions_ins(self.buy)
-
+    
+    # Clear decision-specific fields for next decision
     self.buy.setting_name               = None
     self.buy.setting_value              = None
     self.buy.buy_stat_name              = None
@@ -560,6 +591,52 @@ def buy_decision_log(self) -> None:
 
     self.buy.test_fnc_name              = None
     self.buy.test_msg                   = None
+
+#<=====>#
+
+@narc(1)
+def buy_decision_log(self) -> None:
+    """
+    🔴 DEPRECATED: Legacy function that creates signal + decision together.
+    
+    ONLY used for final buy/no-buy outcome at end of evaluation.
+    For all test/deny checks during evaluation, use buy_decision_add() instead.
+    
+    This creates both signal AND decision (old behavior for backward compatibility).
+    
+    Raises:
+        Exception: If either insert fails - NO silent failures for forensic integrity
+    """
+    # Ensure event timestamp exists
+    if not getattr(self.buy, 'event_dttm', None):
+        self.buy.event_dttm = dttm_get()
+    
+    # If signal_id already exists, just add decision (don't create duplicate signal)
+    if getattr(self.buy, 'signal_id', None):
+        self.buy_decision_add()
+    else:
+        # Legacy path: Create signal + decision together
+        signal_id = self.cbtrade_db.db_buy_signals_ins(self.buy)
+        self.buy.signal_id = signal_id
+        self.cbtrade_db.db_buy_decisions_ins(self.buy)
+        
+        self.buy.setting_name               = None
+        self.buy.setting_value              = None
+        self.buy.buy_stat_name              = None
+        self.buy.buy_stat_value             = None
+
+        self.buy.setting_name2              = None
+        self.buy.setting_value2             = None
+        self.buy.buy_stat_name2             = None
+        self.buy.buy_stat_value2            = None
+
+        self.buy.setting_name3              = None
+        self.buy.setting_value3             = None
+        self.buy.buy_stat_name3             = None
+        self.buy.buy_stat_value3            = None
+
+        self.buy.test_fnc_name              = None
+        self.buy.test_msg                   = None
 
 #<=====>#
 
@@ -581,7 +658,9 @@ def set_test_mode(self):
 
     # Set the test mode flag
     self.buy.test_txn_yn = 'Y'
-    self.buy_decision_log()
+    
+    # 🔴 GILFOYLE FIX: Add decision ONLY - don't create new signal
+    self.buy_decision_add()
 
 #<=====>#
 
@@ -603,7 +682,9 @@ def set_deny_mode(self):
 
     # Set the denial flag
     self.buy.buy_deny_yn = 'Y'
-    self.buy_decision_log()
+    
+    # 🔴 GILFOYLE FIX: Add decision ONLY - don't create new signal
+    self.buy_decision_add()
 
 #<=====>#
 
@@ -709,6 +790,10 @@ def buy_main(self):
         buy_strat_name                       = trade_strat_perf.buy_strat_name
         buy_strat_freq                       = trade_strat_perf.buy_strat_freq
 
+        # 🔴 GILFOYLE FIX: Initialize signal_id to None for this strat/freq iteration
+        # First call to buy_decision_add() will auto-create signal via defensive check
+        self.buy.signal_id                   = None
+
         self.buy.trade_size                  = self.st_pair.buy.trade_size
 
         # Elapsed fields are now calculated centrally in trade_strat_perfs_get_all()
@@ -728,6 +813,45 @@ def buy_main(self):
 
         # these will have been checked before hand unless we forced the tests anyways
         if self.buy.buy_yn == 'Y':
+            # 🔴 GILFOYLE: Identify pair type (designated vs undesignated)
+            designated_pairs = self.st_mkt.pairs.trade_pairs
+            if self.buy.prod_id in designated_pairs:
+                self.buy.pair_type = 'designated'
+            else:
+                self.buy.pair_type = 'undesignated'
+            
+            print(f"🔍 buy_main: {self.buy.prod_id} is {self.buy.pair_type} pair")
+            
+            # 🔴 GILFOYLE: Check undesignated budget limits BEFORE budget calculations
+            if self.buy.pair_type == 'undesignated':
+                # CHECK 1: Has the undesignated group exceeded their collective budget?
+                if self.budget.undesignated_current_spend >= self.budget.undesignated_max_spend:
+                    msg = f"Undesignated group budget exceeded: ${self.budget.undesignated_current_spend:.2f} >= ${self.budget.undesignated_max_spend:.2f}"
+                    self.buy.test_fnc_name = 'undesignated_group_budget_check'
+                    self.buy.test_msg = msg
+                    self.buy.setting_name = 'undesignated_group_budget'
+                    self.buy.setting_value = f"current=${self.budget.undesignated_current_spend:.2f}, max=${self.budget.undesignated_max_spend:.2f}"
+                    self.set_deny_mode()
+                    self.buy_decision_add()
+                    print(f"🚫 DENIED: {msg}")
+                    continue  # Skip to next strategy
+                
+                # CHECK 2: Would this pair exceed the individual undesignated limit?
+                current_pair_value = self.pair.open_trade_amt if hasattr(self.pair, 'open_trade_amt') else 0
+                
+                if current_pair_value >= self.budget.undesignated_individual_max:
+                    msg = f"{self.buy.prod_id} individual budget exceeded: ${current_pair_value:.2f} >= ${self.budget.undesignated_individual_max:.2f}"
+                    self.buy.test_fnc_name = 'undesignated_individual_budget_check'
+                    self.buy.test_msg = msg
+                    self.buy.setting_name = 'undesignated_individual_budget'
+                    self.buy.setting_value = f"pair_value=${current_pair_value:.2f}, max=${self.budget.undesignated_individual_max:.2f}"
+                    self.set_deny_mode()
+                    self.buy_decision_add()
+                    print(f"🚫 DENIED: {msg}")
+                    continue  # Skip to next strategy
+                
+                print(f"✅ PASS: {self.buy.prod_id} undesignated checks - group: ${self.budget.undesignated_current_spend:.2f}/${self.budget.undesignated_max_spend:.2f}, individual: ${current_pair_value:.2f}/${self.budget.undesignated_individual_max:.2f}")
+            
             self.buy_size_budget_calc()
 
             # bot deny
@@ -744,6 +868,12 @@ def buy_main(self):
 
             if self.buy.buy_deny_yn == 'N':
                 self.buy = self.buy_strats_deny(self.buy)
+
+            # special_prod_ids = self.st_pair.buy.special_prod_ids
+            # if self.buy.prod_id in special_prod_ids:
+            #     if self.buy.test_txn_yn == 'Y':
+            #         print(cs(f'{self.buy.prod_id} in specials, flipping from test to live!!!', 'white', 'green'))
+            #         self.buy.test_txn_yn = 'N'
 
             if self.buy.test_txn_yn == 'Y':
                 msg = f'The buy signal on {self.buy.base_curr_symb} for {self.buy.trade_size} {self.buy.quote_curr_symb} with strategy {self.buy.buy_strat_name} on the {self.buy.buy_strat_freq} timeframe has been switched to test mode!'
@@ -836,1132 +966,6 @@ def buy_main(self):
 #<=====>#
 
 @narc(1)
-def buy_logic_mkt_boosts(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_mkt_boosts()')
-    """
-    Market-based boost logic for position limits and budget multipliers.
-    Extracted from cls_bot_buy.py - preserves exact boost calculation logic.
-    
-    Applies market-level performance boosts:
-    - Position limit doubling for good performers (>5 trades, >0.05% daily)
-    - Budget multiplier doubling for excellent performers (>0.1% daily)
-    
-    EMERGENCY DISABLED - Position boost disabled to prevent excessive positions
-    """
-
-    # get default open position max for strat
-    # add double override logic strat + prod
-    # fixme
-    self.buy.trade_perfs.restricts_open_poss_cnt_max = self.st_pair.buy.open_poss_cnt_max 
-
-    # Keep budget multiplier boost as it doesn't affect position count
-    if self.buy.trade_perfs['A'].gain_loss_close_pct_day > 0.1:
-        self.buy.pair_budget_multiplier *= 2
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_boosts(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_boosts()')
-    """
-    Strategy-specific boost orchestration function.
-    Extracted from cls_bot_buy.py - preserves exact orchestration logic.
-    
-    Coordinates strategy-level boosts:
-    - Trade size boosts based on performance
-    - Position limit boosts based on performance
-    - Trade size cap enforcement
-    """
-
-    prod_id                       = self.buy.prod_id
-    self.buy.buy_strat_type       = self.buy.trade_strat_perf['A'].buy_strat_type
-    self.buy.buy_strat_name       = self.buy.trade_strat_perf['A'].buy_strat_name
-    self.buy.buy_strat_freq       = self.buy.trade_strat_perf['A'].buy_strat_freq
-
-    self.buy_logic_strat_boosts_trade_size()
-    self.buy_logic_strat_boosts_position_max()
-
-    if self.buy.trade_size > self.st_pair.buy.trade_size_max:
-        msg = f'{self.buy.prod_id} {self.buy.buy_strat_name} - {self.buy.buy_strat_freq} setting trade_size ${self.buy.trade_size} to cap max ${self.st_pair.buy.trade_size_max}... '
-        self.buy.trade_size = self.st_pair.buy.trade_size_max
-        self.buy.all_boosts.append(msg)
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_boosts_position_max(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_boosts_position_max()')
-    """
-    Strategy position limit boost calculations based on performance.
-    Extracted from cls_bot_buy.py - preserves exact boost logic.
-    
-    Boosts position limits for strategies with:
-    - Test mode: 25+ trades with >1% daily performance
-    - Live mode: 25+ trades with >1% daily performance
-    
-    EMERGENCY DISABLED - This was causing excessive position opening
-    """
-    
-    # DISABLED: This was causing position limits to grow exponentially 
-    # if self.buy.trade_strat_perf['T'].tot_cnt >= 25 and self.buy.trade_strat_perf['T'].gain_loss_pct_day > 1:
-    #     self.buy.trade_strat_perf['T'].restricts_max_open_poss_cnt *= 2
-    #     if self.st_pair.buy.show_boosts_yn == 'Y':
-    #         tsp_t = self.buy.trade_strat_perf['T']
-    #         msg = f'{self.buy.prod_id} {self.buy.buy_strat_name} - {self.buy.buy_strat_freq} has {tsp_t.tot_cnt} test closed trades with performance {tsp_t.gain_loss_pct_day:>.8f} % > 1 % boosting allowed open pos to {tsp_t.restricts_max_open_poss_cnt} ... '
-    #         self.buy.all_boosts.append(msg)
-
-    # DISABLED: This was causing position limits to grow exponentially 
-    # if self.buy.trade_strat_perf['A'].tot_cnt >= 25 and max(self.buy.trade_strat_perf['A'].gain_loss_pct_day, self.buy.trade_strat_perf['L'].gain_loss_pct_day) > 1:
-    #     self.buy.trade_strat_perf['L'].restricts_max_open_poss_cnt *= 2
-    #     if self.st_pair.buy.show_boosts_yn == 'Y':
-    #         tsp_a = self.buy.trade_strat_perf['A']
-    #         tsp_l = self.buy.trade_strat_perf['L']
-    #         msg = f'{self.buy.prod_id} {self.buy.buy_strat_name} - {self.buy.buy_strat_freq} has {tsp_a.tot_cnt} closed trades with performance {max(tsp_a.gain_loss_pct_day, tsp_l.gain_loss_pct_day):>.8f} % > 1 % boosting allowed open pos to {tsp_l.restricts_max_open_poss_cnt} ... '
-    #         self.buy.all_boosts.append(msg)
-    
-    # Add logging to show we're using base limits
-    if self.st_pair.buy.show_boosts_yn == 'Y':
-        msg = f'EMERGENCY MODE: {self.buy.prod_id} {self.buy.buy_strat_name} - {self.buy.buy_strat_freq} using base position limits (boost disabled)'
-        self.buy.all_boosts.append(msg)
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_boosts_trade_size(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_boosts_trade_size()')
-    """
-    Strategy trade size boost calculations based on performance.
-    Extracted from cls_bot_buy.py - preserves exact boost calculation logic.
-    
-    Complex boost system with:
-    - Minimum trade size initialization
-    - Base trade size for positive performers
-    - Fibonacci-like progressive boosts for exceptional performers
-    - Performance thresholds: 0.10%, 0.25%, 0.5%, 1%, 3%, 5%, 8%, 13%, 21%, 34%, 55%, 89%
-    """
-
-    prod_id = self.buy.prod_id
-    strat_name = self.buy.buy_strat_name
-    strat_freq = self.buy.buy_strat_freq
-
-    tests_min                  = self.st_pair.strats[self.buy.buy_strat_name].buy.tests_min
-    # tests_max                  = self.st_pair.strats[self.buy.buy_strat_name].buy.tests_max
-    boost_tests_min            = self.st_pair.strats[self.buy.buy_strat_name].buy.boost_tests_min[self.buy.buy_strat_freq] 
-
-    self.buy.trade_size       = self.buy.quote_size_min * self.st_pair.buy.trade_size_min_mult
-    msg = f'{prod_id} ==> {strat_name} - {strat_freq} - quote_size_min {self.buy.quote_size_min} * trade_size_min_mult {self.st_pair.buy.trade_size_min_mult} = trade size : {self.buy.trade_size}... '
-    self.buy.all_boosts.append(msg)
-
-    #<=====>#
-
-    # Live
-    # give default value to strat with some history and positive impact
-    if self.buy.trade_strat_perf['A'].tot_cnt >= tests_min and self.buy.trade_strat_perf['A'].gain_loss_pct_day  > 0:
-        trade_size_b4 = self.buy.trade_size
-        self.buy.trade_size = max(self.st_pair.buy.trade_size, self.buy.trade_size)
-        msg = f'{prod_id} ==> {strat_name} - {strat_freq} - max ( st_pair.buy.trade_size {self.st_pair.buy.trade_size} , trade_size {trade_size_b4} ) = trade size : {self.buy.trade_size}... '
-        self.buy.all_boosts.append(msg)
-
-    #<=====>#
-
-    tot_cnt = self.buy.trade_strat_perf['A'].tot_cnt
-    live_gain_loss_pct_day = max(self.buy.trade_strat_perf['A'].gain_loss_pct_day, self.buy.trade_strat_perf['L'].gain_loss_pct_day)
-
-    # Boost Trade Size for those with proven track records
-    self.buy.pair_strat_budget_multiplier = 1.0
-    daily_pct_rates = [0.10, 0.25, 0.5, 1.0, 3.0, 5.0, 8.0, 13.0, 21.0, 34.0, 55.0, 89.0]
-    for daily_pct_rate in daily_pct_rates:
-        if self.buy.trade_strat_perf['A'].tot_cnt >= boost_tests_min:
-            # Live
-            if live_gain_loss_pct_day > daily_pct_rate:
-                size_b4 = self.buy.trade_size
-#                self.buy.trade_size *= 2
-                self.buy.trade_size += self.buy.trade_size
-                msg = f'{prod_id} ==> {strat_name} - {strat_freq} has {tot_cnt} closed trades with performance {live_gain_loss_pct_day:>.8f} % > {daily_pct_rate} % boosting trade size from {size_b4} => {self.buy.trade_size} ... '
-                self.buy.all_boosts.append(msg)
-
-    msg = f'{prod_id} ==> {strat_name} - {strat_freq} - buy_logic_strat_boosts_trade_size final trade size : {self.buy.trade_size}... '
-    self.buy.all_boosts.append(msg)
-
-#<=====>#
-
-@narc(1)
-def buy_logic_deny(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_deny()')
-    """
-    General buy denial logic placeholder.
-    Extracted from cls_bot_buy.py - preserved for future expansion.
-    """
-    pass
-
-#<=====>#
-
-@narc(1)
-def buy_logic_mkt_deny(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_mkt_deny()')
-    """
-    Market-level buy denial logic placeholder.
-    Extracted from cls_bot_buy.py - preserved for future expansion.
-    """
-    pass
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny()')
-    """
-    Strategy-level buy denial orchestration function.
-    Extracted from cls_bot_buy.py - preserves exact risk management flow.
-    
-    Handles:
-    - Global buying on/off switch
-    - Force sell product protection
-    - Live vs test trading denial routing
-    """
-
-    self.buy_logic_strat_deny_buying_on()
-    self.buy_logic_strat_deny_force_sell()
-
-    # Deny Live Trades
-    if self.buy.test_txn_yn == 'N':
-        self.buy_logic_strat_deny_live()
-
-    # Deny Test Trades
-    if self.buy.test_txn_yn == 'Y':
-        self.buy_logic_strat_deny_test()    
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_buying_on(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_buying_on()')
-    """
-    Strategy-level buy denial orchestration function.
-    Extracted from cls_bot_buy.py - preserves exact risk management flow.
-    
-    Handles:
-    - Global buying on/off switch
-    - Force sell product protection
-    - Live vs test trading denial routing
-    """
-
-    buy_strat_freq       = self.buy.trade_strat_perf['A'].buy_strat_freq
-    mkts_open_cnt        = self.cbtrade_db.db_mkts_open_cnt_get(mkt=self.mkt.symb)
-
-    cfg = self.st_pair.buy.buy_strat_delay_minutes
-    # Support both mapping (per-frequency) and scalar configuration
-    if isinstance(cfg, dict):
-        restricts_buy_strat_delay_minutes = cfg.get(buy_strat_freq, cfg.get('***', 0))
-    else:
-        try:
-            restricts_buy_strat_delay_minutes = int(cfg)
-        except Exception:
-            restricts_buy_strat_delay_minutes = 0
-
-    self.buy.trade_strat_perf['T'].restricts_buy_strat_delay_minutes = restricts_buy_strat_delay_minutes
-    self.buy.trade_strat_perf['L'].restricts_buy_strat_delay_minutes = restricts_buy_strat_delay_minutes
-    self.buy.trade_strat_perf['A'].restricts_buy_strat_delay_minutes  = restricts_buy_strat_delay_minutes
-
-    if self.st_pair.buy.buying_on_yn == 'N' :
-        msg = f'buying has been turned off in settings...'
-        msg = f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg
-        self.buy.all_live_or_test.append(msg)
-
-        self.buy.setting_name = 'self.st_pair.buy.buying_on_yn'
-        self.buy.setting_value = self.st_pair.buy.buying_on_yn
-        self.buy.buy_stat_name = None
-        self.buy.buy_stat_value = None
-        self.buy.test_fnc_name = sys._getframe().f_code.co_name
-        self.buy.test_msg = msg
-        self.set_test_mode()
-        self.set_deny_mode()
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_force_sell(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_force_sell()')
-    """
-    Strategy-level buy denial orchestration function.
-    Extracted from cls_bot_buy.py - preserves exact risk management flow.
-    
-    Handles:
-    - Global buying on/off switch
-    - Force sell product protection
-    - Live vs test trading denial routing
-    """
-
-    prod_id              = self.buy.prod_id
-
-    # Market Is Set To Sell Immediately
-    if prod_id in self.st_pair.sell.force_sell.prod_ids:
-        msg = f'{self.buy.prod_id} is in the forced_sell.prod_ids settings, and would instantly sell...'
-        msg = f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg
-        self.buy.all_live_or_test.append(msg)
-
-        self.buy.setting_name = 'self.st_pair.sell.force_sell.prod_ids'
-        self.buy.setting_value = self.st_pair.sell.force_sell.prod_ids
-        self.buy.buy_stat_name = 'prod_id'
-        self.buy.buy_stat_value = prod_id
-        self.buy.test_fnc_name = sys._getframe().f_code.co_name
-        self.buy.test_msg = msg
-        self.set_test_mode()
-        self.set_deny_mode()
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_live(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_live()')
-    """
-    Live trading denial logic with comprehensive risk management.
-    Extracted from cls_bot_buy.py - preserves exact safety logic.
-    
-    Handles:
-    - Performance-based test mode switching
-    - Market position limits
-    - Strategy position limits  
-    - Product position limits
-    - Timing delays and elapsed time checks
-    - Budget and spending limits
-    - Coinbase limit-only market protection
-    - Large bid-ask spread protection
-    """
-
-    prod_id              = self.buy.prod_id
-    buy_strat_type       = self.buy.trade_strat_perf['A'].buy_strat_type
-    buy_strat_name       = self.buy.trade_strat_perf['A'].buy_strat_name
-    buy_strat_freq       = self.buy.trade_strat_perf['A'].buy_strat_freq
-
-    # find Me to remove after edits on 2025-09-06
-    # r = self.cbtrade_db.db_mkt_strat_elapsed_get(prod_id, buy_strat_type, buy_strat_name, buy_strat_freq, test_txn_yn='N', show_sql_yn='N')
-    # if r and len(r) >= 3:
-    #     self.buy.trade_strat_perf['L'].strat_bo_elapsed   = r[0]
-    #     self.buy.trade_strat_perf['L'].strat_pos_elapsed  = r[1]
-    #     self.buy.trade_strat_perf['L'].strat_last_elapsed = r[2]
-    #     if self.buy.trade_strat_perf['L'].strat_bo_elapsed > 9999:
-    #         self.buy.trade_strat_perf['L'].strat_bo_elapsed = 9999
-    #     if self.buy.trade_strat_perf['L'].strat_pos_elapsed > 9999:
-    #         self.buy.trade_strat_perf['L'].strat_pos_elapsed = 9999
-    #     if self.buy.trade_strat_perf['L'].strat_last_elapsed > 9999:
-    #         self.buy.trade_strat_perf['L'].strat_last_elapsed = 9999
-    # else:
-    #     self.buy.trade_strat_perf['L'].strat_bo_elapsed   = 9999
-    #     self.buy.trade_strat_perf['L'].strat_pos_elapsed  = 9999
-    #     self.buy.trade_strat_perf['L'].strat_last_elapsed = 9999
-
-    self.buy_logic_strat_deny_live_paper_trades_mode()
-    self.buy_logic_strat_deny_live_test_mode_switch()
-    self.buy_logic_strat_deny_live_market_open_position_limit()
-    self.buy_logic_strat_deny_live_strategy_open_position_limit()
-    self.buy_logic_strat_deny_live_product_open_position_limit()
-    self.buy_logic_strat_deny_live_product_timing_delay()
-    self.buy_logic_strat_deny_live_strategy_timing_delay()
-    self.buy_logic_strat_deny_live_budget_pair_spending_limit()
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_live_paper_trades_mode(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_live_paper_trades_mode()')
-    """
-    Live paper trades mode denial logic.
-    Extracted from cls_bot_buy.py - preserves exact safety logic.
-    
-    Handles:
-    - Live paper trades mode protection
-    """
-
-    if self.st_mkt.paper_trades_only_yn == 'Y':
-        msg = f"paper_trades_only_yn = {self.st_mkt.paper_trades_only_yn}"
-        self.buy.test_reason = msg
-        self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-        self.buy.setting_name = 'self.st_mkt.paper_trades_only_yn'
-        self.buy.setting_value = self.st_mkt.paper_trades_only_yn
-        self.buy.buy_stat_name = 'self.st_mkt.paper_trades_only_yn'
-        self.buy.buy_stat_value = self.st_mkt.paper_trades_only_yn
-        self.buy.test_fnc_name = sys._getframe().f_code.co_name
-        self.buy.test_msg = msg
-        self.set_test_mode()
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_live_test_mode_switch(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_live_test_mode_switch()')
-    """
-    Live test mode switch denial logic.
-    Extracted from cls_bot_buy.py - preserves exact safety logic.
-    
-    Handles:
-    - Live test mode switch protection
-    """
-
-    prod_id              = self.buy.prod_id
-    buy_strat_name       = self.buy.trade_strat_perf['A'].buy_strat_name
-    buy_strat_freq       = self.buy.trade_strat_perf['A'].buy_strat_freq
-    special_prod_ids     = self.st_pair.buy.special_prod_ids
-
-    tot_close_cnt              = self.buy.trade_strat_perf['A'].tot_close_cnt
-    gain_loss_close_pct_day    = self.buy.trade_strat_perf['A'].gain_loss_close_pct_day
-    test_txns_on_yn             = self.st_pair.buy_test_txns.test_txns_on_yn
-    test_txns_min               = self.st_pair.buy_test_txns.test_txns_min
-    test_txns_max               = self.st_pair.buy_test_txns.test_txns_max
-    
-    if self.buy.test_txn_yn == 'N':
-        if test_txns_on_yn == 'Y' and tot_close_cnt < test_txns_min:
-            msg = f'{prod_id} {buy_strat_name} - {buy_strat_freq} has {tot_close_cnt} trades  setting test mode ... '
-            self.buy.test_reason = msg
-            msg = f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg
-            self.buy.all_live_or_test.append(msg)
-
-            self.buy.setting_name = 'self.st_pair.buy_test_txns.test_txns_min'
-            self.buy.setting_value = self.st_pair.buy_test_txns.test_txns_min
-            self.buy.buy_stat_name = 'self.buy.trade_strat_perfs[A].tot_close_cnt'
-            self.buy.buy_stat_value = self.buy.trade_strat_perf['A'].tot_close_cnt
-            self.buy.test_fnc_name = sys._getframe().f_code.co_name
-            self.buy.test_msg = msg
-            self.set_test_mode()
-
-        elif test_txns_on_yn == 'Y' and tot_close_cnt <= test_txns_max and gain_loss_close_pct_day < 0.025 and prod_id not in special_prod_ids:
-            msg = f'{prod_id} {buy_strat_name} - {buy_strat_freq} has {tot_close_cnt} trades with performance {gain_loss_close_pct_day:>.8f} % < 0.025 % setting test mode... '
-            self.buy.all_test_reasons.append(msg)
-            self.buy.test_reason = msg
-            self.buy.test_txn_yn = 'Y'
-            self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-            self.buy.setting_name = 'st_pair.buy_test_txns.test_txns_max'
-            self.buy.setting_value = self.st_pair.buy_test_txns.test_txns_max
-            self.buy.buy_stat_name = 'self.buy.trade_strat_perfs[A].tot_close_cnt'
-            self.buy.buy_stat_value = self.buy.trade_strat_perf['A'].tot_close_cnt
-
-            self.buy.setting_name2 = 'hardcoded 0.025'
-            self.buy.setting_value2 = 0.025
-            self.buy.buy_stat_name2 = 'self.buy.trade_strat_perfs[A].gain_loss_close_pct_day'
-            self.buy.buy_stat_value2 = self.buy.trade_strat_perf['A'].gain_loss_close_pct_day
-
-            self.buy.test_fnc_name = sys._getframe().f_code.co_name
-            self.buy.test_msg = msg
-            self.set_test_mode()
-
-        elif test_txns_on_yn == 'Y' and tot_close_cnt > test_txns_max and gain_loss_close_pct_day < 0.025 and prod_id not in special_prod_ids:
-            msg = f'{prod_id} {buy_strat_name} - {buy_strat_freq} has {tot_close_cnt} trades with performance {gain_loss_close_pct_day:>.8f} % < 00.025 % reducing allowed open pos, max pos 1 ... '
-            self.buy.all_limits.append(msg)
-            self.buy.trade_strat_perf['L'].restricts_max_open_poss_cnt = 1
-            self.buy.trade_strat_perf['T'].restricts_max_open_poss_cnt = 1
-            self.buy.test_reason = msg
-            self.buy.test_txn_yn = 'Y'
-            self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-            self.buy.setting_name = 'st_pair.buy_test_txns.test_txns_max'
-            self.buy.setting_value = self.st_pair.buy_test_txns.test_txns_max
-            self.buy.buy_stat_name = 'self.buy.trade_strat_perfs[A].tot_close_cnt'
-            self.buy.buy_stat_value = self.buy.trade_strat_perf['A'].tot_close_cnt
-
-            self.buy.setting_name2 = 'hardcoded 0.025'
-            self.buy.setting_value2 = 0.025
-            self.buy.buy_stat_name2 = 'self.buy.trade_strat_perfs[A].gain_loss_close_pct_day'
-            self.buy.buy_stat_value2 = self.buy.trade_strat_perf['A'].gain_loss_close_pct_day
-
-            self.buy.test_fnc_name = sys._getframe().f_code.co_name
-            self.buy.test_msg = msg
-            self.set_test_mode()
-
-        elif gain_loss_close_pct_day < 0.025 and prod_id not in special_prod_ids:
-            msg = f'{prod_id} {buy_strat_name} - {buy_strat_freq} has {tot_close_cnt} closed trades with performance {gain_loss_close_pct_day:>.8f} % < 0.025 % reducing allowed open pos, max pos 1 ... '
-            self.buy.all_test_reasons.append(msg)
-            self.buy.test_reason = msg
-            self.buy.trade_strat_perf['L'].restricts_max_open_poss_cnt = 1
-            self.buy.trade_strat_perf['T'].restricts_max_open_poss_cnt = 1
-            self.buy.test_txn_yn = 'Y'
-            self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-            self.buy.setting_name = 'hardcoded 0.025'
-            self.buy.setting_value = 0.025
-            self.buy.buy_stat_name = 'self.buy.trade_strat_perfs[A].gain_loss_close_pct_day'
-            self.buy.buy_stat_value = self.buy.trade_strat_perf['A'].gain_loss_close_pct_day
-
-            self.buy.test_fnc_name = sys._getframe().f_code.co_name
-            self.buy.test_msg = msg
-            self.set_test_mode()
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_live_market_open_position_limit(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_live_market_open_position_limit()')
-    """
-    Live market open position limit denial logic.
-    Extracted from cls_bot_buy.py - preserves exact safety logic.
-    
-    Handles:
-    - Live market open position limit protection
-    """
-
-    prod_id              = self.buy.prod_id
-    test_txns_on_yn             = self.st_pair.buy_test_txns.test_txns_on_yn
-
-    # Exceeded Max Count of Different Products in this Market
-    mkts_open_cnt        = self.cbtrade_db.db_mkts_open_cnt_get(mkt=self.mkt.symb)
-    mkts_open_max        = self.st_pair.buy.mkts_open_max
-    if self.buy.test_txn_yn == 'N':
-        if mkts_open_cnt >= mkts_open_max:
-            msg = f'{prod_id} maxed out {self.mkt.symb} market, {mkts_open_cnt} of max : {mkts_open_max}...'
-            self.buy.all_denies.append(msg)
-            if test_txns_on_yn == 'Y':
-                test_reason = f'flipping to test since {msg}'
-                self.buy.test_reason = test_reason
-                msg = f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg
-                self.buy.all_live_or_test.append(msg)
-
-                self.buy.setting_name = 'self.st_pair.buy.mkts_open_max'
-                self.buy.setting_value = self.st_pair.buy.mkts_open_max
-                self.buy.buy_stat_name = 'db_mkts_open_cnt_get(mkt=self.mkt.symb)'
-                self.buy.buy_stat_value = mkts_open_cnt
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_test_mode()
-
-            else:
-                msg = f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg
-                self.buy.all_live_or_test.append(msg)
-
-                self.buy.setting_name = 'self.st_pair.buy.mkts_open_max'
-                self.buy.setting_value = self.st_pair.buy.mkts_open_max
-                self.buy.buy_stat_name = 'db_mkts_open_cnt_get(mkt=self.mkt.symb)'
-                self.buy.buy_stat_value = mkts_open_cnt
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_deny_mode()
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_live_strategy_open_position_limit(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_live_strategy_open_position_limit()')
-    """
-    Live strategy open position limit denial logic.
-    Extracted from cls_bot_buy.py - preserves exact safety logic.
-    
-    Handles:
-    - Live strategy open position limit protection
-    """
-
-    prod_id              = self.buy.prod_id
-    buy_strat_name       = self.buy.trade_strat_perf['A'].buy_strat_name
-    buy_strat_freq       = self.buy.trade_strat_perf['A'].buy_strat_freq
-    test_txns_on_yn      = self.st_pair.buy_test_txns.test_txns_on_yn
-
-    # Exceeded Max Open Positions In This Strat
-    strat_open_live_cnt  = int(self.buy.trade_strat_perf['L'].tot_open_cnt)
-    if self.buy.test_txn_yn == 'N':
-        if strat_open_live_cnt >= self.buy.trade_strat_perf['L'].restricts_max_open_poss_cnt:
-            max_pos_cnt = self.buy.trade_strat_perf['L'].restricts_max_open_poss_cnt
-            msg = f'{prod_id} {buy_strat_name} - {buy_strat_freq} has {strat_open_live_cnt} / {max_pos_cnt} open live trades, switching to test position... '
-            self.buy.all_denies.append(msg)
-            if test_txns_on_yn == 'Y':
-                self.buy.test_txn_yn = 'Y'
-                self.buy.test_reason = msg
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-                self.buy.setting_name = 'self.buy.trade_strat_perfs[L].restricts_max_open_poss_cnt'
-                self.buy.setting_value = self.buy.trade_strat_perf['L'].restricts_max_open_poss_cnt
-                self.buy.buy_stat_name = 'self.buy.trade_strat_perfs[L].tot_open_cnt'
-                self.buy.buy_stat_value = strat_open_live_cnt
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_test_mode()
-
-            else:
-                self.buy.buy_deny_yn = 'Y'
-                msg = f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg
-                self.buy.all_live_or_test.append(msg)
-
-                self.buy.setting_name = 'self.buy.trade_strat_perfs[L].restricts_max_open_poss_cnt'
-                self.buy.setting_value = self.buy.trade_strat_perf['L'].restricts_max_open_poss_cnt
-                self.buy.buy_stat_name = 'self.buy.trade_strat_perfs[L].tot_open_cnt'
-                self.buy.buy_stat_value = strat_open_live_cnt
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_deny_mode()
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_live_product_open_position_limit(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_live_product_open_position_limit()')
-    """
-    Live product open position limit denial logic.
-    Extracted from cls_bot_buy.py - preserves exact safety logic.
-    
-    Handles:
-    - Live product open position limit protection
-    """
-
-    prod_id              = self.buy.prod_id
-    test_txns_on_yn      = self.st_pair.buy_test_txns.test_txns_on_yn
-
-    # Exceeded Max Open Positions In This Product
-    prod_open_poss_cnt   = self.buy.trade_perfs['L'].tot_open_cnt
-    if self.buy.test_txn_yn == 'N':
-        if prod_open_poss_cnt >= self.buy.trade_perfs.restricts_open_poss_cnt_max:
-            msg = f'{prod_id} maxed out {prod_open_poss_cnt} allowed positions in this product, max : {self.buy.trade_perfs.restricts_open_poss_cnt_max}, bypassing buy logic...'
-            self.buy.all_denies.append(msg)
-            if test_txns_on_yn == 'Y':
-                self.buy.test_txn_yn = 'Y'
-                self.buy.test_reason = f'flipping to test since {msg}'
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-                self.buy.setting_name = 'self.buy.trade_perfs.restricts_open_poss_cnt_max'
-                self.buy.setting_value = self.buy.trade_perfs.restricts_open_poss_cnt_max
-                self.buy.buy_stat_name = 'self.buy.trade_perfs.live_open_poss_cnt'
-                self.buy.buy_stat_value = prod_open_poss_cnt
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_test_mode()
-
-            else:
-                self.buy.buy_deny_yn = 'Y'
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-                self.buy.setting_name = 'self.buy.trade_perfs.restricts_open_poss_cnt_max'
-                self.buy.setting_value = self.buy.trade_perfs.restricts_open_poss_cnt_max
-                self.buy.buy_stat_name = 'self.buy.trade_perfs.live_open_poss_cnt'
-                self.buy.buy_stat_value = prod_open_poss_cnt
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_deny_mode()
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_live_product_timing_delay(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_live_product_timing_delay()')
-    """
-    Live product timing delay denial logic.
-    Extracted from cls_bot_buy.py - preserves exact safety logic.
-    
-    Handles:
-    - Live product timing delay protection
-    """
-
-
-    prod_id              = self.buy.prod_id
-    buy_strat_name       = self.buy.trade_strat_perf['A'].buy_strat_name
-    buy_strat_freq       = self.buy.trade_strat_perf['A'].buy_strat_freq
-
-    if buy_strat_freq == '15min':
-        live_strat_delay_minutes = 8
-    elif buy_strat_freq == '30min':
-        live_strat_delay_minutes = 16
-    elif buy_strat_freq == '1h':
-        live_strat_delay_minutes = 31
-    elif buy_strat_freq == '4h':
-        live_strat_delay_minutes = 121
-    elif buy_strat_freq == '1d':
-        live_strat_delay_minutes = 721
-    else:
-        live_strat_delay_minutes = 30
-
-    test_txns_on_yn             = self.st_pair.buy_test_txns.test_txns_on_yn
-
-    # Elapsed Since Last Product Buy
-    live_prod_elapsed = self.buy.trade_perfs['L'].last_elapsed
-    if self.buy.test_txn_yn == 'N':
-        msg = f'{prod_id} last product buy was {live_prod_elapsed} minutes / {live_strat_delay_minutes} ago minutes...'
-        self.buy.all_live_or_test.append(msg)
-
-        strategy_info = f'{buy_strat_name} - {buy_strat_freq} - live : strat_last_elapsed ==> '
-        self.buy.all_live_or_test.append(f'{strategy_info:<50} {self.buy.trade_perfs['L'].last_elapsed:>5} / {live_strat_delay_minutes:>4}')
-
-        if live_strat_delay_minutes != 0 and live_prod_elapsed <= live_strat_delay_minutes:
-            msg = f'{prod_id} last product buy was {live_prod_elapsed} minutes ago, waiting until {live_strat_delay_minutes} minutes, switching to test_txn_yn = Y...'
-            self.buy.all_denies.append(msg)  # Keep for on-screen display
-            if test_txns_on_yn == 'Y':
-                msg = f'{prod_id} last product buy was {live_prod_elapsed} minutes / {live_strat_delay_minutes} ago minutes...'
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-                self.buy.setting_name = 'live_strat_delay_minutes'
-                self.buy.setting_value = live_strat_delay_minutes
-                self.buy.buy_stat_name = 'self.buy.trade_perfs.last_elapsed'
-                self.buy.buy_stat_value = live_prod_elapsed
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_test_mode()
-
-            else:
-                msg = f'{prod_id} last product buy was {live_prod_elapsed} minutes / {live_strat_delay_minutes} ago minutes...'
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-                self.buy.setting_name = 'live_strat_delay_minutes'
-                self.buy.setting_value = live_strat_delay_minutes
-                self.buy.buy_stat_name = 'self.buy.trade_perfs.last_elapsed'
-                self.buy.buy_stat_value = live_prod_elapsed
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_deny_mode()
-
-        self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn}')
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_live_strategy_timing_delay(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_live_strategy_timing_delay()')
-    """
-    Live strategy timing delay denial logic.
-    Extracted from cls_bot_buy.py - preserves exact safety logic.
-    
-    Handles:
-    - Live strategy timing delay protection
-    """
-
-    prod_id              = self.buy.prod_id
-    buy_strat_name       = self.buy.trade_strat_perf['A'].buy_strat_name
-    buy_strat_freq       = self.buy.trade_strat_perf['A'].buy_strat_freq
-
-    if buy_strat_freq == '15min':
-        live_strat_delay_minutes = 8
-    elif buy_strat_freq == '30min':
-        live_strat_delay_minutes = 16
-    elif buy_strat_freq == '1h':
-        live_strat_delay_minutes = 31
-    elif buy_strat_freq == '4h':
-        live_strat_delay_minutes = 121
-    elif buy_strat_freq == '1d':
-        live_strat_delay_minutes = 721
-    else:
-        live_strat_delay_minutes = 30
-
-    test_txns_on_yn             = self.st_pair.buy_test_txns.test_txns_on_yn
-
-    # Elapsed Since Last Product & Strat & Freq Buy
-    live_strat_elapsed = self.buy.trade_strat_perf['L'].strat_last_elapsed
-    if self.buy.test_txn_yn == 'N':
-        msg = f'{prod_id} last strat {buy_strat_name} - {buy_strat_freq} buy was {live_strat_elapsed} / {live_strat_delay_minutes} ago minutes...'
-        self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-        self.buy.all_live_or_test.append(f'{buy_strat_name} - {buy_strat_freq} - live : strat_last_elapsed {live_strat_elapsed:>5} / {live_strat_delay_minutes:>5}')
-
-        if live_strat_delay_minutes != 0 and live_strat_elapsed < live_strat_delay_minutes:
-            msg = f'{prod_id} last strat {buy_strat_name} - {buy_strat_freq} buy was {live_strat_elapsed} minutes ago, waiting until {live_strat_delay_minutes} minutes, switching to test_txn_yn = Y...'
-            self.buy.all_denies.append(msg)  # Keep for on-screen display
-            if test_txns_on_yn == 'Y':
-                msg = f'{prod_id} last strat {buy_strat_name} - {buy_strat_freq} buy was {live_strat_elapsed} minutes ago, waiting until {live_strat_delay_minutes} minutes, switching to test_txn_yn = Y...'
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-                self.buy.setting_name = 'live_strat_delay_minutes'
-                self.buy.setting_value = live_strat_delay_minutes
-                self.buy.buy_stat_name = 'self.buy.trade_strat_perfs[L].strat_last_elapsed'
-                self.buy.buy_stat_value = live_strat_elapsed
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_test_mode()
-
-            else:
-                msg = f'{prod_id} last strat {buy_strat_name} - {buy_strat_freq} buy was {live_strat_elapsed} minutes ago, waiting until {live_strat_delay_minutes} minutes, switching to test_txn_yn = Y...'
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-                self.buy.setting_name = 'live_strat_delay_minutes'
-                self.buy.setting_value = live_strat_delay_minutes
-                self.buy.buy_stat_name = 'self.buy.trade_strat_perfs[L].strat_last_elapsed'
-                self.buy.buy_stat_value = live_strat_elapsed
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_deny_mode()
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_live_budget_pair_spending_limit(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_live_budget_pair_spending_limit()')
-    """
-    Budget pair spending limit denial logic.
-    Extracted from cls_bot_buy.py - preserves exact safety logic.
-    
-    Handles:
-    - Budget pair spending limit protection
-    """
-
-    prod_id              = self.buy.prod_id
-    test_txns_on_yn             = self.st_pair.buy_test_txns.test_txns_on_yn
-
-    # Exceeded Max Spend Per Product    
-    if self.buy.test_txn_yn == 'N':
-        pair_spent_amt = self.budget.pair_spent_amt 
-        trade_size = self.buy.trade_size 
-        pair_spend_max_amt = self.budget.pair_spend_max_amt
-
-        msg = f'{prod_id} has spent {pair_spent_amt} of {pair_spend_max_amt} and trade size is {trade_size}...'
-        self.buy.all_live_or_test.append(msg)
-
-        if self.budget.pair_spent_amt + self.buy.trade_size > self.budget.pair_spend_max_amt:
-            msg = f'{prod_id} has spent {pair_spent_amt} and a purchase of {trade_size} wil exceed > {pair_spend_max_amt} ...'
-            self.buy.all_denies.append(msg)  # Keep for on-screen display
-            if test_txns_on_yn == 'Y':
-                msg = f'{prod_id} has spent {pair_spent_amt} and a purchase of {trade_size} wil exceed > {pair_spend_max_amt} ...'
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-                self.buy.setting_name = 'self.budget.pair_spent_amt + self.buy.trade_size'
-                self.buy.setting_value = self.budget.pair_spent_amt + self.buy.trade_size
-                self.buy.buy_stat_name = 'self.budget.pair_spent_amt'
-                self.buy.buy_stat_value = self.budget.pair_spent_amt
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_test_mode()
-
-            else:
-                msg = f'{prod_id} has spent {pair_spent_amt} and a purchase of {trade_size} wil exceed > {pair_spend_max_amt} ...'
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-                self.buy.setting_name = 'self.budget.pair_spent_amt + self.buy.trade_size'
-                self.buy.setting_value = self.budget.pair_spent_amt + self.buy.trade_size
-                self.buy.buy_stat_name = 'self.budget.pair_spent_amt'
-                self.buy.buy_stat_value = self.budget.pair_spent_amt
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_deny_mode()
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_live_market_limit_only(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_live_market_limit_only()')
-    """
-    Market limit-only denial logic.
-    Extracted from cls_bot_buy.py - preserves exact safety logic.
-    
-    Handles:
-    - Coinbase limit-only market protection
-    """
-
-    prod_id              = self.buy.prod_id
-    test_txns_on_yn             = self.st_pair.buy_test_txns.test_txns_on_yn
-
-    # Market Is Set To Limit Only on Coinbase
-    if self.buy.test_txn_yn == 'N':
-        if self.buy.mkt_limit_only_tf == 1:
-            msg = f'{prod_id} has been set to limit orders only, we cannot market buy/sell right now!!!'
-            self.buy.all_denies.append(msg)  # Keep for on-screen display
-            if test_txns_on_yn == 'Y':
-                msg = f'{prod_id} has been set to limit orders only, we cannot market buy/sell right now!!!'
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-                self.buy.setting_name = 'self.buy.mkt_limit_only_tf'
-                self.buy.setting_value = self.buy.mkt_limit_only_tf
-                self.buy.buy_stat_name = 'self.buy.mkt_limit_only_tf'
-                self.buy.buy_stat_value = self.buy.mkt_limit_only_tf
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_test_mode()
-
-            else:
-                msg = f'{prod_id} has been set to limit orders only, we cannot market buy/sell right now!!!'
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-                self.buy.setting_name = 'self.buy.mkt_limit_only_tf'
-                self.buy.setting_value = self.buy.mkt_limit_only_tf
-                self.buy.buy_stat_name = 'self.buy.mkt_limit_only_tf'
-                self.buy.buy_stat_value = self.buy.mkt_limit_only_tf
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_deny_mode()
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_live_large_bid_ask_spread(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_live_large_bid_ask_spread()')
-    """
-    Large bid-ask spread denial logic.
-    Extracted from cls_bot_buy.py - preserves exact safety logic.
-    
-    Handles:
-    - Large bid-ask spread protection
-    """
-
-    prod_id              = self.buy.prod_id
-    test_txns_on_yn             = self.st_pair.buy_test_txns.test_txns_on_yn
-
-    # Very Large Bid Ask Spread
-    if self.buy.test_txn_yn == 'N':
-        if self.buy.prc_range_pct >= 2:
-            msg = f'{prod_id} has a price range variance of {self.buy.prc_range_pct}, this price range looks like trouble... skipping buy'
-            self.buy.all_denies.append(msg)  # Keep for on-screen display
-            if test_txns_on_yn == 'Y':
-                msg = f'{prod_id} has a price range variance of {self.buy.prc_range_pct}, this price range looks like trouble... skipping buy'
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-                self.buy.setting_name = 'self.buy.prc_range_pct'
-                self.buy.setting_value = self.buy.prc_range_pct
-                self.buy.buy_stat_name = 'self.buy.prc_range_pct'
-                self.buy.buy_stat_value = self.buy.prc_range_pct
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_test_mode()
-
-            else:
-                msg = f'{prod_id} has a price range variance of {self.buy.prc_range_pct}, this price range looks like trouble... denying buy'
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-                self.buy.setting_name = 'self.buy.prc_range_pct'
-                self.buy.setting_value = self.buy.prc_range_pct
-                self.buy.buy_stat_name = 'self.buy.prc_range_pct'
-                self.buy.buy_stat_value = self.buy.prc_range_pct
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_deny_mode()
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_test(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_test()')
-    """
-    Test trading denial logic with comprehensive risk management.
-    Extracted from cls_bot_buy.py - preserves exact safety logic.
-    
-    Handles:
-    - Performance-based test mode switching
-    - Market position limits
-    - Strategy position limits  
-    - Product position limits
-    - Timing delays and elapsed time checks
-    - Budget and spending limits
-    - Coinbase limit-only market protection
-    - Large bid-ask spread protection
-    """
-
-    # Elapsed fields are now calculated centrally in trade_strat_perfs_get_all() - no need to recalculate
-
-    self.buy_logic_strat_deny_test_strategy_open_position_limit()
-    self.buy_logic_strat_deny_test_product_timing_delay()
-    self.buy_logic_strat_deny_test_strategy_timing_delay()
-    self.buy_logic_strat_deny_test_large_bid_ask_spread()
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_test_strategy_open_position_limit(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_test_strategy_open_position_limit()')
-    """
-    Test strategy open position limit denial logic.
-    Extracted from cls_bot_buy.py - preserves exact safety logic.
-    
-    Handles:
-    - Test strategy open position limit protection
-    """
-
-
-    prod_id              = self.buy.prod_id
-    buy_strat_name       = self.buy.trade_strat_perf['A'].buy_strat_name
-    buy_strat_freq       = self.buy.trade_strat_perf['A'].buy_strat_freq
-    test_txns_on_yn      = self.st_pair.buy_test_txns.test_txns_on_yn
-
-    # Exceeded Max Open Positions In This Strat
-    strat_open_test_cnt  = int(self.buy.trade_strat_perf['T'].tot_open_cnt)
-    if self.buy.test_txn_yn == 'Y':
-
-        if strat_open_test_cnt >= self.buy.trade_strat_perf['T'].restricts_max_open_poss_cnt:
-            tsp_t = self.buy.trade_strat_perf['T']
-            msg = f'{prod_id} {buy_strat_name} - {buy_strat_freq} has {strat_open_test_cnt} / {tsp_t.restricts_max_open_poss_cnt} open test trades, switching to test position... '
-            self.buy.all_denies.append(msg)
-
-            self.buy.buy_deny_yn = 'Y'
-            msg = f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg
-            self.buy.all_live_or_test.append(msg)
-
-            self.buy.setting_name = 'self.buy.trade_strat_perfs[T].restricts_max_open_poss_cnt'
-            self.buy.setting_value = self.buy.trade_strat_perf['T'].restricts_max_open_poss_cnt
-            self.buy.buy_stat_name = 'self.buy.trade_strat_perfs[T].tot_open_cnt'
-            self.buy.buy_stat_value = strat_open_test_cnt
-
-            self.buy.test_fnc_name = sys._getframe().f_code.co_name
-            self.buy.test_msg = msg
-            self.set_deny_mode()
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_test_product_timing_delay(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_test_product_timing_delay()')
-    """
-    Test product timing delay denial logic.
-    Extracted from cls_bot_buy.py - preserves exact safety logic.
-    
-    Handles:
-    - Test product timing delay protection
-    """
-
-    prod_id              = self.buy.prod_id
-    buy_strat_name       = self.buy.trade_strat_perf['A'].buy_strat_name
-    buy_strat_freq       = self.buy.trade_strat_perf['A'].buy_strat_freq
-
-    if buy_strat_freq == '15min':
-        test_strat_delay_minutes = 8
-    elif buy_strat_freq == '30min':
-        test_strat_delay_minutes = 16
-    elif buy_strat_freq == '1h':
-        test_strat_delay_minutes = 31
-    elif buy_strat_freq == '4h':
-        test_strat_delay_minutes = 121
-    elif buy_strat_freq == '1d':
-        test_strat_delay_minutes = 721
-    else:
-        test_strat_delay_minutes = 30
-
-    test_txns_on_yn             = self.st_pair.buy_test_txns.test_txns_on_yn
-
-    # Elapsed Since Last Product Buy
-    test_prod_elapsed = self.buy.trade_perfs['T'].last_elapsed
-    if self.buy.test_txn_yn == 'Y':
-        msg = f'{prod_id} last product buy was {test_prod_elapsed} minutes / {test_strat_delay_minutes} ago minutes...'
-        self.buy.all_live_or_test.append(msg)
-
-        tsp_t = self.buy.trade_strat_perf['T']
-        formatted_label = buy_strat_name + ' - ' + buy_strat_freq + ' - test : strat_last_elapsed ==> '
-        self.buy.all_live_or_test.append(f'{formatted_label:<50} {tsp_t.strat_last_elapsed:>5} / {test_strat_delay_minutes:>4}')
-
-        if test_strat_delay_minutes != 0 and test_prod_elapsed < test_strat_delay_minutes:
-            msg = f'{prod_id} last product buy was {test_prod_elapsed} minutes ago, waiting until {test_strat_delay_minutes} minutes, denying test trade...'
-            self.buy.all_denies.append(msg)  # Keep for on-screen display
-            if test_txns_on_yn == 'Y':
-                msg = f'{prod_id} last product buy was {test_prod_elapsed} minutes / {test_strat_delay_minutes} ago minutes...'
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-                self.buy.setting_name = 'test_strat_delay_minutes'
-                self.buy.setting_value = test_strat_delay_minutes
-                self.buy.buy_stat_name = 'self.buy.trade_perfs.last_elapsed'
-                self.buy.buy_stat_value = test_prod_elapsed
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_test_mode()
-
-            else:
-                msg = f'{prod_id} last product buy was {test_prod_elapsed} minutes / {test_strat_delay_minutes} ago minutes...'
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-                self.buy.setting_name = 'test_strat_delay_minutes'
-                self.buy.setting_value = test_strat_delay_minutes
-                self.buy.buy_stat_name = 'self.buy.trade_perfs.last_elapsed'
-                self.buy.buy_stat_value = test_prod_elapsed
-
-                self.buy.test_fnc_name = sys._getframe().f_code.co_name
-                self.buy.test_msg = msg
-                self.set_deny_mode()
-
-        self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn}')
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_test_strategy_timing_delay(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_test_strategy_timing_delay()')
-    """
-    Test strategy timing delay denial logic.
-    Extracted from cls_bot_buy.py - preserves exact safety logic.
-    
-    Handles:
-    - Test strategy timing delay protection
-    """
-
-    prod_id              = self.buy.prod_id
-    buy_strat_type       = self.buy.trade_strat_perf['A'].buy_strat_type
-    buy_strat_name       = self.buy.trade_strat_perf['A'].buy_strat_name
-    buy_strat_freq       = self.buy.trade_strat_perf['A'].buy_strat_freq
-
-    if buy_strat_freq == '15min':
-        test_strat_delay_minutes = 8
-    elif buy_strat_freq == '30min':
-        test_strat_delay_minutes = 16
-    elif buy_strat_freq == '1h':
-        test_strat_delay_minutes = 31
-    elif buy_strat_freq == '4h':
-        test_strat_delay_minutes = 121
-    elif buy_strat_freq == '1d':
-        test_strat_delay_minutes = 721
-    else:
-        test_strat_delay_minutes = 30
-
-    test_txns_on_yn             = self.st_pair.buy_test_txns.test_txns_on_yn
-
-    # Elapsed Since Last Product & Strat & Freq Buy
-    test_strat_elapsed = self.buy.trade_strat_perf['T'].strat_last_elapsed
-    if self.buy.test_txn_yn == 'Y':
-        msg = f'{prod_id} last strat {buy_strat_name} - {buy_strat_freq} buy was {test_strat_elapsed} / {test_strat_delay_minutes} ago minutes...'
-        self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-        self.buy.all_live_or_test.append(f'{buy_strat_name} - {buy_strat_freq} - test : strat_last_elapsed {test_strat_elapsed:>5} / {test_strat_delay_minutes:>5}')
-
-        if test_strat_delay_minutes != 0 and test_strat_elapsed < test_strat_delay_minutes:
-            msg = f'{prod_id} last strat {buy_strat_name} - {buy_strat_freq} buy was {test_strat_elapsed} minutes ago, waiting until {test_strat_delay_minutes} minutes, switching to test_txn_yn = Y...'
-            self.buy.all_denies.append(msg)  # Keep for on-screen display
-            msg = f'{prod_id} last strat {buy_strat_name} - {buy_strat_freq} buy was {test_strat_elapsed} / {test_strat_delay_minutes} ago minutes...'
-            self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-            self.buy.setting_name = 'test_strat_delay_minutes'
-            self.buy.setting_value = test_strat_delay_minutes
-            self.buy.buy_stat_name = 'self.buy.trade_strat_perfs[T].strat_last_elapsed'
-            self.buy.buy_stat_value = test_strat_elapsed
-
-            self.buy.test_fnc_name = sys._getframe().f_code.co_name
-            self.buy.test_msg = msg
-            self.set_deny_mode()
-
-#<=====>#
-
-@narc(1)
-def buy_logic_strat_deny_test_large_bid_ask_spread(self):
-    if self.debug_tf: G(f'==> buy_base.buy_logic_strat_deny_test_large_bid_ask_spread()')
-    """
-    Large bid-ask spread denial logic.
-    Extracted from cls_bot_buy.py - preserves exact safety logic.
-    
-    Handles:
-    - Large bid-ask spread protection
-    """
-
-    prod_id              = self.buy.prod_id
-    test_txns_on_yn             = self.st_pair.buy_test_txns.test_txns_on_yn
-
-    # Very Large Bid Ask Spread
-    if self.buy.test_txn_yn == 'Y':
-        if self.buy.prc_range_pct >= 2:
-            msg = f'{prod_id} has a price range variance of {self.buy.prc_range_pct}, this price range looks like trouble... skipping buy'
-            self.buy.all_denies.append(msg)  # Keep for on-screen display
-            msg = f'{prod_id} has a price range variance of {self.buy.prc_range_pct}, this price range looks like trouble... skipping buy'
-            self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
-
-            self.buy.setting_name = 'self.buy.prc_range_pct'
-            self.buy.setting_value = self.buy.prc_range_pct
-            self.buy.buy_stat_name = 'self.buy.prc_range_pct'
-            self.buy.buy_stat_value = self.buy.prc_range_pct
-
-            self.buy.test_fnc_name = sys._getframe().f_code.co_name
-            self.buy.test_msg = msg
-            self.set_deny_mode()
-
-#<=====>#
-#<=====>#
-
-@narc(1)
 def cb_buy_base_size_calc(self, buy_prc, spend_amt, base_size_incr, base_size_min, base_size_max):
     if self.debug_tf: G(f'==> buy_base.cb_buy_base_size_calc()')
     """
@@ -1979,11 +983,19 @@ def cb_buy_base_size_calc(self, buy_prc, spend_amt, base_size_incr, base_size_mi
     print(f'trade_size : {trade_size:>.8f} passed in...')
 
     if trade_size < dec(base_size_min):
-        print(f'...selling less {trade_size:>.8f} than coinbase allows {base_size_min}...exiting...')
-        beep()
-        beep()
-        beep()
-        return str(0)
+        # Trade size too small - check if we can afford 5x minimum for meaningful position
+        minimum_viable_size = dec(base_size_min) * 5
+        minimum_viable_cost = minimum_viable_size * dec(buy_prc)
+        
+        if dec(spend_amt) >= minimum_viable_cost:
+            # Can afford meaningful position - round up to nearest viable size
+            trade_size = minimum_viable_size
+            print(f'...buying less than minimum, but can afford 5x minimum ({minimum_viable_size:>.8f}), setting to viable minimum...')
+        else:
+            # Can't afford meaningful position - return 0 to trigger test mode
+            print(f'...buying less {trade_size:>.8f} than coinbase allows {base_size_min}...insufficient funds for 5x minimum (${minimum_viable_cost:.2f})...returning 0 for test mode...')
+            return str(0)
+
     print(f'trade_size : {trade_size:>.8f} after base_size_min {base_size_min:>.8f} check...')
 
     sell_blocks = int(dec(trade_size) / dec(base_size_incr))
@@ -2164,12 +1176,12 @@ def buy_size_budget_calc(self):
         print(f"self.budget.spend_max_amt : {self.budget.spend_max_amt}")
         print(f"self.budget.pair_spend_max_amt : {self.budget.pair_spend_max_amt}")
         print(f"self.budget.spend_up_max_amt : {self.budget.spend_up_max_amt}")
+        # beep()  # DISABLED - was beeping during budget calculations
 
-        beep()
     if self.buy.buy_yn == 'Y':
         if self.buy.trade_size == self.buy.quote_size_min:
             affordable_trade_size = min(self.budget.spendable_amt, self.buy.target_trade_size)
-            minimum_viable_trade = self.buy.quote_size_min * 2  # Must be at least 2x minimum to be meaningful
+            minimum_viable_trade = self.buy.quote_size_min * 5  # Must be at least 2x minimum to be meaningful
             
             msg = f'{self.buy.prod_id} ==> {self.buy.buy_strat_name} - {self.buy.buy_strat_freq} - trade_size : {self.buy.trade_size} == quote_size_min : {self.buy.quote_size_min} ...'
             
@@ -2179,7 +1191,7 @@ def buy_size_budget_calc(self):
                 position_reduction_pct = round((affordable_trade_size / self.buy.target_trade_size) * 100, 1)
                 msg = f'{self.buy.quote_curr_symb} => PARTIAL POSITION SIZING => target: ${self.buy.target_trade_size:.2f}, affordable: ${affordable_trade_size:.2f} ({position_reduction_pct}%), executing live partial trade'
                 self.buy.all_boosts.append(msg)
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
+                # self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
                 
                 if hasattr(self.buy, 'all_denies'):
                     if not self.buy.all_denies:
@@ -2188,10 +1200,18 @@ def buy_size_budget_calc(self):
                 
             elif self.st_pair.buy_test_txns.test_txns_on_yn == 'N':
                 # Can't afford meaningful position and test mode disabled - deny the trade
-                self.buy.buy_deny_yn = 'Y'
                 denial_msg = f'Insufficient funds for meaningful position: available ${affordable_trade_size:.2f} < minimum viable ${minimum_viable_trade:.2f}'
                 self.buy.all_denies.append(denial_msg)
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + denial_msg)
+                # self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + denial_msg)
+                
+                # 🔴 Set forensic fields before calling set_deny_mode()
+                self.buy.test_fnc_name = sys._getframe().f_code.co_name
+                self.buy.setting_name = 'affordable_trade_size'
+                self.buy.setting_value = affordable_trade_size
+                self.buy.buy_stat_name = 'minimum_viable_trade'
+                self.buy.buy_stat_value = minimum_viable_trade
+                self.buy.test_msg = denial_msg
+                self.set_deny_mode()
                 
             else:
                 # Can't afford meaningful position - switch to test mode as last resort
@@ -2199,8 +1219,16 @@ def buy_size_budget_calc(self):
                 msg = f'{self.buy.quote_curr_symb} => budget funding => balance : {self.budget.bal_avail:>.2f}, reserve amount : {self.budget.reserve_amt:.2f}, spendable amount : {self.budget.spendable_amt:.2f}, insufficient for meaningful position (need ${minimum_viable_trade:.2f}), switching to test...'
                 self.buy.all_cancels.append(msg)
                 self.buy.test_reason = msg
-                self.buy.test_txn_yn = 'Y'
-                self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
+                # self.buy.all_live_or_test.append(f'buy_yn : {self.buy.buy_yn}, test_txn_yn : {self.buy.test_txn_yn}, buy_deny_yn : {self.buy.buy_deny_yn} ==> ' + msg)
+                
+                # 🔴 Set forensic fields before calling set_test_mode()
+                self.buy.test_fnc_name = sys._getframe().f_code.co_name
+                self.buy.setting_name = 'minimum_viable_trade'
+                self.buy.setting_value = minimum_viable_trade
+                self.buy.buy_stat_name = 'affordable_trade_size'
+                self.buy.buy_stat_value = affordable_trade_size
+                self.buy.test_msg = msg
+                self.set_test_mode()
 
 #<=====>#
 
@@ -2338,6 +1366,9 @@ def buy_test(self):
     # Update strategy performance cache
     result3 = self.pair_trade_strat_perf_buy_upd(self.buy.prod_id, self.buy.buy_strat_type, self.buy.buy_strat_name, self.buy.buy_strat_freq, 'A')
     result4 = self.pair_trade_strat_perf_buy_upd(self.buy.prod_id, self.buy.buy_strat_type, self.buy.buy_strat_name, self.buy.buy_strat_freq, lta)
+    
+    # 🔴 FORENSIC LOGGING: Log test trade decisions
+    self.buy_decision_log()
     
     return True  # Success - test buy operation completed
 

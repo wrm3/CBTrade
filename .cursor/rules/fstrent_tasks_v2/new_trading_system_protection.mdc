@@ -1,0 +1,69 @@
+---
+alwaysApply: true
+---
+
+# TRADING SYSTEM PROTECTION RULE
+
+## 🚨 INCOME-GENERATING SYSTEM: EXTREME CAUTION REQUIRED
+
+### BEFORE ANY CHANGE:
+1. **Backup Check**: Verify backup system is creating zips in /bkups/
+2. **Scope Confirmation**: Confirm exact scope of change with user
+3. **Test Strategy**: Define how to test without breaking production
+4. **Rollback Plan**: Know how to revert if things go wrong
+
+### PROTECTED AREAS (ASK FIRST):
+- `libs/flow_main.py` - Order processing pipeline
+- `libs/bot_main.py` - Core bot logic  
+- `libs/coinbase_*` - API and business logic
+- `libs/db/` - Database operations
+- Any file with "main" in the name
+
+### NEVER DO WITHOUT PERMISSION:
+- Create new architecture for simple fixes
+- Refactor multiple files simultaneously  
+- Modify business logic during cosmetic changes
+- Consolidate working code into new modules
+- Change database operations during display fixes
+
+### EMERGENCY PROTOCOLS:
+- If user says STOP → Immediately cease all operations
+- If trading breaks → Help identify rollback options from /bkups/
+- If uncertain → Ask for clarification rather than guess
+
+### SUCCESS METRICS:
+- User can trust AI to make only requested changes
+- Trading system remains stable and profitable
+- Changes are surgical and minimal# TRADING SYSTEM PROTECTION RULE
+
+## 🚨 INCOME-GENERATING SYSTEM: EXTREME CAUTION REQUIRED
+
+### BEFORE ANY CHANGE:
+1. **Backup Check**: Verify backup system is creating zips in /bkups/
+2. **Scope Confirmation**: Confirm exact scope of change with user
+3. **Test Strategy**: Define how to test without breaking production
+4. **Rollback Plan**: Know how to revert if things go wrong
+
+### PROTECTED AREAS (ASK FIRST):
+- `libs/flow_main.py` - Order processing pipeline
+- `libs/bot_main.py` - Core bot logic  
+- `libs/coinbase_*` - API and business logic
+- `libs/db/` - Database operations
+- Any file with "main" in the name
+
+### NEVER DO WITHOUT PERMISSION:
+- Create new architecture for simple fixes
+- Refactor multiple files simultaneously  
+- Modify business logic during cosmetic changes
+- Consolidate working code into new modules
+- Change database operations during display fixes
+
+### EMERGENCY PROTOCOLS:
+- If user says STOP → Immediately cease all operations
+- If trading breaks → Help identify rollback options from /bkups/
+- If uncertain → Ask for clarification rather than guess
+
+### SUCCESS METRICS:
+- User can trust AI to make only requested changes
+- Trading system remains stable and profitable
+- Changes are surgical and minimal

@@ -6,7 +6,7 @@
 # periods and standard deviations. The strategy computes the Rate of Change (ROC)
 # for both inner and outer bands and derives signals based on price action relative
 # to these bands and additional color conditions.
-#
+# 
 # A buy signal is generated when:
 #   - The current price is above the inner lower band,
 #   - And at least one of the previous three candles had a price below the outer lower band,

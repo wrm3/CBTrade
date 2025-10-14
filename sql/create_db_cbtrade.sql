@@ -414,6 +414,59 @@ alter table cbtrade.poss add index idx_buy_strat_name_freq (buy_strat_name, buy_
 
 
 use cbtrade;
+drop table if exists buy_signals;
+create table buy_signals (
+	signal_id                                     int(11) primary key AUTO_INCREMENT comment 'pk for buy_signals table - forensic event tracking'
+	, prod_id                                     varchar(64)
+	, buy_strat_type                              varchar(64)
+	, buy_strat_name                              varchar(64)
+	, buy_strat_freq                              varchar(64)
+	, event_dttm                                  timestamp default current_timestamp
+	, test_txn_yn                                 char(1)
+	, dlm                                         timestamp default current_timestamp on update current_timestamp
+	, index idx_prod_strat (prod_id, buy_strat_name, buy_strat_freq)
+	, index idx_event_dttm (event_dttm)
+	, index idx_dlm_cleanup (dlm)
+) engine=InnoDB;
+
+
+use cbtrade;
+drop table if exists buy_decisions;
+create table buy_decisions (
+	buy_dec_id                                    int(11) primary key AUTO_INCREMENT comment 'pk for buy_decisions table - forensic decision audit'
+	, signal_id                                   int(11) null comment 'Links to buy_signals.signal_id (logical FK, not constraint)'
+	, actv_dttm                                   timestamp default current_timestamp
+	, prod_id                                     varchar(64)
+	, symb                                        varchar(64)
+	, buy_yn                                      varchar(1)
+	, test_txn_yn                                 varchar(1)
+	, buy_deny_yn                                 varchar(1)
+	, buy_strat_type                              varchar(64)
+	, buy_strat_name                              varchar(64)
+	, buy_strat_freq                              varchar(64)
+	, setting_name                                varchar(64)
+	, setting_value                               varchar(64)
+	, buy_stat_name                               varchar(64)
+	, buy_stat_value                              varchar(64)
+	, setting_name2                               varchar(64)
+	, setting_value2                              varchar(64)
+	, buy_stat_name2                              varchar(64)
+	, buy_stat_value2                             varchar(64)
+	, setting_name3                               varchar(64)
+	, setting_value3                              varchar(64)
+	, buy_stat_name3                              varchar(64)
+	, buy_stat_value3                             varchar(64)
+	, test_fnc_name                               varchar(64)
+	, message                                     text
+	, dlm                                         timestamp default current_timestamp
+	, index idx_signal_id (signal_id)
+	, index idx_prod_strat (prod_id, buy_strat_name, buy_strat_freq)
+	, index idx_test_deny (test_txn_yn, buy_deny_yn)
+	, index idx_dlm_cleanup (dlm)
+) engine=InnoDB;
+
+
+use cbtrade;
 drop table if exists sell_ords;
 create table sell_ords(
 	so_id                                         int(11) primary key AUTO_INCREMENT

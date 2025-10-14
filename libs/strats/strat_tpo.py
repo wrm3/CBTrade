@@ -16,7 +16,7 @@
 # A sell signal is generated when:
 #   • The oscillator crosses under its delayed value (indicating downward momentum)
 #   • The oscillator is above zero.
-#
+# 
 #<=====>#
 # Known To Do List
 #

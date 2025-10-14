@@ -13,7 +13,7 @@
 # - Add multi-timeframe confirmation
 # - Validate volume spike thresholds
 #<=====>#
-
+ 
 #<=====>#
 # Imports
 #<=====>#
@@ -150,7 +150,7 @@ def buy_strat_rsi_div_macd(buy, ta, st_pair, curr_prc=None):
     # Generate buy signal with NaN handling
     df['rsi_div_macd_buy_signal'] = (
         (df['bullish_div'].fillna(False).infer_objects(copy=False)) &
-        (df['MACD'].combine_first(df['MACD_signal']) > df['MACD_signal']) &
+        (df['MACD'] > df['MACD_signal']) &
         (df['volume'] > df['vol_ma'] * strat_params.volume_multiplier) &
         (df['color'] == 'green')
     )
@@ -193,7 +193,7 @@ def sell_strat_rsi_div_macd(mkt, pos, ta, st_pair, curr_prc=None):
     # Generate sell signal with NaN handling
     df['rsi_div_macd_sell_signal'] = (
         (df['bearish_div'].fillna(False).infer_objects(copy=False)) &
-        (df['MACD'].combine_first(df['MACD_signal']) < df['MACD_signal']) &
+        (df['MACD'] < df['MACD_signal']) &
         (df['volume'] > df['vol_ma'] * 0.8) &
         (df['color'] == 'red')
     )

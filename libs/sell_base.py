@@ -975,7 +975,7 @@ def sell_pos_test_hard_stop(self):
         msg += cs(f'==> SELL TESTS - {self.pos.prod_id} - Hard Stop Loss', font_color='white', bg_color='red')
         # self.chrt.chart_row(msg)
         self.disp_sell_pos_test_details(msg, all_sells, all_hodls)
-
+ 
 #<=====>#
 
 

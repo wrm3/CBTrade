@@ -1,0 +1,168 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+# Workflow Diagram Generation Rule
+
+Whenever you use this rule, start your message with the following:
+
+"Generating workflow diagrams..."
+
+This rule provides automatic Mermaid diagram generation for visualizing task workflows, system architecture relationships, and process flows within the fstrent_tasks_v2 system for improved understanding and documentation.
+
+## Purpose
+
+Transform complex workflow descriptions and system relationships into clear, visual Mermaid diagrams that enhance project documentation, facilitate team communication, and provide architectural insights.
+
+## Diagram Types
+
+### Task Workflow Diagrams
+- **Task Dependencies**: Visual dependency chains showing task relationships
+- **Status Flow**: Task lifecycle state transitions
+- **Process Flow**: Step-by-step task execution workflows
+- **Timeline**: Chronological task progression
+
+### System Architecture Diagrams
+- **Subsystem Relationships**: Component interaction diagrams
+- **Data Flow**: Information movement through system layers
+- **Integration Points**: External system connections
+- **Rule Activation**: Rule trigger and interaction flows
+
+## Automatic Diagram Generation
+
+### Task Dependency Diagrams
+```mermaid
+graph TD
+    T{task_id}["{task_title}"] --> T{dep_id}["{dep_title}"]
+    T{task_id} --> |Priority: {priority}| T{dep_id2}["{dep_title2}"]
+```
+
+### System Architecture Overview
+```mermaid
+graph LR
+    A[User Request] --> B[Rule System]
+    B --> C[Task Management]
+    C --> D[Memory System]
+    D --> E[Archive]
+```
+
+### Rule Activation Flow
+```mermaid
+flowchart TD
+    A[Trigger Point] --> B{Rule Active?}
+    B -->|Yes| C[Execute Logic]
+    B -->|No| D[Continue]
+    C --> E[Present Results]
+    E --> F[User Confirmation]
+    F --> G[Execute Actions]
+```
+
+## Generation Triggers
+
+### Automatic Generation
+- **Task creation batch**: Generate dependency diagram for new task sets
+- **System updates**: Create architecture diagrams after rule modifications
+- **Documentation requests**: Generate visual summaries for project reviews
+- **Milestone completion**: Visualize completed work and remaining tasks
+
+### Manual Generation
+- **Planning sessions**: Create process flow diagrams for complex features
+- **Architecture reviews**: Generate system relationship diagrams
+- **Onboarding**: Create visual guides for new team members
+- **Troubleshooting**: Visualize problem areas and solution paths
+
+## Diagram Templates
+
+### Task Status Overview Template
+```mermaid
+pie title Task Status Distribution
+    "Completed" : {completed_count}
+    "In Progress" : {inprogress_count}
+    "Pending" : {pending_count}
+    "Failed" : {failed_count}
+```
+
+### Subsystem Impact Template
+```mermaid
+graph TB
+    subgraph "Core Systems"
+        A[Task Management]
+        B[Rule System] 
+        C[Memory System]
+    end
+    subgraph "Integration"
+        D[MCP Tools]
+        E[File System]
+        F[Templates]
+    end
+    A --> D
+    B --> E
+    C --> F
+```
+
+### Process Workflow Template
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant R as Rule System
+    participant T as Task System
+    participant M as Memory
+    
+    U->>R: Request Action
+    R->>T: Create/Update Task
+    T->>M: Archive Completed
+    M->>U: Provide Context
+```
+
+## Implementation Workflow
+
+### Step 1: Data Analysis
+- Extract relationships from task files and system components
+- Identify key workflow patterns and connection points
+- Determine appropriate diagram type based on content complexity
+
+### Step 2: Diagram Generation
+- Apply relevant Mermaid template
+- Populate with actual system data
+- Optimize layout for clarity and readability
+
+### Step 3: Integration
+- Include diagrams in relevant documentation
+- Link diagrams to source data for updates
+- Provide context explanations alongside visuals
+
+## Diagram Quality Guidelines
+
+### Content Standards
+- **Clear Labels**: Use descriptive node names and relationship labels
+- **Logical Flow**: Arrange elements in intuitive reading order
+- **Appropriate Detail**: Balance comprehensiveness with clarity
+- **Consistent Styling**: Use standardized colors and shapes
+
+### Technical Standards
+- **Valid Mermaid**: Ensure syntactically correct diagram code
+- **Readable Layout**: Optimize spacing and arrangement
+- **Performance**: Keep diagrams manageable for rendering
+- **Accessibility**: Include alternative text descriptions
+
+## Integration Points
+
+**Task System Integration:**
+- Generate dependency diagrams from task YAML dependencies
+- Create status flow diagrams from task lifecycle changes
+- Visualize priority and effort distributions
+
+**Rule System Integration:**
+- Show rule activation sequences and trigger points
+- Diagram rule interaction patterns and dependencies
+- Visualize anti-bloat compliance across rule system
+
+**Memory System Integration:**
+- Create timeline diagrams of archived task progression
+- Show knowledge retention and retrieval patterns
+- Visualize project evolution through memory analysis
+
+---
+
+*This rule enhances project understanding through clear, automatically generated visual representations of complex system relationships and workflows.*

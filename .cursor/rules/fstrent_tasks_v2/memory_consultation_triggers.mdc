@@ -1,0 +1,155 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Memory Consultation Triggers
+
+Whenever you use this rule, start your message with the following:
+
+"Executing mandatory memory consultation workflow..."
+
+This rule implements practical trigger mechanisms that ensure memory consultation actually happens during task management workflows, transforming theoretical guidance into mandatory workflow integration.
+
+## Purpose
+
+Provide enforceable trigger mechanisms that automatically activate memory consultation at critical workflow points, preventing bypass and ensuring historical context is always considered before proceeding.
+
+## Trigger Implementation Framework
+
+### Activation Detection Keywords
+**Task Creation Triggers**: "create task", "new task", "add task", "task for", "need to"
+**Planning Triggers**: "create plan", "new PRD", "planning", "requirements", "feature design"
+**Completion Triggers**: "completed", "finished", "done", "archive", "close task"
+**System Triggers**: "maintenance", "cleanup", "archival", "system health"
+
+### Mandatory Consultation Checkpoints
+
+#### PRE_TASK_CREATION Checkpoint (ENFORCED)
+**Detection Pattern**: Any request involving task creation or task-related work
+**Enforcement Mechanism**:
+```
+HALT: Memory consultation required before task creation
+┌─ MANDATORY CHECKPOINT ─────────────────────┐
+│ 1. Search TASKS_LOG.md for similar work    │
+│ 2. Present findings with relevance scores  │
+│ 3. Require explicit user acknowledgment    │
+│ 4. Document consultation in task metadata  │
+└────────────────────────────────────────────┘
+```
+
+**Implementation Steps**:
+1. **Auto-detect task creation requests** using keyword patterns
+2. **Immediate memory search** before any task file creation
+3. **Present findings format**: "[RELEVANCE: HIGH/MED/LOW] TaskID - Title - Key Context"
+4. **Block progression** until user provides consultation acknowledgment
+5. **Log consultation results** in task metadata for tracking
+
+#### POST_COMPLETION Checkpoint (AUTOMATIC)
+**Detection Pattern**: Tasks marked completed or 5+ completed tasks detected
+**Enforcement Mechanism**:
+```
+TRIGGER: Automatic archival process initiated
+┌─ MANDATORY ARCHIVAL ───────────────────────┐
+│ 1. Scan for completed tasks automatically  │
+│ 2. Generate archival proposal list         │
+│ 3. Execute archival with log updates       │
+│ 4. Validate archival completion            │
+└────────────────────────────────────────────┘
+```
+
+**Implementation Steps**:
+1. **Scan active tasks directory** for completed status automatically
+2. **Generate archival list** with task summaries and completion dates
+3. **Execute archival process** (move files, update TASKS_LOG.md, clean TASKS.md)
+4. **Verify archival integrity** and confirm successful completion
+
+#### PRE_PLANNING Checkpoint (TRIGGERED)
+**Detection Pattern**: PRD creation, modification, or planning requests
+**Enforcement Mechanism**:
+```
+CHECKPOINT: Planning memory consultation required
+┌─ HISTORICAL PLANNING REVIEW ───────────────┐
+│ 1. Search PLANS_LOG.md for related context │
+│ 2. Review deprecated/superseded approaches  │
+│ 3. Present planning context with insights  │
+│ 4. Confirm context review before planning  │
+└────────────────────────────────────────────┘
+```
+
+## Trigger Validation Framework
+
+### Consultation Quality Checks
+**Completeness Validation**:
+- Memory search performed using relevant keywords
+- Historical context presented with clear relevance
+- User acknowledgment explicitly obtained
+- Consultation results documented in workflow
+
+**Bypass Prevention**:
+- No task creation without memory consultation checkpoint
+- No planning without historical context review
+- No archival without proper logging and cleanup
+- Emergency overrides require explicit justification
+
+### Integration Workflow Patterns
+
+#### Task Creation with Memory Integration
+```markdown
+1. USER REQUEST: "Create task for user authentication"
+2. TRIGGER DETECTION: "create task" pattern matched
+3. MEMORY CONSULTATION: Search TASKS_LOG.md for "authentication", "user", "login"
+4. FINDINGS PRESENTATION: Display relevant historical tasks with context
+5. USER ACKNOWLEDGMENT: Confirm understanding of historical context
+6. TASK CREATION: Proceed with informed task creation
+7. METADATA LOGGING: Document consultation results in task file
+```
+
+#### Automatic Archival Integration
+```markdown
+1. COMPLETION DETECTION: Task status changed to completed
+2. TRIGGER EVALUATION: Check if 5+ completed tasks exist
+3. ARCHIVAL PROPOSAL: Generate list of tasks ready for archival
+4. AUTOMATED EXECUTION: Move files, update logs, clean active list
+5. INTEGRITY VALIDATION: Verify archival process completion
+6. STATUS REPORTING: Confirm successful archival to user
+```
+
+## Anti-Bypass Mechanisms
+
+### Enforcement Patterns
+**Hard Stops**: Cannot proceed with task creation until memory consultation completed
+**Automatic Triggers**: Archival process runs automatically when thresholds met
+**Validation Loops**: Re-trigger consultation if incomplete or bypassed
+**Audit Trail**: All consultation activities logged for effectiveness tracking
+
+### Bypass Override Conditions
+**Emergency Override**: Requires explicit justification and gets flagged for review
+**System Administration**: Memory system maintenance and setup operations
+**Memory Maintenance**: Operations on memory system itself to prevent recursion
+
+## Integration Points
+
+**Task System**: Mandatory consultation before task creation, automatic archival after completion
+**Planning System**: Historical context review before PRD creation or modification
+**Rule System**: Trigger activation coordinates with other rule enforcement mechanisms
+**Analytics System**: Consultation effectiveness tracked in system performance metrics
+
+## Consultation Effectiveness Tracking
+
+### Success Metrics
+- Consultation activation rate (should be 100% for task creation)
+- Historical context relevance scores (user feedback)
+- Bypass attempt frequency (should be minimal)
+- Archival automation success rate (should be >95%)
+
+### Quality Indicators
+- Relevant historical tasks found and presented
+- User acknowledgment obtained before proceeding
+- Consultation results properly documented
+- Archival process completed without manual intervention
+
+---
+
+*This trigger framework ensures memory consultation becomes practical workflow integration rather than ignorable guidance.*
+

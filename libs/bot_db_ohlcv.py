@@ -21,8 +21,7 @@ import traceback
 from datetime import timedelta
 from dotenv import load_dotenv
 
-from fstrent_tools import dttm_get, beep
-
+from libs.common import dttm_get, beep
 from libs.cls_db_mysql import db_mysql
 
 #<=====>#
@@ -348,11 +347,11 @@ def db_tbl_ohlcv_prod_id_insupd_many(prod_id, in_dfs):
         beep()
 
 
-#<=====>#
+#<=====># 
 
 def db_ohlcv_dump(prod_id, freq='1min'):
     import pandas as pd
-    from fstrent_tools import dir_val
+    from libs.common import dir_val
 
     temp_prod_id = prod_id.replace('-','_')
 

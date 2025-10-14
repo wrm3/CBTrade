@@ -1,0 +1,254 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Performance Analytics & Metrics Collection
+
+Whenever you use this rule, start your message with the following:
+
+"Analyzing system metrics and performance..."
+
+This rule provides unified analytics, comprehensive performance analysis, and lightweight metrics collection for task patterns, rule effectiveness, and system performance to support data-driven optimization of the fstrent_tasks_v2 system.
+
+## Purpose
+
+Deliver actionable insights about system performance, task execution patterns, and workflow efficiency through systematic data collection, analysis, and trend identification while maintaining anti-bloat principles.
+
+## Core Analytics & Metrics
+
+### Task Performance Metrics
+- **Completion Rate**: Tasks completed vs. created with trend analysis
+- **Cycle Time**: Average time from creation to completion by type/priority
+- **Priority Distribution**: Task priority patterns and impact on completion
+- **Effort Accuracy**: Estimated vs. actual effort variance
+- **Bottleneck Identification**: Tasks with consistently long execution times
+
+### System Performance Indicators
+- **Rule Effectiveness**: Activation frequency and success rates per rule
+- **Context Efficiency**: Rule length trends and optimization opportunities
+- **Tool Integration**: MCP tool usage patterns and adoption rates
+- **Memory Utilization**: Archive ratios and system growth patterns
+- **Resource Utilization**: Context window usage and optimization opportunities
+
+### User Behavior Analytics
+- **Task Creation Patterns**: When and how users create tasks
+- **Bypass Frequency**: How often users override system recommendations
+- **Tool Adoption**: Which MCP tools are used most effectively
+- **System Navigation**: How users interact with the task management system
+
+## Performance Zones & Indicators
+
+### Health Status Zones
+- **Green Zone**: >80% completion rate, <48h avg cycle time, <15% bypass rate
+- **Yellow Zone**: 60-80% completion rate, 48-96h cycle time, 15-25% bypass rate  
+- **Red Zone**: <60% completion rate, >96h cycle time, >25% bypass rate
+
+## Metrics Collection Framework
+
+### Automated Collection Points
+
+#### Task Lifecycle Events
+- Task creation with initial estimates
+- Status transitions (pending → in-progress → completed)
+- Task completion with actual effort
+- Task archival to memory system
+
+#### Rule System Events
+- Rule activation triggers
+- Successful rule executions
+- Rule integration handoffs
+- Anti-bloat compliance measurements
+
+#### System Performance Events
+- Context efficiency measurements
+- Tool utilization tracking
+- Memory system operations
+- Cross-rule coordination effectiveness
+
+### Lightweight Metrics Template
+
+```yaml
+# fstrent_tasks_v2 Performance & Analytics Log
+date: {current_date}
+period: {weekly|monthly|quarterly}
+status: {GREEN/YELLOW/RED}
+
+task_performance:
+  created: {count}
+  completed: {count}
+  completion_rate: {percentage}
+  avg_cycle_time: {days}
+  priority_breakdown:
+    critical: {count} | high: {count} | medium: {count} | low: {count}
+  effort_variance: {percentage}
+
+system_health:
+  rule_activations: {count}
+  tool_utilizations: {count}
+  context_efficiency: {percentage}
+  active_tasks: {count}
+  archived_tasks: {count}
+  avg_rule_length: {lines}
+
+rule_effectiveness:
+  activations:
+    memory_rule: {count}
+    expand_rule: {count}
+    context_mgmt: {count}
+    tool_awareness: {count}
+  success_rate: {percentage}
+  bypass_rate: {percentage}
+
+performance_indicators:
+  avg_task_complexity: {score}
+  system_responsiveness: {rating}
+  user_satisfaction: {rating}
+
+optimization_flags:
+  high_cycle_times: {task_ids}
+  low_adoption_tools: {tool_names}
+  bypass_patterns: {rule_names}
+```
+
+## Analysis Workflows
+
+### Automated Collection Workflow
+- Record task status changes automatically
+- Track rule activation patterns during normal operation
+- Measure context efficiency in real-time
+- Log completion times and effort variance
+- Append metrics to simple YAML or markdown logs
+
+### Weekly Performance Review
+1. **Data Collection**: Gather task completion, rule activation, and tool usage data
+2. **Trend Analysis**: Compare current week against historical patterns
+3. **Bottleneck Detection**: Identify tasks, rules, or processes causing delays
+4. **Performance Zone Assessment**: Determine Green/Yellow/Red status
+5. **Improvement Recommendations**: Suggest specific optimization actions
+
+### Monthly System Health Assessment
+1. **Comprehensive Metrics**: Full system performance across all categories with trend analysis
+2. **Pattern Recognition**: Identify recurring issues and successful strategies
+3. **Capacity Planning**: Forecast system scaling needs and optimization priorities
+4. **Strategic Recommendations**: Long-term system evolution suggestions
+
+### Critical Issue Analysis
+1. **Incident Detection**: Identify performance degradation or system issues
+2. **Root Cause Analysis**: Trace issues to specific components or workflows
+3. **Impact Assessment**: Quantify issue effects on overall system performance
+4. **Resolution Tracking**: Monitor fix effectiveness and prevent recurrence
+
+## Optimization Insights & Actions
+
+### Task Management Optimizations
+**High Cycle Times**: Apply expand rule more aggressively, optimize task templates
+**Low Completion Rates**: Enhance context management, improve subsystem documentation
+**High Priority Variance**: Improve priority assessment and task breakdown strategies
+
+### Rule System Optimizations
+**High Bypass Rates**: Refine rule logic, improve user experience and flexibility
+**Low Activation Rates**: Expand trigger scenarios, improve automatic activation logic
+**Poor Integration**: Enhance cross-rule coordination and handoff mechanisms
+
+### Tool Integration Optimizations
+**Low Tool Adoption**: Enhance tool awareness, improve task-tool mapping integration
+**Inefficient Usage**: Create tool workflow patterns, improve combination guidance
+**Integration Friction**: Streamline tool setup and usage workflows
+
+### System Performance Optimizations
+**Context Inefficiency**: Optimize rule length and complexity
+**Memory Bloat**: Improve archival strategies and memory management
+**Workflow Bottlenecks**: Identify and resolve systematic constraint points
+
+## Reporting Framework
+
+### Performance Dashboard Template
+```markdown
+# fstrent_tasks_v2 Performance Dashboard
+
+## System Health: {STATUS} | Completion: {%} | Cycle Time: {days} | Tools: {%}
+
+### Key Metrics (Last 30 Days)
+- **Task Completion Rate**: {percentage} ({trend})
+- **Average Cycle Time**: {days} ({trend})
+- **Rule Effectiveness**: {percentage} ({trend})
+- **Tool Utilization**: {percentage} ({trend})
+
+### Trends (30 days)
+- **Improving**: {improving_metrics}
+- **Declining**: {declining_metrics}  
+- **Stable**: {stable_metrics}
+
+### Top Optimization Opportunities
+1. **{Opportunity 1}**: {Impact level} - {Recommended action}
+2. **{Opportunity 2}**: {Impact level} - {Recommended action}
+3. **{Opportunity 3}**: {Impact level} - {Recommended action}
+
+### Recommended Actions
+- **Immediate**: {Critical fixes required}
+- **Short-term**: {Improvements for next 30 days}
+- **Long-term**: {Strategic enhancements}
+
+### Performance Zones
+- **Green Zone Metrics**: {list}
+- **Yellow Zone Alerts**: {list}
+- **Red Zone Issues**: {list}
+```
+
+### Detailed Analysis Reports
+- **Task Pattern Analysis**: Deep dive into task creation, execution, and completion patterns
+- **System Bottleneck Report**: Identification and analysis of system constraint points
+- **User Experience Metrics**: Analysis of user interaction patterns and satisfaction
+- **Technology Effectiveness**: Evaluation of tool and rule system performance
+- **Historical Trend Analysis**: Long-term pattern identification and forecasting
+
+## Lightweight Storage & Maintenance
+
+### Simple Storage Approach
+- Append metrics to simple YAML or markdown logs
+- Avoid complex database requirements
+- Focus on actionable insights over comprehensive tracking
+- Maintain metrics history for trend analysis
+
+### Anti-Bloat Compliance
+- Lightweight tracking without system overhead
+- Essential metrics focused on optimization opportunities
+- Streamlined collection and analysis workflows
+- Automated cleanup of aged metrics data
+
+## Integration Points
+
+### Task System Integration
+- Automatically record metrics during task lifecycle events
+- Track effort estimation accuracy for continuous improvement
+- Monitor task pipeline health and bottlenecks
+- Support task template and process improvements through data insights
+
+### Rule System Integration
+- Measure rule activation frequency and success rates
+- Assess cross-rule coordination effectiveness
+- Track anti-bloat compliance and rule complexity trends
+- Provide performance data to support rule improvement decisions
+
+### Memory System Integration
+- Analyze archival patterns and memory system effectiveness
+- Track knowledge retention and retrieval success rates
+- Monitor system growth patterns and optimization needs
+- Coordinate with memory rule for historical data management
+
+### Tool Awareness Integration
+- Provide usage data to improve tool recommendations
+- Identify workflow patterns and tool adoption trends
+- Support task-tool mapping optimization
+- Track MCP tool effectiveness and user satisfaction
+
+### Context Management Integration
+- Monitor context efficiency and optimization opportunities
+- Track rule length and complexity trends
+- Support context optimization decision-making
+- Measure impact of context management improvements
+
+---
+
+**Integration:** This rule provides comprehensive performance analytics while maintaining anti-bloat principles, delivering actionable insights for continuous system optimization through lightweight tracking and analysis methodologies.
